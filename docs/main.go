@@ -21,10 +21,18 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/StackPointCloud/packet-cli/cmd"
+	"github.com/spf13/cobra/doc"
 )
 
 func main() {
 
 	cli := cmd.NewCli()
+	err := doc.GenMarkdownTree(cli.MainCmd, "./")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
