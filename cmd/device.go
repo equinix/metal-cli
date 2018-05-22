@@ -29,13 +29,16 @@ import (
 var organizationID string
 var deviceID string
 
-var deviceCmd = &cobra.Command{
+var retriveDeviceCmd = &cobra.Command{
 	Use:   "device",
 	Short: "Gets device details",
 	// Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if deviceID != "" && organizationID != "" {
 			fmt.Println("Either deviceID or organizationID can be set.")
+			return
+		} else if deviceID == "" && organizationID == "" {
+			fmt.Println("Either deviceID or organizationID should be set.")
 			return
 		} else if organizationID != "" {
 			devices, _, err := PacknGo.Devices.List(organizationID)
@@ -69,8 +72,6 @@ var deviceCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(deviceCmd)
-	deviceCmd.Flags().StringVarP(&organizationID, "organization", "o", "", "--organization -o [UUID]")
-	deviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "--id or -i [UUID]")
-	// deviceCmd.MarkFlagRequired("organization")
+	retriveDeviceCmd.Flags().StringVarP(&organizationID, "organization", "o", "", "--organization -o [UUID]")
+	retriveDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "--id or -i [UUID]")
 }

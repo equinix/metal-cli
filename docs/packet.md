@@ -23,7 +23,6 @@ to quickly create a Cobra application.
 
 ### SEE ALSO
 
-* [packet device](packet_device.md)	 - Gets device details
 * [packet facilities](packet_facilities.md)	 - A brief description of your command
 * [packet get](packet_get.md)	 - A brief description of your command
 * [packet version](packet_version.md)	 - Print the version number of Hugo

@@ -30,7 +30,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
 // getCmd represents the get command
 var getCmd = &cobra.Command{
 	Use:   "get",
@@ -50,7 +49,7 @@ func init() {
 
 	rootCmd.AddCommand(getCmd)
 
-	getCmd.AddCommand(deviceCmd, facilitiesCmd)
+	getCmd.AddCommand(retriveDeviceCmd, facilitiesCmd)
 }
 
 func output(in interface{}, header []string, data *[][]string) {

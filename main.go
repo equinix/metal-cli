@@ -25,6 +25,5 @@ import (
 )
 
 func main() {
-
-	cli := cmd.NewCli()
+	cmd.NewCli()
 }
