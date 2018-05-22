@@ -12,7 +12,7 @@ import (
 //Cli struct
 type Cli struct {
 	Client  *packngo.Client
-	rootCmd *cobra.Command
+	MainCmd *cobra.Command
 }
 
 //NewCli asdfaf
@@ -25,5 +25,6 @@ func NewCli() *Cli {
 		return nil
 	}
 	rootCmd.Execute()
+	cli.MainCmd = rootCmd
 	return cli
 }
