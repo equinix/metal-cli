@@ -21,18 +21,12 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
-	"os"
-
-	"github.com/ghodss/yaml"
-	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
-// getCmd represents the get command
-var getCmd = &cobra.Command{
-	Use:   "get",
+// createCmd represents the create command
+var createCmd = &cobra.Command{
+	Use:   "create",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -40,43 +34,19 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("get called", args)
-	},
+	// Run: func(cmd *cobra.Command, args []string) {
+	// 	fmt.Println("create called")
+	// },
 }
 
 func init() {
+	// Here you will define your flags and configuration settings.
 
-	rootCmd.AddCommand(getCmd, createCmd)
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// createCmd.PersistentFlags().String("foo", "", "A help for foo")
 
-	getCmd.AddCommand(retriveDeviceCmd, facilitiesCmd)
-	createCmd.AddCommand(createDeviceCmd)
-}
-
-func output(in interface{}, header []string, data *[][]string) {
-	// if header != nil && data != nil {
-	if !isJSON && !isYaml {
-
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetAutoWrapText(true)
-		table.SetAlignment(5)
-		table.SetHeader(header)
-		table.AppendBulk(*data)
-		table.Render()
-	} else if isJSON {
-		output, err := json.MarshalIndent(in, "", "  ")
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(string(output))
-	} else if isYaml {
-		fmt.Println("*****isYaml", isYaml)
-		output, err := yaml.Marshal(in)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(string(output))
-	}
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
