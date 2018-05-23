@@ -33,7 +33,6 @@ var force bool
 var deleteDeviceCmd = &cobra.Command{
 	Use:   "device",
 	Short: "Deletes a device",
-	// Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if !force {
 			reader := bufio.NewReader(os.Stdin)

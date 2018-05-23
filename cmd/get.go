@@ -43,6 +43,7 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("get called", args)
 	},
+	Args: cobra.MinimumNArgs(1),
 }
 
 func init() {
