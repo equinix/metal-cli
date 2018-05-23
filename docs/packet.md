@@ -24,6 +24,7 @@ to quickly create a Cobra application.
 ### SEE ALSO
 
 * [packet create](packet_create.md)	 - A brief description of your command
+* [packet delete](packet_delete.md)	 - A brief description of your command
 * [packet get](packet_get.md)	 - A brief description of your command
 * [packet version](packet_version.md)	 - Print the version number of Hugo
 
