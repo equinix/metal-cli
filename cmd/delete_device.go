@@ -74,7 +74,7 @@ func deleteDevice(id string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("Device deletion initiated. Please check 'packet get device", deviceID, "' for status")
+	fmt.Println("Device deletion initiated. Please check 'packet get device -i", deviceID, "' for status")
 	return nil
 }
 func init() {
