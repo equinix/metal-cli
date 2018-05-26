@@ -39,6 +39,7 @@ var (
 
 	storage               string
 	userdata              string
+	customdata            string
 	tags                  []string
 	ipxescripturl         string
 	publicIPv4SubnetSize  int
@@ -135,6 +136,7 @@ func init() {
 	createDeviceCmd.Flags().StringVarP(&storage, "storage", "s", "", "--storage or -s [storage_uuid]")
 	createDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "i", "", "--ipxe-script-url or -i [ipxe_script_url]")
 	createDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "--userdata or -u [userdata]")
+	createDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "--customdata or -c [customdata]")
 	createDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `--tags="tag1,tag2" or -t="tag1,tag2"`)
 	createDeviceCmd.Flags().IntVarP(&publicIPv4SubnetSize, "public-ip-v4-subnet-size", "v", 0, "--public-ip-v4-subnet-size=2 or -v=2")
 	createDeviceCmd.Flags().StringVarP(&hardwareReservationID, "hardware-reservation-id", "r", "", "--hardware-reservation-id or -r [hardware_reservation_id]")
