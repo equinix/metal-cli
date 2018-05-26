@@ -21,38 +21,43 @@
 package cmd
 
 import (
-	"bufio"
+	"errors"
 	"fmt"
-	"os"
 	"strings"
 
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
 var force bool
+var validate = func(text string) error {
+	if strings.ToUpper(text) == "Y" || strings.ToUpper(text) == "YES" {
+		return nil
+	} else {
+		return errors.New("blah")
+	}
+}
+
 var deleteDeviceCmd = &cobra.Command{
 	Use:   "device",
 	Short: "Deletes a device",
 	Run: func(cmd *cobra.Command, args []string) {
 		if !force {
-			reader := bufio.NewReader(os.Stdin)
-			fmt.Printf("Are you sure you want to delete device %s: ", deviceID)
-			text, _ := reader.ReadString('\n')
-			text = strings.TrimSuffix(text, "\n")
-			if text == "" {
-				err := deleteDevice(deviceID)
-				if err != nil {
-					fmt.Println("Client error:", err)
-					return
-				}
-			} else if strings.ToUpper(text) == "N" || strings.ToUpper(text) == "NO" {
+
+			prompt := promptui.Prompt{
+				Label:     fmt.Sprintf("Are you sure you want to delete device %s: ", deviceID),
+				IsConfirm: true,
+			}
+
+			_, err := prompt.Run()
+			if err != nil {
 				return
-			} else if strings.ToUpper(text) == "Y" || strings.ToUpper(text) == "YES" {
-				err := deleteDevice(deviceID)
-				if err != nil {
-					fmt.Println("Client error:", err)
-					return
-				}
+			}
+
+			err = deleteDevice(deviceID)
+			if err != nil {
+				fmt.Println("Client error:", err)
+				return
 			}
 		} else {
 			err := deleteDevice(deviceID)

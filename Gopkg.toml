@@ -26,6 +26,10 @@
   version = "1.0.0"
 
 [[constraint]]
+  name = "github.com/manifoldco/promptui"
+  version = "0.3.0"
+
+[[constraint]]
   branch = "master"
   name = "github.com/mitchellh/go-homedir"
 

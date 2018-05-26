@@ -21,18 +21,14 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 
-	"github.com/ghodss/yaml"
-	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
-// getCmd represents the get command
-var getCmd = &cobra.Command{
-	Use:   "get",
+// plansCmd represents the plans command
+var plansCmd = &cobra.Command{
+	Use:   "plans",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -41,42 +37,23 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("get called", args)
+		plans, _, err := PacknGo.Plans.List()
+		if err != nil {
+			fmt.Println("Client error:", err)
+			return
+		}
+
+		data := make([][]string, len(plans))
+
+		for i, p := range plans {
+			data[i] = []string{p.ID, p.Slug, p.Name}
+		}
+		header := []string{"ID", "Slug", "Name"}
+
+		output(plans, header, &data)
 	},
-	Args: cobra.MinimumNArgs(1),
 }
 
 func init() {
-
-	rootCmd.AddCommand(getCmd, createCmd)
-
-	getCmd.AddCommand(retriveDeviceCmd, facilitiesCmd)
-}
-
-func output(in interface{}, header []string, data *[][]string) {
-	// if header != nil && data != nil {
-	if !isJSON && !isYaml {
-
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetAutoWrapText(false)
-		table.SetAlignment(tablewriter.ALIGN_LEFT)
-		table.SetHeader(header)
-		table.AppendBulk(*data)
-		table.Render()
-	} else if isJSON {
-		output, err := json.MarshalIndent(in, "", "  ")
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(string(output))
-	} else if isYaml {
-		fmt.Println("*****isYaml", isYaml)
-		output, err := yaml.Marshal(in)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(string(output))
-	}
+	getCmd.AddCommand(plansCmd)
 }

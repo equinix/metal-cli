@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/chzyer/readline"
+  packages = ["."]
+  revision = "f6d7a1f6fbf35bbf9beb80dc63c56a29dcfb759f"
+
+[[projects]]
   name = "github.com/cpuguy83/go-md2man"
   packages = ["md2man"]
   revision = "20f5889cbdc3c73dbd2862796665e7c465ade7d1"
@@ -32,10 +38,40 @@
   version = "v1.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/juju/ansiterm"
+  packages = [".","tabwriter"]
+  revision = "720a0952cc2ac777afc295d9861263e2a4cf96a1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/lunixbochs/vtclean"
+  packages = ["."]
+  revision = "d14193dfc626125c831501c1c42340b4248e1f5a"
+
+[[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
   revision = "c2353362d570a7bfa228149c62842019201cfb71"
   version = "v1.8.0"
+
+[[projects]]
+  name = "github.com/manifoldco/promptui"
+  packages = [".","list","screenbuf"]
+  revision = "3dd80c00b7cb0bc779d1c204da6f3ae0fa6a4eee"
+  version = "v0.3.0"
+
+[[projects]]
+  name = "github.com/mattn/go-colorable"
+  packages = ["."]
+  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
+  version = "v0.0.9"
+
+[[projects]]
+  name = "github.com/mattn/go-isatty"
+  packages = ["."]
+  revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
+  version = "v0.0.3"
 
 [[projects]]
   name = "github.com/mattn/go-runewidth"
@@ -119,7 +155,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "77b0e4315053a57ed2962443614bdb28db152054"
+  revision = "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -136,6 +172,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8f0724b0bb5f105ca58ce2be2c460ec9ef3efe2d1276e6b45b0adda2755f1b67"
+  inputs-digest = "2db70f85d0c72434e5a88190d20ff281579608c00cc1de5388f94f81927109f7"
   solver-name = "gps-cdcl"
   solver-version = 1

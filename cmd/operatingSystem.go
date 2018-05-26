@@ -21,18 +21,14 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 
-	"github.com/ghodss/yaml"
-	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
-// getCmd represents the get command
-var getCmd = &cobra.Command{
-	Use:   "get",
+// operatingSystemCmd represents the operatingSystem command
+var operatingSystemCmd = &cobra.Command{
+	Use:   "operating-systems",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -41,42 +37,23 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("get called", args)
+		oss, _, err := PacknGo.OperatingSystems.List()
+		if err != nil {
+			fmt.Println("Client error:", err)
+			return
+		}
+
+		data := make([][]string, len(oss))
+
+		for i, os := range oss {
+			data[i] = []string{os.Name, os.Slug, os.Distro, os.Version}
+		}
+		header := []string{"Name", "Slug", "Distro", "Version"}
+
+		output(oss, header, &data)
 	},
-	Args: cobra.MinimumNArgs(1),
 }
 
 func init() {
-
-	rootCmd.AddCommand(getCmd, createCmd)
-
-	getCmd.AddCommand(retriveDeviceCmd, facilitiesCmd)
-}
-
-func output(in interface{}, header []string, data *[][]string) {
-	// if header != nil && data != nil {
-	if !isJSON && !isYaml {
-
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetAutoWrapText(false)
-		table.SetAlignment(tablewriter.ALIGN_LEFT)
-		table.SetHeader(header)
-		table.AppendBulk(*data)
-		table.Render()
-	} else if isJSON {
-		output, err := json.MarshalIndent(in, "", "  ")
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(string(output))
-	} else if isYaml {
-		fmt.Println("*****isYaml", isYaml)
-		output, err := yaml.Marshal(in)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(string(output))
-	}
+	getCmd.AddCommand(operatingSystemCmd)
 }
