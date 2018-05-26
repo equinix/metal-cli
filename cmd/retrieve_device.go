@@ -43,7 +43,7 @@ var retriveDeviceCmd = &cobra.Command{
 			fmt.Println("Either deviceID or organizationID should be set.")
 			return
 		} else if organizationID != "" {
-			devices, _, err := PacknGo.Devices.List(organizationID)
+			devices, _, err := PacknGo.Devices.List(organizationID, nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
