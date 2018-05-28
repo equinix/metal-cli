@@ -62,7 +62,6 @@ func output(in interface{}, header []string, data *[][]string) {
 		}
 		fmt.Println(string(output))
 	} else if isYaml {
-		fmt.Println("*****isYaml", isYaml)
 		output, err := yaml.Marshal(in)
 		if err != nil {
 			fmt.Println(err)
