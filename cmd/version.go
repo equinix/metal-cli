@@ -35,6 +35,6 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of Hugo",
 	Long:  `All software has versions. This is Hugo's`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Packet Command Line Interface v0.0.0")
+		fmt.Println("Packet Command Line Interface Preview 0.0.0")
 	},
 }

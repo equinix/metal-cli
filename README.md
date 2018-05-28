@@ -34,4 +34,16 @@ packet get device -i [device_UUID]
 packet get volume -i [volume_UUID]
 ```
 
+6. List projects
 
+```
+packet get project
+```
+
+7. Get a project
+
+```
+packet get project -i [project_UUID]
+```
+
+For further details on all available commands visit documentation [pages](docs/packet.md)
