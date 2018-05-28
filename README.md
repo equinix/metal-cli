@@ -22,4 +22,16 @@ packet create volume -P storage_1 -f ewr1 -s 20 -p 93125c2a-8b78-4d4f-a3c4-7367d
 packet attach volume --device-id 572aa9ea-9a7b-4ed9-bb58-81a5e525af50 -volume-id 86fc97bd-e4f6-423b-ae8f-62a4506330ec
 ```
 
+4. Get a device
+
+```
+packet get device -i [device_UUID]
+```
+
+5. Get a volume 
+
+```
+packet get volume -i [volume_UUID]
+```
+
 
