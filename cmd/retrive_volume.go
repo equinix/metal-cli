@@ -48,7 +48,7 @@ to quickly create a Cobra application.`,
 		} else if projectID == "" && volumeID == "" {
 			fmt.Println("Either projectID or volumeID should be set.")
 			return
-		} else if organizationID != "" {
+		} else if projectID != "" {
 			volumes, _, err := PacknGo.Volumes.List(projectID, nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
