@@ -145,5 +145,4 @@ func init() {
 	createDeviceCmd.Flags().BoolVarP(&spotInstance, "spot-instance", "I", false, `--spot-instance or -I`)
 	createDeviceCmd.Flags().Float64VarP(&spotPriceMax, "spot-price-max", "m", 0, `--spot-price-max=1.2 or -m=1.2`)
 	createDeviceCmd.Flags().StringVarP(&terminationTime, "termination-time", "T", "", `--termination-time="15:04:05" or -T="15:04:05"`)
-
 }

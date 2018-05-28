@@ -25,6 +25,7 @@ func NewCli() *Cli {
 		return nil
 	}
 	rootCmd.Execute()
+	rootCmd.DisableSuggestions = false
 	cli.MainCmd = rootCmd
 	return cli
 }
