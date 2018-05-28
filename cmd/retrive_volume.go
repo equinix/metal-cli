@@ -34,7 +34,7 @@ var (
 // retriveVolumeCmd represents the retriveVolume command
 var retriveVolumeCmd = &cobra.Command{
 	Use:   "volume",
-	Short: "A brief description of your command",
+	Short: "Gets volume list or volume details.",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 

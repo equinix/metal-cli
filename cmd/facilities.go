@@ -30,7 +30,7 @@ import (
 // facilitiesCmd represents the facilities command
 var facilitiesCmd = &cobra.Command{
 	Use:   "facilities",
-	Short: "A brief description of your command",
+	Short: "Gets list of available facilities.",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 

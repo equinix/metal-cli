@@ -1,15 +1,10 @@
 ## packet update
 
-A brief description of your command
+Update command
 
 ### Synopsis
 
-A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.
+Update command
 
 ### Options
 
@@ -20,14 +15,13 @@ to quickly create a Cobra application.
 ### Options inherited from parent commands
 
 ```
-      --config string   config file (default is $HOME/.packetcli.yaml)
-  -j, --json            -j or --json JSON output
-  -y, --yaml            -y or --yaml YAML output
+  -j, --json   -j or --json JSON output
+  -y, --yaml   -y or --yaml YAML output
 ```
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - A brief description of your application
+* [packet](packet.md)	 - Command Line Interface for Packet Host
 * [packet update device](packet_update_device.md)	 - A brief description of your command
 * [packet update device](packet_update_device.md)	 - A brief description of your command
 

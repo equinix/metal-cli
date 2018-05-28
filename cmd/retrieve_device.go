@@ -33,7 +33,7 @@ var (
 
 var retriveDeviceCmd = &cobra.Command{
 	Use:   "device",
-	Short: "Gets device details",
+	Short: "Gets device list or device details.",
 	// Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if deviceID != "" && projectID != "" {
