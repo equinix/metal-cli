@@ -32,5 +32,4 @@ var updateCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(updateCmd)
-	updateCmd.AddCommand(updateDeviceCmd)
 }

@@ -21,9 +21,21 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/StackPointCloud/packet-cli/cmd"
+	"github.com/spf13/cobra/doc"
 )
 
 func main() {
-	cmd.NewCli()
+	cli := cmd.NewCli()
+	if os.Getenv("GENDOCS") == "true" {
+		fmt.Println("Generating Docs...")
+		err := doc.GenMarkdownTree(cli.MainCmd, "./docs")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
 }

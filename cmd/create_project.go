@@ -34,7 +34,7 @@ var (
 )
 
 // projectCreateCmd represents the projectCreate command
-var projectCreateCmd = &cobra.Command{
+var createProjectCmd = &cobra.Command{
 	Use:   "project",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -71,10 +71,10 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	createCmd.AddCommand(projectCreateCmd)
-	projectCreateCmd.Flags().StringVarP(&name, "name", "n", "", "--name or -n [name]")
-	projectCreateCmd.MarkFlagRequired("name")
+	createCmd.AddCommand(createProjectCmd)
+	createProjectCmd.Flags().StringVarP(&name, "name", "n", "", "--name or -n [name]")
+	createProjectCmd.MarkFlagRequired("name")
 
-	projectCreateCmd.Flags().StringVarP(&organizationID, "organization-id", "o", "", "--orgazniation-id or -o [organization_UUID]")
-	projectCreateCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "--payment-method-id or -m [payment_method_UUID]")
+	createProjectCmd.Flags().StringVarP(&organizationID, "organization-id", "o", "", "--orgazniation-id or -o [organization_UUID]")
+	createProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "--payment-method-id or -m [payment_method_UUID]")
 }

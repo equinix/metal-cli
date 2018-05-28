@@ -63,7 +63,6 @@ to quickly create a Cobra application.`,
 			data[0] = []string{p.ID, p.Name, p.Created}
 			header := []string{"ID", "Name", "Created"}
 			output(p, header, &data)
-
 		}
 	},
 }
