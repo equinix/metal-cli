@@ -21,30 +21,26 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
-var force bool
-var validate = func(text string) error {
-	if strings.ToUpper(text) == "Y" || strings.ToUpper(text) == "YES" {
-		return nil
-	} else {
-		return errors.New("blah")
-	}
-}
+// deleteVolumeCmd represents the deleteVolume command
+var deleteVolumeCmd = &cobra.Command{
+	Use:   "volume",
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
 
-var deleteDeviceCmd = &cobra.Command{
-	Use:   "device",
-	Short: "Deletes a device",
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !force {
 			prompt := promptui.Prompt{
-				Label:     fmt.Sprintf("Are you sure you want to delete device %s: ", deviceID),
+				Label:     fmt.Sprintf("Are you sure you want to delete volume %s: ", volumeID),
 				IsConfirm: true,
 			}
 
@@ -53,13 +49,13 @@ var deleteDeviceCmd = &cobra.Command{
 				return
 			}
 
-			err = deleteDevice(deviceID)
+			err = deleteVolume(volumeID)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
 			}
 		} else {
-			err := deleteDevice(deviceID)
+			err := deleteVolume(volumeID)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
@@ -68,17 +64,29 @@ var deleteDeviceCmd = &cobra.Command{
 	},
 }
 
-func deleteDevice(id string) error {
-	_, err := PacknGo.Devices.Delete(id)
+func deleteVolume(id string) error {
+	_, err := PacknGo.Volumes.Delete(id)
 	if err != nil {
 		return err
 	}
-	fmt.Println("Device deletion initiated. Please check 'packet get device -i", deviceID, "' for status")
+	fmt.Println("Volume deletion initiated. Please check 'packet get volume -i", volumeID, "' for status")
 	return nil
 }
 
 func init() {
-	deleteDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "--id or -i [UUID]")
-	deleteDeviceCmd.Flags().BoolVarP(&force, "force", "f", false, "--force or -f")
-	deleteDeviceCmd.MarkFlagRequired("id")
+	deleteCmd.AddCommand(deleteVolumeCmd)
+
+	deleteVolumeCmd.Flags().StringVarP(&volumeID, "volume-id", "i", "", "--volume-id or -i [UUID]")
+	deleteVolumeCmd.Flags().BoolVarP(&force, "force", "f", false, "--force or -f")
+	deleteVolumeCmd.MarkFlagRequired("id")
+
+	// Here you will define your flags and configuration settings.
+
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// deleteVolumeCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// deleteVolumeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
