@@ -1,4 +1,4 @@
-## packet get operating-systems
+## packet get volume
 
 A brief description of your command
 
@@ -12,13 +12,15 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.
 
 ```
-packet get operating-systems [flags]
+packet get volume [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help   help for operating-systems
+  -h, --help                help for volume
+  -i, --id string           --id or -i [UUID]
+  -p, --project-id string   --project-id or -p [UUID]
 ```
 
 ### Options inherited from parent commands
