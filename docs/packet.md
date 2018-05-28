@@ -23,8 +23,10 @@ to quickly create a Cobra application.
 
 ### SEE ALSO
 
+* [packet attach](packet_attach.md)	 - A brief description of your command
 * [packet create](packet_create.md)	 - A brief description of your command
 * [packet delete](packet_delete.md)	 - A brief description of your command
+* [packet detach](packet_detach.md)	 - A brief description of your command
 * [packet get](packet_get.md)	 - A brief description of your command
 * [packet reboot](packet_reboot.md)	 - A brief description of your command
 * [packet start](packet_start.md)	 - A brief description of your command

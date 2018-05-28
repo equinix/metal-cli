@@ -23,12 +23,11 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
-// deleteVolumeCmd represents the deleteVolume command
-var deleteVolumeCmd = &cobra.Command{
+// attachVolumeCmd represents the attachVolume command
+var attachVolumeCmd = &cobra.Command{
 	Use:   "volume",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -38,45 +37,24 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if !force {
-			prompt := promptui.Prompt{
-				Label:     fmt.Sprintf("Are you sure you want to delete volume %s: ", volumeID),
-				IsConfirm: true,
-			}
-
-			_, err := prompt.Run()
-			if err != nil {
-				return
-			}
-
-			err = deleteVolume(volumeID)
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
-			}
-		} else {
-			err := deleteVolume(volumeID)
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
-			}
+		a, _, err := PacknGo.VolumeAttachments.Create(volumeID, deviceID)
+		if err != nil {
+			fmt.Println("Client error:", err)
+			return
 		}
+
+		header := []string{"ID"}
+		data := make([][]string, 1)
+		data[0] = []string{a.ID}
+
+		output(a, header, &data)
 	},
 }
 
-func deleteVolume(id string) error {
-	_, err := PacknGo.Volumes.Delete(id)
-	if err != nil {
-		return err
-	}
-	fmt.Println("Volume deletion initiated. Please check 'packet get volume -i", volumeID, "' for status")
-	return nil
-}
-
 func init() {
-	deleteCmd.AddCommand(deleteVolumeCmd)
-
-	deleteVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "--volume-id or -i [UUID]")
-	deleteVolumeCmd.Flags().BoolVarP(&force, "force", "f", false, "--force or -f")
-	deleteVolumeCmd.MarkFlagRequired("id")
+	attachCmd.AddCommand(attachVolumeCmd)
+	attachVolumeCmd.Flags().StringVarP(&volumeID, "volume-id", "v", "", "--volume-id or -i [UUID]")
+	attachVolumeCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "--device-id or -d")
+	attachVolumeCmd.MarkFlagRequired("volume-id")
+	attachVolumeCmd.MarkFlagRequired("device-id")
 }
