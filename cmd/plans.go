@@ -28,7 +28,7 @@ import (
 
 // plansCmd represents the plans command
 var plansCmd = &cobra.Command{
-	Use:   "plans",
+	Use:   "plan",
 	Short: "Gets list of all available plans.",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
