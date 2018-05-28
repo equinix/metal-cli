@@ -112,9 +112,9 @@ var createDeviceCmd = &cobra.Command{
 			return
 		}
 
-		header := []string{"ID", "Hostname", "OS", "State"}
+		header := []string{"ID", "Hostname", "OS", "State", "Created"}
 		data := make([][]string, 1)
-		data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State}
+		data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
 
 		output(device, header, &data)
 

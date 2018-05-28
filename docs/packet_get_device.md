@@ -13,9 +13,9 @@ packet get device [flags]
 ### Options
 
 ```
-  -h, --help                  help for device
-  -i, --id string             --id or -i [UUID]
-  -o, --organization string   --organization -o [UUID]
+  -h, --help                help for device
+  -i, --id string           --id or -i [UUID]
+  -p, --project-id string   --project-id -p [UUID]
 ```
 
 ### Options inherited from parent commands

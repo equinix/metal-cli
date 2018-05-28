@@ -36,14 +36,14 @@ var retriveDeviceCmd = &cobra.Command{
 	Short: "Gets device details",
 	// Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if deviceID != "" && organizationID != "" {
-			fmt.Println("Either deviceID or organizationID can be set.")
+		if deviceID != "" && projectID != "" {
+			fmt.Println("Either deviceID or projectID can be set.")
 			return
-		} else if deviceID == "" && organizationID == "" {
-			fmt.Println("Either deviceID or organizationID should be set.")
+		} else if deviceID == "" && projectID == "" {
+			fmt.Println("Either deviceID or projectID should be set.")
 			return
-		} else if organizationID != "" {
-			devices, _, err := PacknGo.Devices.List(organizationID, nil)
+		} else if projectID != "" {
+			devices, _, err := PacknGo.Devices.List(projectID, nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
@@ -63,8 +63,8 @@ var retriveDeviceCmd = &cobra.Command{
 				fmt.Println("Client error:", err)
 				return
 			}
-
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}
+
 			data := make([][]string, 1)
 			data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
 
@@ -74,6 +74,6 @@ var retriveDeviceCmd = &cobra.Command{
 }
 
 func init() {
-	retriveDeviceCmd.Flags().StringVarP(&organizationID, "organization", "o", "", "--organization -o [UUID]")
+	retriveDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id -p [UUID]")
 	retriveDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "--id or -i [UUID]")
 }
