@@ -51,7 +51,7 @@ var retriveDeviceCmd = &cobra.Command{
 			data := make([][]string, len(devices))
 
 			for i, dc := range devices {
-				data[i] = []string{dc.ID, dc.Hostname, dc.OS.Name, dc.Created}
+				data[i] = []string{dc.ID, dc.Hostname, dc.OS.Name, dc.State, dc.Created}
 			}
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}
 
