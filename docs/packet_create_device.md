@@ -22,8 +22,8 @@ packet create device [flags]
   -H, --hostname string                  --hostname or -H [hostname]
   -i, --ipxe-script-url string           --ipxe-script-url or -i [ipxe_script_url]
   -o, --operating-system string          --operating-system or -o [operating_system]
-  -P, --plan string                      --plan or -p [plan_name]
-  -p, --project-id string                --project-id or -P [UUID]
+  -P, --plan string                      --plan or -P [plan_name]
+  -p, --project-id string                --project-id or -p [UUID]
   -v, --public-ip-v4-subnet-size int     --public-ip-v4-subnet-size=2 or -v=2
   -I, --spot-instance                    --spot-instance or -I
   -m, --spot-price-max float             --spot-price-max=1.2 or -m=1.2

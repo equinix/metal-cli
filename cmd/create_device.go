@@ -122,9 +122,9 @@ var createDeviceCmd = &cobra.Command{
 }
 
 func init() {
-	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -P [UUID]")
+	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -p [UUID]")
 	createDeviceCmd.Flags().StringVarP(&facility, "facility", "f", "", "--facility or -f [facility_code]")
-	createDeviceCmd.Flags().StringVarP(&plan, "plan", "P", "", "--plan or -p [plan_name]")
+	createDeviceCmd.Flags().StringVarP(&plan, "plan", "P", "", "--plan or -P [plan_name]")
 	createDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "--hostname or -H [hostname]")
 	createDeviceCmd.Flags().StringVarP(&operatingSystem, "operating-system", "o", "", "--operating-system or -o [operating_system]")
 	createDeviceCmd.MarkFlagRequired("project-id")
