@@ -1,4 +1,4 @@
-default: build generete-docs
+default: generete-docs
 
 build:
 	GOOS=linux go build -o bin/linux/packet
