@@ -1,15 +1,13 @@
 ## packet get virtual-network
 
-A brief description of your command
+Command to retrieve a list of virtual networks for a single project.
 
 ### Synopsis
 
-A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.
+Example:
+	
+	packet get virtual-network  -p [project-UUID]
+	
 
 ```
 packet get virtual-network [flags]

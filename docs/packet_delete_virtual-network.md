@@ -1,15 +1,13 @@
 ## packet delete virtual-network
 
-A brief description of your command
+Command to delete existing Virtual Network
 
 ### Synopsis
 
-A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.
+Example:
+	
+	packet delete virtual-network -i [virtual-network-UUID]
+	
 
 ```
 packet delete virtual-network [flags]
