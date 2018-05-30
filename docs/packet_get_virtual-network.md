@@ -1,4 +1,4 @@
-## packet get ssh-key
+## packet get virtual-network
 
 A brief description of your command
 
@@ -12,14 +12,14 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.
 
 ```
-packet get ssh-key [flags]
+packet get virtual-network [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help        help for ssh-key
-  -i, --id string   --id or -i [UUID]
+  -h, --help                help for virtual-network
+  -p, --project-id string   --project-id or -i [UUID]
 ```
 
 ### Options inherited from parent commands

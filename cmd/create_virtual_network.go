@@ -24,12 +24,18 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
-var retrieveVirtualNetworksCmd = &cobra.Command{
-	Use:   "virtual-networks",
+var (
+	vlan  int
+	vxlan int
+)
+
+// createVirtualNetworkCmd represents the createVirtualNetwork command
+var createVirtualNetworkCmd = &cobra.Command{
+	Use:   "virtual-network",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -38,25 +44,46 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID)
+		req := &packngo.VirtualNetworkCreateRequest{
+			ProjectID: projectID,
+			Facility:  facility,
+		}
+
+		if vxlan != 0 {
+			req.VXLAN = vxlan
+		}
+
+		if vlan != 0 {
+			req.VLAN = vlan
+		}
+
+		if description != "" {
+			req.Description = description
+		}
+
+		n, _, err := PacknGo.ProjectVirtualNetworks.Create(req)
 		if err != nil {
 			fmt.Println("Client error:", err)
-			return
 		}
 
-		data := make([][]string, len(vnets.VirtualNetworks))
+		data := make([][]string, 1)
 
-		for i, n := range vnets.VirtualNetworks {
-			data[i] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.FacilityCode, n.CreatedAt}
-		}
+		data[0] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.FacilityCode, n.CreatedAt}
+
 		header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
 
-		output(vnets, header, &data)
+		output(n, header, &data)
 	},
 }
 
 func init() {
-	getCmd.AddCommand(retrieveVirtualNetworksCmd)
-	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "i", "", "--project-id or -i [UUID]")
-	retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
+	createCmd.AddCommand(createVirtualNetworkCmd)
+	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -i [UUID]")
+	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "--facility or -f [facility_code]")
+	createVirtualNetworkCmd.Flags().IntVarP(&vlan, "vlan", "l", 0, "--vlan or -l [vlan]")
+	createVirtualNetworkCmd.Flags().IntVarP(&vxlan, "vxlan", "x", 0, "--vxlan or -x [vxlan]")
+	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "--description or -d [description]")
+
+	createVirtualNetworkCmd.MarkFlagRequired("project-id")
+	createVirtualNetworkCmd.MarkFlagRequired("facility")
 }
