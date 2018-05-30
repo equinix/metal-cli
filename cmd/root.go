@@ -31,6 +31,7 @@ import (
 )
 
 var (
+	//PacknGo client
 	PacknGo packngo.Client
 	cfgFile string
 	isJSON  bool

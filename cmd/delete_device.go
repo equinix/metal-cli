@@ -21,22 +21,13 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
 var force bool
-var validate = func(text string) error {
-	if strings.ToUpper(text) == "Y" || strings.ToUpper(text) == "YES" {
-		return nil
-	} else {
-		return errors.New("blah")
-	}
-}
 
 var deleteDeviceCmd = &cobra.Command{
 	Use:   "device",
