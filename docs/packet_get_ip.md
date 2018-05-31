@@ -10,9 +10,13 @@ Example:
 
 	packet get ip --project-id [project_uuid] 
 	
-	To get an assigned IP address:
+	To get IP addresses by assignement id:
 
 	packet get ip --assignement-id [assignement_uuid]
+
+	To get IP addresses by reservation ID:
+
+	packet get ip --reservation-id [reservation_uuid]
 	
 
 ```
@@ -22,9 +26,10 @@ packet get ip [flags]
 ### Options
 
 ```
-  -a, --assignment-id string   --assignment-id or -a [assignment_UUID]
-  -h, --help                   help for ip
-  -p, --project-id string      --project-id or -p [project_UUID]
+  -a, --assignment-id string    --assignment-id or -a [assignment_UUID]
+  -h, --help                    help for ip
+  -p, --project-id string       --project-id or -p [project_UUID]
+  -r, --reservation-id string   --reservation-id or -r [reservation_UUID]
 ```
 
 ### Options inherited from parent commands

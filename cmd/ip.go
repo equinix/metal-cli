@@ -28,7 +28,8 @@ import (
 )
 
 var (
-	assignmentID string
+	assignmentID  string
+	reservationID string
 )
 
 // ipCmd represents the ip command
@@ -41,12 +42,16 @@ var ipCmd = &cobra.Command{
 
 	packet get ip --project-id [project_uuid] 
 	
-	To get an assigned IP address:
+	To get IP addresses by assignement id:
 
 	packet get ip --assignement-id [assignement_uuid]
+
+	To get IP addresses by reservation ID:
+
+	packet get ip --reservation-id [reservation_uuid]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if projectID != "" && assignmentID == "" {
+		if projectID != "" && assignmentID == "" && reservationID == "" {
 			ips, _, err := PacknGo.ProjectIPs.List(projectID)
 			if err != nil {
 				fmt.Println("Client error:", err)
@@ -61,8 +66,21 @@ var ipCmd = &cobra.Command{
 			header := []string{"ID", "Address", "Facility", "Public", "Created"}
 
 			output(ips, header, &data)
-		} else if projectID == "" && assignmentID != "" {
-			ip, _, err := PacknGo.ProjectIPs.Get(assignmentID)
+		} else if projectID == "" && reservationID == "" && assignmentID != "" {
+			ip, _, err := PacknGo.DeviceIPs.Get(assignmentID)
+			if err != nil {
+				fmt.Println("Client error:", err)
+				return
+			}
+
+			data := make([][]string, 1)
+
+			data[0] = []string{ip.ID, ip.Address, strconv.FormatBool(ip.Public), ip.Created}
+			header := []string{"ID", "Address", "Public", "Created"}
+
+			output(ip, header, &data)
+		} else if projectID == "" && assignmentID == "" && reservationID != "" {
+			ip, _, err := PacknGo.ProjectIPs.Get(reservationID)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
@@ -74,8 +92,8 @@ var ipCmd = &cobra.Command{
 			header := []string{"ID", "Address", "Facility", "Public", "Created"}
 
 			output(ip, header, &data)
-		} else if projectID != "" && assignmentID != "" {
-			fmt.Println("Either project-id or assignement-id can be passed as parameters.")
+		} else if projectID != "" && (assignmentID != "" || reservationID != "") {
+			fmt.Println("Either project-id or assignement-id or reservation-id can be passed as parameters.")
 		}
 	},
 }
@@ -84,4 +102,5 @@ func init() {
 	getCmd.AddCommand(ipCmd)
 	ipCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -p [project_UUID]")
 	ipCmd.Flags().StringVarP(&assignmentID, "assignment-id", "a", "", "--assignment-id or -a [assignment_UUID]")
+	ipCmd.Flags().StringVarP(&reservationID, "reservation-id", "r", "", "--reservation-id or -r [reservation_UUID]")
 }
