@@ -17,6 +17,12 @@ packet remove ip [flags]
   -r, --reservation-id string   --reservation-id or -r
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet remove](packet_remove.md)	 - Remove command.

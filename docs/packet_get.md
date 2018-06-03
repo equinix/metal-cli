@@ -14,6 +14,12 @@ Get command
   -y, --yaml   -y or --yaml YAML output
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet](packet.md)	 - Command Line Interface for Packet Host

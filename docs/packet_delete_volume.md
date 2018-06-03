@@ -23,6 +23,12 @@ packet delete volume [flags]
   -i, --id string   --volume-id or -i [UUID]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet delete](packet_delete.md)	 - Delete command

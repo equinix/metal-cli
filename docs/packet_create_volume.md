@@ -28,6 +28,12 @@ packet create volume [flags]
   -s, --size int               --size or -s [size_in_GB]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet create](packet_create.md)	 - Create command

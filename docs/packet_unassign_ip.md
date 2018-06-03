@@ -20,6 +20,12 @@ packet unassign ip [flags]
   -h, --help                help for ip
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet unassign](packet_unassign.md)	 - Unassign command

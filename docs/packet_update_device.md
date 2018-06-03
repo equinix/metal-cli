@@ -30,6 +30,12 @@ packet update device [flags]
   -u, --userdata string          --userdata or -u [userdata]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet update](packet_update.md)	 - Update command

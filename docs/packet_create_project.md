@@ -24,6 +24,12 @@ packet create project [flags]
   -m, --payment-method-id string   --payment-method-id or -m [payment_method_UUID]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet create](packet_create.md)	 - Create command

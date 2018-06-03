@@ -12,6 +12,12 @@ Reboot command
   -h, --help   help for reboot
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet](packet.md)	 - Command Line Interface for Packet Host

@@ -9,7 +9,8 @@ Command Line Interface for Packet Host
 ### Options
 
 ```
-  -h, --help   help for packet
+      --config string   config file.
+  -h, --help            help for packet
 ```
 
 ### SEE ALSO

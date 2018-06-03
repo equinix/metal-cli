@@ -21,6 +21,12 @@ packet assign ip [flags]
   -h, --help               help for ip
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet assign](packet_assign.md)	 - Assign command

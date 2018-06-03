@@ -22,6 +22,12 @@ packet detach volume [flags]
   -h, --help                   help for volume
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet detach](packet_detach.md)	 - Detach command

@@ -23,6 +23,12 @@ packet create ssh-key [flags]
   -l, --label string   --label or -l [label]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet create](packet_create.md)	 - Create command

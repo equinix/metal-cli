@@ -26,8 +26,9 @@ packet get volume [flags]
 ### Options inherited from parent commands
 
 ```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
+      --config string   config file.
+  -j, --json            -j or --json JSON output
+  -y, --yaml            -y or --yaml YAML output
 ```
 
 ### SEE ALSO

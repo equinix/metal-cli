@@ -24,6 +24,12 @@ packet update project [flags]
   -i, --project-id string          --project-id or -i [UUID]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet update](packet_update.md)	 - Update command

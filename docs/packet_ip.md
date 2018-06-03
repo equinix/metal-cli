@@ -23,6 +23,12 @@ packet ip [flags]
   -t, --type string         --type or -t [address_type]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet](packet.md)	 - Command Line Interface for Packet Host

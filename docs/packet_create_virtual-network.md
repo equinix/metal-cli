@@ -26,6 +26,12 @@ packet create virtual-network [flags]
   -x, --vxlan int            --vxlan or -x [vxlan]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet create](packet_create.md)	 - Create command

@@ -24,6 +24,12 @@ packet update ssh-key [flags]
   -l, --label string   --label or -l [label]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet update](packet_update.md)	 - Update command

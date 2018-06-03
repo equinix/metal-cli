@@ -33,6 +33,12 @@ packet create device [flags]
   -u, --userdata string                  --userdata or -u [userdata]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet create](packet_create.md)	 - Create command

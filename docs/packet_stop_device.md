@@ -22,6 +22,12 @@ packet stop device [flags]
   -i, --id string   --id or -i [UUID]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet stop](packet_stop.md)	 - Stop command

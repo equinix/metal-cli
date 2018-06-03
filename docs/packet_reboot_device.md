@@ -22,6 +22,12 @@ packet reboot device [flags]
   -i, --id string   --id or -i [UUID]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet reboot](packet_reboot.md)	 - Reboot command

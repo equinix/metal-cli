@@ -22,6 +22,12 @@ packet start device [flags]
   -i, --id string   --id or -i [UUID]
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string   config file.
+```
+
 ### SEE ALSO
 
 * [packet start](packet_start.md)	 - Start command
