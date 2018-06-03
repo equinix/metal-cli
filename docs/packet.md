@@ -22,7 +22,9 @@ Command Line Interface for Packet Host
 * [packet delete](packet_delete.md)	 - Delete command
 * [packet detach](packet_detach.md)	 - Detach command
 * [packet get](packet_get.md)	 - Get command
+* [packet ip](packet_ip.md)	 - Command to request/reserve an IP block
 * [packet reboot](packet_reboot.md)	 - Reboot command
+* [packet remove](packet_remove.md)	 - Remove command.
 * [packet start](packet_start.md)	 - Start command
 * [packet stop](packet_stop.md)	 - Stop command
 * [packet unassign](packet_unassign.md)	 - Unassign command
