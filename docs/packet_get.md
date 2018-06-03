@@ -26,6 +26,7 @@ Get command
 * [packet get facility](packet_get_facility.md)	 - Gets list of available facilities.
 * [packet get ip](packet_get_ip.md)	 - Retrieves IP addresses
 * [packet get operating-system](packet_get_operating-system.md)	 - Gets list of available operating systems.
+* [packet get organization](packet_get_organization.md)	 - Command to retrieve an organization or list of organizations
 * [packet get plan](packet_get_plan.md)	 - Gets list of all available plans.
 * [packet get project](packet_get_project.md)	 - A brief description of your command
 * [packet get ssh-key](packet_get_ssh-key.md)	 - A brief description of your command
