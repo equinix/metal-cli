@@ -1,7 +1,18 @@
 Requirements:
 
 1. Download binary and place it under path. Binaries are available [here](bin/) 
-2. Packet access token. Stored a envrionment variable `$PACKET_TOKEN`
+2. Packet access token. Stored a envrionment variable `$PACKET_TOKEN` or in a JSON or YAML file which has to be passed with flag `--config` with every CLI command used.
+
+```yaml
+---
+token: [PACKET_TOKEN]
+```
+
+```json
+{
+  "token": [PACKET_TOKEN]
+}
+```
 3. You are all setup
 
 1. Create a device
