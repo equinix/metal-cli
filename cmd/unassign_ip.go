@@ -22,39 +22,31 @@ package cmd
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/spf13/cobra"
 )
 
-// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
-var retrieveVirtualNetworksCmd = &cobra.Command{
-	Use:   "virtual-network",
-	Short: "Command to retrieve a list of virtual networks for a single project.",
+// unassignIpCmd represents the unassignIp command
+var unassignIPCmd = &cobra.Command{
+	Use:   "ip",
+	Short: "Command to unassign an IP address.",
 	Long: `Example:
-	
-	packet get virtual-network -p [project-UUID]
+
+	packet unassign ip -a [assignment-UUID]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID)
+		_, err := PacknGo.DeviceIPs.Unassign(assignmentID)
 		if err != nil {
 			fmt.Println("Client error:", err)
 			return
 		}
 
-		data := make([][]string, len(vnets.VirtualNetworks))
-
-		for i, n := range vnets.VirtualNetworks {
-			data[i] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.FacilityCode, n.CreatedAt}
-		}
-		header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
-
-		output(vnets, header, &data)
+		fmt.Println("IP address unassigned successfully.")
 	},
 }
 
 func init() {
-	getCmd.AddCommand(retrieveVirtualNetworksCmd)
-	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -i [UUID]")
-	retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
+	unassignCmd.AddCommand(unassignIPCmd)
+	unassignIPCmd.Flags().StringVarP(&assignmentID, "assignment", "a", "", "--assignemnt or -a")
+	unassignIPCmd.MarkFlagRequired("assignment")
 }

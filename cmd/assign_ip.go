@@ -24,37 +24,44 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
-var retrieveVirtualNetworksCmd = &cobra.Command{
-	Use:   "virtual-network",
-	Short: "Command to retrieve a list of virtual networks for a single project.",
-	Long: `Example:
-	
-	packet get virtual-network -p [project-UUID]
+var (
+	address string
+)
+
+// assignIpCmd represents the assignIp command
+var assignIPCmd = &cobra.Command{
+	Use:   "ip",
+	Short: "Command to assign an IP address to a given device",
+	Long: `Example
+
+	packet assign ip -d [device-id] -a [ip-address]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID)
+
+		assignment, _, err := PacknGo.DeviceIPs.Assign(deviceID, &packngo.AddressStruct{Address: address})
 		if err != nil {
 			fmt.Println("Client error:", err)
 			return
 		}
 
-		data := make([][]string, len(vnets.VirtualNetworks))
+		data := make([][]string, 1)
 
-		for i, n := range vnets.VirtualNetworks {
-			data[i] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.FacilityCode, n.CreatedAt}
-		}
-		header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
+		data[0] = []string{assignment.ID, assignment.Address, strconv.FormatBool(assignment.Public), assignment.Created}
+		header := []string{"ID", "Address", "Public", "Created"}
 
-		output(vnets, header, &data)
+		output(assignment, header, &data)
 	},
 }
 
 func init() {
-	getCmd.AddCommand(retrieveVirtualNetworksCmd)
-	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -i [UUID]")
-	retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
+	assignCmd.AddCommand(assignIPCmd)
+	assignIPCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "--device-id or -d")
+	assignIPCmd.Flags().StringVarP(&address, "address", "a", "", "--address or -a")
+
+	assignIPCmd.MarkFlagRequired("device-id")
+	assignIPCmd.MarkFlagRequired("address")
 }

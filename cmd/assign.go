@@ -21,40 +21,30 @@
 package cmd
 
 import (
-	"fmt"
-	"strconv"
-
 	"github.com/spf13/cobra"
 )
 
-// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
-var retrieveVirtualNetworksCmd = &cobra.Command{
-	Use:   "virtual-network",
-	Short: "Command to retrieve a list of virtual networks for a single project.",
-	Long: `Example:
+// assignCmd represents the assign command
+var assignCmd = &cobra.Command{
+	Use:   "assign",
+	Short: "Assign command",
+	Long: `This command is only used with ip subcommand.
+	Example:
 	
-	packet get virtual-network -p [project-UUID]
+	packet assign ip -d [device-id] -a [ip-address] 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
-		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID)
-		if err != nil {
-			fmt.Println("Client error:", err)
-			return
-		}
-
-		data := make([][]string, len(vnets.VirtualNetworks))
-
-		for i, n := range vnets.VirtualNetworks {
-			data[i] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.FacilityCode, n.CreatedAt}
-		}
-		header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
-
-		output(vnets, header, &data)
-	},
 }
 
 func init() {
-	getCmd.AddCommand(retrieveVirtualNetworksCmd)
-	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -i [UUID]")
-	retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
+	rootCmd.AddCommand(assignCmd)
+
+	// Here you will define your flags and configuration settings.
+
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// assignCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// assignCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

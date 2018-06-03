@@ -92,7 +92,7 @@ var ipCmd = &cobra.Command{
 			header := []string{"ID", "Address", "Facility", "Public", "Created"}
 
 			output(ip, header, &data)
-		} else if projectID != "" && (assignmentID != "" || reservationID != "") {
+		} else if (projectID != "" && (assignmentID != "" || reservationID != "")) || (projectID == "" && assignmentID == "" && reservationID == "") {
 			fmt.Println("Either project-id or assignement-id or reservation-id can be passed as parameters.")
 		}
 	},
