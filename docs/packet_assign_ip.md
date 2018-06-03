@@ -4,7 +4,7 @@ Command to assign an IP address to a given device
 
 ### Synopsis
 
-Example
+Example:
 
 	packet assign ip -d [device-id] -a [ip-address]
 	

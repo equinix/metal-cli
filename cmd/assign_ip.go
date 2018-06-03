@@ -36,7 +36,7 @@ var (
 var assignIPCmd = &cobra.Command{
 	Use:   "ip",
 	Short: "Command to assign an IP address to a given device",
-	Long: `Example
+	Long: `Example:
 
 	packet assign ip -d [device-id] -a [ip-address]
 	`,
