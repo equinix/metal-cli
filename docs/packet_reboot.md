@@ -12,13 +12,6 @@ Reboot command
   -h, --help   help for reboot
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet](packet.md)	 - Command Line Interface for Packet Host

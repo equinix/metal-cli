@@ -10,11 +10,6 @@ Get command
 
 ```
   -h, --help   help for get
-```
-
-### Options inherited from parent commands
-
-```
   -j, --json   -j or --json JSON output
   -y, --yaml   -y or --yaml YAML output
 ```

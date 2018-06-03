@@ -68,9 +68,6 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.packetcli.yaml)")
-	rootCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "-j or --json JSON output")
-	rootCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "-y or --yaml YAML output")
-
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 

@@ -24,13 +24,6 @@ packet update ssh-key [flags]
   -l, --label string   --label or -l [label]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet update](packet_update.md)	 - Update command

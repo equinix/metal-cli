@@ -21,13 +21,6 @@ packet assign ip [flags]
   -h, --help               help for ip
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet assign](packet_assign.md)	 - Assign command

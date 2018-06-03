@@ -23,13 +23,6 @@ packet delete ssh-key [flags]
   -i, --id string   --id or -i [ssh-key_UUID]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet delete](packet_delete.md)	 - Delete command

@@ -17,13 +17,6 @@ packet remove ip [flags]
   -r, --reservation-id string   --reservation-id or -r
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet remove](packet_remove.md)	 - Remove command.

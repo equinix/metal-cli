@@ -24,13 +24,6 @@ packet create project [flags]
   -m, --payment-method-id string   --payment-method-id or -m [payment_method_UUID]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet create](packet_create.md)	 - Create command

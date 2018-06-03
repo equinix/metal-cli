@@ -23,13 +23,6 @@ packet delete project [flags]
   -i, --project-id string   --project-id or -i [project_UUID]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet delete](packet_delete.md)	 - Delete command

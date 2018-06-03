@@ -18,13 +18,6 @@ packet delete device [flags]
   -i, --id string   --id or -i [UUID]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet delete](packet_delete.md)	 - Delete command

@@ -23,13 +23,6 @@ packet attach volume [flags]
   -v, --volume-id string   --volume-id or -i [UUID]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet attach](packet_attach.md)	 - Attach command

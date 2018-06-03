@@ -23,13 +23,6 @@ packet create ssh-key [flags]
   -l, --label string   --label or -l [label]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet create](packet_create.md)	 - Create command

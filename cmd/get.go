@@ -42,6 +42,9 @@ func init() {
 	rootCmd.AddCommand(getCmd, createCmd)
 
 	getCmd.AddCommand(retriveDeviceCmd, facilitiesCmd)
+	getCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "-j or --json JSON output")
+	getCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "-y or --yaml YAML output")
+
 }
 
 func output(in interface{}, header []string, data *[][]string) {

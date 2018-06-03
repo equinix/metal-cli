@@ -23,13 +23,6 @@ packet ip [flags]
   -t, --type string         --type or -t [address_type]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet](packet.md)	 - Command Line Interface for Packet Host

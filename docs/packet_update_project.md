@@ -24,13 +24,6 @@ packet update project [flags]
   -i, --project-id string          --project-id or -i [UUID]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet update](packet_update.md)	 - Update command

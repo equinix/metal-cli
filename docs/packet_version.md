@@ -16,13 +16,6 @@ packet version [flags]
   -h, --help   help for version
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet](packet.md)	 - Command Line Interface for Packet Host

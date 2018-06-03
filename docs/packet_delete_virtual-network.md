@@ -20,13 +20,6 @@ packet delete virtual-network [flags]
   -i, --id string   --id or -i [vnet_UUID]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet delete](packet_delete.md)	 - Delete command

@@ -20,13 +20,6 @@ packet unassign ip [flags]
   -h, --help                help for ip
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet unassign](packet_unassign.md)	 - Unassign command

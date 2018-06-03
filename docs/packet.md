@@ -10,8 +10,6 @@ Command Line Interface for Packet Host
 
 ```
   -h, --help   help for packet
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
 ```
 
 ### SEE ALSO

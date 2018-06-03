@@ -33,13 +33,6 @@ packet create device [flags]
   -u, --userdata string                  --userdata or -u [userdata]
 ```
 
-### Options inherited from parent commands
-
-```
-  -j, --json   -j or --json JSON output
-  -y, --yaml   -y or --yaml YAML output
-```
-
 ### SEE ALSO
 
 * [packet create](packet_create.md)	 - Create command
