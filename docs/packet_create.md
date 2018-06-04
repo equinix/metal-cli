@@ -22,6 +22,7 @@ Create command
 
 * [packet](packet.md)	 - Command Line Interface for Packet Host
 * [packet create device](packet_create_device.md)	 - Create a device
+* [packet create organization](packet_create_organization.md)	 - Command to create an organization.ß
 * [packet create project](packet_create_project.md)	 - A brief description of your command
 * [packet create ssh-key](packet_create_ssh-key.md)	 - A brief description of your command
 * [packet create virtual-network](packet_create_virtual-network.md)	 - A brief description of your command

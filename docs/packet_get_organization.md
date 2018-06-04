@@ -10,7 +10,7 @@ Example:
 	packet get organization
 
 	To retrieve a single organization:
-	packet get organization -o [organization-id]
+	packet get organization -i [organization-id]
 	
 
 ```
@@ -21,7 +21,7 @@ packet get organization [flags]
 
 ```
   -h, --help                     help for organization
-  -o, --organization-id string   --organization-id or -o
+  -i, --organization-id string   --organization-id or -i
 ```
 
 ### Options inherited from parent commands

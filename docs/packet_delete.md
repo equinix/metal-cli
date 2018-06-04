@@ -22,6 +22,7 @@ Delete command
 
 * [packet](packet.md)	 - Command Line Interface for Packet Host
 * [packet delete device](packet_delete_device.md)	 - Deletes a device
+* [packet delete organization](packet_delete_organization.md)	 - Command to delete an organization
 * [packet delete project](packet_delete_project.md)	 - A brief description of your command
 * [packet delete ssh-key](packet_delete_ssh-key.md)	 - A brief description of your command
 * [packet delete virtual-network](packet_delete_virtual-network.md)	 - Command to delete existing Virtual Network

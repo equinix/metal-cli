@@ -23,55 +23,58 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
-// retrieveOrganizationCmd represents the retrieveOrganization command
-var retrieveOrganizationCmd = &cobra.Command{
+// deleteOrganizationCmd represents the deleteOrganization command
+var deleteOrganizationCmd = &cobra.Command{
 	Use:   "organization",
-	Short: "Command to retrieve an organization or list of organizations",
+	Short: "Command to delete an organization",
 	Long: `Example:
 	
-	To retireve list of all available organizations:
-	packet get organization
-
-	To retrieve a single organization:
-	packet get organization -i [organization-id]
+	packet delete organization -i [organizatio_UUID]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if organizationID == "" {
-			orgs, _, err := PacknGo.Organizations.List()
+		if !force {
+			prompt := promptui.Prompt{
+				Label:     fmt.Sprintf("Are you sure you want to delete organization %s: ", organizationID),
+				IsConfirm: true,
+			}
+
+			_, err := prompt.Run()
+			if err != nil {
+				return
+			}
+
+			err = deleteOrganization(organizationID)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
 			}
-
-			data := make([][]string, len(orgs))
-
-			for i, p := range orgs {
-				data[i] = []string{p.ID, p.Name, p.Created}
-			}
-			header := []string{"ID", "Name", "Created"}
-
-			output(orgs, header, &data)
 		} else {
-			org, _, err := PacknGo.Organizations.Get(organizationID)
+			err := deleteOrganization(organizationID)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
 			}
-
-			data := make([][]string, 1)
-
-			data[0] = []string{org.ID, org.Name, org.Created}
-			header := []string{"ID", "Name", "Created"}
-
-			output(org, header, &data)
 		}
 	},
 }
 
+func deleteOrganization(id string) error {
+	_, err := PacknGo.Organizations.Delete(id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Organization", organizationID, "has been deleted successfully.")
+	return nil
+}
+
 func init() {
-	getCmd.AddCommand(retrieveOrganizationCmd)
-	retrieveOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "--organization-id or -i")
+	deleteCmd.AddCommand(deleteOrganizationCmd)
+	deleteOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "--organization-id or -i")
+	deleteOrganizationCmd.MarkFlagRequired("organization-id")
+	deleteOrganizationCmd.Flags().BoolVarP(&force, "force", "f", false, "--force or -f")
 }

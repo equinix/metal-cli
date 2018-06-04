@@ -22,6 +22,7 @@ Update command
 
 * [packet](packet.md)	 - Command Line Interface for Packet Host
 * [packet update device](packet_update_device.md)	 - A brief description of your command
+* [packet update organization](packet_update_organization.md)	 - Command to delete an organization
 * [packet update project](packet_update_project.md)	 - A brief description of your command
 * [packet update ssh-key](packet_update_ssh-key.md)	 - A brief description of your command
 
