@@ -36,7 +36,7 @@ var (
 // projectCreateCmd represents the projectCreate command
 var createProjectCmd = &cobra.Command{
 	Use:   "project",
-	Short: "A brief description of your command",
+	Short: "Command to create a project",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
