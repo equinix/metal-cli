@@ -31,20 +31,10 @@ var requestCmd = &cobra.Command{
 	Long: `This command is only used with ip subcommand.
 	Example:
 	
-	packet request ip --type [type] --quantity [quantity] --facility [facility_code]
+	packet request ip --type [type] --quantity [quantity] --facility [facility_code] --type [address_type]
 	`,
 }
 
 func init() {
 	rootCmd.AddCommand(requestCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// requestCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// requestCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

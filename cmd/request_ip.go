@@ -41,7 +41,7 @@ var requestIPCmd = &cobra.Command{
 	Short: "Command to request/reserve an IP block",
 	Long: `Example:
 	
-	packet request ip --type [type] --quantity [quantity] --facility [facility_code]
+	packet request ip --type [type] --quantity [quantity] --facility [facility_code] --type [address_type]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		req := &packngo.IPReservationRequest{
@@ -69,15 +69,17 @@ var requestIPCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(requestIPCmd)
+	requestCmd.AddCommand(requestIPCmd)
 
 	requestIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -p [project_UUID]")
 	requestIPCmd.Flags().StringVarP(&ttype, "type", "t", "", "--type or -t [address_type]")
+	requestIPCmd.Flags().StringVarP(&facility, "facility", "f", "", "--facility or -f [facility_code]")
 	requestIPCmd.Flags().IntVarP(&quantity, "quantity", "q", 0, "--quantity or -q [quantity]")
 
 	requestIPCmd.MarkFlagRequired("project-id")
 	requestIPCmd.MarkFlagRequired("type")
 	requestIPCmd.MarkFlagRequired("quantity")
+	requestIPCmd.MarkFlagRequired("facility")
 
 	requestIPCmd.Flags().StringVarP(&comments, "comments", "c", "", "--comments or -c [comments]")
 }
