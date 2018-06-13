@@ -6,8 +6,7 @@ Request command
 
 This command is only used with ip subcommand.
 	Example:
-	
-	packet request ip --type [type] --quantity [quantity] --facility [facility_code] --type [address_type]
+  packet request ip --type [type] --quantity [quantity] --facility [facility_code] --type [address_type]
 	
 
 ### Options
