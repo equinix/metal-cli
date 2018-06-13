@@ -30,10 +30,10 @@ import (
 // deleteOrganizationCmd represents the deleteOrganization command
 var deleteOrganizationCmd = &cobra.Command{
 	Use:   "organization",
-	Short: "Command to delete an organization",
+	Short: "Deletes an organization",
 	Long: `Example:
 	
-	packet delete organization -i [organizatio_UUID]
+	packet delete organization -i [organization_UUID]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !force {

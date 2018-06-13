@@ -30,7 +30,9 @@ import (
 var removeIPCmd = &cobra.Command{
 	Use:   "ip",
 	Short: "Command to remove IP reservation.",
-	Long:  ``,
+	Long: `Example:	
+  packet remove ip --reservation-id [reservation-UUID]
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := PacknGo.ProjectIPs.Remove(reservationID)
 		if err != nil {

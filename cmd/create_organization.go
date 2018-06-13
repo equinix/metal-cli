@@ -36,9 +36,8 @@ var (
 // createOrganizationCmd represents the createOrganization command
 var createOrganizationCmd = &cobra.Command{
 	Use:   "organization",
-	Short: "Command to create an organization.ß",
+	Short: "Creates an organization",
 	Long: `Example:
-	
 	packet create organization -n [name]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {

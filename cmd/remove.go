@@ -29,9 +29,8 @@ var removeCmd = &cobra.Command{
 	Use:   "remove",
 	Short: "Remove command.",
 	Long: `This command is only used with ip subcommand.
-	Example:
-	
-	packet remove ip --reservation-id [reservation-UUID]
+Example:	
+  packet remove ip --reservation-id [reservation-UUID]
 	`,
 }
 

@@ -29,16 +29,13 @@ import (
 // retriveProjectCmd represents the retriveProject command
 var retriveProjectCmd = &cobra.Command{
 	Use:   "project",
-	Short: "Command to retireve avialable projects.",
+	Short: "Retireves all avialable projects or a single project",
 	Long: `Example:
-	
 Retrieve all projects:
-	
-	packet get project
-	
+  packet get project
+  
 Retrieve a specific project:
-
-	packet get project -i [project_UUID]
+  packet get project -i [project_UUID]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if projectID == "" {

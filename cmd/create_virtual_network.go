@@ -36,13 +36,9 @@ var (
 // createVirtualNetworkCmd represents the createVirtualNetwork command
 var createVirtualNetworkCmd = &cobra.Command{
 	Use:   "virtual-network",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Creates a virutal network",
+	Long: `Example:
+  packet create virtual-network --project-id [project_UUID] --facility [facility_code]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		req := &packngo.VirtualNetworkCreateRequest{
 			ProjectID: projectID,
@@ -78,7 +74,7 @@ to quickly create a Cobra application.`,
 
 func init() {
 	createCmd.AddCommand(createVirtualNetworkCmd)
-	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -i [UUID]")
+	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -i [project_UUID]")
 	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "--facility or -f [facility_code]")
 	createVirtualNetworkCmd.Flags().IntVarP(&vlan, "vlan", "l", 0, "--vlan or -l [vlan]")
 	createVirtualNetworkCmd.Flags().IntVarP(&vxlan, "vxlan", "x", 0, "--vxlan or -x [vxlan]")

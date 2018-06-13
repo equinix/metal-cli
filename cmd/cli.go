@@ -15,6 +15,9 @@ type Cli struct {
 	MainCmd *cobra.Command
 }
 
+//VERSION build
+const VERSION = "0.0.1"
+
 //NewCli asdfaf
 func NewCli() *Cli {
 	var err error

@@ -29,10 +29,9 @@ import (
 // attachVolumeCmd represents the attachVolume command
 var attachVolumeCmd = &cobra.Command{
 	Use:   "volume",
-	Short: "Command to attach a volume to a device.",
+	Short: "Attaches a volume to a device.",
 	Long: `Example:
-	
-	packet attach volume -v [volume_UUID] -d [device_UUID]
+  packet attach volume -v [volume_UUID] -d [device_UUID]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		a, _, err := PacknGo.VolumeAttachments.Create(volumeID, deviceID)

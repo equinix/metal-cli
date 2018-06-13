@@ -35,7 +35,7 @@ var (
 // ipCmd represents the ip command
 var ipCmd = &cobra.Command{
 	Use:   "ip",
-	Short: "Retrieves IP addresses",
+	Short: "Retrieves information about IP addresses, IP reservations and IP assignements",
 	Long: `Example:
 	
 	To get all IP addresses under a project:

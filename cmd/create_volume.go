@@ -36,13 +36,9 @@ var (
 // createVolumeCmd represents the createVolume command
 var createVolumeCmd = &cobra.Command{
 	Use:   "volume",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Creates a volume",
+	Long: `Example:
+  packet create volume --size [size_in_GB]  --plan [plan_UUID] --project-id [project_UUID] --facility [facility_code]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		req := &packngo.VolumeCreateRequest{
 			BillingCycle: billingCycle,
@@ -80,7 +76,7 @@ to quickly create a Cobra application.`,
 
 func init() {
 	createCmd.AddCommand(createVolumeCmd)
-	createVolumeCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -p [UUID]")
+	createVolumeCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -p [[project_UUID]]")
 	createVolumeCmd.Flags().StringVarP(&plan, "plan", "P", "", "--plan or -P [plan_name]")
 	createVolumeCmd.Flags().StringVarP(&facility, "facility", "f", "", "--facility or -f [facility_code]")
 	createVolumeCmd.Flags().IntVarP(&size, "size", "s", 0, "--size or -s [size_in_GB]")

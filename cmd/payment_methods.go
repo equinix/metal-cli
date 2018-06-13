@@ -28,14 +28,10 @@ import (
 
 // paymentMethodsCmd represents the paymentMethods command
 var paymentMethodsCmd = &cobra.Command{
-	Use:   "payment-method",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "payment-methods",
+	Short: "Retrieves a list of payment methods for the organization",
+	Long: `Example:
+  packet get organization payment-methods --organization-id [organizatio_UUID]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		paymentMethods, _, err := PacknGo.Organizations.ListPaymentMethods(organizationID)
 		if err != nil {
@@ -58,13 +54,4 @@ func init() {
 	retrieveOrganizationCmd.AddCommand(paymentMethodsCmd)
 	paymentMethodsCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "--organization-id or -i")
 	paymentMethodsCmd.MarkFlagRequired("organization-id")
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// paymentMethodsCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// paymentMethodsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

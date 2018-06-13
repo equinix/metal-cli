@@ -30,10 +30,9 @@ import (
 // retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
 var retrieveVirtualNetworksCmd = &cobra.Command{
 	Use:   "virtual-network",
-	Short: "Command to retrieve a list of virtual networks for a single project.",
+	Short: "Retrieves a list of virtual networks for a single project.",
 	Long: `Example:
-	
-	packet get virtual-network -p [project-UUID]
+  packet get virtual-network -p [project-UUID]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID)

@@ -36,13 +36,9 @@ var (
 // projectCreateCmd represents the projectCreate command
 var createProjectCmd = &cobra.Command{
 	Use:   "project",
-	Short: "Command to create a project",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Creates a project",
+	Long: `Example:
+  packet create project --name [project_name]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		req := packngo.ProjectCreateRequest{
 			Name: name,

@@ -29,10 +29,9 @@ import (
 // unassignIpCmd represents the unassignIp command
 var unassignIPCmd = &cobra.Command{
 	Use:   "ip",
-	Short: "Command to unassign an IP address.",
+	Short: "Unassigns an IP address.",
 	Long: `Example:
-
-	packet unassign ip -a [assignment-UUID]
+  packet unassign ip -a [assignment-UUID]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := PacknGo.DeviceIPs.Unassign(assignmentID)

@@ -30,8 +30,7 @@ var unassignCmd = &cobra.Command{
 	Short: "Unassign command",
 	Long: `This command is only used with ip subcommand.
 	Example:
-	
-	packet unassign ip -a [assignment-UUID]
+  packet unassign ip -a [assignment-UUID]
 	`,
 }
 

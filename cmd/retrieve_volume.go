@@ -34,19 +34,20 @@ var (
 // retriveVolumeCmd represents the retriveVolume command
 var retriveVolumeCmd = &cobra.Command{
 	Use:   "volume",
-	Short: "Gets volume list or volume details.",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Retrieves a volume list or volume details.",
+	Long: `Example:
+	
+Retrieve the list of volumes:
+  packet get volume --project-id [project_UUID]
+  
+Retrieve a specific volume:
+  packet get volume --volume [volume_UUID]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if projectID != "" && volumeID != "" {
-			fmt.Println("Either projectID or volumeID can be set.")
+			fmt.Println("Either project-id or volume-id can be set.")
 			return
 		} else if projectID == "" && volumeID == "" {
-			fmt.Println("Either projectID or volumeID should be set.")
+			fmt.Println("Either project-id or volume-id should be set.")
 			return
 		} else if projectID != "" {
 			volumes, _, err := PacknGo.Volumes.List(projectID, nil)
@@ -81,6 +82,6 @@ to quickly create a Cobra application.`,
 
 func init() {
 	getCmd.AddCommand(retriveVolumeCmd)
-	retriveVolumeCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -p [UUID]")
-	retriveVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "--id or -i [UUID]")
+	retriveVolumeCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -p [project_UUID]")
+	retriveVolumeCmd.Flags().StringVarP(&volumeID, "volume-id", "v", "", "--volume-id or -v [volume_UUID]")
 }

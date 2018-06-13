@@ -30,11 +30,9 @@ import (
 // createOrganizationCmd represents the createOrganization command
 var updateOrganizationCmd = &cobra.Command{
 	Use:   "organization",
-	Short: "Command to delete an organization",
+	Short: "Updates an organization",
 	Long: `Example:
-	
-	packet delete update organization -i [organization_UUID] -n [name]
-	`,
+  packet update organization --id [organization_UUID] --name [new_name]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		req := &packngo.OrganizationUpdateRequest{}
 

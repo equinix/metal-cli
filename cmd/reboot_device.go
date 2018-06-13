@@ -29,13 +29,10 @@ import (
 // rebootDeviceCmd represents the rebootDevice command
 var rebootDeviceCmd = &cobra.Command{
 	Use:   "device",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Reboots a device",
+	Long: `Example:
+	packet reboot device --id [device_UUID]
+	  `,
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := PacknGo.Devices.Reboot(deviceID)
 		if err != nil {
@@ -49,6 +46,6 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rebootCmd.AddCommand(rebootDeviceCmd)
-	rebootDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "--id or -i [UUID]")
+	rebootDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "--id or -i [device_UUID]")
 	rebootDeviceCmd.MarkFlagRequired("id")
 }

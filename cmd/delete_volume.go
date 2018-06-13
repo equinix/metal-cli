@@ -30,13 +30,10 @@ import (
 // deleteVolumeCmd represents the deleteVolume command
 var deleteVolumeCmd = &cobra.Command{
 	Use:   "volume",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Deletes a volume",
+	Long: `Example:
+	packet delete volume --id [volume_UUID]
+	  `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !force {
 			prompt := promptui.Prompt{
@@ -76,7 +73,7 @@ func deleteVolume(id string) error {
 func init() {
 	deleteCmd.AddCommand(deleteVolumeCmd)
 
-	deleteVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "--volume-id or -i [UUID]")
+	deleteVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "--volume-id or -i [volume_UUID]")
 	deleteVolumeCmd.Flags().BoolVarP(&force, "force", "f", false, "--force or -f")
 	deleteVolumeCmd.MarkFlagRequired("id")
 }

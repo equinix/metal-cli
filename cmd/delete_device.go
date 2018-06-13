@@ -32,6 +32,9 @@ var force bool
 var deleteDeviceCmd = &cobra.Command{
 	Use:   "device",
 	Short: "Deletes a device",
+	Long: `Example:	
+  packet delete device -i [device_UUID]
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !force {
 			prompt := promptui.Prompt{

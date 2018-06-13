@@ -22,14 +22,15 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
-// plansCmd represents the plans command
-var plansCmd = &cobra.Command{
-	Use:   "plan",
-	Short: "Gets list of all available plans.",
+// facilitiesCmd represents the facilities command
+var facilitiesCmd = &cobra.Command{
+	Use:   "facility",
+	Short: "Retrieves a list of available facilities.",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -37,23 +38,21 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		plans, _, err := PacknGo.Plans.List()
+		facilities, _, err := PacknGo.Facilities.List()
 		if err != nil {
 			fmt.Println("Client error:", err)
 			return
 		}
+		data := make([][]string, len(facilities))
 
-		data := make([][]string, len(plans))
-
-		for i, p := range plans {
-			data[i] = []string{p.ID, p.Slug, p.Name}
+		for i, facility := range facilities {
+			data[i] = []string{facility.Name, facility.Code, strings.Join(facility.Features, ",")}
 		}
-		header := []string{"ID", "Slug", "Name"}
+		header := []string{"Name", "Code", "Features"}
 
-		output(plans, header, &data)
+		output(facilities, header, &data)
 	},
 }
 
 func init() {
-	getCmd.AddCommand(plansCmd)
 }

@@ -34,10 +34,9 @@ var (
 // deleteVirtualNetworkCmd represents the deleteVirtualNetwork command
 var deleteVirtualNetworkCmd = &cobra.Command{
 	Use:   "virtual-network",
-	Short: "Command to delete existing Virtual Network",
+	Short: "Deletes a Virtual Network",
 	Long: `Example:
-	
-	packet delete virtual-network -i [virtual-network-UUID]
+  packet delete virtual-network -i [virtual-network-UUID]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !force {

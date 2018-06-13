@@ -30,13 +30,9 @@ import (
 // deleteProjectCmd represents the deleteProject command
 var deleteSSHKeyCmd = &cobra.Command{
 	Use:   "ssh-key",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Deletes an SSH key",
+	Long: `Example:
+	packet delete ssh-key --id [ssh-key_UUID]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !force {
 			prompt := promptui.Prompt{

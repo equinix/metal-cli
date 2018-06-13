@@ -33,13 +33,13 @@ var (
 // retrieveSshKeysCmd represents the retrieveSshKeys command
 var retrieveSSHKeysCmd = &cobra.Command{
 	Use:   "ssh-key",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Retrieves a list of avialable SSH keys or a single SSH key",
+	Long: `Example:
+ Retrieve all SSH keys: 
+  packet get ssh-key
+  
+ Retrieve a specific SSH key:
+  packet get ssh-key --id [ssh-key_UUID] `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if sshKeyID == "" {
 			sshKeys, _, err := PacknGo.SSHKeys.List()

@@ -22,37 +22,34 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
 
-// facilitiesCmd represents the facilities command
-var facilitiesCmd = &cobra.Command{
-	Use:   "facility",
-	Short: "Gets list of available facilities.",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+// operatingSystemCmd represents the operatingSystem command
+var operatingSystemCmd = &cobra.Command{
+	Use:   "operating-systems",
+	Short: "Retrieves a list of available operating systems.",
+	Long: `Example:
+  packet get operating-systems`,
 	Run: func(cmd *cobra.Command, args []string) {
-		facilities, _, err := PacknGo.Facilities.List()
+		oss, _, err := PacknGo.OperatingSystems.List()
 		if err != nil {
 			fmt.Println("Client error:", err)
 			return
 		}
-		data := make([][]string, len(facilities))
 
-		for i, facility := range facilities {
-			data[i] = []string{facility.Name, facility.Code, strings.Join(facility.Features, ",")}
+		data := make([][]string, len(oss))
+
+		for i, os := range oss {
+			data[i] = []string{os.Name, os.Slug, os.Distro, os.Version}
 		}
-		header := []string{"Name", "Code", "Features"}
+		header := []string{"Name", "Slug", "Distro", "Version"}
 
-		output(facilities, header, &data)
+		output(oss, header, &data)
 	},
 }
 
 func init() {
+	getCmd.AddCommand(operatingSystemCmd)
 }

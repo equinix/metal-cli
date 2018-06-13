@@ -34,7 +34,6 @@ import (
 var getCmd = &cobra.Command{
 	Use:   "get",
 	Short: "Get command",
-	Args:  cobra.MinimumNArgs(1),
 }
 
 func init() {

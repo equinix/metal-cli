@@ -38,10 +38,9 @@ var (
 // requestIPCmd represents the requestIp command
 var requestIPCmd = &cobra.Command{
 	Use:   "ip",
-	Short: "Command to request/reserve an IP block",
+	Short: "Request an IP block",
 	Long: `Example:
-	
-	packet request ip --type [type] --quantity [quantity] --facility [facility_code] --type [address_type]
+  packet request ip --type [type] --quantity [quantity] --facility [facility_code] --type [address_type]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		req := &packngo.IPReservationRequest{

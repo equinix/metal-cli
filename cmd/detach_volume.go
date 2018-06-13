@@ -33,13 +33,9 @@ var (
 // detachVolumeCmd represents the detachVolume command
 var detachVolumeCmd = &cobra.Command{
 	Use:   "volume",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Detaches a volume from a device",
+	Long: `Example:
+  packet detach volume --attachment-id`,
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := PacknGo.VolumeAttachments.Delete(attachmentID)
 		if err != nil {
@@ -54,6 +50,6 @@ to quickly create a Cobra application.`,
 func init() {
 	detachCmd.AddCommand(detachVolumeCmd)
 
-	detachVolumeCmd.Flags().StringVarP(&attachmentID, "attachment-id", "a", "", "--attachment-id or -a [UUID]")
+	detachVolumeCmd.Flags().StringVarP(&attachmentID, "attachment-id", "a", "", "--attachment-id or -a [attachment_UUID]")
 	detachVolumeCmd.MarkFlagRequired("attachment-id")
 }

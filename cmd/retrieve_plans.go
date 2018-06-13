@@ -26,34 +26,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// operatingSystemCmd represents the operatingSystem command
-var operatingSystemCmd = &cobra.Command{
-	Use:   "operating-system",
-	Short: "Gets list of available operating systems.",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+// plansCmd represents the plans command
+var plansCmd = &cobra.Command{
+	Use:   "plans",
+	Short: "Retrieves a list of all available plans.",
+	Long: `Example: 
+  packet get plans`,
 	Run: func(cmd *cobra.Command, args []string) {
-		oss, _, err := PacknGo.OperatingSystems.List()
+		plans, _, err := PacknGo.Plans.List()
 		if err != nil {
 			fmt.Println("Client error:", err)
 			return
 		}
 
-		data := make([][]string, len(oss))
+		data := make([][]string, len(plans))
 
-		for i, os := range oss {
-			data[i] = []string{os.Name, os.Slug, os.Distro, os.Version}
+		for i, p := range plans {
+			data[i] = []string{p.ID, p.Slug, p.Name}
 		}
-		header := []string{"Name", "Slug", "Distro", "Version"}
+		header := []string{"ID", "Slug", "Name"}
 
-		output(oss, header, &data)
+		output(plans, header, &data)
 	},
 }
 
 func init() {
-	getCmd.AddCommand(operatingSystemCmd)
+	getCmd.AddCommand(plansCmd)
 }

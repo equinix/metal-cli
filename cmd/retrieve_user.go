@@ -34,13 +34,14 @@ var (
 // retriveUserCmd represents the retriveUser command
 var retriveUserCmd = &cobra.Command{
 	Use:   "user",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Retrieves infromation about the current user or a specified user",
+	Long: `Example:
+Retrieve the current user:
+  packet get user
+  
+Retrieve a specific user:
+  packet get user --id [user_UUID]
+  `,
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 		user := &packngo.User{}
@@ -69,5 +70,5 @@ to quickly create a Cobra application.`,
 
 func init() {
 	getCmd.AddCommand(retriveUserCmd)
-	retriveUserCmd.Flags().StringVarP(&userID, "id", "i", "", "--id or -i [UUID]")
+	retriveUserCmd.Flags().StringVarP(&userID, "id", "i", "", "--id or -i [user_UUID]")
 }

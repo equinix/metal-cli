@@ -53,7 +53,8 @@ var (
 var createDeviceCmd = &cobra.Command{
 	Use:   "device",
 	Short: "Create a device",
-	// Args:  cobra.MinimumNArgs(1),
+	Long: `Example:
+  packet create device --hostname [hostname] --plan [plan] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		request := &packngo.DeviceCreateRequest{
@@ -122,7 +123,7 @@ var createDeviceCmd = &cobra.Command{
 }
 
 func init() {
-	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -p [UUID]")
+	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "--project-id or -p [project_UUID]")
 	createDeviceCmd.Flags().StringVarP(&facility, "facility", "f", "", "--facility or -f [facility_code]")
 	createDeviceCmd.Flags().StringVarP(&plan, "plan", "P", "", "--plan or -P [plan_name]")
 	createDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "--hostname or -H [hostname]")

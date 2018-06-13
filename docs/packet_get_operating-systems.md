@@ -1,26 +1,20 @@
-## packet get project
+## packet get operating-systems
 
-Retireves all avialable projects or a single project
+Retrieves a list of available operating systems.
 
 ### Synopsis
 
 Example:
-Retrieve all projects:
-  packet get project
-  
-Retrieve a specific project:
-  packet get project -i [project_UUID]
-	
+  packet get operating-systems
 
 ```
-packet get project [flags]
+packet get operating-systems [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help                help for project
-  -i, --project-id string   --project-id or -i [project_UUID]
+  -h, --help   help for operating-systems
 ```
 
 ### Options inherited from parent commands
