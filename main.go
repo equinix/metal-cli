@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/StackPointCloud/packet-cli/cmd"
+	"github.com/packethost/packet-cli/cmd"
 	"github.com/spf13/cobra/doc"
 )
 
