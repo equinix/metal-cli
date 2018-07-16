@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +42,11 @@ packet project get -i [project_UUID]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if projectID == "" {
-			projects, _, err := PacknGo.Projects.List()
+			listOpt := &packngo.ListOptions{
+				Includes: "members",
+			}
+
+			projects, _, err := PacknGo.Projects.List(listOpt)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
@@ -51,11 +56,15 @@ packet project get -i [project_UUID]
 			for i, p := range projects {
 				data[i] = []string{p.ID, p.Name, p.Created}
 			}
-			header := []string{"ID", "Name", "Created"}
 
+			header := []string{"ID", "Name", "Created"}
 			output(projects, header, &data)
 		} else {
-			p, _, err := PacknGo.Projects.Get(projectID)
+			listOpt := &packngo.ListOptions{
+				Includes: "members",
+			}
+
+			p, _, err := PacknGo.Projects.Get(projectID, listOpt)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return

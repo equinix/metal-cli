@@ -6,8 +6,8 @@ const projectBasePath = "/projects"
 
 // ProjectService interface defines available project methods
 type ProjectService interface {
-	List() ([]Project, *Response, error)
-	Get(string) (*Project, *Response, error)
+	List(listOpt *ListOptions) ([]Project, *Response, error)
+	Get(string, *ListOptions) (*Project, *Response, error)
 	Create(*ProjectCreateRequest) (*Project, *Response, error)
 	Update(string, *ProjectUpdateRequest) (*Project, *Response, error)
 	Delete(string) (*Response, error)
@@ -15,6 +15,7 @@ type ProjectService interface {
 
 type projectsRoot struct {
 	Projects []Project `json:"projects"`
+	Meta     meta      `json:"meta"`
 }
 
 // Project represents a Packet project
@@ -62,20 +63,42 @@ type ProjectServiceOp struct {
 }
 
 // List returns the user's projects
-func (s *ProjectServiceOp) List() ([]Project, *Response, error) {
+func (s *ProjectServiceOp) List(listOpt *ListOptions) (projects []Project, resp *Response, err error) {
+	var params string
+	if listOpt != nil {
+		params = listOpt.createURL()
+	}
 	root := new(projectsRoot)
 
-	resp, err := s.client.DoRequest("GET", projectBasePath, nil, root)
-	if err != nil {
-		return nil, resp, err
-	}
+	path := fmt.Sprintf("%s?%s", projectBasePath, params)
 
-	return root.Projects, resp, err
+	for {
+		resp, err = s.client.DoRequest("GET", path, nil, root)
+		if err != nil {
+			return nil, resp, err
+		}
+
+		projects = append(projects, root.Projects...)
+
+		if root.Meta.Next != nil && (listOpt == nil || listOpt.Page == 0) {
+			path = root.Meta.Next.Href
+			if params != "" {
+				path = fmt.Sprintf("%s&%s", path, params)
+			}
+			continue
+		}
+
+		return
+	}
 }
 
 // Get returns a project by id
-func (s *ProjectServiceOp) Get(projectID string) (*Project, *Response, error) {
-	path := fmt.Sprintf("%s/%s", projectBasePath, projectID)
+func (s *ProjectServiceOp) Get(projectID string, listOpt *ListOptions) (*Project, *Response, error) {
+	var params string
+	if listOpt != nil {
+		params = listOpt.createURL()
+	}
+	path := fmt.Sprintf("%s/%s?%s", projectBasePath, projectID, params)
 	project := new(Project)
 
 	resp, err := s.client.DoRequest("GET", path, nil, project)
