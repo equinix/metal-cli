@@ -9,7 +9,7 @@ Operating system operations: get
 ### Options
 
 ```
-  -h, --help   help for operating-systems
+  -h, --help   Help for operating-systems
 ```
 
 ### Options inherited from parent commands

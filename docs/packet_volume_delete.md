@@ -18,7 +18,7 @@ packet volume delete [flags]
 
 ```
   -f, --force       Force removal of the volume
-  -h, --help        help for delete
+  -h, --help        Help for delete
   -i, --id string   UUID of volume
 ```
 

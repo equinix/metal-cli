@@ -9,7 +9,7 @@ Plan operations: get
 ### Options
 
 ```
-  -h, --help   help for plan
+  -h, --help   Help for plan
 ```
 
 ### Options inherited from parent commands

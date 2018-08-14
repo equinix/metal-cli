@@ -18,7 +18,7 @@ packet device delete [flags]
 
 ```
   -f, --force       Force removal of the device
-  -h, --help        help for delete
+  -h, --help        Help for delete
   -i, --id string   UUID of the device
 ```
 

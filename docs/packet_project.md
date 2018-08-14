@@ -9,7 +9,7 @@ Project operations: create, delete, update and get
 ### Options
 
 ```
-  -h, --help   help for project
+  -h, --help   Help for project
 ```
 
 ### Options inherited from parent commands

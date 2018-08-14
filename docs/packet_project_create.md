@@ -17,7 +17,7 @@ packet project create [flags]
 ### Options
 
 ```
-  -h, --help                       help for create
+  -h, --help                       Help for create
   -n, --name string                Name of the project
   -o, --organization-id string     UUID of the organization
   -m, --payment-method-id string   UUID of the payment method

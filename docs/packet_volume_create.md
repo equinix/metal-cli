@@ -20,7 +20,7 @@ packet volume create [flags]
   -b, --billing-cycle string   Billing cycle (default "hourly")
   -d, --description string     Description of the volume
   -f, --facility string        Code of the facility where the volume will be created
-  -h, --help                   help for create
+  -h, --help                   Help for create
   -l, --locked                 Set the volume to be locked
   -P, --plan string            Name of the plan
   -p, --project-id string      UUID of the project

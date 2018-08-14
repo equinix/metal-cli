@@ -17,7 +17,7 @@ packet ssh-key create [flags]
 ### Options
 
 ```
-  -h, --help           help for create
+  -h, --help           Help for create
   -k, --key string     Public SSH key string
   -l, --label string   Name of the SSH key
 ```

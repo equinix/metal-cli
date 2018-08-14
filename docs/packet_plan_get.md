@@ -17,7 +17,7 @@ packet plan get [flags]
 ### Options
 
 ```
-  -h, --help   help for get
+  -h, --help   Help for get
   -j, --json   JSON output
   -y, --yaml   YAML output
 ```

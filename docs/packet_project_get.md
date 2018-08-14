@@ -21,7 +21,7 @@ packet project get [flags]
 ### Options
 
 ```
-  -h, --help                help for get
+  -h, --help                Help for get
   -j, --json                JSON output
   -i, --project-id string   UUID of the project
   -y, --yaml                YAML output

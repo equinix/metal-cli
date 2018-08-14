@@ -9,7 +9,7 @@ VPN service operations: enable, disable, get
 ### Options
 
 ```
-  -h, --help   help for vpn
+  -h, --help   Help for vpn
 ```
 
 ### Options inherited from parent commands

@@ -19,7 +19,7 @@ packet ip assign [flags]
 ```
   -a, --address string     IP Address
   -d, --device-id string   UUID of the device
-  -h, --help               help for assign
+  -h, --help               Help for assign
 ```
 
 ### Options inherited from parent commands

@@ -18,7 +18,7 @@ packet organization create [flags]
 
 ```
   -d, --description string   Description of the organization
-  -h, --help                 help for create
+  -h, --help                 Help for create
   -l, --logo string          Logo URL]
   -n, --name string          Name of the organization
   -t, --twitter string       Twitter URL of the organization

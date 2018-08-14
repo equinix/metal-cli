@@ -22,7 +22,7 @@ packet device create [flags]
   -c, --customdata string                Custom data
   -f, --facility string                  Code of the facility where the device will be created
   -r, --hardware-reservation-id string   UUID of the hardware reservation
-  -h, --help                             help for create
+  -h, --help                             Help for create
   -H, --hostname string                  Hostname
   -i, --ipxe-script-url string           URL to the iPXE script
   -o, --operating-system string          Operating system name for the device

@@ -17,7 +17,7 @@ packet ip remove [flags]
 ### Options
 
 ```
-  -h, --help        help for remove
+  -h, --help        Help for remove
   -i, --id string   UUID of the reservation
 ```
 

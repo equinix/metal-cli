@@ -9,7 +9,7 @@ Virtual network operations: create, delete and get
 ### Options
 
 ```
-  -h, --help   help for virtual-network
+  -h, --help   Help for virtual-network
 ```
 
 ### Options inherited from parent commands

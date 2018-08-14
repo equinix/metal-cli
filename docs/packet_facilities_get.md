@@ -17,7 +17,7 @@ packet facilities get [flags]
 ### Options
 
 ```
-  -h, --help   help for get
+  -h, --help   Help for get
   -j, --json   -j or --json JSON output
   -y, --yaml   -y or --yaml YAML output
 ```

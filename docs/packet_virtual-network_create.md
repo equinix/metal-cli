@@ -19,7 +19,7 @@ packet virtual-network create [flags]
 ```
   -d, --description string   Description of the virtual network
   -f, --facility string      Code of the facility
-  -h, --help                 help for create
+  -h, --help                 Help for create
   -p, --project-id string    UUID of the project
   -l, --vlan int             Virtual LAN ID
   -x, --vxlan int            VXLAN ID

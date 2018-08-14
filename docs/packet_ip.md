@@ -9,7 +9,7 @@ IP address, reservations and assignment operations: assign, unassign, remove, av
 ### Options
 
 ```
-  -h, --help   help for ip
+  -h, --help   Help for ip
 ```
 
 ### Options inherited from parent commands

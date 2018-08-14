@@ -17,7 +17,7 @@ packet device start [flags]
 ### Options
 
 ```
-  -h, --help        help for start
+  -h, --help        Help for start
   -i, --id string   UUID of the device
 ```
 

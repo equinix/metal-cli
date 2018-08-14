@@ -17,7 +17,7 @@ packet virtual-network get [flags]
 ### Options
 
 ```
-  -h, --help                help for get
+  -h, --help                Help for get
   -j, --json                JSON output
   -p, --project-id string   UUID of the project
   -y, --yaml                YAML output

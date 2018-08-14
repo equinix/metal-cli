@@ -28,7 +28,7 @@ packet ip get [flags]
 
 ```
   -a, --assignment-id string    UUID of the assignment
-  -h, --help                    help for get
+  -h, --help                    Help for get
   -j, --json                    JSON output
   -p, --project-id string       UUID of the project
   -r, --reservation-id string   UUID of the reservation

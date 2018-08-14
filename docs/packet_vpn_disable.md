@@ -17,7 +17,7 @@ packet vpn disable [flags]
 ### Options
 
 ```
-  -h, --help   help for disable
+  -h, --help   Help for disable
 ```
 
 ### Options inherited from parent commands

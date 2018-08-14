@@ -18,7 +18,7 @@ packet ip available [flags]
 
 ```
   -c, --cidr int                Size of subnet
-  -h, --help                    help for available
+  -h, --help                    Help for available
   -r, --reservation-id string   UUID of the reservation
 ```
 

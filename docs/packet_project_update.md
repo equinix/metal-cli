@@ -17,7 +17,7 @@ packet project update [flags]
 ### Options
 
 ```
-  -h, --help                       help for update
+  -h, --help                       Help for update
   -i, --id string                  UUID of the project
   -n, --name string                Name for the project
   -m, --payment-method-id string   UUID of the payment method

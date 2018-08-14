@@ -18,7 +18,7 @@ packet volume attach [flags]
 
 ```
   -d, --device-id string   UUID of the device
-  -h, --help               help for attach
+  -h, --help               Help for attach
   -i, --id string          UUID of the volume
 ```
 

@@ -17,7 +17,7 @@ packet volume detach [flags]
 ### Options
 
 ```
-  -h, --help        help for detach
+  -h, --help        Help for detach
   -i, --id string   UUID of the attached volume
 ```
 

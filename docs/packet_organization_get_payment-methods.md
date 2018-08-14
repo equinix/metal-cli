@@ -17,7 +17,7 @@ packet organization get payment-methods [flags]
 ### Options
 
 ```
-  -h, --help        help for payment-methods
+  -h, --help        Help for payment-methods
   -i, --id string   UUID of the organization
 ```
 

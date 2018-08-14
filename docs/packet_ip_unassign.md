@@ -17,7 +17,7 @@ packet ip unassign [flags]
 ### Options
 
 ```
-  -h, --help        help for unassign
+  -h, --help        Help for unassign
   -i, --id string   UUID of the assignment
 ```
 

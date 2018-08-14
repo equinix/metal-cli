@@ -17,7 +17,7 @@ packet vpn enable [flags]
 ### Options
 
 ```
-  -h, --help   help for enable
+  -h, --help   Help for enable
 ```
 
 ### Options inherited from parent commands

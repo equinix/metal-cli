@@ -19,7 +19,7 @@ packet ip request [flags]
 ```
   -c, --comments string     General comments
   -f, --facility string     Code of the facility
-  -h, --help                help for request
+  -h, --help                Help for request
   -p, --project-id string   UUID of the project
   -q, --quantity int        Number of IP addresses to reserve
   -t, --type string         Address type public_ipv4 or global_ipv6

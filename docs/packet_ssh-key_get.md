@@ -21,7 +21,7 @@ packet ssh-key get [flags]
 ### Options
 
 ```
-  -h, --help        help for get
+  -h, --help        Help for get
   -i, --id string   UUID of the SSH key
   -j, --json        JSON output
   -y, --yaml        YAML output

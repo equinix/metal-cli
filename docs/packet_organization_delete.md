@@ -18,7 +18,7 @@ packet organization delete [flags]
 
 ```
   -f, --force                    Force removal of the organization
-  -h, --help                     help for delete
+  -h, --help                     Help for delete
   -i, --organization-id string   UUID of the organization
 ```
 

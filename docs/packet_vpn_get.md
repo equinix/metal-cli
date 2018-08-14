@@ -18,7 +18,7 @@ packet vpn get [flags]
 
 ```
   -f, --facility string   Code of the facility for which VPN config is to be retrieved
-  -h, --help              help for get
+  -h, --help              Help for get
   -j, --json              JSON output
   -y, --yaml              YAML output
 ```

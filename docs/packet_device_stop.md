@@ -17,7 +17,7 @@ packet device stop [flags]
 ### Options
 
 ```
-  -h, --help        help for stop
+  -h, --help        Help for stop
   -i, --id string   UUID of the device
 ```
 

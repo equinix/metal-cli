@@ -18,7 +18,7 @@ packet project delete [flags]
 
 ```
   -f, --force       Force removal of the project
-  -h, --help        help for delete
+  -h, --help        Help for delete
   -i, --id string   UUID of the project
 ```
 

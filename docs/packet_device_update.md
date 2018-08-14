@@ -20,7 +20,7 @@ packet device update [flags]
   -a, --always-pxe               --alaways-pxe or -a
   -c, --customdata string        Custom data
   -d, --description string       Description for the device
-  -h, --help                     help for update
+  -h, --help                     Help for update
   -H, --hostname string          Hostname
   -i, --id string                UUID of the device
   -s, --ipxe-script-url string   URL to the iPXE script

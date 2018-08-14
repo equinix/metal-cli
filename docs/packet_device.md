@@ -9,7 +9,7 @@ Device operations: create, delete, update, start/stop, reboot and get.
 ### Options
 
 ```
-  -h, --help   help for device
+  -h, --help   Help for device
 ```
 
 ### Options inherited from parent commands

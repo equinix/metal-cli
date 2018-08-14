@@ -9,7 +9,7 @@ Facility operations: get
 ### Options
 
 ```
-  -h, --help   help for facilities
+  -h, --help   Help for facilities
 ```
 
 ### Options inherited from parent commands

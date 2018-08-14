@@ -9,7 +9,7 @@ Organization operations: create, update, delete and get
 ### Options
 
 ```
-  -h, --help   help for organization
+  -h, --help   Help for organization
 ```
 
 ### Options inherited from parent commands

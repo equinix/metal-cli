@@ -21,7 +21,7 @@ packet organization get [flags]
 ### Options
 
 ```
-  -h, --help                     help for get
+  -h, --help                     Help for get
   -j, --json                     JSON output
   -i, --organization-id string   UUID of the organization
   -y, --yaml                     YAML output

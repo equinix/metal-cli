@@ -9,7 +9,7 @@ User operations: get
 ### Options
 
 ```
-  -h, --help   help for user
+  -h, --help   Help for user
 ```
 
 ### Options inherited from parent commands

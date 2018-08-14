@@ -17,7 +17,7 @@ packet device reboot [flags]
 ### Options
 
 ```
-  -h, --help        help for reboot
+  -h, --help        Help for reboot
   -i, --id string   --id or -i [device_UUID]
 ```
 

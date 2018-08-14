@@ -18,7 +18,7 @@ packet ssh-key delete [flags]
 
 ```
   -f, --force       Force removal of the SSH key
-  -h, --help        help for delete
+  -h, --help        Help for delete
   -i, --id string   UUID of the SSH key
 ```
 

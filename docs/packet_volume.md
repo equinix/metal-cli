@@ -9,7 +9,7 @@ Volume operations: create, delete, attach, detach and get
 ### Options
 
 ```
-  -h, --help   help for volume
+  -h, --help   Help for volume
 ```
 
 ### Options inherited from parent commands

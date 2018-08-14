@@ -9,7 +9,7 @@ SSH key operations: create, delete, update and get
 ### Options
 
 ```
-  -h, --help   help for ssh-key
+  -h, --help   Help for ssh-key
 ```
 
 ### Options inherited from parent commands

@@ -18,7 +18,7 @@ packet organization update [flags]
 
 ```
   -d, --description string   Description of the organization
-  -h, --help                 help for update
+  -h, --help                 Help for update
   -i, --id string            Organization ID
   -l, --logo string          Logo URL of the organization
   -n, --name string          Name of the organization

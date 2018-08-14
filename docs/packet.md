@@ -10,8 +10,8 @@ Command line interface for Packet Host
 
 ```
       --config string   Path to JSON or YAML configuration file (default "/Users/jasmingacic/.packet-cli.json")
-  -h, --help            help for packet
-      --version         version for packet
+  -h, --help            Help for packet
+      --version         Version for packet
 ```
 
 ### SEE ALSO
