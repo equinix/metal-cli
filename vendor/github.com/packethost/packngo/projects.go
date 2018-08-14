@@ -1,16 +1,21 @@
 package packngo
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 const projectBasePath = "/projects"
 
 // ProjectService interface defines available project methods
 type ProjectService interface {
 	List(listOpt *ListOptions) ([]Project, *Response, error)
-	Get(string, *ListOptions) (*Project, *Response, error)
+	Get(string) (*Project, *Response, error)
+	GetExtra(projectID string, includes, excludes []string) (*Project, *Response, error)
 	Create(*ProjectCreateRequest) (*Project, *Response, error)
 	Update(string, *ProjectUpdateRequest) (*Project, *Response, error)
 	Delete(string) (*Response, error)
+	ListEvents(string, *ListOptions) ([]Event, *Response, error)
 }
 
 type projectsRoot struct {
@@ -92,13 +97,27 @@ func (s *ProjectServiceOp) List(listOpt *ListOptions) (projects []Project, resp 
 	}
 }
 
-// Get returns a project by id
-func (s *ProjectServiceOp) Get(projectID string, listOpt *ListOptions) (*Project, *Response, error) {
-	var params string
-	if listOpt != nil {
-		params = listOpt.createURL()
+// GetExtra returns a project by id with extra information
+func (s *ProjectServiceOp) GetExtra(projectID string, includes, excludes []string) (*Project, *Response, error) {
+	path := fmt.Sprintf("%s/%s", projectBasePath, projectID)
+	if includes != nil {
+		path += fmt.Sprintf("?include=%s", strings.Join(includes, ","))
+	} else if excludes != nil {
+		path += fmt.Sprintf("?exclude=%s", strings.Join(excludes, ","))
 	}
-	path := fmt.Sprintf("%s/%s?%s", projectBasePath, projectID, params)
+
+	project := new(Project)
+	resp, err := s.client.DoRequest("GET", path, nil, project)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return project, resp, err
+}
+
+// Get returns a project by id
+func (s *ProjectServiceOp) Get(projectID string) (*Project, *Response, error) {
+	path := fmt.Sprintf("%s/%s", projectBasePath, projectID)
 	project := new(Project)
 
 	resp, err := s.client.DoRequest("GET", path, nil, project)
@@ -139,4 +158,11 @@ func (s *ProjectServiceOp) Delete(projectID string) (*Response, error) {
 	path := fmt.Sprintf("%s/%s", projectBasePath, projectID)
 
 	return s.client.DoRequest("DELETE", path, nil, nil)
+}
+
+// ListEvents returns list of project events
+func (s *ProjectServiceOp) ListEvents(projectID string, listOpt *ListOptions) ([]Event, *Response, error) {
+	path := fmt.Sprintf("%s/%s%s", projectBasePath, projectID, eventBasePath)
+
+	return list(s.client, path, listOpt)
 }
