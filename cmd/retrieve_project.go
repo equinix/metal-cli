@@ -60,11 +60,7 @@ packet project get -i [project_UUID]
 			header := []string{"ID", "Name", "Created"}
 			output(projects, header, &data)
 		} else {
-			listOpt := &packngo.ListOptions{
-				Includes: "members",
-			}
-
-			p, _, err := PacknGo.Projects.Get(projectID, listOpt)
+			p, _, err := PacknGo.Projects.GetExtra(projectID, []string{"members"}, []string{})
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
