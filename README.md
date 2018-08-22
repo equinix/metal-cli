@@ -16,7 +16,7 @@
 
 ## Packet Command Line Interface
 
-[Packet](https://www.packet.net/) provides an API drive-driven bare metal platform that brings the price and performance benefits of bare metal servers and network to the cloud.
+[Packet](https://www.packet.net/) provides an API-driven bare metal platform that combines the automation experience of the cloud with the benefits of physical, bare metal servers.
 
 The Packet CLI wraps the [Packet Go SDK](https://github.com/packethost/packngo) allowing interaction with Packet platform from a command-line interface.
 
