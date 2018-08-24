@@ -32,7 +32,7 @@ var eventID string
 // retrieveEventsCmd represents the retrieveEvents command
 var retrieveEventCmd = &cobra.Command{
 	Use:   "get",
-	Short: "Retrieves all events of an organization, a project or a device or a single event.",
+	Short: "Retrieves one or more events for organizations, projects, or devices.",
 	Long: `Example:
 Retrieve all events:
 packet event get
@@ -48,6 +48,9 @@ packet event get -p [project_UUID]
 
 Retrieve all events of a device:
 packet event get -d [device_UUID]
+
+Retrieve all events of a current user:
+packet event get
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		events := []packngo.Event{}
@@ -55,8 +58,8 @@ packet event get -d [device_UUID]
 		header := []string{"ID", "Body", "Type", "Created"}
 		listOpt := &packngo.ListOptions{Includes: "relationships"}
 
-		if deviceID != "" && projectID != "" && volumeID != "" && eventID != "" {
-			fmt.Println("Either id or device or project or volume can be set.")
+		if deviceID != "" && projectID != "" && organizationID != "" && eventID != "" {
+			fmt.Println("The id, project-id, device-id, and organization-id parameters are mutually exclusive")
 			return
 		} else if deviceID != "" {
 			events, _, err = PacknGo.Devices.ListEvents(deviceID, listOpt)
@@ -108,9 +111,9 @@ packet event get -d [device_UUID]
 func init() {
 	eventCmd.AddCommand(retrieveEventCmd)
 	retrieveEventCmd.Flags().StringVarP(&eventID, "id", "i", "", "UUID of the event")
-	retrieveEventCmd.Flags().StringVarP(&projectID, "project", "p", "", "UUID of the project")
-	retrieveEventCmd.Flags().StringVarP(&deviceID, "device", "d", "", "UUID of the device")
-	retrieveEventCmd.Flags().StringVarP(&volumeID, "organization", "o", "", "UUID of the organization")
+	retrieveEventCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	retrieveEventCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
+	retrieveEventCmd.Flags().StringVarP(&volumeID, "organization-id", "o", "", "UUID of the organization")
 
 	retrieveEventCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
 	retrieveEventCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
