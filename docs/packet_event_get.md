@@ -1,6 +1,6 @@
 ## packet event get
 
-Retrieves all events of an organization, a project or a device or a single event.
+Retrieves one or more events for organizations, projects, or devices.
 
 ### Synopsis
 
@@ -20,6 +20,9 @@ packet event get -p [project_UUID]
 Retrieve all events of a device:
 packet event get -d [device_UUID]
 
+Retrieve all events of a current user:
+packet event get
+
 
 ```
 packet event get [flags]
@@ -28,13 +31,13 @@ packet event get [flags]
 ### Options
 
 ```
-  -d, --device string         UUID of the device
-  -h, --help                  help for get
-  -i, --id string             UUID of the event
-  -j, --json                  JSON output
-  -o, --organization string   UUID of the organization
-  -p, --project string        UUID of the project
-  -y, --yaml                  YAML output
+  -d, --device-id string         UUID of the device
+  -h, --help                     help for get
+  -i, --id string                UUID of the event
+  -j, --json                     JSON output
+  -o, --organization-id string   UUID of the organization
+  -p, --project-id string        UUID of the project
+  -y, --yaml                     YAML output
 ```
 
 ### Options inherited from parent commands
