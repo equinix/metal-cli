@@ -44,10 +44,10 @@ Retrieve all events of an organization:
 packet event get -o [organization_UUID]
 
 Retrieve all events of a project:
-packet event get -o [project_UUID]
+packet event get -p [project_UUID]
 
 Retrieve all events of a device:
-packet event get -o [device_UUID]
+packet event get -d [device_UUID]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		events := []packngo.Event{}
