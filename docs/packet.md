@@ -16,9 +16,11 @@ Command line interface for Packet Host
 
 ### SEE ALSO
 
+* [packet 2fa](packet_2fa.md)	 - Two Factor Authentication operations
 * [packet device](packet_device.md)	 - Device operations
 * [packet event](packet_event.md)	 - Events operations
 * [packet facilities](packet_facilities.md)	 - Facility operations
+* [packet hardware_reservation](packet_hardware_reservation.md)	 - Hardware reservation operations
 * [packet ip](packet_ip.md)	 - IP operations
 * [packet operating-systems](packet_operating-systems.md)	 - Operating system operations
 * [packet organization](packet_organization.md)	 - Organization operations

@@ -95,7 +95,7 @@
   branch = "master"
   name = "github.com/packethost/packngo"
   packages = ["."]
-  revision = "34705f16ffb1e48a6421713c5318f6d56afe2f41"
+  revision = "3e366203a129ebb34bfb2af239e16f2c96034a65"
 
 [[projects]]
   name = "github.com/pelletier/go-toml"
