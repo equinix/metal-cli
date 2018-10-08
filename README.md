@@ -16,7 +16,7 @@
 
 ## Packet Command Line Interface
 
-[Packet](https://www.packet.net/) provides an API drive-driven bare metal platform that brings the price and performance benefits of bare metal servers and network to the cloud.
+[Packet](https://www.packet.net/) provides an API-driven bare metal platform that combines the automation experience of the cloud with the benefits of physical, bare metal servers.
 
 The Packet CLI wraps the [Packet Go SDK](https://github.com/packethost/packngo) allowing interaction with Packet platform from a command-line interface.
 
@@ -149,6 +149,7 @@ The full CLI documentation can be found [here](docs/packet.md) or Daby clicking 
 * [User operations](docs/packet_user.md)
 * [Virtual network operations](docs/packet_virtual-network.md)
 * [Volume operations](docs/packet_volume.md)
+* [VPN operations](docs/packet_vpn.md)
 
 ## Example Syntax
 
