@@ -18,7 +18,7 @@ type Cli struct {
 }
 
 // VERSION build
-const VERSION = "0.0.1"
+const VERSION = "0.0.2"
 
 // NewCli struct
 func NewCli() *Cli {

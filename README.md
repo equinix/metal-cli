@@ -149,6 +149,7 @@ The full CLI documentation can be found [here](docs/packet.md) or Daby clicking 
 * [User operations](docs/packet_user.md)
 * [Virtual network operations](docs/packet_virtual-network.md)
 * [Volume operations](docs/packet_volume.md)
+* [VPN operations](docs/packet_vpn.md)
 
 ## Example Syntax
 
