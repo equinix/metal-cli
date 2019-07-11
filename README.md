@@ -38,7 +38,7 @@ Extract the appropriate Packet CLI binaries for your platform to the desired loc
 If you plan to run the Packet CLI in a shell on Linux and placed the binary in /home/YOUR-USER-NAME/packet-cli/, then type the following into your terminal:
 
 ```
-export PATH=$PATH:/home/[YOUR-USER-NAME]/packet-cli
+export PATH=$PATH:/home/$USER/packet-cli
 ```
 
 You can view the current value of $PATH by running:
@@ -52,7 +52,7 @@ echo $PATH
 If you plan to run the Packet CLI in a shell on a Mac and placed the binary in /Users/YOUR-USER-NAME/packet-cli/, then type the following into your terminal.
   
 ```
-export PATH=$PATH:/Users/[YOUR-USER-NAME]/packet-cli
+export PATH=$PATH:/Users/$USER/packet-cli
 ```
   
 You can view the current value of $PATH by running:
