@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"runtime"
 
@@ -73,7 +72,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", fmt.Sprint(userHomeDir(), "/.packet-cli.json"), "Path to JSON or YAML configuration file")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Path to JSON or YAML configuration file")
 	rootCmd.Version = VERSION
 }
 
@@ -82,13 +81,16 @@ func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
+	} else {
+		viper.SetConfigName(".packet-cli")
+		viper.AddConfigPath(userHomeDir())
 	}
 
-	viper.AutomaticEnv()
-	var r io.Reader
-	r, _ = os.Open(cfgFile)
-
-	viper.ReadConfig(r)
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Printf("Unable to read in config file, check the file path and defaults (./packet-cli.{yaml,json} in user home directory) and try again")
+		os.Exit(1)
+	}
 
 	if viper.GetString("token") != "" {
 		packetToken = viper.GetString("token")
