@@ -38,7 +38,7 @@ Extract the appropriate Packet CLI binaries for your platform to the desired loc
 If you plan to run the Packet CLI in a shell on Linux and placed the binary in /home/YOUR-USER-NAME/packet-cli/, then type the following into your terminal:
 
 ```
-export PATH=$PATH:/home/[YOUR-USER-NAME]/packet-cli
+export PATH=$PATH:/home/$USER/packet-cli
 ```
 
 You can view the current value of $PATH by running:
@@ -50,17 +50,17 @@ echo $PATH
 ### Mac OS X
 
 If you plan to run the Packet CLI in a shell on a Mac and placed the binary in /Users/YOUR-USER-NAME/packet-cli/, then type the following into your terminal.
-  
+
 ```
-export PATH=$PATH:/Users/[YOUR-USER-NAME]/packet-cli
+export PATH=$PATH:/Users/$USER/packet-cli
 ```
-  
+
 You can view the current value of $PATH by running:
 
 ```
 echo $PATH
 ```
-  
+
 ### Windows
 
 If you plan to run the Packet CLI in PowerShell on Windows and placed the binary in c:\packet-cli, then type the following into PowerShell:
@@ -177,7 +177,7 @@ packet volume attach --id [volume_UUID] --device-id [device_UUID]
 packet device get --id [device_UUID]
 ```
 
-### Get a volume 
+### Get a volume
 
 ```
 packet get volume --id [volume_UUID]
@@ -186,7 +186,7 @@ packet get volume --id [volume_UUID]
 ### List projects
 
 ```
-packet project get 
+packet project get
 ```
 
 ### Get a project
