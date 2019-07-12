@@ -29,6 +29,7 @@ import (
 )
 
 var (
+	projectName     string
 	projectID       string
 	facility        string
 	plan            string

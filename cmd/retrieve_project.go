@@ -38,9 +38,13 @@ packet project get
   
 Retrieve a specific project:
 packet project get -i [project_UUID]
-
+packet project get -n [project_name]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if projectID != "" && projectName != "" {
+			fmt.Println("must specify only one of project-id and project name")
+			return
+		}
 		if projectID == "" {
 			listOpt := &packngo.ListOptions{
 				Includes: "members",
@@ -51,10 +55,21 @@ packet project get -i [project_UUID]
 				fmt.Println("Client error:", err)
 				return
 			}
-			data := make([][]string, len(projects))
 
-			for i, p := range projects {
-				data[i] = []string{p.ID, p.Name, p.Created}
+			var data [][]string
+			if projectName == "" {
+				data = make([][]string, len(projects))
+				for i, p := range projects {
+					data[i] = []string{p.ID, p.Name, p.Created}
+				}
+			} else {
+				data = make([][]string, 1)
+				for _, p := range projects {
+					if p.Name == projectName {
+						data[0] = []string{p.ID, p.Name, p.Created}
+						break
+					}
+				}
 			}
 
 			header := []string{"ID", "Name", "Created"}
@@ -76,6 +91,7 @@ packet project get -i [project_UUID]
 }
 
 func init() {
+	retriveProjectCmd.Flags().StringVarP(&projectName, "project", "n", "", "Name of the project")
 	retriveProjectCmd.Flags().StringVarP(&projectID, "project-id", "i", "", "UUID of the project")
 	retriveProjectCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
 	retriveProjectCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
