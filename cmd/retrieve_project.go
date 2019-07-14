@@ -63,12 +63,16 @@ packet project get -n [project_name]
 					data[i] = []string{p.ID, p.Name, p.Created}
 				}
 			} else {
-				data = make([][]string, 1)
+				data = make([][]string, 0)
 				for _, p := range projects {
 					if p.Name == projectName {
-						data[0] = []string{p.ID, p.Name, p.Created}
+						data = append(data, []string{p.ID, p.Name, p.Created})
 						break
 					}
+				}
+				if len(data) == 0 {
+					fmt.Println("Error: no project found with name", projectName)
+					return
 				}
 			}
 
