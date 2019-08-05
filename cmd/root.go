@@ -86,11 +86,7 @@ func initConfig() {
 		viper.AddConfigPath(userHomeDir())
 	}
 
-	err := viper.ReadInConfig()
-	if err != nil {
-		fmt.Printf("Unable to read in config file, check the file path and defaults (./packet-cli.{yaml,json} in user home directory) and try again")
-		os.Exit(1)
-	}
+	_ = viper.ReadInConfig()
 
 	if viper.GetString("token") != "" {
 		packetToken = viper.GetString("token")
