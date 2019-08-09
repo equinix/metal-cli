@@ -86,7 +86,7 @@ func initConfig() {
 		viper.AddConfigPath(userHomeDir())
 	}
 
-	_ = viper.ReadInConfig()
+	viper.ReadInConfig()
 
 	if viper.GetString("token") != "" {
 		packetToken = viper.GetString("token")
