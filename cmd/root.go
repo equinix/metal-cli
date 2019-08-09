@@ -49,7 +49,7 @@ var rootCmd = &cobra.Command{
 
 func packetConnect(cmd *cobra.Command, args []string) {
 	if packetToken == "" {
-		fmt.Println("Packet authentication token not provided. Please either set the 'PACKET_TOKEN' environment variable or create a JSON configuration file.")
+		fmt.Println("Packet authentication token not provided. Please either set the 'PACKET_TOKEN' environment variable or create a JSON or YAML configuration file.")
 		os.Exit(1)
 	}
 	client, err := packngo.NewClientWithBaseURL("Packet CLI", packetToken, nil, "https://api.packet.net/")
@@ -86,11 +86,7 @@ func initConfig() {
 		viper.AddConfigPath(userHomeDir())
 	}
 
-	err := viper.ReadInConfig()
-	if err != nil {
-		fmt.Printf("Unable to read in config file, check the file path and defaults (./packet-cli.{yaml,json} in user home directory) and try again")
-		os.Exit(1)
-	}
+	viper.ReadInConfig()
 
 	if viper.GetString("token") != "" {
 		packetToken = viper.GetString("token")
