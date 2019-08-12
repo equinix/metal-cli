@@ -81,4 +81,6 @@ func init() {
 	createOrganizationCmd.Flags().StringVarP(&logo, "logo", "l", "", "Logo URL]")
 
 	createOrganizationCmd.MarkFlagRequired("name")
+	createOrganizationCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
+	createOrganizationCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

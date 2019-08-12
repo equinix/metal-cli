@@ -41,7 +41,7 @@ Retrieve the list of volumes:
 packet volume get --project-id [project_UUID]
   
 Retrieve a specific volume:
-packet get volume --id [volume_UUID]
+packet volume get --id [volume_UUID]
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {

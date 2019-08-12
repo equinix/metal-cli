@@ -149,4 +149,6 @@ func init() {
 	createDeviceCmd.Flags().BoolVarP(&spotInstance, "spot-instance", "I", false, `Set the device as a spot instance`)
 	createDeviceCmd.Flags().Float64VarP(&spotPriceMax, "spot-price-max", "m", 0, `--spot-price-max=1.2 or -m=1.2`)
 	createDeviceCmd.Flags().StringVarP(&terminationTime, "termination-time", "T", "", `Device termination time: --termination-time="15:04:05"`)
+	createDeviceCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
+	createDeviceCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

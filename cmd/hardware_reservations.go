@@ -26,7 +26,7 @@ import (
 
 // hardwareReservationsCmd represents the hardwareReservations command
 var hardwareReservationsCmd = &cobra.Command{
-	Use:   "hardware_reservation",
+	Use:   "hardware-reservation",
 	Short: "Hardware reservation operations",
 	Long:  `Hardware reservation operations: get, move`,
 }

@@ -74,4 +74,6 @@ func init() {
 	createProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "UUID of the payment method")
 
 	createProjectCmd.MarkFlagRequired("name")
+	createProjectCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
+	createProjectCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }
