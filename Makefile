@@ -5,7 +5,7 @@ K := $(foreach exec,$(EXECUTABLES),\
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 BINARY=packet
-VERSION=0.0.2
+VERSION=0.0.3
 BUILD=`git rev-parse HEAD`
 PLATFORMS=darwin linux windows
 ARCHITECTURES=amd64 arm64
@@ -35,3 +35,6 @@ install:
 generate-docs: clean-docs
 	mkdir -p docs
 	GENDOCS=true go run main.go
+  
+test:
+	go test ./tests

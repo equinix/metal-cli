@@ -84,5 +84,6 @@ func init() {
 	createVolumeCmd.Flags().StringVarP(&billingCycle, "billing-cycle", "b", "hourly", "Billing cycle")
 	createVolumeCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the volume")
 	createVolumeCmd.Flags().BoolVarP(&locked, "locked", "l", false, "Set the volume to be locked")
-
+	createVolumeCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
+	createVolumeCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }
