@@ -68,7 +68,7 @@ func deleteVolume(id string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("Volume deletion initiated. Please check 'packet get volume -i", volumeID, "' for status")
+	fmt.Println("Volume deletion initiated. Please check 'packet volume get -i", volumeID, "' for status")
 	return nil
 }
 
