@@ -180,7 +180,7 @@ packet device get --id [device_UUID]
 ### Get a volume
 
 ```
-packet get volume --id [volume_UUID]
+packet volume get --id [volume_UUID]
 ```
 
 ### List projects
