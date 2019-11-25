@@ -56,7 +56,7 @@ packet event get
 		events := []packngo.Event{}
 		var err error
 		header := []string{"ID", "Body", "Type", "Created"}
-		listOpt := &packngo.ListOptions{Includes: "relationships"}
+		listOpt := &packngo.ListOptions{Includes: []string{"relationships"}}
 
 		if deviceID != "" && projectID != "" && organizationID != "" && eventID != "" {
 			fmt.Println("The id, project-id, device-id, and organization-id parameters are mutually exclusive")
@@ -80,7 +80,8 @@ packet event get
 				return
 			}
 		} else if eventID != "" {
-			event, _, err := PacknGo.Events.Get(eventID, listOpt)
+			getOpt := &packngo.GetOptions{Includes: listOpt.Includes}
+			event, _, err := PacknGo.Events.Get(eventID, getOpt)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return

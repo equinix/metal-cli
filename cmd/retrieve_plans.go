@@ -36,7 +36,7 @@ var retrievePlansCmd = &cobra.Command{
   
   `,
 	Run: func(cmd *cobra.Command, args []string) {
-		plans, _, err := PacknGo.Plans.List()
+		plans, _, err := PacknGo.Plans.List(nil)
 		if err != nil {
 			fmt.Println("Client error:", err)
 			return
@@ -45,6 +45,7 @@ var retrievePlansCmd = &cobra.Command{
 		data := make([][]string, len(plans))
 
 		for i, p := range plans {
+			fmt.Println(p.Pricing)
 			data[i] = []string{p.ID, p.Slug, p.Name}
 		}
 		header := []string{"ID", "Slug", "Name"}

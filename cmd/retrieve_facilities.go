@@ -37,7 +37,7 @@ packet facilities get
 	
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		facilities, _, err := PacknGo.Facilities.List()
+		facilities, _, err := PacknGo.Facilities.List(nil)
 		if err != nil {
 			fmt.Println("Client error:", err)
 			return

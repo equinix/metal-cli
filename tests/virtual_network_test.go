@@ -54,7 +54,7 @@ func TestVirtualNetworkOperations(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
 
@@ -87,7 +87,7 @@ func TestVirtualNetworkOperations(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
 		})
@@ -113,7 +113,7 @@ func TestVirtualNetworkOperations(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
 		})

@@ -68,7 +68,7 @@ packet ip get --reservation-id [reservation_UUID]
 
 			output(ips, header, &data)
 		} else if projectID == "" && reservationID == "" && assignmentID != "" {
-			ip, _, err := PacknGo.DeviceIPs.Get(assignmentID)
+			ip, _, err := PacknGo.DeviceIPs.Get(assignmentID, nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
@@ -81,7 +81,7 @@ packet ip get --reservation-id [reservation_UUID]
 
 			output(ip, header, &data)
 		} else if projectID == "" && assignmentID == "" && reservationID != "" {
-			ip, _, err := PacknGo.ProjectIPs.Get(reservationID)
+			ip, _, err := PacknGo.ProjectIPs.Get(reservationID, nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return

@@ -37,7 +37,7 @@ packet virtual-network get -p [project_UUID]
 
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID)
+		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID, nil)
 		if err != nil {
 			fmt.Println("Client error:", err)
 			return

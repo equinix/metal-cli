@@ -47,12 +47,9 @@ packet ip request --quantity [quantity] --facility [facility_code] --type [addre
 		req := &packngo.IPReservationRequest{
 			Type:     ttype,
 			Quantity: quantity,
-			Facility: facility,
+			Facility: &facility,
 		}
 
-		if comments != "" {
-			req.Comments = comments
-		}
 		reservation, _, err := PacknGo.ProjectIPs.Request(projectID, req)
 		if err != nil {
 			fmt.Println("Client error:", err)

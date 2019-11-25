@@ -41,7 +41,7 @@ packet organization get -i [organization-id]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if organizationID == "" {
-			orgs, _, err := PacknGo.Organizations.List()
+			orgs, _, err := PacknGo.Organizations.List(nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
@@ -56,7 +56,7 @@ packet organization get -i [organization-id]
 
 			output(orgs, header, &data)
 		} else {
-			org, _, err := PacknGo.Organizations.Get(organizationID)
+			org, _, err := PacknGo.Organizations.Get(organizationID, nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return

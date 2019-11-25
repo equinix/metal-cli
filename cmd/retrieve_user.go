@@ -54,7 +54,7 @@ packet user get --id [user_UUID]
 				return
 			}
 		} else {
-			user, _, err = PacknGo.Users.Get(userID)
+			user, _, err = PacknGo.Users.Get(userID, nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
