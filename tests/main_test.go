@@ -99,7 +99,7 @@ func TestCliArgs(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
 			if len(tt.args) > 0 {
@@ -120,7 +120,7 @@ func TestCliArgs(t *testing.T) {
 
 					deviceID = (*device).ID
 					for {
-						dev, _, err := client.Devices.Get(deviceID)
+						dev, _, err := client.Devices.Get(deviceID, nil)
 						if err != nil {
 							break
 						}

@@ -60,7 +60,7 @@ packet ssh-key get --id [ssh-key_UUID]
 
 			output(sshKeys, header, &data)
 		} else {
-			sshKey, _, err := PacknGo.SSHKeys.Get(sshKeyID)
+			sshKey, _, err := PacknGo.SSHKeys.Get(sshKeyID, nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return

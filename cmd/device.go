@@ -26,9 +26,10 @@ import (
 
 // deviceCmd represents the device command
 var deviceCmd = &cobra.Command{
-	Use:   "device",
-	Short: "Device operations",
-	Long:  `Device operations: create, delete, update, start/stop, reboot and get.`,
+	Use:     "device",
+	Aliases: []string{"server"},
+	Short:   "Device operations",
+	Long:    `Device operations: create, delete, update, start/stop, reboot and get.`,
 }
 
 func init() {

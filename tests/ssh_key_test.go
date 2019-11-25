@@ -1,8 +1,9 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
@@ -10,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/packethost/packngo"
+	"golang.org/x/crypto/ssh"
 )
 
 var sshKeyID string
@@ -17,26 +19,14 @@ var sshKeyID string
 func TestSSHKeyOperations(t *testing.T) {
 	client, _ = packngo.NewClientWithBaseURL("Packet CLI", os.Getenv("PACKET_TOKEN"), nil, "https://api.packet.net/")
 
-	data, err := ioutil.ReadFile(os.Getenv("HOME") + "/.ssh/id_rsa.pub")
+	publicKey, err := generatePublicKey()
 	if err != nil {
-		fmt.Println("File reading error", err)
-		return
+		fmt.Println("SSH Key generation error:", err)
 	}
-	key := string(data)
 
 	tests := []Test{
-		{"ssh-key create", []string{"ssh-key", "create", "-l", "test", "-k", key}},
+		{"ssh-key create", []string{"ssh-key", "create", "-l", "test", "-k", publicKey}},
 		{"ssh-key list", []string{"ssh-key", "get", "-j"}},
-	}
-
-	sshKeys, _, _ := client.SSHKeys.List()
-	for _, key := range sshKeys {
-		if key.Label == "test" {
-			sshKeyID = key.ID
-			fmt.Println("sshkeyID", sshKeyID)
-
-			break
-		}
 	}
 
 	cleanup := []Test{
@@ -60,11 +50,20 @@ func TestSSHKeyOperations(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error") {
 				t.Fatal(actual)
 			}
 		})
 	}
+
+	sshKeys, _, _ := client.SSHKeys.List()
+	for _, key := range sshKeys {
+		if key.Label == "test" {
+			sshKeyID = key.ID
+			break
+		}
+	}
+	fmt.Println("outside", sshKeyID)
 
 	for _, tt := range cleanup {
 		t.Run(tt.name, func(t *testing.T) {
@@ -82,6 +81,7 @@ func TestSSHKeyOperations(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+
 			cmd := exec.Command(path.Join(dir, binaryName), tt.args...)
 
 			output, err := cmd.CombinedOutput()
@@ -90,9 +90,30 @@ func TestSSHKeyOperations(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
 		})
 	}
+}
+
+func generatePublicKey() (string, error) {
+	privateKey, err := rsa.GenerateKey(rand.Reader, 4096)
+	if err != nil {
+		return "", err
+	}
+
+	// Validate Private Key
+	err = privateKey.Validate()
+	if err != nil {
+		return "", err
+	}
+
+	publicRsaKey, err := ssh.NewPublicKey(&privateKey.PublicKey)
+	if err != nil {
+		return "", err
+	}
+
+	pubKeyBytes := ssh.MarshalAuthorizedKey(publicRsaKey)
+	return string(pubKeyBytes), nil
 }

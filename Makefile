@@ -30,7 +30,8 @@ clean-docs:
 	rm -rf docs/	
 
 install:
-	go install ${LDFLAGS}
+	go install ${LDFLAGS} 
+	mv ${GOPATH}/bin/packet-cli ${GOPATH}/bin/packet
 
 generate-docs: clean-docs
 	mkdir -p docs

@@ -74,7 +74,7 @@ func TestVolumeOperations(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
 			if len(tt.args) > 0 {
@@ -88,7 +88,7 @@ func TestVolumeOperations(t *testing.T) {
 
 					deviceID = (*device).ID
 					for {
-						dev, _, err := client.Devices.Get(deviceID)
+						dev, _, err := client.Devices.Get(deviceID, nil)
 						if err != nil {
 							break
 						}
@@ -108,7 +108,7 @@ func TestVolumeOperations(t *testing.T) {
 
 					volumeID = (*volume).ID
 					for {
-						vol, _, err := client.Volumes.Get(volumeID)
+						vol, _, err := client.Volumes.Get(volumeID, nil)
 						if err != nil {
 							break
 						}
@@ -151,13 +151,13 @@ func TestVolumeOperations(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
 			if len(tt.args) > 0 {
 				if tt.args[0] == "volume" && (tt.args[1] == "attach" || tt.args[1] == "detach") {
 					for {
-						vol, _, err := client.Volumes.Get(volumeID)
+						vol, _, err := client.Volumes.Get(volumeID, nil)
 						if err != nil {
 							break
 						}
@@ -195,7 +195,7 @@ func TestVolumeOperations(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
 		})

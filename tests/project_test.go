@@ -14,7 +14,7 @@ import (
 
 func TestProjectOperations(t *testing.T) {
 	client, _ = packngo.NewClientWithBaseURL("Packet CLI", os.Getenv("PACKET_TOKEN"), nil, "https://api.packet.net/")
-	orgs, _, _ := client.Organizations.List()
+	orgs, _, _ := client.Organizations.List(nil)
 	orgID := orgs[0].ID
 
 	tests := []Test{
@@ -53,7 +53,7 @@ func TestProjectOperations(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
 
@@ -93,7 +93,7 @@ func TestProjectOperations(t *testing.T) {
 			}
 
 			actual := string(output)
-			if strings.Contains(actual, "Error:") {
+			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
 		})

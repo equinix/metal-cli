@@ -62,7 +62,7 @@ packet device get --id [device_UUID]
 			output(devices, header, &data)
 		} else if deviceID != "" {
 
-			device, _, err := PacknGo.Devices.Get(deviceID)
+			device, _, err := PacknGo.Devices.Get(deviceID, nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return

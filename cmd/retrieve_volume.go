@@ -67,7 +67,7 @@ packet volume get --id [volume_UUID]
 			output(volumes, header, &data)
 		} else if volumeID != "" {
 
-			v, _, err := PacknGo.Volumes.Get(volumeID)
+			v, _, err := PacknGo.Volumes.Get(volumeID, nil)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return

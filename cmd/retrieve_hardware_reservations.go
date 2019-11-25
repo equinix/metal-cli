@@ -38,7 +38,7 @@ packet hardware_reservations get -p [project_id]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		header := []string{"ID", "Facility", "Plan", "Created"}
-		listOpt := &packngo.ListOptions{Includes: "project,facility,device"}
+		listOpt := &packngo.ListOptions{Includes: []string{"project,facility,device"}}
 
 		if hardwareReservationID == "" && projectID == "" {
 			fmt.Println("Either id or project-id should be set.")
@@ -61,7 +61,8 @@ packet hardware_reservations get -p [project_id]
 
 			output(reservations, header, &data)
 		} else if hardwareReservationID != "" {
-			r, _, err := PacknGo.HardwareReservations.Get(hardwareReservationID, listOpt)
+			getOpt := &packngo.GetOptions{Includes: listOpt.Includes}
+			r, _, err := PacknGo.HardwareReservations.Get(hardwareReservationID, getOpt)
 			if err != nil {
 				fmt.Println("Client error:", err)
 				return
