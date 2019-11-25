@@ -45,7 +45,6 @@ var retrievePlansCmd = &cobra.Command{
 		data := make([][]string, len(plans))
 
 		for i, p := range plans {
-			fmt.Println(p.Pricing)
 			data[i] = []string{p.ID, p.Slug, p.Name}
 		}
 		header := []string{"ID", "Slug", "Name"}
