@@ -14,3 +14,4 @@ packet
 
 bin/
 *.zip
+.idea/*
