@@ -7,7 +7,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 BINARY=packet
 VERSION=0.0.4
 BUILD=`git rev-parse --short HEAD`
-PLATFORMS=darwin linux windows
+PLATFORMS=darwin linux windows freebsd
 ARCHITECTURES=amd64 arm64
 
 # Setup linker flags option for build that interoperate with variable names in src code
