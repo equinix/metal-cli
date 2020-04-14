@@ -26,7 +26,7 @@ import (
 
 // capacityCmd represents the capacity command
 var capacityCmd = &cobra.Command{
-	Use:   "capactiy",
+	Use:   "capacity",
 	Short: "Capacities operations",
 	Long:  `Capacities operations: get, check`,
 }
