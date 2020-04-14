@@ -19,8 +19,7 @@ type Cli struct {
 
 // VERSION build
 var (
-	Build   string = "0.0.6"
-	Version string = "66eff26"
+	Version string = "0.0.6"
 )
 
 // NewCli struct

@@ -73,7 +73,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Path to JSON or YAML configuration file")
-	rootCmd.Version = Version + "+" + Build
+	rootCmd.Version = Version
 }
 
 // initConfig reads in config file and ENV variables if set.
