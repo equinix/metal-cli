@@ -14,7 +14,6 @@ ARCHITECTURES=amd64 arm64
 LDFLAGS=-ldflags "-X github.com/packethost/packet-cli/cmd.Version=${VERSION} -X github.com/packethost/packet-cli/cmd.Build=${BUILD}"
 
 default: generate-docs
-	@echo ${LDFLAGS}
 	go fmt ./...
 build:
 	go build ${LDFLAGS} -o bin/${BINARY}
