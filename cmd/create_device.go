@@ -76,6 +76,10 @@ packet device create --hostname [hostname] --plan [plan] --facility [facility_co
 			request.UserData = userdata
 		}
 
+		if customdata != "" {
+			request.CustomData = customdata
+		}
+
 		if len(tags) > 0 {
 			request.Tags = tags
 		}
