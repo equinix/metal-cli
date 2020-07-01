@@ -35,7 +35,7 @@ install:
 
 generate-docs: clean-docs
 	mkdir -p docs
-	GENDOCS=true go run main.go
+	go run main.go docs ./docs
 
 test:
 	go test ./tests
