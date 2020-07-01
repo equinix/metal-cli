@@ -9,6 +9,7 @@
   * [Linux](#linux)
   * [Mac OS X](#mac-os-x)
   * [Windows](#windows)
+  * [Shell Completion](#shell-completion)
 * [Authentication](#authentication)
 * [Reference](#reference)
 * [Example Syntax](#example-syntax)
@@ -75,6 +76,12 @@ The path can be viewed by running:
 ```
 echo $env:Path
 ```
+
+### Shell Completion
+
+Once installed, shell completion can be enabled (in Bash) with `source <(packet completion bash)` (or for some versions of Bash, `eval "$(packet completion bash)").
+
+Check `packet completion -h` for instructions to use in other shells.
 
 ## Authentication
 
@@ -201,6 +208,5 @@ Details on all available commands can be found by visiting the reference [pages]
 
 For help with this package:
 
-* Open up a GitHub issue [here](https://github.com/fog/fog-packet/issues).
+* Open up a GitHub issue [here](https://github.com/packethost/packet-cli/issues).
 * Contact the [Packet Community Slack](http://slack.packet.net) or on Freenode IRC in the #packethost channel.
-* Search the [Packet Help Center](http://help.packet.net/).
