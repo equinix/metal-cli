@@ -57,7 +57,7 @@ func packetConnect(cmd *cobra.Command, args []string) {
 		fmt.Println("Client error:", err)
 		return
 	}
-
+	client.UserAgent = fmt.Sprintf("packet-cli/%s %s", Version, client.UserAgent)
 	PacknGo = *client
 }
 

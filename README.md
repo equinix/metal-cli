@@ -143,7 +143,7 @@ Use "packet [command] --help" for more information about a command.
 
 ## Reference
 
-The full CLI documentation can be found [here](docs/packet.md) or Daby clicking the links below.
+The full CLI documentation can be found [here](docs/packet.md) or by clicking the links below.
 
 * [Device operations](docs/packet_device.md)
 * [Facility operations](docs/packet_facilities.md)
