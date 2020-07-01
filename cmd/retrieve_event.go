@@ -53,7 +53,7 @@ Retrieve all events of a current user:
 packet event get
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		events := []packngo.Event{}
+		var events []packngo.Event
 		var err error
 		header := []string{"ID", "Body", "Type", "Created"}
 		listOpt := &packngo.ListOptions{Includes: []string{"relationships"}}

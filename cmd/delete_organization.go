@@ -75,6 +75,6 @@ func deleteOrganization(id string) error {
 
 func init() {
 	deleteOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "UUID of the organization")
-	deleteOrganizationCmd.MarkFlagRequired("organization-id")
+	_ = deleteOrganizationCmd.MarkFlagRequired("organization-id")
 	deleteOrganizationCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the organization")
 }

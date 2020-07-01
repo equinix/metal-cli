@@ -76,7 +76,7 @@ func deleteVnet(id string) error {
 }
 func init() {
 	deleteVirtualNetworkCmd.Flags().StringVarP(&vnetID, "id", "i", "", "UUID of the vlan")
-	deleteVirtualNetworkCmd.MarkFlagRequired("id")
+	_ = deleteVirtualNetworkCmd.MarkFlagRequired("id")
 	deleteVirtualNetworkCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the virtual network")
 
 }

@@ -134,7 +134,3 @@ func TestCliArgs(t *testing.T) {
 		})
 	}
 }
-
-type organizationsRoot struct {
-	Organizations []packngo.Organization `json:"organizations"`
-}

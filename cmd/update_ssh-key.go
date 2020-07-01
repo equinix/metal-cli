@@ -65,5 +65,5 @@ func init() {
 	updateSSHKeyCmd.Flags().StringVarP(&key, "key", "k", "", "Public SSH key string")
 	updateSSHKeyCmd.Flags().StringVarP(&label, "label", "l", "", "Name of the SSH key")
 
-	updateSSHKeyCmd.MarkFlagRequired("project-id")
+	_ = updateSSHKeyCmd.MarkFlagRequired("project-id")
 }

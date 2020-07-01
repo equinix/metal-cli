@@ -61,6 +61,6 @@ func init() {
 	availableCmd.Flags().StringVarP(&reservationID, "reservation-id", "r", "", "UUID of the reservation")
 	availableCmd.Flags().IntVarP(&cidr, "cidr", "c", 0, "Size of subnet")
 
-	availableCmd.MarkFlagRequired("reservation-id")
-	availableCmd.MarkFlagRequired("cidr")
+	_ = availableCmd.MarkFlagRequired("reservation-id")
+	_ = availableCmd.MarkFlagRequired("cidr")
 }

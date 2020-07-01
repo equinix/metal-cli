@@ -49,5 +49,5 @@ packet ip remove --id [reservation-UUID]
 func init() {
 	removeIPCmd.Flags().StringVarP(&reservationID, "id", "i", "", "UUID of the reservation")
 
-	removeIPCmd.MarkFlagRequired("id")
+	_ = removeIPCmd.MarkFlagRequired("id")
 }

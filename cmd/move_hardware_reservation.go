@@ -54,6 +54,6 @@ func init() {
 	hardwareReservationsCmd.AddCommand(moveHardwareReservationCmd)
 	moveHardwareReservationCmd.Flags().StringVarP(&hardwareReservationID, "id", "i", "", "UUID of the hardware reservation")
 	moveHardwareReservationCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
-	moveHardwareReservationCmd.MarkFlagRequired("project-id")
-	moveHardwareReservationCmd.MarkFlagRequired("id")
+	_ = moveHardwareReservationCmd.MarkFlagRequired("project-id")
+	_ = moveHardwareReservationCmd.MarkFlagRequired("id")
 }

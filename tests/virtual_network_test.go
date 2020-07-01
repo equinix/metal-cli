@@ -3,12 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/packethost/packngo"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
 	"testing"
+
+	"github.com/packethost/packngo"
 )
 
 var virtualNetworkID string

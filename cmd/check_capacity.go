@@ -67,9 +67,9 @@ func init() {
 	checkCapacityCommand.Flags().StringVarP(&plan, "plan", "p", "", "Name of the plan")
 	checkCapacityCommand.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of devices wanted")
 
-	checkCapacityCommand.MarkFlagRequired("facility")
-	checkCapacityCommand.MarkFlagRequired("plan")
-	checkCapacityCommand.MarkFlagRequired("quantity")
+	_ = checkCapacityCommand.MarkFlagRequired("facility")
+	_ = checkCapacityCommand.MarkFlagRequired("plan")
+	_ = checkCapacityCommand.MarkFlagRequired("quantity")
 	checkCapacityCommand.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
 	checkCapacityCommand.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

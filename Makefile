@@ -16,12 +16,28 @@ endif
 BUILD=`git rev-parse --short HEAD`
 PLATFORMS?=darwin linux windows freebsd
 ARCHITECTURES?=amd64 arm64
+GOBIN?=$(shell go env GOPATH)/bin
+LINTER?=$(GOBIN)/golangci-lint
+FORMATTER?=$(GOBIN)/goimports
+
 
 # Setup linker flags option for build that interoperate with variable names in src code
 LDFLAGS?=-ldflags "-X $(PACKAGE_NAME)/cmd.Version=$(VERSION) -X $(PACKAGE_NAME)/cmd.Build=$(BUILD)"
 
-default: generate-docs
-	go fmt ./...
+.PHONY: default fmt fmt-check lint test vet golint tag version
+default: lint generate-docs
+
+## fmt files
+fmt: $(FORMATTER)
+	$(FORMATTER) -lw .
+$(FORMATTER):
+	go get golang.org/x/tools/cmd/goimports
+
+lint: $(LINTER)
+	$(LINTER) run ./...
+$(LINTER):
+	go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.30.0
+
 build:
 	go build ${LDFLAGS} -o bin/${BINARY}
 

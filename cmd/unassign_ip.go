@@ -48,5 +48,5 @@ packet ip unassign --id [assignment-UUID]
 
 func init() {
 	unassignIPCmd.Flags().StringVarP(&assignmentID, "id", "i", "", "UUID of the assignment")
-	unassignIPCmd.MarkFlagRequired("id")
+	_ = unassignIPCmd.MarkFlagRequired("id")
 }

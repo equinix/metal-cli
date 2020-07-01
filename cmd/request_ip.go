@@ -71,10 +71,10 @@ func init() {
 	requestIPCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	requestIPCmd.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of IP addresses to reserve")
 
-	requestIPCmd.MarkFlagRequired("project-id")
-	requestIPCmd.MarkFlagRequired("type")
-	requestIPCmd.MarkFlagRequired("quantity")
-	requestIPCmd.MarkFlagRequired("facility")
+	_ = requestIPCmd.MarkFlagRequired("project-id")
+	_ = requestIPCmd.MarkFlagRequired("type")
+	_ = requestIPCmd.MarkFlagRequired("quantity")
+	_ = requestIPCmd.MarkFlagRequired("facility")
 
 	requestIPCmd.Flags().StringVarP(&comments, "comments", "c", "", "General comments")
 }

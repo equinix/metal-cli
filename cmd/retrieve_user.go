@@ -46,7 +46,7 @@ packet user get --id [user_UUID]
   `,
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
-		user := &packngo.User{}
+		var user *packngo.User
 		if userID == "" {
 			user, _, err = PacknGo.Users.Current()
 			if err != nil {

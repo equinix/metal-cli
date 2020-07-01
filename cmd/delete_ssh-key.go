@@ -74,7 +74,7 @@ func deleteSSHKey(id string) error {
 
 func init() {
 	deleteSSHKeyCmd.Flags().StringVarP(&sshKeyID, "id", "i", "", "UUID of the SSH key")
-	deleteSSHKeyCmd.MarkFlagRequired("id")
+	_ = deleteSSHKeyCmd.MarkFlagRequired("id")
 
 	deleteSSHKeyCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the SSH key")
 }

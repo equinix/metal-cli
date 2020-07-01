@@ -76,5 +76,5 @@ func deleteDevice(id string) error {
 func init() {
 	deleteDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
 	deleteDeviceCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the device")
-	deleteDeviceCmd.MarkFlagRequired("id")
+	_ = deleteDeviceCmd.MarkFlagRequired("id")
 }

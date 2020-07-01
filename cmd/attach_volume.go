@@ -54,6 +54,6 @@ func init() {
 	attachVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "UUID of the volume")
 	attachVolumeCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
 
-	attachVolumeCmd.MarkFlagRequired("id")
-	attachVolumeCmd.MarkFlagRequired("device-id")
+	_ = attachVolumeCmd.MarkFlagRequired("id")
+	_ = attachVolumeCmd.MarkFlagRequired("device-id")
 }

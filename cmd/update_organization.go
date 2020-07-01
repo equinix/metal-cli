@@ -77,5 +77,5 @@ func init() {
 	updateOrganizationCmd.Flags().StringVarP(&twitter, "twitter", "t", "", "Twitter URL of the organization")
 	updateOrganizationCmd.Flags().StringVarP(&logo, "logo", "l", "", "Logo URL of the organization")
 
-	updateOrganizationCmd.MarkFlagRequired("id")
+	_ = updateOrganizationCmd.MarkFlagRequired("id")
 }

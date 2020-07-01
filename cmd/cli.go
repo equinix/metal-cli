@@ -31,7 +31,13 @@ func NewCli() *Cli {
 		fmt.Println("Client error:", err)
 		return nil
 	}
-	rootCmd.Execute()
+
+	err = rootCmd.Execute()
+	if err != nil {
+		fmt.Println("Execution error:", err)
+		return nil
+	}
+
 	rootCmd.DisableSuggestions = false
 	cli.MainCmd = rootCmd
 	return cli

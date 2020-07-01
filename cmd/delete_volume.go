@@ -76,5 +76,5 @@ func init() {
 	deleteVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "UUID of volume")
 	deleteVolumeCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the volume")
 
-	deleteVolumeCmd.MarkFlagRequired("id")
+	_ = deleteVolumeCmd.MarkFlagRequired("id")
 }

@@ -52,7 +52,7 @@ var createVolumeCmd = &cobra.Command{
 		if description != "" {
 			req.Description = description
 		}
-		if locked != false {
+		if locked {
 			req.Locked = locked
 		}
 
@@ -76,10 +76,10 @@ func init() {
 	createVolumeCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility where the volume will be created")
 	createVolumeCmd.Flags().IntVarP(&size, "size", "s", 0, "Size in GB]")
 
-	createVolumeCmd.MarkFlagRequired("size")
-	createVolumeCmd.MarkFlagRequired("facility")
-	createVolumeCmd.MarkFlagRequired("plan")
-	createVolumeCmd.MarkFlagRequired("project-id")
+	_ = createVolumeCmd.MarkFlagRequired("size")
+	_ = createVolumeCmd.MarkFlagRequired("facility")
+	_ = createVolumeCmd.MarkFlagRequired("plan")
+	_ = createVolumeCmd.MarkFlagRequired("project-id")
 
 	createVolumeCmd.Flags().StringVarP(&billingCycle, "billing-cycle", "b", "hourly", "Billing cycle")
 	createVolumeCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the volume")

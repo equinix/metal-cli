@@ -49,5 +49,5 @@ packet device reboot --id [device_UUID]
 func init() {
 	rebootDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "--id or -i [device_UUID]")
 
-	rebootDeviceCmd.MarkFlagRequired("id")
+	_ = rebootDeviceCmd.MarkFlagRequired("id")
 }
