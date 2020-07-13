@@ -62,7 +62,11 @@ packet ip get --reservation-id [reservation_UUID]
 			data := make([][]string, len(ips))
 
 			for i, ip := range ips {
-				data[i] = []string{ip.ID, ip.Address, ip.Facility.Code, strconv.FormatBool(ip.Public), ip.Created}
+				code := ""
+				if ip.Facility != nil {
+					code = ip.Facility.Code
+				}
+				data[i] = []string{ip.ID, ip.Address, code, strconv.FormatBool(ip.Public), ip.Created}
 			}
 			header := []string{"ID", "Address", "Facility", "Public", "Created"}
 
