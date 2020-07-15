@@ -26,9 +26,10 @@ import (
 
 // operatingSystemCmd represents the operatingSystem command
 var operatingSystemCmd = &cobra.Command{
-	Use:   "operating-systems",
-	Short: "Operating system operations",
-	Long:  `Operating system operations: get`,
+	Use:     "operating-systems",
+	Aliases: []string{"os"},
+	Short:   "Operating system operations",
+	Long:    `Operating system operations: get`,
 }
 
 func init() {

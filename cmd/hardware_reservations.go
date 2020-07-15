@@ -26,9 +26,10 @@ import (
 
 // hardwareReservationsCmd represents the hardwareReservations command
 var hardwareReservationsCmd = &cobra.Command{
-	Use:   "hardware-reservation",
-	Short: "Hardware reservation operations",
-	Long:  `Hardware reservation operations: get, move`,
+	Use:     "hardware-reservation",
+	Aliases: []string{"hardware-reservations"},
+	Short:   "Hardware reservation operations",
+	Long:    `Hardware reservation operations: get, move`,
 }
 
 func init() {

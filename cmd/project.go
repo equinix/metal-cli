@@ -26,9 +26,10 @@ import (
 
 // projectCmd represents the project command
 var projectCmd = &cobra.Command{
-	Use:   "project",
-	Short: "Project operations",
-	Long:  `Project operations: create, delete, update and get`,
+	Use:     "project",
+	Aliases: []string{"projects"},
+	Short:   "Project operations",
+	Long:    `Project operations: create, delete, update and get`,
 }
 
 func init() {

@@ -26,9 +26,10 @@ import (
 
 // eventsCmd represents the events command
 var eventCmd = &cobra.Command{
-	Use:   "event",
-	Short: "Events operations",
-	Long:  `Events operations: get`,
+	Use:     "event",
+	Aliases: []string{"events"},
+	Short:   "Events operations",
+	Long:    `Events operations: get`,
 }
 
 func init() {

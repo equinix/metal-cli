@@ -26,9 +26,10 @@ import (
 
 // ipCmd represents the ip command
 var ipCmd = &cobra.Command{
-	Use:   "ip",
-	Short: "IP operations",
-	Long:  `IP address, reservations and assignment operations: assign, unassign, remove, available, request and get `,
+	Use:     "ip",
+	Aliases: []string{"ips", "ip-addresses", "ip-address"},
+	Short:   "IP operations",
+	Long:    `IP address, reservations and assignment operations: assign, unassign, remove, available, request and get `,
 }
 
 func init() {

@@ -26,9 +26,10 @@ import (
 
 // virtualNetworkCmd represents the virtualNetwork command
 var virtualNetworkCmd = &cobra.Command{
-	Use:   "virtual-network",
-	Short: "Virtual network operations",
-	Long:  `Virtual network operations: create, delete and get`,
+	Use:     "virtual-network",
+	Aliases: []string{"vlan", "vlans"},
+	Short:   "Virtual network operations",
+	Long:    `Virtual network operations: create, delete and get`,
 }
 
 func init() {
