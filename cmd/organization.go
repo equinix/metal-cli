@@ -26,9 +26,10 @@ import (
 
 // organizationCmd represents the organization command
 var organizationCmd = &cobra.Command{
-	Use:   "organization",
-	Short: "Organization operations",
-	Long:  `Organization operations: create, update, delete and get`,
+	Use:     "organization",
+	Aliases: []string{"organizations", "org", "orgs"},
+	Short:   "Organization operations",
+	Long:    `Organization operations: create, update, delete and get`,
 }
 
 func init() {

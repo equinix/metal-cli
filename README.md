@@ -9,6 +9,7 @@
   * [Linux](#linux)
   * [Mac OS X](#mac-os-x)
   * [Windows](#windows)
+  * [Shell Completion](#shell-completion)
 * [Authentication](#authentication)
 * [Reference](#reference)
 * [Example Syntax](#example-syntax)
@@ -76,6 +77,12 @@ The path can be viewed by running:
 echo $env:Path
 ```
 
+### Shell Completion
+
+Once installed, shell completion can be enabled (in Bash) with `source <(packet completion bash)` (or for some versions of Bash, `eval "$(packet completion bash)").
+
+Check `packet completion -h` for instructions to use in other shells.
+
 ## Authentication
 
 The Packet authentication token can be stored in the `$PACKET_TOKEN` environment variable or in JSON or YAML configuration files. The configuration file path can be overridden with the `--config` flag.
@@ -136,7 +143,7 @@ Use "packet [command] --help" for more information about a command.
 
 ## Reference
 
-The full CLI documentation can be found [here](docs/packet.md) or Daby clicking the links below.
+The full CLI documentation can be found [here](docs/packet.md) or by clicking the links below.
 
 * [Device operations](docs/packet_device.md)
 * [Facility operations](docs/packet_facilities.md)
@@ -201,6 +208,5 @@ Details on all available commands can be found by visiting the reference [pages]
 
 For help with this package:
 
-* Open up a GitHub issue [here](https://github.com/fog/fog-packet/issues).
+* Open up a GitHub issue [here](https://github.com/packethost/packet-cli/issues).
 * Contact the [Packet Community Slack](http://slack.packet.net) or on Freenode IRC in the #packethost channel.
-* Search the [Packet Help Center](http://help.packet.net/).

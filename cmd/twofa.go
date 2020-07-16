@@ -26,9 +26,10 @@ import (
 
 // 2faCmd represents the 2fa command
 var twofaCmd = &cobra.Command{
-	Use:   "2fa",
-	Short: "Two Factor Authentication operations",
-	Long:  `Two Factor Authentication operations: enable, disable, receive`,
+	Use:     "2fa",
+	Aliases: []string{"tfa", "mfa", "totp"},
+	Short:   "Two Factor Authentication operations",
+	Long:    `Two Factor Authentication operations: enable, disable, receive`,
 }
 
 func init() {

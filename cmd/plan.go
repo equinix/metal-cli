@@ -26,9 +26,10 @@ import (
 
 // planCmd represents the plan command
 var planCmd = &cobra.Command{
-	Use:   "plan",
-	Short: "Plan operations",
-	Long:  `Plan operations: get`,
+	Use:     "plan",
+	Aliases: []string{"plans"},
+	Short:   "Plan operations",
+	Long:    `Plan operations: get`,
 }
 
 func init() {

@@ -26,9 +26,10 @@ import (
 
 // enableVpnCmd represents the enableVpn command
 var vpnCmd = &cobra.Command{
-	Use:   "vpn",
-	Short: "VPN service operations",
-	Long:  `VPN service operations: enable, disable, get`,
+	Use:     "vpn",
+	Aliases: []string{"vpns"},
+	Short:   "VPN service operations",
+	Long:    `VPN service operations: enable, disable, get`,
 }
 
 func init() {

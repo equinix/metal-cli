@@ -26,9 +26,10 @@ import (
 
 // facilityCmd represents the facility command
 var facilityCmd = &cobra.Command{
-	Use:   "facilities",
-	Short: "Facility operations",
-	Long:  `Facility operations: get`,
+	Use:     "facilities",
+	Aliases: []string{"facility"},
+	Short:   "Facility operations",
+	Long:    `Facility operations: get`,
 }
 
 func init() {

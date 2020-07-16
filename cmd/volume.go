@@ -26,9 +26,10 @@ import (
 
 // volumeCmd represents the volume command
 var volumeCmd = &cobra.Command{
-	Use:   "volume",
-	Short: "Volume operations",
-	Long:  `Volume operations: create, delete, attach, detach and get`,
+	Use:     "volume",
+	Aliases: []string{"volumes"},
+	Short:   "Volume operations",
+	Long:    `Volume operations: create, delete, attach, detach and get`,
 }
 
 func init() {

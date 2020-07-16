@@ -28,8 +28,9 @@ import (
 
 // paymentMethodsCmd represents the paymentMethods command
 var paymentMethodsCmd = &cobra.Command{
-	Use:   "payment-methods",
-	Short: "Retrieves a list of payment methods for the organization",
+	Use:     "payment-methods",
+	Aliases: []string{"payment-method"},
+	Short:   "Retrieves a list of payment methods for the organization",
 	Long: `Example:
 
 packet organization get payment-methods --id [organization_UUID]
