@@ -4,14 +4,21 @@ K := $(foreach exec,$(EXECUTABLES),\
 
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-BINARY=packet
-VERSION=0.0.5
+PACKAGE_NAME?=github.com/packethost/packet-cli
+BINARY?=packet
+GIT_VERSION?=$(shell git log -1 --format="%h")
+VERSION?=$(GIT_VERSION)
+RELEASE_TAG?=$(shell git tag --points-at HEAD)
+ifneq (,$(RELEASE_TAG))
+VERSION:=$(RELEASE_TAG)-$(VERSION)
+endif
+
 BUILD=`git rev-parse --short HEAD`
-PLATFORMS=darwin linux windows freebsd
-ARCHITECTURES=amd64 arm64
+PLATFORMS?=darwin linux windows freebsd
+ARCHITECTURES?=amd64 arm64
 
 # Setup linker flags option for build that interoperate with variable names in src code
-LDFLAGS=-ldflags "-X github.com/packethost/packet-cli/cmd.Version=${VERSION} -X github.com/packethost/packet-cli/cmd.Build=${BUILD}"
+LDFLAGS?=-ldflags "-X $(PACKAGE_NAME)/cmd.Version=$(VERSION) -X $(PACKAGE_NAME)/cmd.Build=$(BUILD)"
 
 default: generate-docs
 	go fmt ./...
