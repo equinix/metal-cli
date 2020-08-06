@@ -15,3 +15,4 @@ packet
 bin/
 *.zip
 .idea/*
+.vscode
