@@ -37,9 +37,14 @@ The [Packet CLI binaries](https://github.com/packethost/packet-cli/releases) are
 
 ## Installation
 
-Extract the appropriate Packet CLI binaries for your platform to the desired location. If the directory is not already in your `PATH` environment variable, then it will need to be added.
+Download the appropriate Packet CLI binaries for your platform to the desired location and rename it to `packet`. If the directory is not already in your `PATH` environment variable, then it will need to be added.
 
-### Linux
+### Configuring your Path
+
+<details>
+  <summary>Configure your path in Linux</summary>
+
+## Linux
 
 If you plan to run the Packet CLI in a shell on Linux and placed the binary in /home/YOUR-USER-NAME/packet-cli/, then type the following into your terminal:
 
@@ -52,10 +57,14 @@ You can view the current value of $PATH by running:
 ```
 echo $PATH
 ```
+</details>
+
+<details>
+  <summary>Configure your path in Mac OS/X</summary>
 
 ### Mac OS X
 
-If you plan to run the Packet CLI in a shell on a Mac and placed the binary in /Users/YOUR-USER-NAME/packet-cli/, then type the following into your terminal.
+If you plan to run the Packet CLI in a shell on a Mac, download the `darwin` binary and placed the it in /Users/YOUR-USER-NAME/packet-cli/, then type the following into your terminal.
 
 ```
 export PATH=$PATH:/Users/$USER/packet-cli
@@ -66,6 +75,17 @@ You can view the current value of $PATH by running:
 ```
 echo $PATH
 ```
+
+When running the downloaded binary on a Mac, you may be prompted with the following message:
+
+> "packet" cannot be opened because the developer cannot be verified
+
+The binary can be trusted by enabling "App Store and identified developers" in "System Preferences -> Security & Privacy -> General".  Any blocked apps will appear in the bottom of this window, where they can be authorized.
+
+</details>
+
+<details>
+  <summary>Configure your path in Windows</summary>
 
 ### Windows
 
@@ -81,6 +101,7 @@ The path can be viewed by running:
 ```
 echo $env:Path
 ```
+</details>
 
 ### Shell Completion
 
