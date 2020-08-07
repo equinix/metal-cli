@@ -27,6 +27,7 @@ Command line interface for Packet Host
 * [packet plan](packet_plan.md)	 - Plan operations
 * [packet project](packet_project.md)	 - Project operations
 * [packet ssh-key](packet_ssh-key.md)	 - SSH key operations
+* [packet terraform](packet_terraform.md)	 - Terraform operations
 * [packet user](packet_user.md)	 - User operations
 * [packet virtual-network](packet_virtual-network.md)	 - Virtual network operations
 * [packet volume](packet_volume.md)	 - Volume operations
