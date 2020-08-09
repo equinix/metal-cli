@@ -57,7 +57,7 @@ packet device update --id [device_UUID] --hostname [new_hostname]
 			req.UserData = &userdata
 		}
 
-		if locked != false {
+		if locked {
 			req.Locked = &locked
 		}
 
@@ -65,7 +65,7 @@ packet device update --id [device_UUID] --hostname [new_hostname]
 			req.Tags = &tags
 		}
 
-		if alwaysPXE != false {
+		if alwaysPXE {
 			req.AlwaysPXE = &alwaysPXE
 		}
 
@@ -102,6 +102,6 @@ func init() {
 	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "URL to the iPXE script")
 	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Custom data")
 
-	updateDeviceCmd.MarkFlagRequired("id")
+	_ = updateDeviceCmd.MarkFlagRequired("id")
 
 }

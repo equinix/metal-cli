@@ -74,7 +74,7 @@ func deleteProject(id string) error {
 
 func init() {
 	deleteProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "UUID of the project")
-	deleteProjectCmd.MarkFlagRequired("id")
+	_ = deleteProjectCmd.MarkFlagRequired("id")
 
 	deleteProjectCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the project")
 }

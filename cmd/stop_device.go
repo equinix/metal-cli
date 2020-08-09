@@ -49,5 +49,5 @@ var stopDeviceCmd = &cobra.Command{
 
 func init() {
 	stopDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
-	stopDeviceCmd.MarkFlagRequired("id")
+	_ = stopDeviceCmd.MarkFlagRequired("id")
 }

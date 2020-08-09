@@ -22,6 +22,7 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -66,17 +67,19 @@ var completionCmd = &cobra.Command{
 	Hidden:                true,
 	ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},
 	Args:                  cobra.ExactValidArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		switch args[0] {
 		case "bash":
-			cmd.Root().GenBashCompletion(os.Stdout)
+			return cmd.Root().GenBashCompletion(os.Stdout)
 		case "zsh":
-			cmd.Root().GenZshCompletion(os.Stdout)
+			return cmd.Root().GenZshCompletion(os.Stdout)
 		case "fish":
-			cmd.Root().GenFishCompletion(os.Stdout, true)
+			return cmd.Root().GenFishCompletion(os.Stdout, true)
 		case "powershell":
-			cmd.Root().GenPowerShellCompletion(os.Stdout)
+			return cmd.Root().GenPowerShellCompletion(os.Stdout)
 		}
+		// ValidArgs make this error response dead-code
+		return fmt.Errorf("unknown shell: %q", args[0])
 	},
 }
 

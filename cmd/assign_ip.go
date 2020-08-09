@@ -62,6 +62,6 @@ func init() {
 	assignIPCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
 	assignIPCmd.Flags().StringVarP(&address, "address", "a", "", "IP Address")
 
-	assignIPCmd.MarkFlagRequired("device-id")
-	assignIPCmd.MarkFlagRequired("address")
+	_ = assignIPCmd.MarkFlagRequired("device-id")
+	_ = assignIPCmd.MarkFlagRequired("address")
 }

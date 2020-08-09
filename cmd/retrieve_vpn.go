@@ -52,7 +52,7 @@ packet vpn get --faciliy ewr1
 
 func init() {
 	retrieveVpnCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility for which VPN config is to be retrieved")
-	retrieveVpnCmd.MarkFlagRequired("id")
+	_ = retrieveVpnCmd.MarkFlagRequired("id")
 
 	retrieveVpnCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
 	retrieveVpnCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")

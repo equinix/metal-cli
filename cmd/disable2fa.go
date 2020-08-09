@@ -39,10 +39,10 @@ Disable two factor authentication via APP
 packet 2fa disable -a -t [token]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		if sms == false && app == false {
+		if !sms && !app {
 			fmt.Println("Either sms or app should be set")
 			return
-		} else if sms == true && app == true {
+		} else if sms && app {
 			fmt.Println("Either sms or app can be set.")
 			return
 		} else if sms {
@@ -68,5 +68,5 @@ func init() {
 	disable2faCmd.Flags().BoolVarP(&sms, "sms", "s", false, "Issues SMS otp token to user's phone")
 	disable2faCmd.Flags().BoolVarP(&app, "app", "a", false, "Issues otp uri for auth application")
 	disable2faCmd.Flags().StringVarP(&token, "token", "t", "", "Two factor authentication token")
-	disable2faCmd.MarkFlagRequired("token")
+	_ = disable2faCmd.MarkFlagRequired("token")
 }

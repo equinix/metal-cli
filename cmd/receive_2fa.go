@@ -42,10 +42,10 @@ packet 2fa receive -a
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		if sms == false && app == false {
+		if !sms && !app {
 			fmt.Println("Either sms or app should be set")
 			return
-		} else if sms == true && app == true {
+		} else if sms && app {
 			fmt.Println("Either sms or app can be set.")
 			return
 		} else if sms {

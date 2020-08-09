@@ -49,5 +49,5 @@ packet device start --id [device_UUID]
 
 func init() {
 	startDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
-	startDeviceCmd.MarkFlagRequired("id")
+	_ = startDeviceCmd.MarkFlagRequired("id")
 }

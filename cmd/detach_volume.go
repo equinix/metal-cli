@@ -53,5 +53,5 @@ packet volume detach --id [attachment_UUID]
 func init() {
 	detachVolumeCmd.Flags().StringVarP(&attachmentID, "id", "i", "", "UUID of the attached volume")
 
-	detachVolumeCmd.MarkFlagRequired("id")
+	_ = detachVolumeCmd.MarkFlagRequired("id")
 }

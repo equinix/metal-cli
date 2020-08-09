@@ -65,8 +65,8 @@ func init() {
 	createSSHKeyCmd.Flags().StringVarP(&label, "label", "l", "", "Name of the SSH key")
 	createSSHKeyCmd.Flags().StringVarP(&key, "key", "k", "", "Public SSH key string")
 
-	createSSHKeyCmd.MarkFlagRequired("label")
-	createSSHKeyCmd.MarkFlagRequired("key")
+	_ = createSSHKeyCmd.MarkFlagRequired("label")
+	_ = createSSHKeyCmd.MarkFlagRequired("key")
 	createSSHKeyCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
 	createSSHKeyCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

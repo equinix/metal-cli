@@ -57,5 +57,5 @@ packet organization get payment-methods --id [organization_UUID]
 func init() {
 	retrieveOrganizationCmd.AddCommand(paymentMethodsCmd)
 	paymentMethodsCmd.Flags().StringVarP(&organizationID, "id", "i", "", "UUID of the organization")
-	paymentMethodsCmd.MarkFlagRequired("id")
+	_ = paymentMethodsCmd.MarkFlagRequired("id")
 }
