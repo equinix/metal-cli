@@ -21,8 +21,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -32,11 +31,10 @@ var retrieveOperatingSystemCmd = &cobra.Command{
 	Short: "Retrieves a list of available operating systems.",
 	Long: `Example:
   packet operating-systems get`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		oss, _, err := PacknGo.OperatingSystems.List()
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not list OperatingSystems")
 		}
 
 		data := make([][]string, len(oss))
@@ -46,7 +44,7 @@ var retrieveOperatingSystemCmd = &cobra.Command{
 		}
 		header := []string{"Name", "Slug", "Distro", "Version"}
 
-		output(oss, header, &data)
+		return output(oss, header, &data)
 	},
 }
 

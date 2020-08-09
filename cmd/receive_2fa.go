@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -41,34 +42,31 @@ Issue the token via app:
 packet 2fa receive -a
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		if !sms && !app {
-			fmt.Println("Either sms or app should be set")
-			return
-		} else if sms && app {
-			fmt.Println("Either sms or app can be set.")
-			return
-		} else if sms {
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if sms == app {
+			return fmt.Errorf("Either sms or app should be set")
+		}
+
+		if sms {
 			_, err := PacknGo.TwoFactorAuth.ReceiveSms()
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not issue token via SMS")
 			}
 
 			fmt.Println("SMS token sent to your phone")
-		} else if app {
-			otpURI, _, err := PacknGo.TwoFactorAuth.SeedApp()
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
-			}
-
-			data := make([][]string, 1)
-
-			data[0] = []string{otpURI}
-			header := []string{"OTP URI"}
-			output(otpURI, header, &data)
+			return nil
 		}
+
+		otpURI, _, err := PacknGo.TwoFactorAuth.SeedApp()
+		if err != nil {
+			return errors.Wrap(err, "Could not get the OTP Seed URI")
+		}
+
+		data := make([][]string, 1)
+
+		data[0] = []string{otpURI}
+		header := []string{"OTP URI"}
+		return output(otpURI, header, &data)
 	},
 }
 

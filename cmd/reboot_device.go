@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -35,14 +36,14 @@ var rebootDeviceCmd = &cobra.Command{
 packet device reboot --id [device_UUID]
 
 	  `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		_, err := PacknGo.Devices.Reboot(deviceID)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not reboot Device")
 		}
 
 		fmt.Println("Device", deviceID, "successfully rebooted.")
+		return nil
 	},
 }
 

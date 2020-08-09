@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -36,21 +37,18 @@ var retrieveHardwareReservationsCmd = &cobra.Command{
 Retrieve all hardware reservations of a project:
 packet hardware_reservations get -p [project_id]
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		header := []string{"ID", "Facility", "Plan", "Created"}
 		listOpt := &packngo.ListOptions{Includes: []string{"project,facility,device"}}
 
 		if hardwareReservationID == "" && projectID == "" {
-			fmt.Println("Either id or project-id should be set.")
-			return
+			return fmt.Errorf("Either id or project-id should be set.")
 		} else if hardwareReservationID != "" && projectID != "" {
-			fmt.Println("Either id or project-id can be set.")
-			return
+			return fmt.Errorf("Either id or project-id can be set.")
 		} else if projectID != "" {
 			reservations, _, err := PacknGo.HardwareReservations.List(projectID, listOpt)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list Hardware Reservations")
 			}
 
 			data := make([][]string, len(reservations))
@@ -59,21 +57,21 @@ packet hardware_reservations get -p [project_id]
 				data[i] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
 			}
 
-			output(reservations, header, &data)
+			return output(reservations, header, &data)
 		} else if hardwareReservationID != "" {
 			getOpt := &packngo.GetOptions{Includes: listOpt.Includes}
 			r, _, err := PacknGo.HardwareReservations.Get(hardwareReservationID, getOpt)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get Hardware Reservation")
 			}
 
 			data := make([][]string, 1)
 
 			data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
 
-			output(r, header, &data)
+			return output(r, header, &data)
 		}
+		return nil
 	},
 }
 

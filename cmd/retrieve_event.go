@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -52,50 +53,43 @@ packet event get -d [device_UUID]
 Retrieve all events of a current user:
 packet event get
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		var events []packngo.Event
 		var err error
 		header := []string{"ID", "Body", "Type", "Created"}
 		listOpt := &packngo.ListOptions{Includes: []string{"relationships"}}
 
 		if deviceID != "" && projectID != "" && organizationID != "" && eventID != "" {
-			fmt.Println("The id, project-id, device-id, and organization-id parameters are mutually exclusive")
-			return
+			return fmt.Errorf("The id, project-id, device-id, and organization-id parameters are mutually exclusive")
 		} else if deviceID != "" {
 			events, _, err = PacknGo.Devices.ListEvents(deviceID, listOpt)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list Device Events")
 			}
 		} else if projectID != "" {
 			events, _, err = PacknGo.Projects.ListEvents(projectID, listOpt)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list Project Events")
 			}
 		} else if organizationID != "" {
 			events, _, err = PacknGo.Organizations.ListEvents(organizationID, listOpt)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list Organization Events")
 			}
 		} else if eventID != "" {
 			getOpt := &packngo.GetOptions{Includes: listOpt.Includes}
 			event, _, err := PacknGo.Events.Get(eventID, getOpt)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get Event")
 			}
 			data := make([][]string, 1)
 
 			data[0] = []string{event.ID, event.Body, event.Type, event.CreatedAt.String()}
-			output(event, header, &data)
-			return
+			return output(event, header, &data)
 		} else {
 			events, _, err = PacknGo.Events.List(listOpt)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list Events")
 			}
 		}
 
@@ -105,7 +99,7 @@ packet event get
 			data[i] = []string{event.ID, event.Body, event.Type, event.CreatedAt.String()}
 		}
 
-		output(events, header, &data)
+		return output(events, header, &data)
 	},
 }
 

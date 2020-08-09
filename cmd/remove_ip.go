@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -35,14 +36,14 @@ var removeIPCmd = &cobra.Command{
 packet ip remove --id [reservation-UUID]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		_, err := PacknGo.ProjectIPs.Remove(reservationID)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not remove IP address Reservation")
 		}
 
 		fmt.Println("IP reservation removed successfully.")
+		return nil
 	},
 }
 

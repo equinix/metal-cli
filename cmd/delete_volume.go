@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +37,7 @@ var deleteVolumeCmd = &cobra.Command{
 packet volume delete --id [volume_UUID]
 
 	  `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if !force {
 			prompt := promptui.Prompt{
 				Label:     fmt.Sprintf("Are you sure you want to delete the volume %s: ", volumeID),
@@ -45,21 +46,11 @@ packet volume delete --id [volume_UUID]
 
 			_, err := prompt.Run()
 			if err != nil {
-				return
-			}
-
-			err = deleteVolume(volumeID)
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
-			}
-		} else {
-			err := deleteVolume(volumeID)
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return nil
 			}
 		}
+
+		return errors.Wrap(deleteVolume(volumeID), "Could not delete Volume")
 	},
 }
 

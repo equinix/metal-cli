@@ -21,10 +21,10 @@
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -41,12 +41,10 @@ var assignIPCmd = &cobra.Command{
 packet ip assign -d [device-id] -a [ip-address]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
-
+	RunE: func(cmd *cobra.Command, args []string) error {
 		assignment, _, err := PacknGo.DeviceIPs.Assign(deviceID, &packngo.AddressStruct{Address: address})
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not assign Device IP address")
 		}
 
 		data := make([][]string, 1)
@@ -54,13 +52,13 @@ packet ip assign -d [device-id] -a [ip-address]
 		data[0] = []string{assignment.ID, assignment.Address, strconv.FormatBool(assignment.Public), assignment.Created}
 		header := []string{"ID", "Address", "Public", "Created"}
 
-		output(assignment, header, &data)
+		return output(assignment, header, &data)
 	},
 }
 
 func init() {
 	assignIPCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
-	assignIPCmd.Flags().StringVarP(&address, "address", "a", "", "IP Address")
+	assignIPCmd.Flags().StringVarP(&address, "address", "a", "", "IP address")
 
 	_ = assignIPCmd.MarkFlagRequired("device-id")
 	_ = assignIPCmd.MarkFlagRequired("address")

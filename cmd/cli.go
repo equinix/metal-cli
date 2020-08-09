@@ -43,7 +43,7 @@ func NewCli() *Cli {
 	return cli
 }
 
-func output(in interface{}, header []string, data *[][]string) {
+func output(in interface{}, header []string, data *[][]string) error {
 	if !isJSON && !isYaml {
 
 		table := tablewriter.NewWriter(os.Stdout)
@@ -55,21 +55,20 @@ func output(in interface{}, header []string, data *[][]string) {
 	} else if isJSON {
 		output, err := json.MarshalIndent(in, "", "  ")
 		if err != nil {
-			fmt.Println(err)
-			return
+			return err
 		}
 		fmt.Println(string(output))
 	} else if isYaml {
 		output, err := yaml.Marshal(in)
 		if err != nil {
-			fmt.Println(err)
-			return
+			return err
 		}
 		fmt.Println(string(output))
 	}
+	return nil
 }
 
-func outputMergingCells(in interface{}, header []string, data *[][]string) {
+func outputMergingCells(in interface{}, header []string, data *[][]string) error {
 	if !isJSON && !isYaml {
 
 		table := tablewriter.NewWriter(os.Stdout)
@@ -81,16 +80,15 @@ func outputMergingCells(in interface{}, header []string, data *[][]string) {
 	} else if isJSON {
 		output, err := json.MarshalIndent(in, "", "  ")
 		if err != nil {
-			fmt.Println(err)
-			return
+			return err
 		}
 		fmt.Println(string(output))
 	} else if isYaml {
 		output, err := yaml.Marshal(in)
 		if err != nil {
-			fmt.Println(err)
-			return
+			return err
 		}
 		fmt.Println(string(output))
 	}
+	return nil
 }

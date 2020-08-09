@@ -21,8 +21,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -34,19 +33,18 @@ var moveHardwareReservationCmd = &cobra.Command{
 
 packet hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		header := []string{"ID", "Facility", "Plan", "Created"}
 		r, _, err := PacknGo.HardwareReservations.Move(hardwareReservationID, projectID)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not move Hardware Reservation")
 		}
 
 		data := make([][]string, 1)
 
 		data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
 
-		output(r, header, &data)
+		return output(r, header, &data)
 	},
 }
 

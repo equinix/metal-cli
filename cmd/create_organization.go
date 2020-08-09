@@ -21,9 +21,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +41,7 @@ var createOrganizationCmd = &cobra.Command{
 packet organization create -n [name]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		req := &packngo.OrganizationCreateRequest{
 			Name: name,
 		}
@@ -61,7 +60,7 @@ packet organization create -n [name]
 
 		org, _, err := PacknGo.Organizations.Create(req)
 		if err != nil {
-			fmt.Println("Client error:", err)
+			return errors.Wrap(err, "Could not create Organization")
 		}
 
 		data := make([][]string, 1)
@@ -69,7 +68,7 @@ packet organization create -n [name]
 		data[0] = []string{org.ID, org.Name, org.Created}
 		header := []string{"ID", "Name", "Created"}
 
-		output(org, header, &data)
+		return output(org, header, &data)
 	},
 }
 

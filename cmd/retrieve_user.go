@@ -21,9 +21,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -44,20 +43,18 @@ Retrieve a specific user:
 packet user get --id [user_UUID]
 
   `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		var user *packngo.User
 		if userID == "" {
 			user, _, err = PacknGo.Users.Current()
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get current User")
 			}
 		} else {
 			user, _, err = PacknGo.Users.Get(userID, nil)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get Users")
 			}
 		}
 
@@ -66,7 +63,7 @@ packet user get --id [user_UUID]
 		data[0] = []string{user.ID, user.FullName, user.Email, user.Created}
 		header := []string{"ID", "Full Name", "Email", "Created"}
 
-		output(user, header, &data)
+		return output(user, header, &data)
 	},
 }
 

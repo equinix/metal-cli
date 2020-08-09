@@ -21,9 +21,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +35,7 @@ var updateProjectCmd = &cobra.Command{
 packet project update --id [project_UUID] --name [new_name]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		req := &packngo.ProjectUpdateRequest{}
 		if name != "" {
 			req.Name = &name
@@ -47,15 +46,14 @@ packet project update --id [project_UUID] --name [new_name]
 		}
 		p, _, err := PacknGo.Projects.Update(projectID, req)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not update Project")
 		}
 
 		data := make([][]string, 1)
 
 		data[0] = []string{p.ID, p.Name, p.Created}
 		header := []string{"ID", "Name", "Created"}
-		output(p, header, &data)
+		return output(p, header, &data)
 	},
 }
 

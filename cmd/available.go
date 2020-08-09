@@ -21,9 +21,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -40,12 +39,11 @@ var availableCmd = &cobra.Command{
 packet ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
 
   `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		result, _, err := PacknGo.ProjectIPs.AvailableAddresses(reservationID, &packngo.AvailableRequest{CIDR: cidr})
 
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not get available IP addresses")
 		}
 		data := make([][]string, len(result))
 		for i, r := range result {
@@ -53,7 +51,7 @@ packet ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
 		}
 		header := []string{"Available IPs"}
 
-		output(result, header, &data)
+		return output(result, header, &data)
 	},
 }
 

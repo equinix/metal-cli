@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -39,18 +40,15 @@ var retriveDeviceCmd = &cobra.Command{
 packet device get --id [device_UUID]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if deviceID != "" && projectID != "" {
-			fmt.Println("Either id or project-id can be set.")
-			return
+			return fmt.Errorf("Either id or project-id can be set.")
 		} else if deviceID == "" && projectID == "" {
-			fmt.Println("Either id or project-id should be set.")
-			return
+			return fmt.Errorf("Either id or project-id should be set.")
 		} else if projectID != "" {
 			devices, _, err := PacknGo.Devices.List(projectID, nil)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list Devices")
 			}
 			data := make([][]string, len(devices))
 
@@ -59,21 +57,20 @@ packet device get --id [device_UUID]
 			}
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}
 
-			output(devices, header, &data)
+			return output(devices, header, &data)
 		} else if deviceID != "" {
-
 			device, _, err := PacknGo.Devices.Get(deviceID, nil)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get Devices")
 			}
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}
 
 			data := make([][]string, 1)
 			data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
 
-			output(device, header, &data)
+			return output(device, header, &data)
 		}
+		return nil
 	},
 }
 

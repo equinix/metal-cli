@@ -21,8 +21,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -35,18 +34,17 @@ var retrieveVpnCmd = &cobra.Command{
 Enable VPN service: 
 packet vpn get --faciliy ewr1
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		config, _, err := PacknGo.VPN.Get(facility, nil)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not get VPN")
 		}
 
 		data := make([][]string, 1)
 
 		data[0] = []string{config.Config}
 		header := []string{"Config"}
-		output(config, header, &data)
+		return output(config, header, &data)
 	},
 }
 

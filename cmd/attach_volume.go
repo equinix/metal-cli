@@ -21,8 +21,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -35,18 +34,17 @@ var attachVolumeCmd = &cobra.Command{
 packet volume attach --id [volume_UUID] --device-id [device_UUID]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		a, _, err := PacknGo.VolumeAttachments.Create(volumeID, deviceID)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not create volume attachment")
 		}
 
 		header := []string{"ID"}
 		data := make([][]string, 1)
 		data[0] = []string{a.ID}
 
-		output(a, header, &data)
+		return output(a, header, &data)
 	},
 }
 

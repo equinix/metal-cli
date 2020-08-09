@@ -21,10 +21,10 @@
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +37,7 @@ var createVirtualNetworkCmd = &cobra.Command{
 packet virtual-network create --project-id [project_UUID] --facility [facility_code]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		req := &packngo.VirtualNetworkCreateRequest{
 			ProjectID: projectID,
 			Facility:  facility,
@@ -48,7 +48,7 @@ packet virtual-network create --project-id [project_UUID] --facility [facility_c
 
 		n, _, err := PacknGo.ProjectVirtualNetworks.Create(req)
 		if err != nil {
-			fmt.Println("Client error:", err)
+			return errors.Wrap(err, "Could not create ProjectVirtualNetwork")
 		}
 
 		data := make([][]string, 1)
@@ -57,7 +57,7 @@ packet virtual-network create --project-id [project_UUID] --facility [facility_c
 
 		header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
 
-		output(n, header, &data)
+		return output(n, header, &data)
 	},
 }
 

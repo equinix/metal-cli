@@ -21,10 +21,10 @@
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +41,7 @@ var createVolumeCmd = &cobra.Command{
   packet volume create --size [size_in_GB] --plan [plan_UUID] --project-id [project_UUID] --facility [facility_code]
   
   `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		req := &packngo.VolumeCreateRequest{
 			BillingCycle: billingCycle,
 			PlanID:       plan,
@@ -58,15 +58,14 @@ var createVolumeCmd = &cobra.Command{
 
 		v, _, err := PacknGo.Volumes.Create(req, projectID)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not create Volume")
 		}
 
 		header := []string{"ID", "Name", "Size", "State", "Created"}
 		data := make([][]string, 1)
 		data[0] = []string{v.ID, v.Name, strconv.Itoa(v.Size), v.State, v.Created}
 
-		output(v, header, &data)
+		return output(v, header, &data)
 	},
 }
 

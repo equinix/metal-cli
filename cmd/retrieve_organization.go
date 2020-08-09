@@ -21,8 +21,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -39,12 +38,11 @@ To retrieve a single organization:
 packet organization get -i [organization-id]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if organizationID == "" {
 			orgs, _, err := PacknGo.Organizations.List(nil)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list Organizations")
 			}
 
 			data := make([][]string, len(orgs))
@@ -54,12 +52,11 @@ packet organization get -i [organization-id]
 			}
 			header := []string{"ID", "Name", "Created"}
 
-			output(orgs, header, &data)
+			return output(orgs, header, &data)
 		} else {
 			org, _, err := PacknGo.Organizations.Get(organizationID, nil)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get Organization")
 			}
 
 			data := make([][]string, 1)
@@ -67,7 +64,7 @@ packet organization get -i [organization-id]
 			data[0] = []string{org.ID, org.Name, org.Created}
 			header := []string{"ID", "Name", "Created"}
 
-			output(org, header, &data)
+			return output(org, header, &data)
 		}
 	},
 }

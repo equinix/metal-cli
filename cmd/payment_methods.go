@@ -21,8 +21,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -36,11 +35,10 @@ var paymentMethodsCmd = &cobra.Command{
 packet organization get payment-methods --id [organization_UUID]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		paymentMethods, _, err := PacknGo.Organizations.ListPaymentMethods(organizationID)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not list Payment Methods")
 		}
 
 		data := make([][]string, len(paymentMethods))
@@ -50,7 +48,7 @@ packet organization get payment-methods --id [organization_UUID]
 		}
 		header := []string{"ID", "Cardholder", "Exp. Month", "Exp. Year", "Created"}
 
-		output(paymentMethods, header, &data)
+		return output(paymentMethods, header, &data)
 	},
 }
 

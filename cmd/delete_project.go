@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +37,7 @@ var deleteProjectCmd = &cobra.Command{
 packet project delete --id [project_UUID]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if !force {
 			prompt := promptui.Prompt{
 				Label:     fmt.Sprintf("Are you sure you want to delete project %s: ", projectID),
@@ -45,21 +46,10 @@ packet project delete --id [project_UUID]
 
 			_, err := prompt.Run()
 			if err != nil {
-				return
-			}
-
-			err = deleteProject(projectID)
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
-			}
-		} else {
-			err := deleteProject(projectID)
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return nil
 			}
 		}
+		return errors.Wrap(deleteProject(projectID), "Could not delete Project")
 	},
 }
 

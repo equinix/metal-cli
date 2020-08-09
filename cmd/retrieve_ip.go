@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -51,12 +52,11 @@ To get IP addresses by reservation ID:
 packet ip get --reservation-id [reservation_UUID]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if projectID != "" && assignmentID == "" && reservationID == "" {
 			ips, _, err := PacknGo.ProjectIPs.List(projectID)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list Project IP addresses")
 			}
 
 			data := make([][]string, len(ips))
@@ -70,12 +70,11 @@ packet ip get --reservation-id [reservation_UUID]
 			}
 			header := []string{"ID", "Address", "Facility", "Public", "Created"}
 
-			output(ips, header, &data)
+			return output(ips, header, &data)
 		} else if projectID == "" && reservationID == "" && assignmentID != "" {
 			ip, _, err := PacknGo.DeviceIPs.Get(assignmentID, nil)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get Device IP address")
 			}
 
 			data := make([][]string, 1)
@@ -83,12 +82,11 @@ packet ip get --reservation-id [reservation_UUID]
 			data[0] = []string{ip.ID, ip.Address, strconv.FormatBool(ip.Public), ip.Created}
 			header := []string{"ID", "Address", "Public", "Created"}
 
-			output(ip, header, &data)
+			return output(ip, header, &data)
 		} else if projectID == "" && assignmentID == "" && reservationID != "" {
 			ip, _, err := PacknGo.ProjectIPs.Get(reservationID, nil)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get Reservation IP address")
 			}
 
 			data := make([][]string, 1)
@@ -96,10 +94,11 @@ packet ip get --reservation-id [reservation_UUID]
 			data[0] = []string{ip.ID, ip.Address, ip.Facility.Code, strconv.FormatBool(ip.Public), ip.Created}
 			header := []string{"ID", "Address", "Facility", "Public", "Created"}
 
-			output(ip, header, &data)
+			return output(ip, header, &data)
 		} else if (projectID != "" && (assignmentID != "" || reservationID != "")) || (projectID == "" && assignmentID == "" && reservationID == "") {
-			fmt.Println("Either project-id or assignment-id or reservation-id can be passed as parameters.")
+			return fmt.Errorf("Either project-id or assignment-id or reservation-id can be passed as parameters.")
 		}
+		return nil
 	},
 }
 

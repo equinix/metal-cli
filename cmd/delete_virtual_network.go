@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +41,7 @@ var deleteVirtualNetworkCmd = &cobra.Command{
 packet virtual-network delete -i [virtual_network_UUID]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if !force {
 			prompt := promptui.Prompt{
 				Label:     fmt.Sprintf("Are you sure you want to delete virual network %s", vnetID),
@@ -49,31 +50,22 @@ packet virtual-network delete -i [virtual_network_UUID]
 
 			_, err := prompt.Run()
 			if err != nil {
-				return
-			}
-			err = deleteVnet(vnetID)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-		} else {
-			err := deleteVnet(vnetID)
-			if err != nil {
-				fmt.Println(err)
-				return
+				return nil
 			}
 		}
-
-		fmt.Println("Virtual Network", vnetID, "successfully deleted.")
-
+		return errors.Wrap(deleteVnet(vnetID), "Could not delete Virtual Network")
 	},
 }
 
 func deleteVnet(id string) error {
 	_, err := PacknGo.ProjectVirtualNetworks.Delete(id)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Virtual Network", id, "successfully deleted.")
 	return err
 }
+
 func init() {
 	deleteVirtualNetworkCmd.Flags().StringVarP(&vnetID, "id", "i", "", "UUID of the vlan")
 	_ = deleteVirtualNetworkCmd.MarkFlagRequired("id")

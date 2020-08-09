@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +38,7 @@ var deleteDeviceCmd = &cobra.Command{
   packet device delete -i [device_UUID]
   
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if !force {
 			prompt := promptui.Prompt{
 				Label:     fmt.Sprintf("Are you sure you want to delete device %s: ", deviceID),
@@ -46,21 +47,10 @@ var deleteDeviceCmd = &cobra.Command{
 
 			_, err := prompt.Run()
 			if err != nil {
-				return
-			}
-
-			err = deleteDevice(deviceID)
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
-			}
-		} else {
-			err := deleteDevice(deviceID)
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return nil
 			}
 		}
+		return errors.Wrap(deleteDevice(deviceID), "Could not delete Device")
 	},
 }
 

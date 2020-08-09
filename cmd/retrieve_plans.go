@@ -21,8 +21,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -35,11 +34,10 @@ var retrievePlansCmd = &cobra.Command{
   packet plans get
   
   `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		plans, _, err := PacknGo.Plans.List(nil)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not list Plans")
 		}
 
 		data := make([][]string, len(plans))
@@ -49,7 +47,7 @@ var retrievePlansCmd = &cobra.Command{
 		}
 		header := []string{"ID", "Slug", "Name"}
 
-		output(plans, header, &data)
+		return output(plans, header, &data)
 	},
 }
 

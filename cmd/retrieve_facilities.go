@@ -21,9 +21,9 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -36,11 +36,10 @@ var retrieveFacilitiesCmd = &cobra.Command{
 packet facilities get
 	
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		facilities, _, err := PacknGo.Facilities.List(nil)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not list Facilities")
 		}
 		data := make([][]string, len(facilities))
 
@@ -49,7 +48,7 @@ packet facilities get
 		}
 		header := []string{"Name", "Code", "Features"}
 
-		output(facilities, header, &data)
+		return output(facilities, header, &data)
 	},
 }
 
