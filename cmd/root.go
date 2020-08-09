@@ -26,6 +26,7 @@ import (
 	"runtime"
 
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -41,24 +42,23 @@ var (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:              "packet",
-	Short:            "Command line interface for Packet Host",
-	Long:             `Command line interface for Packet Host`,
-	PersistentPreRun: packetConnect,
+	Use:               "packet",
+	Short:             "Command line interface for Packet Host",
+	Long:              `Command line interface for Packet Host`,
+	PersistentPreRunE: packetConnect,
 }
 
-func packetConnect(cmd *cobra.Command, args []string) {
+func packetConnect(cmd *cobra.Command, args []string) error {
 	if packetToken == "" {
-		fmt.Println("Packet authentication token not provided. Please either set the 'PACKET_TOKEN' environment variable or create a JSON or YAML configuration file.")
-		os.Exit(1)
+		return fmt.Errorf("Packet authentication token not provided. Please either set the 'PACKET_TOKEN' environment variable or create a JSON or YAML configuration file.")
 	}
 	client, err := packngo.NewClientWithBaseURL("Packet CLI", packetToken, nil, "https://api.packet.net/")
 	if err != nil {
-		fmt.Println("Client error:", err)
-		return
+		return errors.Wrap(err, "Could not create Client")
 	}
 	client.UserAgent = fmt.Sprintf("packet-cli/%s %s", Version, client.UserAgent)
 	PacknGo = *client
+	return nil
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

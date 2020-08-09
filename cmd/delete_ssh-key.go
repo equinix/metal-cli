@@ -24,10 +24,11 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// deleteProjectCmd represents the deleteProject command
+// deleteSSHKeyCmd represents the deleteSSHKey command
 var deleteSSHKeyCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Deletes an SSH key",
@@ -36,30 +37,20 @@ var deleteSSHKeyCmd = &cobra.Command{
 packet ssh-key delete --id [ssh-key_UUID]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if !force {
 			prompt := promptui.Prompt{
-				Label:     fmt.Sprintf("Are you sure you want to delete project %s: ", projectID),
+				Label:     fmt.Sprintf("Are you sure you want to delete SSH Key %s: ", sshKeyID),
 				IsConfirm: true,
 			}
 
 			_, err := prompt.Run()
 			if err != nil {
-				return
-			}
-
-			err = deleteSSHKey(sshKeyID)
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
-			}
-		} else {
-			err := deleteSSHKey(sshKeyID)
-			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return nil
 			}
 		}
+
+		return errors.Wrap(deleteSSHKey(sshKeyID), "Could not delete SSH Key")
 	},
 }
 

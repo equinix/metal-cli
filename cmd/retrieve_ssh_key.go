@@ -21,8 +21,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -43,12 +42,11 @@ Retrieve a specific SSH key:
 packet ssh-key get --id [ssh-key_UUID] 
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if sshKeyID == "" {
 			sshKeys, _, err := PacknGo.SSHKeys.List()
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list SSH Keys")
 			}
 
 			data := make([][]string, len(sshKeys))
@@ -58,12 +56,11 @@ packet ssh-key get --id [ssh-key_UUID]
 			}
 			header := []string{"ID", "Label", "Created"}
 
-			output(sshKeys, header, &data)
+			return output(sshKeys, header, &data)
 		} else {
 			sshKey, _, err := PacknGo.SSHKeys.Get(sshKeyID, nil)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get SSH Key")
 			}
 
 			data := make([][]string, 1)
@@ -71,7 +68,7 @@ packet ssh-key get --id [ssh-key_UUID]
 			data[0] = []string{sshKey.ID, sshKey.Label, sshKey.Created}
 			header := []string{"ID", "Label", "Created"}
 
-			output(sshKey, header, &data)
+			return output(sshKey, header, &data)
 		}
 	},
 }

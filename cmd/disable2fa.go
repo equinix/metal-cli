@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -38,28 +39,22 @@ packet 2fa disable -s -t [token]
 Disable two factor authentication via APP
 packet 2fa disable -a -t [token]
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		if !sms && !app {
-			fmt.Println("Either sms or app should be set")
-			return
-		} else if sms && app {
-			fmt.Println("Either sms or app can be set.")
-			return
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if sms == app {
+			return fmt.Errorf("Either sms or app should be set")
 		} else if sms {
 			_, err := PacknGo.TwoFactorAuth.DisableSms(token)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not disable Two-Factor Authentication via SMS")
 			}
-			fmt.Println("Two factor authentication successfuly disabled.")
 		} else if app {
 			_, err := PacknGo.TwoFactorAuth.DisableApp(token)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not disable Two-Factor Authentication via App")
 			}
-			fmt.Println("Two factor authentication successfuly disabled.")
 		}
+		fmt.Println("Two factor authentication successfully disabled.")
+		return nil
 	},
 }
 

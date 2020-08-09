@@ -21,13 +21,12 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// updateProjectCmd represents the updateProject command
+// updateSSHKeyCmd represents the updateSSHKey command
 var updateSSHKeyCmd = &cobra.Command{
 	Use:   "update",
 	Short: "Updates a project",
@@ -36,7 +35,7 @@ var updateSSHKeyCmd = &cobra.Command{
 packet ssh-key update --id [ssh-key_UUID] --key [new_key]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		req := &packngo.SSHKeyUpdateRequest{}
 		if key != "" {
 			req.Key = &key
@@ -47,8 +46,7 @@ packet ssh-key update --id [ssh-key_UUID] --key [new_key]
 		}
 		sshKey, _, err := PacknGo.SSHKeys.Update(sshKeyID, req)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not update SSH Key")
 		}
 
 		data := make([][]string, 1)
@@ -56,7 +54,7 @@ packet ssh-key update --id [ssh-key_UUID] --key [new_key]
 		data[0] = []string{sshKey.ID, sshKey.Label, sshKey.Created}
 		header := []string{"ID", "Label", "Created"}
 
-		output(sshKey, header, &data)
+		return output(sshKey, header, &data)
 	},
 }
 

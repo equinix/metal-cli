@@ -21,9 +21,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +40,7 @@ var createSSHKeyCmd = &cobra.Command{
 packet ssh-key create --key [public_key] --label [label]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		req := packngo.SSHKeyCreateRequest{
 			Label: label,
 			Key:   key,
@@ -49,15 +48,14 @@ packet ssh-key create --key [public_key] --label [label]
 
 		s, _, err := PacknGo.SSHKeys.Create(&req)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not create SSHKey")
 		}
 
 		data := make([][]string, 1)
 
 		data[0] = []string{s.ID, s.Label, s.Created}
 		header := []string{"ID", "Label", "Created"}
-		output(s, header, &data)
+		return output(s, header, &data)
 	},
 }
 

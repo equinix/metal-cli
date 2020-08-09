@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -44,18 +45,15 @@ Retrieve a specific volume:
 packet volume get --id [volume_UUID]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if projectID != "" && volumeID != "" {
-			fmt.Println("Either id or project-id can be set.")
-			return
+			return fmt.Errorf("Either id or project-id can be set.")
 		} else if projectID == "" && volumeID == "" {
-			fmt.Println("Either id or project-id  should be set.")
-			return
+			return fmt.Errorf("Either id or project-id should be set.")
 		} else if projectID != "" {
 			volumes, _, err := PacknGo.Volumes.List(projectID, nil)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list Volumes")
 			}
 			data := make([][]string, len(volumes))
 
@@ -64,21 +62,21 @@ packet volume get --id [volume_UUID]
 			}
 			header := []string{"ID", "Name", "Size", "State", "Created"}
 
-			output(volumes, header, &data)
+			return output(volumes, header, &data)
 		} else if volumeID != "" {
 
 			v, _, err := PacknGo.Volumes.Get(volumeID, nil)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get Volume")
 			}
 
 			header := []string{"ID", "Name", "Size", "State", "Created"}
 			data := make([][]string, 1)
 			data[0] = []string{v.ID, v.Name, strconv.Itoa(v.Size), v.State, v.Created}
 
-			output(v, header, &data)
+			return output(v, header, &data)
 		}
+		return nil
 	},
 }
 

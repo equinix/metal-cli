@@ -21,9 +21,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +40,7 @@ var createProjectCmd = &cobra.Command{
 packet project create --name [project_name]
   
   `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		req := packngo.ProjectCreateRequest{
 			Name: name,
 		}
@@ -56,15 +55,14 @@ packet project create --name [project_name]
 
 		p, _, err := PacknGo.Projects.Create(&req)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not create Project")
 		}
 
 		data := make([][]string, 1)
 
 		data[0] = []string{p.ID, p.Name, p.Created}
 		header := []string{"ID", "Name", "Created"}
-		output(p, header, &data)
+		return output(p, header, &data)
 	},
 }
 

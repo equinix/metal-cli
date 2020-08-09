@@ -21,8 +21,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -34,12 +33,11 @@ var retrieveCapacityCmd = &cobra.Command{
 Retrieve capacities:
 packet capacity get
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		capacities, _, err := PacknGo.CapacityService.List()
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not get Capacity")
 		}
 
 		header := []string{"Facility", "Plan", "Level"}
@@ -53,8 +51,7 @@ packet capacity get
 			}
 		}
 
-		outputMergingCells(capacities, header, &requiredDataFormat)
-
+		return outputMergingCells(capacities, header, &requiredDataFormat)
 	},
 }
 

@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -35,13 +36,13 @@ var enableVpnCmd = &cobra.Command{
 Enable VPN service: 
 packet vpn enable
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		_, err := PacknGo.VPN.Enable()
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not enable VPN Service")
 		}
 
 		fmt.Println("VPN service enabled.")
+		return nil
 	},
 }

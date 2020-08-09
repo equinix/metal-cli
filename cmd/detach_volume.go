@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -39,14 +40,14 @@ var detachVolumeCmd = &cobra.Command{
 packet volume detach --id [attachment_UUID]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		_, err := PacknGo.VolumeAttachments.Delete(attachmentID)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not detach Volume")
 		}
 
 		fmt.Println("Volume detachment initiated.")
+		return nil
 	},
 }
 

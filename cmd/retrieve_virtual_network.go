@@ -21,9 +21,9 @@
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -36,11 +36,10 @@ var retrieveVirtualNetworksCmd = &cobra.Command{
 packet virtual-network get -p [project_UUID]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID, nil)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not list Project Virtual Networks")
 		}
 
 		data := make([][]string, len(vnets.VirtualNetworks))
@@ -50,7 +49,7 @@ packet virtual-network get -p [project_UUID]
 		}
 		header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
 
-		output(vnets, header, &data)
+		return output(vnets, header, &data)
 	},
 }
 

@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -58,7 +59,7 @@ var createDeviceCmd = &cobra.Command{
 packet device create --hostname [hostname] --plan [plan] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 
 		request := &packngo.DeviceCreateRequest{
 			Hostname:     hostname,
@@ -108,24 +109,21 @@ packet device create --hostname [hostname] --plan [plan] --facility [facility_co
 		if terminationTime != "" {
 			parsedTime, err := time.Parse(time.RFC3339, terminationTime)
 			if err != nil {
-				fmt.Printf("Error occured while parsing time string: %s", err.Error())
-				return
+				return errors.Wrap(err, fmt.Sprintf("Could not parse time %q", terminationTime))
 			}
 			request.TerminationTime = &packngo.Timestamp{Time: parsedTime}
 		}
 
 		device, _, err := PacknGo.Devices.Create(request)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not create Device")
 		}
 
 		header := []string{"ID", "Hostname", "OS", "State", "Created"}
 		data := make([][]string, 1)
 		data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
 
-		output(device, header, &data)
-
+		return output(device, header, &data)
 	},
 }
 

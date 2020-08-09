@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -40,10 +41,9 @@ Retrieve a specific project:
 packet project get -i [project_UUID]
 packet project get -n [project_name]
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if projectID != "" && projectName != "" {
-			fmt.Println("must specify only one of project-id and project name")
-			return
+			return fmt.Errorf("Must specify only one of project-id and project name")
 		}
 		if projectID == "" {
 			listOpt := &packngo.ListOptions{
@@ -52,8 +52,7 @@ packet project get -n [project_name]
 
 			projects, _, err := PacknGo.Projects.List(listOpt)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not list Projects")
 			}
 
 			var data [][]string
@@ -71,25 +70,23 @@ packet project get -n [project_name]
 					}
 				}
 				if len(data) == 0 {
-					fmt.Println("Error: no project found with name", projectName)
-					return
+					return fmt.Errorf("Could not find project with name %q", projectName)
 				}
 			}
 
 			header := []string{"ID", "Name", "Created"}
-			output(projects, header, &data)
+			return output(projects, header, &data)
 		} else {
 			p, _, err := PacknGo.Projects.Get(projectID, &packngo.GetOptions{Includes: []string{"members"}})
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not get Project")
 			}
 
 			data := make([][]string, 1)
 
 			data[0] = []string{p.ID, p.Name, p.Created}
 			header := []string{"ID", "Name", "Created"}
-			output(p, header, &data)
+			return output(p, header, &data)
 		}
 	},
 }

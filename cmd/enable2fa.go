@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -40,28 +41,22 @@ packet 2fa enable -s -t [token]
 Enable two factor authentication via APP
 packet 2fa enable -a -t [token]
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		if !sms && !app {
-			fmt.Println("Either sms or app should be set")
-			return
-		} else if sms && app {
-			fmt.Println("Either sms or app can be set.")
-			return
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if sms == app {
+			return fmt.Errorf("Either sms or app should be set")
 		} else if sms {
 			_, err := PacknGo.TwoFactorAuth.EnableSms(token)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not enable Two-Factor Authentication")
 			}
-			fmt.Println("Two factor authentication successfuly enabled.")
 		} else if app {
 			_, err := PacknGo.TwoFactorAuth.EnableApp(token)
 			if err != nil {
-				fmt.Println("Client error:", err)
-				return
+				return errors.Wrap(err, "Could not enable Two-Factor Authentication")
 			}
-			fmt.Println("Two factor authentication successfuly enabled.")
 		}
+		fmt.Println("Two factor authentication successfully enabled.")
+		return nil
 	},
 }
 

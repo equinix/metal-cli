@@ -21,10 +21,10 @@
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -43,7 +43,7 @@ var requestIPCmd = &cobra.Command{
 packet ip request --quantity [quantity] --facility [facility_code] --type [address_type]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		req := &packngo.IPReservationRequest{
 			Type:     ttype,
 			Quantity: quantity,
@@ -52,8 +52,7 @@ packet ip request --quantity [quantity] --facility [facility_code] --type [addre
 
 		reservation, _, err := PacknGo.ProjectIPs.Request(projectID, req)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not request IP addresses")
 		}
 
 		data := make([][]string, 1)
@@ -61,7 +60,7 @@ packet ip request --quantity [quantity] --facility [facility_code] --type [addre
 		data[0] = []string{reservation.ID, reservation.Address, strconv.FormatBool(reservation.Public), reservation.Created}
 		header := []string{"ID", "Address", "Public", "Created"}
 
-		output(reservation, header, &data)
+		return output(reservation, header, &data)
 	},
 }
 

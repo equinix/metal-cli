@@ -21,9 +21,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 
 	"github.com/spf13/cobra"
 )
@@ -42,7 +41,7 @@ var updateDeviceCmd = &cobra.Command{
 packet device update --id [device_UUID] --hostname [new_hostname]
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		req := &packngo.DeviceUpdateRequest{}
 
 		if hostname != "" {
@@ -79,15 +78,14 @@ packet device update --id [device_UUID] --hostname [new_hostname]
 
 		device, _, err := PacknGo.Devices.Update(deviceID, req)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not update Device")
 		}
 
 		header := []string{"ID", "Hostname", "OS", "State"}
 		data := make([][]string, 1)
 		data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State}
 
-		output(device, header, &data)
+		return output(device, header, &data)
 	},
 }
 

@@ -21,10 +21,10 @@
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +37,7 @@ var checkCapacityCommand = &cobra.Command{
 packet capacity check -f [facility] -p [plan] -q [quantity]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		req := &packngo.CapacityInput{
 			Servers: []packngo.ServerInfo{
 				{
@@ -49,7 +49,7 @@ packet capacity check -f [facility] -p [plan] -q [quantity]
 
 		availability, _, err := PacknGo.CapacityService.Check(req)
 		if err != nil {
-			fmt.Println("Client error:", err)
+			return errors.Wrap(err, "Could not check capacity")
 		}
 
 		data := make([][]string, 1)
@@ -58,7 +58,7 @@ packet capacity check -f [facility] -p [plan] -q [quantity]
 			strconv.Itoa(availability.Servers[0].Quantity), strconv.FormatBool(availability.Servers[0].Available)}
 		header := []string{"Facility", "Plan", "Quantiy", "Availability"}
 
-		output(availability, header, &data)
+		return output(availability, header, &data)
 	},
 }
 

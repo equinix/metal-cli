@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -35,14 +36,14 @@ var unassignIPCmd = &cobra.Command{
 packet ip unassign --id [assignment-UUID]
 
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		_, err := PacknGo.DeviceIPs.Unassign(assignmentID)
 		if err != nil {
-			fmt.Println("Client error:", err)
-			return
+			return errors.Wrap(err, "Could not unassign IP address")
 		}
 
 		fmt.Println("IP address unassigned successfully.")
+		return nil
 	},
 }
 
