@@ -45,6 +45,7 @@ var rootCmd = &cobra.Command{
 	Use:               "packet",
 	Short:             "Command line interface for Packet Host",
 	Long:              `Command line interface for Packet Host`,
+	DisableAutoGenTag: true,
 	PersistentPreRunE: packetConnect,
 }
 
