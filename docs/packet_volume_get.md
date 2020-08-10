@@ -4,18 +4,20 @@ Retrieves a volume list or volume details.
 
 ### Synopsis
 
-Example:
-	
-Retrieve the list of volumes:
-packet volume get --project-id [project_UUID]
-  
-Retrieve a specific volume:
-packet volume get --id [volume_UUID]
-
-
+Retrieves a volume list or volume details.
 
 ```
 packet volume get [flags]
+```
+
+### Examples
+
+```
+
+Retrieve the list of volumes:
+packet volume get --project-id [project_UUID]
+Retrieve a specific volume:
+packet volume get --id [volume_UUID]
 ```
 
 ### Options

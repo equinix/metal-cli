@@ -4,14 +4,17 @@ Attaches a volume to a device.
 
 ### Synopsis
 
-Example:
-
-packet volume attach --id [volume_UUID] --device-id [device_UUID]
-
-	
+Attaches a volume to a device.
 
 ```
 packet volume attach [flags]
+```
+
+### Examples
+
+```
+
+packet volume attach --id [volume_UUID] --device-id [device_UUID]
 ```
 
 ### Options

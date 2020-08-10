@@ -18,41 +18,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package volume
 
 import (
-	"fmt"
-
+	"github.com/packethost/packet-cli/internal/output"
+	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-var (
-	attachmentID string
-)
-
-// detachVolumeCmd represents the detachVolume command
-var detachVolumeCmd = &cobra.Command{
-	Use:   "detach",
-	Short: "Detaches a volume from a device",
-	Long: `Example:
-
-packet volume detach --id [attachment_UUID]
-
-`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := PacknGo.VolumeAttachments.Delete(attachmentID)
+func attachCmd(svc packngo.VolumeAttachmentService, out output.Outputer, volumeID, deviceID *string) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		a, _, err := svc.Create(*volumeID, *deviceID)
 		if err != nil {
-			return errors.Wrap(err, "Could not detach Volume")
+			return errors.Wrap(err, "Could not create volume attachment")
 		}
 
-		fmt.Println("Volume detachment initiated.")
-		return nil
-	},
+		header := []string{"ID"}
+		data := make([][]string, 1)
+		data[0] = []string{a.ID}
+
+		return out.Output(a, header, &data)
+	}
 }
 
-func init() {
-	detachVolumeCmd.Flags().StringVarP(&attachmentID, "id", "i", "", "UUID of the attached volume")
+func Attach(client *VolumeClient, out output.Outputer) *cobra.Command {
+	var volumeID, deviceID string
+	attachVolumeCmd := attachCmd(client.VolumeAttachmentService, out, &volumeID, &deviceID)
 
-	_ = detachVolumeCmd.MarkFlagRequired("id")
+	cmd := &cobra.Command{
+		Use:   "attach",
+		Short: "Attaches a volume to a device.",
+		Example: `
+packet volume attach --id [volume_UUID] --device-id [device_UUID]`,
+		RunE: attachVolumeCmd,
+	}
+
+	cmd.Flags().StringVarP(&volumeID, "id", "i", "", "UUID of the volume")
+	cmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
+
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("device-id")
+
+	return cmd
 }

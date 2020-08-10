@@ -4,14 +4,17 @@ Deletes a volume
 
 ### Synopsis
 
-Example:
-
-packet volume delete --id [volume_UUID]
-
-	  
+Deletes a volume
 
 ```
 packet volume delete [flags]
+```
+
+### Examples
+
+```
+
+packet volume delete --id [volume_UUID]
 ```
 
 ### Options

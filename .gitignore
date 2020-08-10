@@ -5,6 +5,7 @@
 *.so
 *.dylib
 packet
+packet-cli
 
 # Test binary, build with `go test -c`
 *.test

@@ -18,40 +18,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package volume
 
 import (
-	"github.com/pkg/errors"
+	"github.com/packethost/packet-cli/internal/output"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// attachVolumeCmd represents the attachVolume command
-var attachVolumeCmd = &cobra.Command{
-	Use:   "attach",
-	Short: "Attaches a volume to a device.",
-	Long: `Example:
-
-packet volume attach --id [volume_UUID] --device-id [device_UUID]
-
-	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		a, _, err := PacknGo.VolumeAttachments.Create(volumeID, deviceID)
-		if err != nil {
-			return errors.Wrap(err, "Could not create volume attachment")
-		}
-
-		header := []string{"ID"}
-		data := make([][]string, 1)
-		data[0] = []string{a.ID}
-
-		return output(a, header, &data)
-	},
+type VolumeClient struct {
+	VolumeService           packngo.VolumeService
+	VolumeAttachmentService packngo.VolumeAttachmentService
 }
 
-func init() {
-	attachVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "UUID of the volume")
-	attachVolumeCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
+func (client *VolumeClient) Register(rootCmd *cobra.Command, out output.Outputer) {
+	// volumeCmd represents the volume command
+	var volumeCmd = &cobra.Command{
+		Use:     "volume",
+		Aliases: []string{"volumes"},
+		Short:   "Volume operations",
+		Long:    `Volume operations: create, delete, attach, detach and get`,
+	}
 
-	_ = attachVolumeCmd.MarkFlagRequired("id")
-	_ = attachVolumeCmd.MarkFlagRequired("device-id")
+	rootCmd.AddCommand(volumeCmd)
+
+	for _, makeCmd := range []func(*VolumeClient, output.Outputer) *cobra.Command{
+		Create,
+		Retrieve,
+		Delete,
+		Attach,
+		Detach,
+	} {
+		volumeCmd.AddCommand(makeCmd(client, out))
+	}
 }

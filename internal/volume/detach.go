@@ -18,21 +18,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package volume
 
 import (
+	"fmt"
+
+	"github.com/packethost/packet-cli/internal/output"
+	"github.com/packethost/packngo"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// volumeCmd represents the volume command
-var volumeCmd = &cobra.Command{
-	Use:     "volume",
-	Aliases: []string{"volumes"},
-	Short:   "Volume operations",
-	Long:    `Volume operations: create, delete, attach, detach and get`,
+// detachCmd represents the detachVolume command
+func detachCmd(svc packngo.VolumeAttachmentService, out output.Outputer, attachmentID *string) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		_, err := svc.Delete(*attachmentID)
+		if err != nil {
+			return errors.Wrap(err, "Could not detach Volume")
+		}
+		fmt.Println("Volume detachment initiated.")
+		return nil
+	}
 }
 
-func init() {
-	rootCmd.AddCommand(volumeCmd)
-	volumeCmd.AddCommand(createVolumeCmd, deleteVolumeCmd, retriveVolumeCmd, attachVolumeCmd, detachVolumeCmd)
+func Detach(client *VolumeClient, out output.Outputer) *cobra.Command {
+	var attachmentID string
+
+	cmd := &cobra.Command{
+		Use:   "detach",
+		Short: "Detaches a volume from a device",
+		Example: `
+packet volume detach --id [attachment_UUID]`,
+		RunE: detachCmd(client.VolumeAttachmentService, out, &attachmentID),
+	}
+	cmd.Flags().StringVarP(&attachmentID, "id", "i", "", "UUID of the attached volume")
+
+	_ = cmd.MarkFlagRequired("id")
+	return cmd
 }

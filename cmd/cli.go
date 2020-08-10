@@ -1,20 +1,20 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
-	"github.com/ghodss/yaml"
-	"github.com/olekukonko/tablewriter"
+	outputPkg "github.com/packethost/packet-cli/internal/output"
+	"github.com/packethost/packet-cli/internal/volume"
 	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
 // Cli struct
 type Cli struct {
-	Client  *packngo.Client
-	MainCmd *cobra.Command
+	Client   *packngo.Client
+	MainCmd  *cobra.Command
+	Outputer outputPkg.Outputer
 }
 
 // VERSION build
@@ -32,63 +32,56 @@ func NewCli() *Cli {
 		return nil
 	}
 
+	rootCmd.DisableSuggestions = false
+	cli.MainCmd = rootCmd
+	cli.Outputer = &outputPkg.Standard{}
+	cli.RegisterCommands()
+
 	err = rootCmd.Execute()
 	if err != nil {
-		fmt.Println("Execution error:", err)
 		return nil
 	}
 
-	rootCmd.DisableSuggestions = false
-	cli.MainCmd = rootCmd
 	return cli
 }
 
-func output(in interface{}, header []string, data *[][]string) error {
-	if !isJSON && !isYaml {
+type Registrar interface {
+	Register(*cobra.Command, outputPkg.Outputer)
+}
 
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetAutoWrapText(false)
-		table.SetAlignment(tablewriter.ALIGN_LEFT)
-		table.SetHeader(header)
-		table.AppendBulk(*data)
-		table.Render()
-	} else if isJSON {
-		output, err := json.MarshalIndent(in, "", "  ")
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(output))
-	} else if isYaml {
-		output, err := yaml.Marshal(in)
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(output))
+func (cli *Cli) RegisterCommands() {
+	c := cli.Client
+	for _, reggie := range []Registrar{
+		&volume.VolumeClient{VolumeService: c.Volumes, VolumeAttachmentService: c.VolumeAttachments},
+	} {
+		reggie.Register(cli.MainCmd, cli.Outputer)
 	}
-	return nil
+}
+
+func output(in interface{}, header []string, data *[][]string) error {
+	format := outputPkg.FormatText
+
+	// TODO(displague) remove isJSON and isYaml globals
+	switch {
+	case isJSON:
+		format = outputPkg.FormatJSON
+	case isYaml:
+		format = outputPkg.FormatYAML
+	}
+	output := &outputPkg.Standard{Format: format}
+	return output.Output(in, header, data)
 }
 
 func outputMergingCells(in interface{}, header []string, data *[][]string) error {
-	if !isJSON && !isYaml {
+	format := outputPkg.FormatText
 
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetAutoMergeCells(true)
-		table.SetRowLine(true)
-		table.SetHeader(header)
-		table.AppendBulk(*data)
-		table.Render()
-	} else if isJSON {
-		output, err := json.MarshalIndent(in, "", "  ")
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(output))
-	} else if isYaml {
-		output, err := yaml.Marshal(in)
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(output))
+	// TODO(displague) remove isJSON and isYaml globals
+	switch {
+	case isJSON:
+		format = outputPkg.FormatJSON
+	case isYaml:
+		format = outputPkg.FormatYAML
 	}
-	return nil
+	output := &outputPkg.CellMerging{Format: format}
+	return output.Output(in, header, data)
 }

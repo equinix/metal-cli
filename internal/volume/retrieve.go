@@ -18,40 +18,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package volume
 
 import (
 	"fmt"
 	"strconv"
 
+	"github.com/packethost/packet-cli/internal/output"
+	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-var (
-	volumeID string
-)
-
-// retriveVolumeCmd represents the retriveVolume command
-var retriveVolumeCmd = &cobra.Command{
-	Use:   "get",
-	Short: "Retrieves a volume list or volume details.",
-	Long: `Example:
-	
-Retrieve the list of volumes:
-packet volume get --project-id [project_UUID]
-  
-Retrieve a specific volume:
-packet volume get --id [volume_UUID]
-
-`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if projectID != "" && volumeID != "" {
+func retrieveCmd(svc packngo.VolumeService, out output.Outputer, projectID, volumeID *string, isJSON, isYaml *bool) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		out.SetFormat(output.FormatSwitch(*isJSON, *isYaml))
+		if *projectID != "" && *volumeID != "" {
 			return fmt.Errorf("Either id or project-id can be set.")
-		} else if projectID == "" && volumeID == "" {
-			return fmt.Errorf("Either id or project-id should be set.")
-		} else if projectID != "" {
-			volumes, _, err := PacknGo.Volumes.List(projectID, nil)
+		} else if *projectID == "" && *volumeID == "" {
+			return fmt.Errorf("Either id or project-id  should be set.")
+		} else if *projectID != "" {
+			volumes, _, err := svc.List(*projectID, nil)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Volumes")
 			}
@@ -62,10 +49,10 @@ packet volume get --id [volume_UUID]
 			}
 			header := []string{"ID", "Name", "Size", "State", "Created"}
 
-			return output(volumes, header, &data)
-		} else if volumeID != "" {
+			return out.Output(volumes, header, &data)
+		} else if *volumeID != "" {
 
-			v, _, err := PacknGo.Volumes.Get(volumeID, nil)
+			v, _, err := svc.Get(*volumeID, nil)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Volume")
 			}
@@ -74,15 +61,32 @@ packet volume get --id [volume_UUID]
 			data := make([][]string, 1)
 			data[0] = []string{v.ID, v.Name, strconv.Itoa(v.Size), v.State, v.Created}
 
-			return output(v, header, &data)
+			return out.Output(v, header, &data)
 		}
 		return nil
-	},
+	}
 }
 
-func init() {
-	retriveVolumeCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
-	retriveVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "UUID of the volume")
-	retriveVolumeCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retriveVolumeCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
+func Retrieve(client *VolumeClient, out output.Outputer) *cobra.Command {
+	var (
+		volumeID, projectID string
+		isJSON, isYaml      bool
+	)
+	retriveVolumeCmd := retrieveCmd(client.VolumeService, out, &projectID, &volumeID, &isJSON, &isYaml)
+	cmd := &cobra.Command{
+		Use:   "get",
+		Short: "Retrieves a volume list or volume details.",
+		Example: `
+Retrieve the list of volumes:
+packet volume get --project-id [project_UUID]
+Retrieve a specific volume:
+packet volume get --id [volume_UUID]`,
+		RunE: retriveVolumeCmd,
+	}
+	cmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	cmd.Flags().StringVarP(&volumeID, "id", "i", "", "UUID of the volume")
+
+	cmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
+	cmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
+	return cmd
 }

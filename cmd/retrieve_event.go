@@ -28,7 +28,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var eventID string
+var (
+	volumeID, eventID string
+)
 
 // retrieveEventsCmd represents the retrieveEvents command
 var retrieveEventCmd = &cobra.Command{

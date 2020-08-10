@@ -4,14 +4,17 @@ Detaches a volume from a device
 
 ### Synopsis
 
-Example:
-
-packet volume detach --id [attachment_UUID]
-
-
+Detaches a volume from a device
 
 ```
 packet volume detach [flags]
+```
+
+### Examples
+
+```
+
+packet volume detach --id [attachment_UUID]
 ```
 
 ### Options

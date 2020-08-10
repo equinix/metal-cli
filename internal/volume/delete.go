@@ -18,44 +18,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package volume
 
 import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	"github.com/packethost/packet-cli/internal/output"
+	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 // deleteVolumeCmd represents the deleteVolume command
-var deleteVolumeCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "Deletes a volume",
-	Long: `Example:
-
-packet volume delete --id [volume_UUID]
-
-	  `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if !force {
+func deleteCmd(svc packngo.VolumeService, out output.Outputer, volumeID *string, force *bool) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		if !*force {
 			prompt := promptui.Prompt{
-				Label:     fmt.Sprintf("Are you sure you want to delete the volume %s: ", volumeID),
+				Label:     fmt.Sprintf("Are you sure you want to delete the volume %s: ", *volumeID),
 				IsConfirm: true,
 			}
 
 			_, err := prompt.Run()
 			if err != nil {
-				return nil
+				return err
 			}
 		}
-
-		return errors.Wrap(deleteVolume(volumeID), "Could not delete Volume")
-	},
+		return errors.Wrap(deleteVolume(svc, *volumeID), "Could not delete Volume")
+	}
 }
 
-func deleteVolume(id string) error {
-	_, err := PacknGo.Volumes.Delete(id)
+func deleteVolume(svc packngo.VolumeService, volumeID string) error {
+	_, err := svc.Delete(volumeID)
 	if err != nil {
 		return err
 	}
@@ -63,9 +57,22 @@ func deleteVolume(id string) error {
 	return nil
 }
 
-func init() {
-	deleteVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "UUID of volume")
-	deleteVolumeCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the volume")
+func Delete(client *VolumeClient, out output.Outputer) *cobra.Command {
+	var (
+		volumeID string
+		force    bool
+	)
+	deleteVolumeCmd := deleteCmd(client.VolumeService, out, &volumeID, &force)
+	cmd := &cobra.Command{
+		Use:   "delete",
+		Short: "Deletes a volume",
+		Example: `
+packet volume delete --id [volume_UUID]`,
+		RunE: deleteVolumeCmd,
+	}
+	cmd.Flags().StringVarP(&volumeID, "id", "i", "", "UUID of volume")
+	cmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the volume")
 
-	_ = deleteVolumeCmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("id")
+	return cmd
 }
