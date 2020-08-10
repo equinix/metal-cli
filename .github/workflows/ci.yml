@@ -1,0 +1,37 @@
+name: 'ci'
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  test:
+    name: Lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [ '1.14' ]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: Restore Cache
+      uses: actions/cache@v2
+      id: cache
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+    - run: touch ~/.packet-cli.yaml
+    - name: Detect formatting and build errors
+      run: make
+      env:
+        PACKET_TOKEN: bogus
+    - name: Detect Uncommitted Docs
+      run: git diff docs
