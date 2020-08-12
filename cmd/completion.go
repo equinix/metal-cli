@@ -81,6 +81,9 @@ var completionCmd = &cobra.Command{
 		// ValidArgs make this error response dead-code
 		return fmt.Errorf("unknown shell: %q", args[0])
 	},
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		return nil
+	},
 }
 
 func init() {

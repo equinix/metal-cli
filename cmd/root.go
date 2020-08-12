@@ -87,7 +87,7 @@ func initConfig() {
 		viper.AddConfigPath(userHomeDir())
 	}
 
-	if err := viper.ReadInConfig(); err != nil {
+	if err := viper.ReadInConfig(); err != nil && !errors.As(err, &viper.ConfigFileNotFoundError{}) {
 		panic(fmt.Errorf("Could not read config: %s", err))
 	}
 
