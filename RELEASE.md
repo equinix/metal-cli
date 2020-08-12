@@ -17,16 +17,13 @@ When breaking changes are introduced bump the minor or major accordingly, restti
 
 ## Releasing
 
-Install goreleaser
+Push the tag to GitHub and [GitHub Workflows](.github/workflows/release.yml) and [GoReleaser](.goreleaser.yml) will do the rest.
 
-Run:
-
-```
-export GITHUB_TOKEN=...
-goreleaser
+```sh
+git push origin --tags 0.0.9
 ```
 
-This will build and push binaries for several different OS and Architecture combinations.
+This will build and release binaries for several different OS and Architecture combinations.
 
-Any special instructions or notes can be entered by editing the release notes at https://github.com/packethost/packet-cli/releases
+Any special instructions or notes should be added by editing the release notes that goreleaser publishes. These notes can be found at https://github.com/packethost/packet-cli/releases
 
