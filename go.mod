@@ -15,7 +15,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.2 // indirect
 	github.com/olekukonko/tablewriter v0.0.0-20180506121414-d4647c9c7a84
 	github.com/packethost/packngo v0.2.0
-	github.com/pkg/errors v0.8.0
+	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.4.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
