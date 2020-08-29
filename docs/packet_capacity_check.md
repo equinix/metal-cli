@@ -19,16 +19,18 @@ packet capacity check [flags]
 ```
   -f, --facility string   Code of the facility
   -h, --help              help for check
-  -j, --json              JSON output
   -p, --plan string       Name of the plan
   -q, --quantity int      Number of devices wanted
-  -y, --yaml              YAML output
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string   Path to JSON or YAML configuration file
+      --config string     Path to JSON or YAML configuration file
+      --exclude strings   Comma seperated Href references to collapse in results, may be dotted three levels deep
+      --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
+  -j, --json              JSON output
+  -y, --yaml              YAML output
 ```
 
 ### SEE ALSO
