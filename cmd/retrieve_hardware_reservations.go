@@ -36,10 +36,19 @@ var retrieveHardwareReservationsCmd = &cobra.Command{
 
 Retrieve all hardware reservations of a project:
 packet hardware_reservations get -p [project_id]
+
+When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		header := []string{"ID", "Facility", "Plan", "Created"}
-		listOpt := &packngo.ListOptions{Includes: []string{"project,facility,device"}}
+
+		inc := []string{"project", "facility", "device"}
+
+		// don't fetch extra details that won't be rendered
+		if !isYaml && !isJSON {
+			inc = nil
+		}
+		listOpt := listOptions(inc, nil)
 
 		if hardwareReservationID == "" && projectID == "" {
 			return fmt.Errorf("Either id or project-id should be set.")
@@ -59,8 +68,8 @@ packet hardware_reservations get -p [project_id]
 
 			return output(reservations, header, &data)
 		} else if hardwareReservationID != "" {
-			getOpt := &packngo.GetOptions{Includes: listOpt.Includes}
-			r, _, err := PacknGo.HardwareReservations.Get(hardwareReservationID, getOpt)
+			getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
+			r, _, err := PacknGo.HardwareReservations.Get(hardwareReservationID, getOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Hardware Reservation")
 			}

@@ -46,7 +46,7 @@ packet device get --id [device_UUID]
 		} else if deviceID == "" && projectID == "" {
 			return fmt.Errorf("Either id or project-id should be set.")
 		} else if projectID != "" {
-			devices, _, err := PacknGo.Devices.List(projectID, nil)
+			devices, _, err := PacknGo.Devices.List(projectID, listOptions(nil, nil))
 			if err != nil {
 				return errors.Wrap(err, "Could not list Devices")
 			}

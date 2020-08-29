@@ -40,17 +40,25 @@ packet project get
 Retrieve a specific project:
 packet project get -i [project_UUID]
 packet project get -n [project_name]
+
+When using "--json" or "--yaml", "--include=members" is implied.
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if projectID != "" && projectName != "" {
 			return fmt.Errorf("Must specify only one of project-id and project name")
 		}
-		if projectID == "" {
-			listOpt := &packngo.ListOptions{
-				Includes: []string{"members"},
-			}
 
-			projects, _, err := PacknGo.Projects.List(listOpt)
+		inc := []string{"members"}
+
+		// don't fetch extra details that won't be rendered
+		if !isYaml && !isJSON {
+			inc = nil
+		}
+
+		listOpts := listOptions(inc, nil)
+
+		if projectID == "" {
+			projects, _, err := PacknGo.Projects.List(listOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Projects")
 			}
@@ -77,7 +85,8 @@ packet project get -n [project_name]
 			header := []string{"ID", "Name", "Created"}
 			return output(projects, header, &data)
 		} else {
-			p, _, err := PacknGo.Projects.Get(projectID, &packngo.GetOptions{Includes: []string{"members"}})
+			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
+			p, _, err := PacknGo.Projects.Get(projectID, getOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Project")
 			}
