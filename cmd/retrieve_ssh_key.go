@@ -75,6 +75,4 @@ packet ssh-key get --id [ssh-key_UUID]
 
 func init() {
 	retrieveSSHKeysCmd.Flags().StringVarP(&sshKeyID, "id", "i", "", "UUID of the SSH key")
-	retrieveSSHKeysCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveSSHKeysCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

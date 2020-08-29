@@ -109,7 +109,4 @@ func init() {
 	retrieveEventCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	retrieveEventCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
 	retrieveEventCmd.Flags().StringVarP(&volumeID, "organization-id", "o", "", "UUID of the organization")
-
-	retrieveEventCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveEventCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

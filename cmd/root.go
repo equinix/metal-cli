@@ -74,6 +74,10 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Path to JSON or YAML configuration file")
+
+	rootCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
+	rootCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
+
 	rootCmd.Version = Version
 }
 

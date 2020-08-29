@@ -69,6 +69,4 @@ packet user get --id [user_UUID]
 
 func init() {
 	retriveUserCmd.Flags().StringVarP(&userID, "id", "i", "", "UUID of the user")
-	retriveUserCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retriveUserCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

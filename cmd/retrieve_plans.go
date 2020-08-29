@@ -50,8 +50,3 @@ var retrievePlansCmd = &cobra.Command{
 		return output(plans, header, &data)
 	},
 }
-
-func init() {
-	retrievePlansCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrievePlansCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
-}

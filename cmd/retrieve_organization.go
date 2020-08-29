@@ -71,6 +71,4 @@ packet organization get -i [organization-id]
 
 func init() {
 	retrieveOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "UUID of the organization")
-	retrieveOrganizationCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveOrganizationCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

@@ -47,8 +47,3 @@ var retrieveOperatingSystemCmd = &cobra.Command{
 		return output(oss, header, &data)
 	},
 }
-
-func init() {
-	retrieveOperatingSystemCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveOperatingSystemCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
-}

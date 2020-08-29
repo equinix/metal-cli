@@ -79,6 +79,4 @@ func init() {
 	hardwareReservationsCmd.AddCommand(retrieveHardwareReservationsCmd)
 	retrieveHardwareReservationsCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	retrieveHardwareReservationsCmd.Flags().StringVarP(&hardwareReservationID, "id", "i", "", "UUID of the hardware reservation")
-	retrieveHardwareReservationsCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveHardwareReservationsCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

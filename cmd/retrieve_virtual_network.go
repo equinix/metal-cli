@@ -56,6 +56,4 @@ packet virtual-network get -p [project_UUID]
 func init() {
 	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	_ = retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
-	retrieveVirtualNetworksCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveVirtualNetworksCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

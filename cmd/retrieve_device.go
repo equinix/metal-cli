@@ -77,6 +77,4 @@ packet device get --id [device_UUID]
 func init() {
 	retriveDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	retriveDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
-	retriveDeviceCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retriveDeviceCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

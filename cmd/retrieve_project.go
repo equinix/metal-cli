@@ -94,6 +94,4 @@ packet project get -n [project_name]
 func init() {
 	retriveProjectCmd.Flags().StringVarP(&projectName, "project", "n", "", "Name of the project")
 	retriveProjectCmd.Flags().StringVarP(&projectID, "project-id", "i", "", "UUID of the project")
-	retriveProjectCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retriveProjectCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }
