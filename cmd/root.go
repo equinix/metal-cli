@@ -33,7 +33,11 @@ import (
 
 var (
 	// PacknGo client
-	PacknGo     packngo.Client
+	PacknGo packngo.Client
+
+	// rootCmd represents the base command when called without any subcommands
+	rootCmd *cobra.Command
+
 	cfgFile     string
 	isJSON      bool
 	isYaml      bool
@@ -41,17 +45,7 @@ var (
 
 	includes *[]string // nolint:unused
 	excludes *[]string // nolint:unused
-
 )
-
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:               "packet",
-	Short:             "Command line interface for Packet Host",
-	Long:              `Command line interface for Packet Host`,
-	DisableAutoGenTag: true,
-	PersistentPreRunE: packetConnect,
-}
 
 func packetConnect(cmd *cobra.Command, args []string) error {
 	if packetToken == "" {
@@ -61,13 +55,25 @@ func packetConnect(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return errors.Wrap(err, "Could not create Client")
 	}
+
 	client.UserAgent = fmt.Sprintf("packet-cli/%s %s", Version, client.UserAgent)
 	PacknGo = *client
 	return nil
 }
 
-func init() {
-	cobra.OnInitialize(initConfig)
+func NewRootCommand() *cobra.Command {
+	// rootCmd represents the base command when called without any subcommands
+	var rootCmd = &cobra.Command{
+		Use:               "packet",
+		Short:             "Command line interface for Packet Host",
+		Long:              `Command line interface for Packet Host`,
+		DisableAutoGenTag: true,
+		PersistentPreRunE: packetConnect,
+	}
+
+	rootCmd.Version = Version
+	rootCmd.DisableSuggestions = false
+
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Path to JSON or YAML configuration file")
 
 	rootCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
@@ -76,7 +82,12 @@ func init() {
 	includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma seperated Href references to expand in results, may be dotted three levels deep")
 	excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma seperated Href references to collapse in results, may be dotted three levels deep")
 
-	rootCmd.Version = Version
+	return rootCmd
+}
+
+func init() {
+	cobra.OnInitialize(initConfig)
+	rootCmd = NewRootCommand()
 }
 
 // listOptions creates a ListOptions using the includes and excludes persistent
@@ -98,23 +109,24 @@ func listOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	v := viper.New()
 	if cfgFile != "" {
 		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
+		v.SetConfigFile(cfgFile)
 	} else {
-		viper.SetConfigName(".packet-cli")
-		viper.AddConfigPath(userHomeDir())
+		v.SetConfigName(".packet-cli")
+		v.AddConfigPath(userHomeDir())
 	}
 
-	if err := viper.ReadInConfig(); err != nil && !errors.As(err, &viper.ConfigFileNotFoundError{}) {
-		panic(fmt.Errorf("Could not read config: %s", err))
+	if err := v.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			panic(fmt.Errorf("Could not read config: %s", err))
+		}
 	}
 
-	if viper.GetString("token") != "" {
-		packetToken = viper.GetString("token")
-	} else {
-		packetToken = os.Getenv("PACKET_TOKEN")
-	}
+	v.SetEnvPrefix("PACKET")
+	v.AutomaticEnv()
+	packetToken = v.GetString("token")
 }
 
 func userHomeDir() string {

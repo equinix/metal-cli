@@ -56,7 +56,7 @@ packet capacity check -f [facility] -p [plan] -q [quantity]
 
 		data[0] = []string{availability.Servers[0].Facility, availability.Servers[0].Plan,
 			strconv.Itoa(availability.Servers[0].Quantity), strconv.FormatBool(availability.Servers[0].Available)}
-		header := []string{"Facility", "Plan", "Quantiy", "Availability"}
+		header := []string{"Facility", "Plan", "Quantity", "Availability"}
 
 		return output(availability, header, &data)
 	},

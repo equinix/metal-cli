@@ -28,6 +28,7 @@ import (
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -119,7 +120,10 @@ packet device create --hostname [hostname] --plan [plan] --facility [facility_co
 
 func init() {
 	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project where the device will be created")
+	viper.BindPFlag("project-id", createDeviceCmd.Flags().Lookup("project-id"))
+
 	createDeviceCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility where the device will be created")
+
 	createDeviceCmd.Flags().StringVarP(&plan, "plan", "P", "", "Name of the plan")
 	createDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "Hostname")
 	createDeviceCmd.Flags().StringVarP(&operatingSystem, "operating-system", "o", "", "Operating system name for the device")

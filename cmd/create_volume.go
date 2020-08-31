@@ -26,6 +26,7 @@ import (
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -71,6 +72,8 @@ var createVolumeCmd = &cobra.Command{
 
 func init() {
 	createVolumeCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	viper.BindPFlag("project-id", createVolumeCmd.Flags().Lookup("project-id"))
+
 	createVolumeCmd.Flags().StringVarP(&plan, "plan", "P", "", "Name of the plan")
 	createVolumeCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility where the volume will be created")
 	createVolumeCmd.Flags().IntVarP(&size, "size", "s", 0, "Size in GB]")

@@ -26,6 +26,7 @@ import (
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // retrieveHardwareReservationsCmd represents the retrieveHardwareReservations command
@@ -87,5 +88,7 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 func init() {
 	hardwareReservationsCmd.AddCommand(retrieveHardwareReservationsCmd)
 	retrieveHardwareReservationsCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	viper.BindPFlag("project-id", retrieveHardwareReservationsCmd.Flags().Lookup("project-id"))
+
 	retrieveHardwareReservationsCmd.Flags().StringVarP(&hardwareReservationID, "id", "i", "", "UUID of the hardware reservation")
 }

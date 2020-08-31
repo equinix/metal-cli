@@ -26,6 +26,7 @@ import (
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -66,6 +67,8 @@ packet ip request --quantity [quantity] --facility [facility_code] --type [addre
 
 func init() {
 	requestIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	viper.BindPFlag("project-id", requestIPCmd.Flags().Lookup("project-id"))
+
 	requestIPCmd.Flags().StringVarP(&ttype, "type", "t", "", "Address type public_ipv4 or global_ipv6")
 	requestIPCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	requestIPCmd.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of IP addresses to reserve")

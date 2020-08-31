@@ -25,6 +25,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -41,6 +42,10 @@ packet device get --id [device_UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// projectID, _ = cmd.Flags().GetString("x")
+		fmt.Println(projectID, "viper", viper.GetString("project-id"))
+		panic("as")
+
 		if deviceID != "" && projectID != "" {
 			return fmt.Errorf("Either id or project-id can be set.")
 		} else if deviceID == "" && projectID == "" {
@@ -76,5 +81,7 @@ packet device get --id [device_UUID]
 
 func init() {
 	retriveDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	viper.BindPFlag("project-id", retriveDeviceCmd.Flags().Lookup("project-id"))
+
 	retriveDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
 }

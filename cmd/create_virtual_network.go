@@ -26,6 +26,7 @@ import (
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // createVirtualNetworkCmd represents the createVirtualNetwork command
@@ -63,6 +64,8 @@ packet virtual-network create --project-id [project_UUID] --facility [facility_c
 
 func init() {
 	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	viper.BindPFlag("project-id", createVirtualNetworkCmd.Flags().Lookup("project-id"))
+
 	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the virtual network")
 

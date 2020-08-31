@@ -26,6 +26,7 @@ import (
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var eventID string
@@ -116,6 +117,8 @@ func init() {
 	eventCmd.AddCommand(retrieveEventCmd)
 	retrieveEventCmd.Flags().StringVarP(&eventID, "id", "i", "", "UUID of the event")
 	retrieveEventCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	viper.BindPFlag("project-id", retrieveEventCmd.Flags().Lookup("project-id"))
+
 	retrieveEventCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
 	retrieveEventCmd.Flags().StringVarP(&volumeID, "organization-id", "o", "", "UUID of the organization")
 }

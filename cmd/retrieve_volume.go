@@ -26,6 +26,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -82,5 +83,7 @@ packet volume get --id [volume_UUID]
 
 func init() {
 	retriveVolumeCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	viper.BindPFlag("project-id", retriveVolumeCmd.Flags().Lookup("project-id"))
+
 	retriveVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "UUID of the volume")
 }

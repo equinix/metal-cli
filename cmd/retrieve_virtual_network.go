@@ -25,6 +25,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
@@ -55,5 +56,7 @@ packet virtual-network get -p [project_UUID]
 
 func init() {
 	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	viper.BindPFlag("project-id", retrieveVirtualNetworksCmd.Flags().Lookup("project-id"))
+
 	_ = retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
 }

@@ -26,6 +26,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -104,6 +105,8 @@ packet ip get --reservation-id [reservation_UUID]
 
 func init() {
 	retrieveIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	viper.BindPFlag("project-id", retrieveIPCmd.Flags().Lookup("project-id"))
+
 	retrieveIPCmd.Flags().StringVarP(&assignmentID, "assignment-id", "a", "", "UUID of the assignment")
 	retrieveIPCmd.Flags().StringVarP(&reservationID, "reservation-id", "r", "", "UUID of the reservation")
 }
