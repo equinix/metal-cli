@@ -21,9 +21,14 @@
 package main
 
 import (
+	"os"
+
 	"github.com/packethost/packet-cli/cmd"
 )
 
 func main() {
-	cmd.NewCli()
+	cli := cmd.NewCli()
+	if err := cli.MainCmd.Execute(); err != nil {
+		os.Exit(1)
+	}
 }
