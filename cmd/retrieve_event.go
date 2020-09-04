@@ -52,12 +52,21 @@ packet event get -d [device_UUID]
 
 Retrieve all events of a current user:
 packet event get
+
+When using "--json" or "--yaml", "--include=relationships" is implied.
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var events []packngo.Event
 		var err error
 		header := []string{"ID", "Body", "Type", "Created"}
-		listOpt := &packngo.ListOptions{Includes: []string{"relationships"}}
+
+		inc := []string{"relationships"}
+
+		// don't fetch extra details that won't be rendered
+		if !isYaml && !isJSON {
+			inc = nil
+		}
+		listOpt := listOptions(inc, nil)
 
 		if deviceID != "" && projectID != "" && organizationID != "" && eventID != "" {
 			return fmt.Errorf("The id, project-id, device-id, and organization-id parameters are mutually exclusive")
@@ -109,7 +118,4 @@ func init() {
 	retrieveEventCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	retrieveEventCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
 	retrieveEventCmd.Flags().StringVarP(&volumeID, "organization-id", "o", "", "UUID of the organization")
-
-	retrieveEventCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveEventCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

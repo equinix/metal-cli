@@ -167,6 +167,34 @@ Flags:
 Use "packet [command] --help" for more information about a command.
 ```
 
+## Includes and Excludes
+
+Packet API resource responses may have related resources. These related
+resources can be embedded in the result or referred. Referred resources will
+only include a `Href` value, which includes the unique ID of the resource.
+Embedded resources will be represented with their full API value, which may
+contain additional embedded or referred resources.
+
+The resources that you want embedded can be _included_ in results using
+`--include`.  The resources that you want referred can be _excluded_ with
+`--exclude`.  By excluding some of the embedded-by-default resources, you can
+speed up and reduce the size of responses.  By including referred-by-default
+resources, you can avoid the round trip of subsequent calls.
+
+```sh
+packet devices get --project-id $ID --yaml --exclude=ssh_keys,plan --include=project
+```
+
+These arguments are available in any command that returns a response document.
+The included and excluded fields requested from the API may differ based on the
+output format, for example, for historic reasons, `packet projects get --yaml`
+includes the details of all project members. In the table output format, no
+member related fields are displayed and so `packet projects get` will exclude
+the member resource.
+
+Excluding fields needed for the table output will result in an error. Mixing
+includes and excludes affecting the same top-level field is not supported.
+
 ## Reference
 
 The full CLI documentation can be found [here](docs/packet.md) or by clicking the links below.

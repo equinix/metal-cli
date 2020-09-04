@@ -106,7 +106,4 @@ func init() {
 	retrieveIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	retrieveIPCmd.Flags().StringVarP(&assignmentID, "assignment-id", "a", "", "UUID of the assignment")
 	retrieveIPCmd.Flags().StringVarP(&reservationID, "reservation-id", "r", "", "UUID of the reservation")
-
-	retrieveIPCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveIPCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

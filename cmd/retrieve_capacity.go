@@ -57,6 +57,4 @@ packet capacity get
 
 func init() {
 	capacityCmd.AddCommand(retrieveCapacityCmd)
-	retrieveCapacityCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveCapacityCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

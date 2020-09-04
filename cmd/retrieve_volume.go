@@ -51,7 +51,7 @@ packet volume get --id [volume_UUID]
 		} else if projectID == "" && volumeID == "" {
 			return fmt.Errorf("Either id or project-id should be set.")
 		} else if projectID != "" {
-			volumes, _, err := PacknGo.Volumes.List(projectID, nil)
+			volumes, _, err := PacknGo.Volumes.List(projectID, listOptions(nil, nil))
 			if err != nil {
 				return errors.Wrap(err, "Could not list Volumes")
 			}
@@ -83,6 +83,4 @@ packet volume get --id [volume_UUID]
 func init() {
 	retriveVolumeCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	retriveVolumeCmd.Flags().StringVarP(&volumeID, "id", "i", "", "UUID of the volume")
-	retriveVolumeCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retriveVolumeCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

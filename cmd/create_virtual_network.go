@@ -68,6 +68,4 @@ func init() {
 
 	_ = createVirtualNetworkCmd.MarkFlagRequired("project-id")
 	_ = createVirtualNetworkCmd.MarkFlagRequired("facility")
-	createVirtualNetworkCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	createVirtualNetworkCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

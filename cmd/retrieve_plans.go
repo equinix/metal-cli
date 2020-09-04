@@ -35,7 +35,7 @@ var retrievePlansCmd = &cobra.Command{
   
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		plans, _, err := PacknGo.Plans.List(nil)
+		plans, _, err := PacknGo.Plans.List(listOptions(nil, nil))
 		if err != nil {
 			return errors.Wrap(err, "Could not list Plans")
 		}
@@ -49,9 +49,4 @@ var retrievePlansCmd = &cobra.Command{
 
 		return output(plans, header, &data)
 	},
-}
-
-func init() {
-	retrievePlansCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrievePlansCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

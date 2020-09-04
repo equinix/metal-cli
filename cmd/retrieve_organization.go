@@ -21,6 +21,7 @@
 package cmd
 
 import (
+	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -39,8 +40,9 @@ packet organization get -i [organization-id]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		listOpts := listOptions(nil, nil)
 		if organizationID == "" {
-			orgs, _, err := PacknGo.Organizations.List(nil)
+			orgs, _, err := PacknGo.Organizations.List(listOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Organizations")
 			}
@@ -54,7 +56,8 @@ packet organization get -i [organization-id]
 
 			return output(orgs, header, &data)
 		} else {
-			org, _, err := PacknGo.Organizations.Get(organizationID, nil)
+			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
+			org, _, err := PacknGo.Organizations.Get(organizationID, getOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Organization")
 			}
@@ -71,6 +74,4 @@ packet organization get -i [organization-id]
 
 func init() {
 	retrieveOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "UUID of the organization")
-	retrieveOrganizationCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveOrganizationCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }

@@ -37,7 +37,7 @@ packet facilities get
 	
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		facilities, _, err := PacknGo.Facilities.List(nil)
+		facilities, _, err := PacknGo.Facilities.List(listOptions(nil, nil))
 		if err != nil {
 			return errors.Wrap(err, "Could not list Facilities")
 		}
@@ -50,9 +50,4 @@ packet facilities get
 
 		return output(facilities, header, &data)
 	},
-}
-
-func init() {
-	retrieveFacilitiesCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "-j or --json JSON output")
-	retrieveFacilitiesCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "-y or --yaml YAML output")
 }

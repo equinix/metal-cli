@@ -9,8 +9,12 @@ Command line interface for Packet Host
 ### Options
 
 ```
-      --config string   Path to JSON or YAML configuration file
-  -h, --help            help for packet
+      --config string     Path to JSON or YAML configuration file
+      --exclude strings   Comma seperated Href references to collapse in results, may be dotted three levels deep
+  -h, --help              help for packet
+      --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
+  -j, --json              JSON output
+  -y, --yaml              YAML output
 ```
 
 ### SEE ALSO

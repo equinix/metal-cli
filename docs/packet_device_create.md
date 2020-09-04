@@ -25,7 +25,6 @@ packet device create [flags]
   -h, --help                             help for create
   -H, --hostname string                  Hostname
   -i, --ipxe-script-url string           URL to the iPXE script
-  -j, --json                             JSON output
   -o, --operating-system string          Operating system name for the device
   -P, --plan string                      Name of the plan
   -p, --project-id string                UUID of the project where the device will be created
@@ -36,13 +35,16 @@ packet device create [flags]
   -t, --tags strings                     Tags for the device: --tags="tag1,tag2"
   -T, --termination-time string          Device termination time: --termination-time="15:04:05"
   -u, --userdata string                  User data
-  -y, --yaml                             YAML output
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string   Path to JSON or YAML configuration file
+      --config string     Path to JSON or YAML configuration file
+      --exclude strings   Comma seperated Href references to collapse in results, may be dotted three levels deep
+      --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
+  -j, --json              JSON output
+  -y, --yaml              YAML output
 ```
 
 ### SEE ALSO

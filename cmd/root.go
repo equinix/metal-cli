@@ -38,6 +38,10 @@ var (
 	isJSON      bool
 	isYaml      bool
 	packetToken string
+
+	includes *[]string // nolint:unused
+	excludes *[]string // nolint:unused
+
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -74,7 +78,31 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Path to JSON or YAML configuration file")
+
+	rootCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
+	rootCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
+
+	includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma seperated Href references to expand in results, may be dotted three levels deep")
+	excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma seperated Href references to collapse in results, may be dotted three levels deep")
+
 	rootCmd.Version = Version
+}
+
+// listOptions creates a ListOptions using the includes and excludes persistent
+// flags. When not defined, the defaults given will be supplied.
+func listOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions {
+	listOptions := &packngo.ListOptions{
+		Includes: defaultIncludes,
+		Excludes: defaultExcludes,
+	}
+	if rootCmd.Flags().Changed("include") {
+		listOptions.Includes = *includes
+	}
+	if rootCmd.Flags().Changed("exclude") {
+		listOptions.Excludes = *excludes
+	}
+
+	return listOptions
 }
 
 // initConfig reads in config file and ENV variables if set.

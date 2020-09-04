@@ -37,7 +37,7 @@ packet virtual-network get -p [project_UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID, nil)
+		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID, listOptions(nil, nil))
 		if err != nil {
 			return errors.Wrap(err, "Could not list Project Virtual Networks")
 		}
@@ -56,6 +56,4 @@ packet virtual-network get -p [project_UUID]
 func init() {
 	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	_ = retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
-	retrieveVirtualNetworksCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	retrieveVirtualNetworksCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
 }
