@@ -4,6 +4,9 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/packethost/packet-cli)](https://goreportcard.com/report/github.com/packethost/packet-cli)
 [![Slack](https://slack.packet.com/badge.svg)](https://slack.packet.com)
 [![Twitter Follow](https://img.shields.io/twitter/follow/packethost.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=packethost)
+![](https://img.shields.io/badge/Stability-Maintained-green.svg)
+
+This repository is [Maintained](https://github.com/packethost/standards/blob/master/maintained-statement.md) meaning that this software is supported by Packet and its community - available to use in production environments.
 
 ## Table of Contents
 
