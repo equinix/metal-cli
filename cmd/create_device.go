@@ -131,8 +131,8 @@ func init() {
 
 	createDeviceCmd.Flags().StringVarP(&storage, "storage", "s", "", "UUID of the storage")
 	createDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "i", "", "URL to the iPXE script")
-	createDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "User data")
-	createDeviceCmd.Flags().StringVarP(&userdataFile, "userdata-file", "", "", "Filename to read Userdata from")
+	createDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "Userdata for device initialization (can not be used with --userdata-file)")
+	createDeviceCmd.Flags().StringVarP(&userdataFile, "userdata-file", "", "", "Path to a userdata file for device initialization (can not be used with --userdata)")
 	createDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Custom data")
 	createDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Tags for the device: --tags="tag1,tag2"`)
 	createDeviceCmd.Flags().IntVarP(&publicIPv4SubnetSize, "public-ipv4-subnet-size", "v", 0, "Size of the public IPv4 subnet")

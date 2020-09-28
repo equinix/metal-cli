@@ -34,4 +34,4 @@ jobs:
       env:
         PACKET_TOKEN: bogus
     - name: Detect Uncommitted Docs
-      run: git diff docs
+      run: git diff --exit-code docs
