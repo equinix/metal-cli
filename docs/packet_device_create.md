@@ -34,8 +34,8 @@ packet device create [flags]
   -s, --storage string                   UUID of the storage
   -t, --tags strings                     Tags for the device: --tags="tag1,tag2"
   -T, --termination-time string          Device termination time: --termination-time="15:04:05"
-  -u, --userdata string                  User data
-      --userdata-file string             Filename to read Userdata from
+  -u, --userdata string                  Userdata for device initialization (can not be used with --userdata-file)
+      --userdata-file string             Path to a userdata file for device initialization (can not be used with --userdata)
 ```
 
 ### Options inherited from parent commands
