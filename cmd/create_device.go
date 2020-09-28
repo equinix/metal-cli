@@ -22,6 +22,7 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	"github.com/packethost/packngo"
@@ -40,6 +41,7 @@ var (
 
 	storage               string
 	userdata              string
+	userdataFile          string
 	customdata            string
 	tags                  []string
 	ipxescripturl         string
@@ -60,50 +62,18 @@ packet device create --hostname [hostname] --plan [plan] --facility [facility_co
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		var endDt *packngo.Timestamp
 
-		request := &packngo.DeviceCreateRequest{
-			Hostname:     hostname,
-			Plan:         plan,
-			Facility:     []string{facility},
-			OS:           operatingSystem,
-			BillingCycle: billingCycle,
-			ProjectID:    projectID,
+		if userdata != "" && userdataFile != "" {
+			return fmt.Errorf("Either userdata or userdata-file should be set")
 		}
 
-		if storage != "" {
-			request.Storage = storage
-		}
-		if userdata != "" {
-			request.UserData = userdata
-		}
-
-		if customdata != "" {
-			request.CustomData = customdata
-		}
-
-		if len(tags) > 0 {
-			request.Tags = tags
-		}
-		if ipxescripturl != "" {
-			request.IPXEScriptURL = ipxescripturl
-		}
-		if publicIPv4SubnetSize != 0 {
-			request.PublicIPv4SubnetSize = publicIPv4SubnetSize
-		}
-		if alwaysPXE {
-			request.AlwaysPXE = alwaysPXE
-		}
-
-		if hardwareReservationID != "" {
-			request.HardwareReservationID = hardwareReservationID
-		}
-
-		if spotInstance {
-			request.SpotInstance = spotInstance
-		}
-
-		if spotPriceMax != 0 {
-			request.SpotPriceMax = spotPriceMax
+		if userdataFile != "" {
+			userdataRaw, readErr := ioutil.ReadFile(userdataFile)
+			if readErr != nil {
+				return errors.Wrap(readErr, "Could not read userdata-file")
+			}
+			userdata = string(userdataRaw)
 		}
 
 		if terminationTime != "" {
@@ -111,7 +81,27 @@ packet device create --hostname [hostname] --plan [plan] --facility [facility_co
 			if err != nil {
 				return errors.Wrap(err, fmt.Sprintf("Could not parse time %q", terminationTime))
 			}
-			request.TerminationTime = &packngo.Timestamp{Time: parsedTime}
+			endDt = &packngo.Timestamp{Time: parsedTime}
+		}
+
+		request := &packngo.DeviceCreateRequest{
+			Hostname:              hostname,
+			Plan:                  plan,
+			Facility:              []string{facility},
+			OS:                    operatingSystem,
+			BillingCycle:          billingCycle,
+			ProjectID:             projectID,
+			Storage:               storage,
+			UserData:              userdata,
+			CustomData:            customdata,
+			IPXEScriptURL:         ipxescripturl,
+			Tags:                  tags,
+			PublicIPv4SubnetSize:  publicIPv4SubnetSize,
+			AlwaysPXE:             alwaysPXE,
+			HardwareReservationID: hardwareReservationID,
+			SpotInstance:          spotInstance,
+			SpotPriceMax:          spotPriceMax,
+			TerminationTime:       endDt,
 		}
 
 		device, _, err := PacknGo.Devices.Create(request)
@@ -142,6 +132,7 @@ func init() {
 	createDeviceCmd.Flags().StringVarP(&storage, "storage", "s", "", "UUID of the storage")
 	createDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "i", "", "URL to the iPXE script")
 	createDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "User data")
+	createDeviceCmd.Flags().StringVarP(&userdataFile, "userdata-file", "", "", "Filename to read Userdata from")
 	createDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Custom data")
 	createDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Tags for the device: --tags="tag1,tag2"`)
 	createDeviceCmd.Flags().IntVarP(&publicIPv4SubnetSize, "public-ipv4-subnet-size", "v", 0, "Size of the public IPv4 subnet")
