@@ -35,6 +35,7 @@ packet device create [flags]
   -t, --tags strings                     Tags for the device: --tags="tag1,tag2"
   -T, --termination-time string          Device termination time: --termination-time="15:04:05"
   -u, --userdata string                  User data
+      --userdata-file string             Filename to read Userdata from
 ```
 
 ### Options inherited from parent commands
