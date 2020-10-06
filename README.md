@@ -266,4 +266,4 @@ Details on all available commands can be found by visiting the reference [pages]
 For help with this package:
 
 * Open up a GitHub issue [here](https://github.com/packethost/packet-cli/issues).
-* Contact the [Packet Community Slack](http://slack.packet.net) or on Freenode IRC in the #packethost channel.
+* Contact the [Packet Community Slack](http://slack.packet.net) or on Freenode IRC in the #equinixmetal channel.
