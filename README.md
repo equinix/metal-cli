@@ -2,11 +2,11 @@
 
 [![GitHub release](https://img.shields.io/github/release/packethost/packet-cli/all.svg?style=flat-square)](https://github.com/packethost/packet-cli/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/packethost/packet-cli)](https://goreportcard.com/report/github.com/packethost/packet-cli)
-[![Slack](https://slack.packet.com/badge.svg)](https://slack.packet.com)
-[![Twitter Follow](https://img.shields.io/twitter/follow/packethost.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=packethost)
+[![Slack](https://slack.packet.com/badge.svg)](https://slack.equinixmetal.com)
+[![Twitter Follow](https://img.shields.io/twitter/follow/packethost.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=equinixmetal)
 ![](https://img.shields.io/badge/Stability-Maintained-green.svg)
 
-This repository is [Maintained](https://github.com/packethost/standards/blob/master/maintained-statement.md) meaning that this software is supported by Packet and its community - available to use in production environments.
+This repository is [Maintained](https://github.com/packethost/standards/blob/master/maintained-statement.md) meaning that this software is supported by Equinix Metal and its community - available to use in production environments.
 
 ## Table of Contents
 
@@ -266,4 +266,4 @@ Details on all available commands can be found by visiting the reference [pages]
 For help with this package:
 
 * Open up a GitHub issue [here](https://github.com/packethost/packet-cli/issues).
-* Contact the [Packet Community Slack](http://slack.packet.net) or on Freenode IRC in the #equinixmetal channel.
+* Contact the [Equinix Metal Community Slack](http://slack.equinixmetal.net) or on Freenode IRC in the #equinixmetal channel.
