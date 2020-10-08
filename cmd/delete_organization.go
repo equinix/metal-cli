@@ -55,7 +55,7 @@ packet organization delete -i [organization_UUID]
 }
 
 func deleteOrganization(id string) error {
-	_, err := PacknGo.Organizations.Delete(id)
+	_, err := apiClient.Organizations.Delete(id)
 	if err != nil {
 		return err
 	}

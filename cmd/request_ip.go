@@ -50,7 +50,7 @@ packet ip request --quantity [quantity] --facility [facility_code] --type [addre
 			Facility: &facility,
 		}
 
-		reservation, _, err := PacknGo.ProjectIPs.Request(projectID, req)
+		reservation, _, err := apiClient.ProjectIPs.Request(projectID, req)
 		if err != nil {
 			return errors.Wrap(err, "Could not request IP addresses")
 		}

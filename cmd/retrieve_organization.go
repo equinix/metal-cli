@@ -42,7 +42,7 @@ packet organization get -i [organization-id]
 	RunE: func(cmd *cobra.Command, args []string) error {
 		listOpts := listOptions(nil, nil)
 		if organizationID == "" {
-			orgs, _, err := PacknGo.Organizations.List(listOpts)
+			orgs, _, err := apiClient.Organizations.List(listOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Organizations")
 			}
@@ -57,7 +57,7 @@ packet organization get -i [organization-id]
 			return output(orgs, header, &data)
 		} else {
 			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-			org, _, err := PacknGo.Organizations.Get(organizationID, getOpts)
+			org, _, err := apiClient.Organizations.Get(organizationID, getOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Organization")
 			}

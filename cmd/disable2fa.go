@@ -43,12 +43,12 @@ packet 2fa disable -a -t [token]
 		if sms == app {
 			return fmt.Errorf("Either sms or app should be set")
 		} else if sms {
-			_, err := PacknGo.TwoFactorAuth.DisableSms(token)
+			_, err := apiClient.TwoFactorAuth.DisableSms(token)
 			if err != nil {
 				return errors.Wrap(err, "Could not disable Two-Factor Authentication via SMS")
 			}
 		} else if app {
-			_, err := PacknGo.TwoFactorAuth.DisableApp(token)
+			_, err := apiClient.TwoFactorAuth.DisableApp(token)
 			if err != nil {
 				return errors.Wrap(err, "Could not disable Two-Factor Authentication via App")
 			}

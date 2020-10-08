@@ -46,7 +46,7 @@ packet ssh-key create --key [public_key] --label [label]
 			Key:   key,
 		}
 
-		s, _, err := PacknGo.SSHKeys.Create(&req)
+		s, _, err := apiClient.SSHKeys.Create(&req)
 		if err != nil {
 			return errors.Wrap(err, "Could not create SSHKey")
 		}

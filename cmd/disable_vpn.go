@@ -37,7 +37,7 @@ Disable VPN service:
 packet vpn disable
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := PacknGo.VPN.Disable()
+		_, err := apiClient.VPN.Disable()
 		if err != nil {
 			return errors.Wrap(err, "Could not disable VPN service")
 		}

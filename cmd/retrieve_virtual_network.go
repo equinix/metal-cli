@@ -37,7 +37,7 @@ packet virtual-network get -p [project_UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		vnets, _, err := PacknGo.ProjectVirtualNetworks.List(projectID, listOptions(nil, nil))
+		vnets, _, err := apiClient.ProjectVirtualNetworks.List(projectID, listOptions(nil, nil))
 		if err != nil {
 			return errors.Wrap(err, "Could not list Project Virtual Networks")
 		}

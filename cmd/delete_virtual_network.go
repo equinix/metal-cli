@@ -58,7 +58,7 @@ packet virtual-network delete -i [virtual_network_UUID]
 }
 
 func deleteVnet(id string) error {
-	_, err := PacknGo.ProjectVirtualNetworks.Delete(id)
+	_, err := apiClient.ProjectVirtualNetworks.Delete(id)
 	if err != nil {
 		return err
 	}

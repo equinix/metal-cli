@@ -44,7 +44,7 @@ packet ssh-key get --id [ssh-key_UUID]
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if sshKeyID == "" {
-			sshKeys, _, err := PacknGo.SSHKeys.List()
+			sshKeys, _, err := apiClient.SSHKeys.List()
 			if err != nil {
 				return errors.Wrap(err, "Could not list SSH Keys")
 			}
@@ -58,7 +58,7 @@ packet ssh-key get --id [ssh-key_UUID]
 
 			return output(sshKeys, header, &data)
 		} else {
-			sshKey, _, err := PacknGo.SSHKeys.Get(sshKeyID, nil)
+			sshKey, _, err := apiClient.SSHKeys.Get(sshKeyID, nil)
 			if err != nil {
 				return errors.Wrap(err, "Could not get SSH Key")
 			}

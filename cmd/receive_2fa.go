@@ -48,7 +48,7 @@ packet 2fa receive -a
 		}
 
 		if sms {
-			_, err := PacknGo.TwoFactorAuth.ReceiveSms()
+			_, err := apiClient.TwoFactorAuth.ReceiveSms()
 			if err != nil {
 				return errors.Wrap(err, "Could not issue token via SMS")
 			}
@@ -57,7 +57,7 @@ packet 2fa receive -a
 			return nil
 		}
 
-		otpURI, _, err := PacknGo.TwoFactorAuth.SeedApp()
+		otpURI, _, err := apiClient.TwoFactorAuth.SeedApp()
 		if err != nil {
 			return errors.Wrap(err, "Could not get the OTP Seed URI")
 		}

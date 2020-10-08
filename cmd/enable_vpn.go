@@ -37,7 +37,7 @@ Enable VPN service:
 packet vpn enable
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := PacknGo.VPN.Enable()
+		_, err := apiClient.VPN.Enable()
 		if err != nil {
 			return errors.Wrap(err, "Could not enable VPN Service")
 		}

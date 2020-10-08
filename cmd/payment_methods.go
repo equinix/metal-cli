@@ -36,7 +36,7 @@ packet organization get payment-methods --id [organization_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		paymentMethods, _, err := PacknGo.Organizations.ListPaymentMethods(organizationID)
+		paymentMethods, _, err := apiClient.Organizations.ListPaymentMethods(organizationID)
 		if err != nil {
 			return errors.Wrap(err, "Could not list Payment Methods")
 		}

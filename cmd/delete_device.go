@@ -55,7 +55,7 @@ var deleteDeviceCmd = &cobra.Command{
 }
 
 func deleteDevice(id string) error {
-	_, err := PacknGo.Devices.Delete(id)
+	_, err := apiClient.Devices.Delete(id, force)
 	if err != nil {
 		return err
 	}

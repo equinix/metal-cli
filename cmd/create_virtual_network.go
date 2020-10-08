@@ -46,7 +46,7 @@ packet virtual-network create --project-id [project_UUID] --facility [facility_c
 			req.Description = description
 		}
 
-		n, _, err := PacknGo.ProjectVirtualNetworks.Create(req)
+		n, _, err := apiClient.ProjectVirtualNetworks.Create(req)
 		if err != nil {
 			return errors.Wrap(err, "Could not create ProjectVirtualNetwork")
 		}

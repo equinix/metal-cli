@@ -58,7 +58,7 @@ When using "--json" or "--yaml", "--include=members" is implied.
 		listOpts := listOptions(inc, nil)
 
 		if projectID == "" {
-			projects, _, err := PacknGo.Projects.List(listOpts)
+			projects, _, err := apiClient.Projects.List(listOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Projects")
 			}
@@ -86,7 +86,7 @@ When using "--json" or "--yaml", "--include=members" is implied.
 			return output(projects, header, &data)
 		} else {
 			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-			p, _, err := PacknGo.Projects.Get(projectID, getOpts)
+			p, _, err := apiClient.Projects.Get(projectID, getOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Project")
 			}

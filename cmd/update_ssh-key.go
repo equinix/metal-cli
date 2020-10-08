@@ -44,7 +44,7 @@ packet ssh-key update --id [ssh-key_UUID] --key [new_key]
 		if label != "" {
 			req.Label = &label
 		}
-		sshKey, _, err := PacknGo.SSHKeys.Update(sshKeyID, req)
+		sshKey, _, err := apiClient.SSHKeys.Update(sshKeyID, req)
 		if err != nil {
 			return errors.Wrap(err, "Could not update SSH Key")
 		}

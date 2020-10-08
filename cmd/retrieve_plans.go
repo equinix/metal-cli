@@ -35,7 +35,7 @@ var retrievePlansCmd = &cobra.Command{
   
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		plans, _, err := PacknGo.Plans.List(listOptions(nil, nil))
+		plans, _, err := apiClient.Plans.List(listOptions(nil, nil))
 		if err != nil {
 			return errors.Wrap(err, "Could not list Plans")
 		}

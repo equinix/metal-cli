@@ -56,7 +56,7 @@ var createVolumeCmd = &cobra.Command{
 			req.Locked = locked
 		}
 
-		v, _, err := PacknGo.Volumes.Create(req, projectID)
+		v, _, err := apiClient.Volumes.Create(req, projectID)
 		if err != nil {
 			return errors.Wrap(err, "Could not create Volume")
 		}

@@ -45,12 +45,12 @@ packet 2fa enable -a -t [token]
 		if sms == app {
 			return fmt.Errorf("Either sms or app should be set")
 		} else if sms {
-			_, err := PacknGo.TwoFactorAuth.EnableSms(token)
+			_, err := apiClient.TwoFactorAuth.EnableSms(token)
 			if err != nil {
 				return errors.Wrap(err, "Could not enable Two-Factor Authentication")
 			}
 		} else if app {
-			_, err := PacknGo.TwoFactorAuth.EnableApp(token)
+			_, err := apiClient.TwoFactorAuth.EnableApp(token)
 			if err != nil {
 				return errors.Wrap(err, "Could not enable Two-Factor Authentication")
 			}

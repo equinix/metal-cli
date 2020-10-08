@@ -35,7 +35,7 @@ Enable VPN service:
 packet vpn get --faciliy ewr1
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		config, _, err := PacknGo.VPN.Get(facility, nil)
+		config, _, err := apiClient.VPN.Get(facility, nil)
 		if err != nil {
 			return errors.Wrap(err, "Could not get VPN")
 		}

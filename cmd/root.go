@@ -32,8 +32,8 @@ import (
 )
 
 var (
-	// PacknGo client
-	PacknGo     packngo.Client
+	// apiClient client
+	apiClient   packngo.Client
 	cfgFile     string
 	isJSON      bool
 	isYaml      bool
@@ -47,23 +47,27 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:               "packet",
-	Short:             "Command line interface for Packet Host",
-	Long:              `Command line interface for Packet Host`,
+	Short:             "Command line interface for Equinix Metal",
+	Long:              `Command line interface for Equinix Metal`,
 	DisableAutoGenTag: true,
-	PersistentPreRunE: packetConnect,
+	PersistentPreRunE: apiConnect,
 }
 
-func packetConnect(cmd *cobra.Command, args []string) error {
+func apiConnect(cmd *cobra.Command, args []string) error {
 	if packetToken == "" {
-		return fmt.Errorf("Packet authentication token not provided. Please either set the 'PACKET_TOKEN' environment variable or create a JSON or YAML configuration file.")
+		return fmt.Errorf("Equinix Metal authentication token not provided. Please either set the 'PACKET_TOKEN' environment variable or create a JSON or YAML configuration file.")
 	}
-	client, err := packngo.NewClientWithBaseURL("Packet CLI", packetToken, nil, "https://api.packet.net/")
+	client, err := packngo.NewClientWithBaseURL(consumerToken, packetToken, nil, apiURL)
 	if err != nil {
 		return errors.Wrap(err, "Could not create Client")
 	}
 	client.UserAgent = fmt.Sprintf("packet-cli/%s %s", Version, client.UserAgent)
-	PacknGo = *client
+	apiClient = *client
 	return nil
+}
+
+func apiToken() string {
+	return os.Getenv(apiTokenEnvVar)
 }
 
 func init() {
@@ -113,7 +117,7 @@ func initConfig() {
 	if viper.GetString("token") != "" {
 		packetToken = viper.GetString("token")
 	} else {
-		packetToken = os.Getenv("PACKET_TOKEN")
+		packetToken = apiToken()
 	}
 }
 

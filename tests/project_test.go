@@ -13,7 +13,7 @@ import (
 )
 
 func TestProjectOperations(t *testing.T) {
-	client, _ = packngo.NewClientWithBaseURL("Packet CLI", os.Getenv("PACKET_TOKEN"), nil, "https://api.packet.net/")
+	client, _ = packngo.NewClientWithBaseURL(consumerToken, testToken(), nil, apiURL)
 	orgs, _, _ := client.Organizations.List(nil)
 	orgID := orgs[0].ID
 

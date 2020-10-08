@@ -47,7 +47,7 @@ packet capacity check -f [facility] -p [plan] -q [quantity]
 			},
 		}
 
-		availability, _, err := PacknGo.CapacityService.Check(req)
+		availability, _, err := apiClient.CapacityService.Check(req)
 		if err != nil {
 			return errors.Wrap(err, "Could not check capacity")
 		}

@@ -58,7 +58,7 @@ packet organization create -n [name]
 			req.Logo = logo
 		}
 
-		org, _, err := PacknGo.Organizations.Create(req)
+		org, _, err := apiClient.Organizations.Create(req)
 		if err != nil {
 			return errors.Wrap(err, "Could not create Organization")
 		}
