@@ -24,6 +24,6 @@ Plan operations: get
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet plan get](packet_plan_get.md)	 - Retrieves a list of all available plans.
 

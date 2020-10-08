@@ -31,7 +31,6 @@ packet device create [flags]
   -v, --public-ipv4-subnet-size int      Size of the public IPv4 subnet
   -I, --spot-instance                    Set the device as a spot instance
   -m, --spot-price-max float             --spot-price-max=1.2 or -m=1.2
-  -s, --storage string                   UUID of the storage
   -t, --tags strings                     Tags for the device: --tags="tag1,tag2"
   -T, --termination-time string          Device termination time: --termination-time="15:04:05"
   -u, --userdata string                  Userdata for device initialization (can not be used with --userdata-file)

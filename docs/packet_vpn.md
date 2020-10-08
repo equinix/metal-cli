@@ -24,7 +24,7 @@ VPN service operations: enable, disable, get
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet vpn disable](packet_vpn_disable.md)	 - Disables VPN service
 * [packet vpn enable](packet_vpn_enable.md)	 - Enables VPN service
 * [packet vpn get](packet_vpn_get.md)	 - Retrieves VPN service

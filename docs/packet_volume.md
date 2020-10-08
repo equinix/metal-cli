@@ -24,7 +24,7 @@ Volume operations: create, delete, attach, detach and get
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet volume attach](packet_volume_attach.md)	 - Attaches a volume to a device.
 * [packet volume create](packet_volume_create.md)	 - Creates a volume
 * [packet volume delete](packet_volume_delete.md)	 - Deletes a volume

@@ -24,7 +24,7 @@ Capacities operations: get, check
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet capacity check](packet_capacity_check.md)	 - Validates if a deploy can be fulfilled.
 * [packet capacity get](packet_capacity_get.md)	 - Returns a list of facilities and plans with their current capacity.
 

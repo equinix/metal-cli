@@ -24,7 +24,7 @@ Device operations: create, delete, update, start/stop, reboot and get.
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet device create](packet_device_create.md)	 - Creates a device
 * [packet device delete](packet_device_delete.md)	 - Deletes a device
 * [packet device get](packet_device_get.md)	 - Retrieves device list or device details

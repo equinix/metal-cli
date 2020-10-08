@@ -1,10 +1,10 @@
 ## packet
 
-Command line interface for Packet Host
+Command line interface for Equinix Metal
 
 ### Synopsis
 
-Command line interface for Packet Host
+Command line interface for Equinix Metal
 
 ### Options
 
