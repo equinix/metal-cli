@@ -54,7 +54,7 @@ packet ip get --reservation-id [reservation_UUID]
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if projectID != "" && assignmentID == "" && reservationID == "" {
-			ips, _, err := PacknGo.ProjectIPs.List(projectID)
+			ips, _, err := apiClient.ProjectIPs.List(projectID, nil)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Project IP addresses")
 			}
@@ -72,7 +72,7 @@ packet ip get --reservation-id [reservation_UUID]
 
 			return output(ips, header, &data)
 		} else if projectID == "" && reservationID == "" && assignmentID != "" {
-			ip, _, err := PacknGo.DeviceIPs.Get(assignmentID, nil)
+			ip, _, err := apiClient.DeviceIPs.Get(assignmentID, nil)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Device IP address")
 			}
@@ -84,7 +84,7 @@ packet ip get --reservation-id [reservation_UUID]
 
 			return output(ip, header, &data)
 		} else if projectID == "" && assignmentID == "" && reservationID != "" {
-			ip, _, err := PacknGo.ProjectIPs.Get(reservationID, nil)
+			ip, _, err := apiClient.ProjectIPs.Get(reservationID, nil)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Reservation IP address")
 			}

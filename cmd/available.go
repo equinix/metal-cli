@@ -40,7 +40,7 @@ packet ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
 
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		result, _, err := PacknGo.ProjectIPs.AvailableAddresses(reservationID, &packngo.AvailableRequest{CIDR: cidr})
+		result, _, err := apiClient.ProjectIPs.AvailableAddresses(reservationID, &packngo.AvailableRequest{CIDR: cidr})
 
 		if err != nil {
 			return errors.Wrap(err, "Could not get available IP addresses")

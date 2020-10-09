@@ -24,7 +24,7 @@ SSH key operations: create, delete, update and get
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet ssh-key create](packet_ssh-key_create.md)	 - Creates an SSH key
 * [packet ssh-key delete](packet_ssh-key_delete.md)	 - Deletes an SSH key
 * [packet ssh-key get](packet_ssh-key_get.md)	 - Retrieves a list of available SSH keys or a single SSH key

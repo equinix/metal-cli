@@ -37,7 +37,7 @@ packet ip remove --id [reservation-UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := PacknGo.ProjectIPs.Remove(reservationID)
+		_, err := apiClient.ProjectIPs.Remove(reservationID)
 		if err != nil {
 			return errors.Wrap(err, "Could not remove IP address Reservation")
 		}

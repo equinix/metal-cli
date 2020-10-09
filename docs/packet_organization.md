@@ -24,7 +24,7 @@ Organization operations: create, update, delete and get
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet organization create](packet_organization_create.md)	 - Creates an organization
 * [packet organization delete](packet_organization_delete.md)	 - Deletes an organization
 * [packet organization get](packet_organization_get.md)	 - Retrieves an organization or list of organizations

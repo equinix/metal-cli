@@ -35,7 +35,7 @@ packet hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		header := []string{"ID", "Facility", "Plan", "Created"}
-		r, _, err := PacknGo.HardwareReservations.Move(hardwareReservationID, projectID)
+		r, _, err := apiClient.HardwareReservations.Move(hardwareReservationID, projectID)
 		if err != nil {
 			return errors.Wrap(err, "Could not move Hardware Reservation")
 		}

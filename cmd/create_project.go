@@ -53,7 +53,7 @@ packet project create --name [project_name]
 			req.PaymentMethodID = paymentMethodID
 		}
 
-		p, _, err := PacknGo.Projects.Create(&req)
+		p, _, err := apiClient.Projects.Create(&req)
 		if err != nil {
 			return errors.Wrap(err, "Could not create Project")
 		}

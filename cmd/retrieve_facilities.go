@@ -37,7 +37,7 @@ packet facilities get
 	
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		facilities, _, err := PacknGo.Facilities.List(listOptions(nil, nil))
+		facilities, _, err := apiClient.Facilities.List(listOptions(nil, nil))
 		if err != nil {
 			return errors.Wrap(err, "Could not list Facilities")
 		}

@@ -71,23 +71,23 @@ When using "--json" or "--yaml", "--include=relationships" is implied.
 		if deviceID != "" && projectID != "" && organizationID != "" && eventID != "" {
 			return fmt.Errorf("The id, project-id, device-id, and organization-id parameters are mutually exclusive")
 		} else if deviceID != "" {
-			events, _, err = PacknGo.Devices.ListEvents(deviceID, listOpt)
+			events, _, err = apiClient.Devices.ListEvents(deviceID, listOpt)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Device Events")
 			}
 		} else if projectID != "" {
-			events, _, err = PacknGo.Projects.ListEvents(projectID, listOpt)
+			events, _, err = apiClient.Projects.ListEvents(projectID, listOpt)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Project Events")
 			}
 		} else if organizationID != "" {
-			events, _, err = PacknGo.Organizations.ListEvents(organizationID, listOpt)
+			events, _, err = apiClient.Organizations.ListEvents(organizationID, listOpt)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Organization Events")
 			}
 		} else if eventID != "" {
 			getOpt := &packngo.GetOptions{Includes: listOpt.Includes}
-			event, _, err := PacknGo.Events.Get(eventID, getOpt)
+			event, _, err := apiClient.Events.Get(eventID, getOpt)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Event")
 			}
@@ -96,7 +96,7 @@ When using "--json" or "--yaml", "--include=relationships" is implied.
 			data[0] = []string{event.ID, event.Body, event.Type, event.CreatedAt.String()}
 			return output(event, header, &data)
 		} else {
-			events, _, err = PacknGo.Events.List(listOpt)
+			events, _, err = apiClient.Events.List(listOpt)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Events")
 			}

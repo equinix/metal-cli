@@ -15,6 +15,12 @@ import (
 
 const binaryName = "packet"
 
+const (
+	consumerToken  = "Equinix Metal CLI"
+	apiTokenEnvVar = "PACKET_TOKEN"
+	apiURL         = "https://api.equinix.com/metal/v1/"
+)
+
 func TestMain(m *testing.M) {
 	err := os.Chdir("..")
 	if err != nil {
@@ -41,8 +47,12 @@ type Test struct {
 	args []string
 }
 
+func testToken() string {
+	return os.Getenv(apiTokenEnvVar)
+}
+
 func TestCliArgs(t *testing.T) {
-	client, _ = packngo.NewClientWithBaseURL("Packet CLI", os.Getenv("PACKET_TOKEN"), nil, "https://api.packet.net/")
+	client, _ = packngo.NewClientWithBaseURL(consumerToken, testToken(), nil, apiURL)
 	projects, _, _ := client.Projects.List(nil)
 	projectID = projects[0].ID
 	tests := []Test{

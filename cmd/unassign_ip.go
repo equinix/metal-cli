@@ -37,7 +37,7 @@ packet ip unassign --id [assignment-UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := PacknGo.DeviceIPs.Unassign(assignmentID)
+		_, err := apiClient.DeviceIPs.Unassign(assignmentID)
 		if err != nil {
 			return errors.Wrap(err, "Could not unassign IP address")
 		}

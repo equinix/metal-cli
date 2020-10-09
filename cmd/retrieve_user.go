@@ -47,12 +47,12 @@ packet user get --id [user_UUID]
 		var err error
 		var user *packngo.User
 		if userID == "" {
-			user, _, err = PacknGo.Users.Current()
+			user, _, err = apiClient.Users.Current()
 			if err != nil {
 				return errors.Wrap(err, "Could not get current User")
 			}
 		} else {
-			user, _, err = PacknGo.Users.Get(userID, nil)
+			user, _, err = apiClient.Users.Get(userID, nil)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Users")
 			}

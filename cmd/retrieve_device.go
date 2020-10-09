@@ -46,7 +46,7 @@ packet device get --id [device_UUID]
 		} else if deviceID == "" && projectID == "" {
 			return fmt.Errorf("Either id or project-id should be set.")
 		} else if projectID != "" {
-			devices, _, err := PacknGo.Devices.List(projectID, listOptions(nil, nil))
+			devices, _, err := apiClient.Devices.List(projectID, listOptions(nil, nil))
 			if err != nil {
 				return errors.Wrap(err, "Could not list Devices")
 			}
@@ -59,7 +59,7 @@ packet device get --id [device_UUID]
 
 			return output(devices, header, &data)
 		} else if deviceID != "" {
-			device, _, err := PacknGo.Devices.Get(deviceID, nil)
+			device, _, err := apiClient.Devices.Get(deviceID, nil)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Devices")
 			}

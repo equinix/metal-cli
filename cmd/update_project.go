@@ -44,7 +44,7 @@ packet project update --id [project_UUID] --name [new_name]
 		if paymentMethodID != "" {
 			req.PaymentMethodID = &paymentMethodID
 		}
-		p, _, err := PacknGo.Projects.Update(projectID, req)
+		p, _, err := apiClient.Projects.Update(projectID, req)
 		if err != nil {
 			return errors.Wrap(err, "Could not update Project")
 		}

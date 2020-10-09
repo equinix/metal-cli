@@ -35,7 +35,7 @@ packet capacity get
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
-		capacities, _, err := PacknGo.CapacityService.List()
+		capacities, _, err := apiClient.CapacityService.List()
 		if err != nil {
 			return errors.Wrap(err, "Could not get Capacity")
 		}

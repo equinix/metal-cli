@@ -42,7 +42,7 @@ packet ip assign -d [device-id] -a [ip-address]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		assignment, _, err := PacknGo.DeviceIPs.Assign(deviceID, &packngo.AddressStruct{Address: address})
+		assignment, _, err := apiClient.DeviceIPs.Assign(deviceID, &packngo.AddressStruct{Address: address})
 		if err != nil {
 			return errors.Wrap(err, "Could not assign Device IP address")
 		}

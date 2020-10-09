@@ -24,7 +24,7 @@ Hardware reservation operations: get, move
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet hardware-reservation get](packet_hardware-reservation_get.md)	 - Retrieves all hardware reservations of a project or a single hardware reservation
 * [packet hardware-reservation move](packet_hardware-reservation_move.md)	 - Move hardware reservation to another project
 

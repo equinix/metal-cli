@@ -15,7 +15,7 @@ import (
 var organizationID string
 
 func TestOrganizationOperations(t *testing.T) {
-	client, _ = packngo.NewClientWithBaseURL("Packet CLI", os.Getenv("PACKET_TOKEN"), nil, "https://api.packet.net/")
+	client, _ = packngo.NewClientWithBaseURL(consumerToken, testToken(), nil, apiURL)
 	setupTests := []Test{
 		{
 			"create organization",

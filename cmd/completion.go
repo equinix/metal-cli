@@ -1,5 +1,5 @@
 /*
-Copyright © 2020 Packet, an Equinix Company Developers <help@packet.com>
+Copyright © 2020 Equinix Metal Developers <support@equinixmetal.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

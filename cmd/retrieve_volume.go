@@ -51,7 +51,7 @@ packet volume get --id [volume_UUID]
 		} else if projectID == "" && volumeID == "" {
 			return fmt.Errorf("Either id or project-id should be set.")
 		} else if projectID != "" {
-			volumes, _, err := PacknGo.Volumes.List(projectID, listOptions(nil, nil))
+			volumes, _, err := apiClient.Volumes.List(projectID, listOptions(nil, nil))
 			if err != nil {
 				return errors.Wrap(err, "Could not list Volumes")
 			}
@@ -65,7 +65,7 @@ packet volume get --id [volume_UUID]
 			return output(volumes, header, &data)
 		} else if volumeID != "" {
 
-			v, _, err := PacknGo.Volumes.Get(volumeID, nil)
+			v, _, err := apiClient.Volumes.Get(volumeID, nil)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Volume")
 			}

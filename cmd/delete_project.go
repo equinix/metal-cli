@@ -54,7 +54,7 @@ packet project delete --id [project_UUID]
 }
 
 func deleteProject(id string) error {
-	_, err := PacknGo.Projects.Delete(id)
+	_, err := apiClient.Projects.Delete(id)
 	if err != nil {
 		return err
 	}

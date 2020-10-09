@@ -55,7 +55,7 @@ packet volume delete --id [volume_UUID]
 }
 
 func deleteVolume(id string) error {
-	_, err := PacknGo.Volumes.Delete(id)
+	_, err := apiClient.Volumes.Delete(id)
 	if err != nil {
 		return err
 	}

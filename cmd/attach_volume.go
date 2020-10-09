@@ -35,7 +35,7 @@ packet volume attach --id [volume_UUID] --device-id [device_UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		a, _, err := PacknGo.VolumeAttachments.Create(volumeID, deviceID)
+		a, _, err := apiClient.VolumeAttachments.Create(volumeID, deviceID)
 		if err != nil {
 			return errors.Wrap(err, "Could not create volume attachment")
 		}

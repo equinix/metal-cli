@@ -76,7 +76,7 @@ packet device update --id [device_UUID] --hostname [new_hostname]
 			req.CustomData = &customdata
 		}
 
-		device, _, err := PacknGo.Devices.Update(deviceID, req)
+		device, _, err := apiClient.Devices.Update(deviceID, req)
 		if err != nil {
 			return errors.Wrap(err, "Could not update Device")
 		}

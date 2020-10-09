@@ -37,7 +37,7 @@ packet device reboot --id [device_UUID]
 
 	  `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := PacknGo.Devices.Reboot(deviceID)
+		_, err := apiClient.Devices.Reboot(deviceID)
 		if err != nil {
 			return errors.Wrap(err, "Could not reboot Device")
 		}

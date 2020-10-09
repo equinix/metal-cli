@@ -41,7 +41,7 @@ packet volume detach --id [attachment_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := PacknGo.VolumeAttachments.Delete(attachmentID)
+		_, err := apiClient.VolumeAttachments.Delete(attachmentID)
 		if err != nil {
 			return errors.Wrap(err, "Could not detach Volume")
 		}

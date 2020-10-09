@@ -32,7 +32,7 @@ var retrieveOperatingSystemCmd = &cobra.Command{
 	Long: `Example:
   packet operating-systems get`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		oss, _, err := PacknGo.OperatingSystems.List()
+		oss, _, err := apiClient.OperatingSystems.List()
 		if err != nil {
 			return errors.Wrap(err, "Could not list OperatingSystems")
 		}

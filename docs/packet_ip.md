@@ -24,7 +24,7 @@ IP address, reservations and assignment operations: assign, unassign, remove, av
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet ip assign](packet_ip_assign.md)	 - Assigns an IP address to a given device
 * [packet ip available](packet_ip_available.md)	 - Retrieves a list of IP resevations for a single project.
 * [packet ip get](packet_ip_get.md)	 - Retrieves information about IP addresses, IP reservations and IP assignments

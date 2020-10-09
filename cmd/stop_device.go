@@ -37,7 +37,7 @@ var stopDeviceCmd = &cobra.Command{
   
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := PacknGo.Devices.PowerOff(deviceID)
+		_, err := apiClient.Devices.PowerOff(deviceID)
 
 		if err != nil {
 			return errors.Wrap(err, "Could not stop Device")

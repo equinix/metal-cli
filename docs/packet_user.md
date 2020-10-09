@@ -24,6 +24,6 @@ User operations: get
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet user get](packet_user_get.md)	 - Retrieves information about the current user or a specified user
 

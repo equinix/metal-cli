@@ -54,7 +54,7 @@ packet organization update --id [organization_UUID] --name [new_name]
 			req.Logo = &logo
 		}
 
-		org, _, err := PacknGo.Organizations.Update(organizationID, req)
+		org, _, err := apiClient.Organizations.Update(organizationID, req)
 		if err != nil {
 			return errors.Wrap(err, "Could not update Organization")
 		}

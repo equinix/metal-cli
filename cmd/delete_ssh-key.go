@@ -55,7 +55,7 @@ packet ssh-key delete --id [ssh-key_UUID]
 }
 
 func deleteSSHKey(id string) error {
-	_, err := PacknGo.SSHKeys.Delete(id)
+	_, err := apiClient.SSHKeys.Delete(id)
 	if err != nil {
 		return err
 	}

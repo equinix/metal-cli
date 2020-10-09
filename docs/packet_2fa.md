@@ -24,7 +24,7 @@ Two Factor Authentication operations: enable, disable, receive
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet 2fa disable](packet_2fa_disable.md)	 - Disables two factor authentication
 * [packet 2fa enable](packet_2fa_enable.md)	 - Enables two factor authentication
 * [packet 2fa receive](packet_2fa_receive.md)	 - Receive two factor authentication token

@@ -24,6 +24,6 @@ Events operations: get
 
 ### SEE ALSO
 
-* [packet](packet.md)	 - Command line interface for Packet Host
+* [packet](packet.md)	 - Command line interface for Equinix Metal
 * [packet event get](packet_event_get.md)	 - Retrieves one or more events for organizations, projects, or devices.
 

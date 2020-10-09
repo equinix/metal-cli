@@ -37,7 +37,7 @@ packet device start --id [device_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := PacknGo.Devices.PowerOn(deviceID)
+		_, err := apiClient.Devices.PowerOn(deviceID)
 
 		if err != nil {
 			return errors.Wrap(err, "Could not start Device")

@@ -55,7 +55,7 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 		} else if hardwareReservationID != "" && projectID != "" {
 			return fmt.Errorf("Either id or project-id can be set.")
 		} else if projectID != "" {
-			reservations, _, err := PacknGo.HardwareReservations.List(projectID, listOpt)
+			reservations, _, err := apiClient.HardwareReservations.List(projectID, listOpt)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Hardware Reservations")
 			}
@@ -69,7 +69,7 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 			return output(reservations, header, &data)
 		} else if hardwareReservationID != "" {
 			getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
-			r, _, err := PacknGo.HardwareReservations.Get(hardwareReservationID, getOpts)
+			r, _, err := apiClient.HardwareReservations.Get(hardwareReservationID, getOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not get Hardware Reservation")
 			}

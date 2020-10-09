@@ -15,7 +15,7 @@ import (
 var virtualNetworkID string
 
 func TestVirtualNetworkOperations(t *testing.T) {
-	client, _ = packngo.NewClientWithBaseURL("Packet CLI", os.Getenv("PACKET_TOKEN"), nil, "https://api.packet.net/")
+	client, _ = packngo.NewClientWithBaseURL(consumerToken, testToken(), nil, apiURL)
 	projects, _, _ := client.Projects.List(nil)
 	projectID = projects[0].ID
 	setupTests := []Test{

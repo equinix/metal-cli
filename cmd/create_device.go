@@ -39,7 +39,6 @@ var (
 	operatingSystem string
 	billingCycle    string
 
-	storage               string
 	userdata              string
 	userdataFile          string
 	customdata            string
@@ -91,7 +90,6 @@ packet device create --hostname [hostname] --plan [plan] --facility [facility_co
 			OS:                    operatingSystem,
 			BillingCycle:          billingCycle,
 			ProjectID:             projectID,
-			Storage:               storage,
 			UserData:              userdata,
 			CustomData:            customdata,
 			IPXEScriptURL:         ipxescripturl,
@@ -104,7 +102,7 @@ packet device create --hostname [hostname] --plan [plan] --facility [facility_co
 			TerminationTime:       endDt,
 		}
 
-		device, _, err := PacknGo.Devices.Create(request)
+		device, _, err := apiClient.Devices.Create(request)
 		if err != nil {
 			return errors.Wrap(err, "Could not create Device")
 		}
@@ -129,7 +127,6 @@ func init() {
 	_ = createDeviceCmd.MarkFlagRequired("hostname")
 	_ = createDeviceCmd.MarkFlagRequired("operating-system")
 
-	createDeviceCmd.Flags().StringVarP(&storage, "storage", "s", "", "UUID of the storage")
 	createDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "i", "", "URL to the iPXE script")
 	createDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "Userdata for device initialization (can not be used with --userdata-file)")
 	createDeviceCmd.Flags().StringVarP(&userdataFile, "userdata-file", "", "", "Path to a userdata file for device initialization (can not be used with --userdata)")
