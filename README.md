@@ -42,26 +42,55 @@ The [Equinix Metal CLI binaries](https://github.com/packethost/packet-cli/releas
 
 ## Installation
 
-Download the appropriate Equinix Metal CLI binaries for your platform to the desired location and rename it to `packet`. If the directory is not already in your `PATH` environment variable, then it will need to be added.
+### Install binary from Source
+
+Download the appropriate Equinix Metal CLI package, build and install them. Type the following in your terminal:
+
+```
+GO111MODULE=on go get github.com/packethost/packet-cli
+```
+
+You can find the installed executable/binary in either `$GOPATH/bin` or `$HOME/go/bin` folder.
+
+Rename binary from `packet-cli` to `packet`. 
+
+### Install binary from Release Download
+
+Download the appropriate Equinix Metal CLI binaries for your platform to the desired location,`chmod` it and rename it to `packet`.
 
 ### Configuring your Path
+
+If the directory where your binaries were installed is not already in your `PATH` environment variable, then it will need to be added.
+Choose the steps to follow for your platform to add directory to `PATH`.
 
 <details>
   <summary>Configure your path in Linux</summary>
 
 ## Linux
 
-If you plan to run the Equinix Metal CLI in a shell on Linux and placed the binary in /home/YOUR-USER-NAME/packet-cli/, then type the following into your terminal:
+If you plan to run the Equinix Metal CLI in a shell on Linux and placed the binary in `/home/YOUR-USER-NAME/packet-cli/`, then type the following into your terminal:
 
 ```
 export PATH=$PATH:/home/$USER/packet-cli
 ```
+If you plan to run the Equinix Metal CLI in a shell on Linux and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
 
-You can view the current value of $PATH by running:
+``
+export PATH=$PATH:$GOPATH/bin
+```
+
+or:
+
+```
+export PATH=$PATH:$HOME/go/bin
+```
+
+You can view the current value of `$PATH` by running:
 
 ```
 echo $PATH
 ```
+
 </details>
 
 <details>
@@ -69,13 +98,25 @@ echo $PATH
 
 ### Mac OS X
 
-If you plan to run the Equinix Metal CLI in a shell on a Mac, download the `darwin` binary and placed the it in /Users/YOUR-USER-NAME/packet-cli/, then type the following into your terminal.
+If you plan to run the Equinix Metal CLI in a shell on a Mac, download the `darwin` binary and placed the it in `/Users/YOUR-USER-NAME/packet-cli/`, then type the following into your terminal.
 
 ```
 export PATH=$PATH:/Users/$USER/packet-cli
 ```
 
-You can view the current value of $PATH by running:
+If you plan to run the Equinix Metal CLI in a shell on a Mac and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
+
+```
+export PATH=$PATH:$GOPATH/bin
+```
+
+or:
+
+```
+export PATH=$PATH:$HOME/go/bin
+```
+
+You can view the current value of `$PATH` by running:
 
 ```
 echo $PATH
@@ -94,10 +135,21 @@ The binary can be trusted by enabling "App Store and identified developers" in "
 
 ### Windows
 
-If you plan to run the Equinix Metal CLI in PowerShell on Windows and placed the binary in c:\packet-cli, then type the following into PowerShell:
+If you plan to run the Equinix Metal CLI in PowerShell on Windows and placed the binary in `c:\packet-cli`, then type the following into PowerShell:
 
 ```
 $env:Path += ";c:\packet-cli"
+```
+If you plan to run the Equinix Metal CLI in PowerShell on Windows and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into PowerShell:
+
+```
+$setx PATH "$($env:path);$GOPATH\bin"
+```
+
+or:
+
+```
+$setx PATH "$($env:path);$HOME\go\bin"
 ```
 
 The path can be viewed by running:
