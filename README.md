@@ -75,7 +75,7 @@ If you plan to run the Equinix Metal CLI in a shell on Linux and placed the bina
 export PATH=$PATH:/home/$USER/packet-cli
 ```
 
-If you plan to run the Equinix Metal CLI in a shell on Linux and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
+If you plan to run the Packet CLI in a shell on Linux and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
 
 ```
 export PATH=$PATH:$GOPATH/bin
@@ -105,7 +105,7 @@ If you plan to run the Equinix Metal CLI in a shell on a Mac, download the `darw
 export PATH=$PATH:/Users/$USER/packet-cli
 ```
 
-If you plan to run the Equinix Metal CLI in a shell on a Mac and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
+If you plan to run the Packet CLI in a shell on a Mac and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
 
 ```
 export PATH=$PATH:$GOPATH/bin
@@ -142,11 +142,7 @@ If you plan to run the Equinix Metal CLI in PowerShell on Windows and placed the
 $env:Path += ";c:\packet-cli"
 ```
 
-<<<<<<< HEAD
 If you plan to run the Equinix Metal CLI in PowerShell on Windows and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into PowerShell:
-=======
-If you plan to run the Packet CLI in PowerShell on Windows and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into PowerShell:
->>>>>>> 764faae2262bafdd1f3ecf8e64d313d92efd8a28
 
 ```
 $setx PATH "$($env:path);$GOPATH\bin"
