@@ -75,7 +75,7 @@ export PATH=$PATH:/home/$USER/packet-cli
 ```
 If you plan to run the Equinix Metal CLI in a shell on Linux and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
 
-``
+```
 export PATH=$PATH:$GOPATH/bin
 ```
 
