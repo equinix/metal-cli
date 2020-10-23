@@ -41,7 +41,7 @@ var (
 
 	includes *[]string // nolint:unused
 	excludes *[]string // nolint:unused
-
+	search   string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -79,6 +79,7 @@ func init() {
 
 	includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma seperated Href references to expand in results, may be dotted three levels deep")
 	excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma seperated Href references to collapse in results, may be dotted three levels deep")
+	rootCmd.PersistentFlags().StringVar(&search, "search", "", "Search keyword for use in 'get' actions. Search is not supported by all resources.")
 
 	rootCmd.Version = Version
 }
@@ -95,6 +96,9 @@ func listOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 	}
 	if rootCmd.Flags().Changed("exclude") {
 		listOptions.Excludes = *excludes
+	}
+	if rootCmd.Flags().Changed("search") {
+		listOptions.Search = search
 	}
 
 	return listOptions
