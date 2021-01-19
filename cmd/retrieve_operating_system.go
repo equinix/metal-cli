@@ -28,6 +28,7 @@ import (
 // operatingSystemCmd represents the operatingSystem command
 var retrieveOperatingSystemCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves a list of available operating systems.",
 	Long: `Example:
   packet operating-systems get`,

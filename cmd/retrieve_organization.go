@@ -29,6 +29,7 @@ import (
 // retrieveOrganizationCmd represents the retrieveOrganization command
 var retrieveOrganizationCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves an organization or list of organizations",
 	Long: `Example:
 	

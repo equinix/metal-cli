@@ -28,6 +28,7 @@ import (
 // plansCmd represents the plans command
 var retrievePlansCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves a list of all available plans.",
 	Long: `Example:
 

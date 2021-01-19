@@ -36,6 +36,7 @@ var (
 // ipCmd represents the ip command
 var retrieveIPCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves information about IP addresses, IP reservations and IP assignments",
 	Long: `Example:
 	

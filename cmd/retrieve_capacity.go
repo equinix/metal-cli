@@ -28,6 +28,7 @@ import (
 // retrieveCapacitiesCmd represents the retrieveCapacity command
 var retrieveCapacityCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Returns a list of facilities and plans with their current capacity.",
 	Long: `Example:
 Retrieve capacities:

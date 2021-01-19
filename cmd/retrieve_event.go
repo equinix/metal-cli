@@ -33,6 +33,7 @@ var eventID string
 // retrieveEventsCmd represents the retrieveEvents command
 var retrieveEventCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves one or more events for organizations, projects, or devices.",
 	Long: `Example:
 Retrieve all events:

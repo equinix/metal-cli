@@ -31,6 +31,7 @@ import (
 // retrieveHardwareReservationsCmd represents the retrieveHardwareReservations command
 var retrieveHardwareReservationsCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves all hardware reservations of a project or a single hardware reservation",
 	Long: `Example:
 
