@@ -33,7 +33,6 @@ var (
 // retriveUserCmd represents the retriveUser command
 var retriveUserCmd = &cobra.Command{
 	Use:   "get",
-	Aliases: []string{"list"},
 	Short: "Retrieves information about the current user or a specified user",
 	Long: `Example:
 

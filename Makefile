@@ -5,7 +5,7 @@ K := $(foreach exec,$(EXECUTABLES),\
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 PACKAGE_NAME?=github.com/packethost/packet-cli
-BINARY?=equinix
+BINARY?=packet
 GIT_VERSION?=$(shell git log -1 --format="%h")
 VERSION?=$(GIT_VERSION)
 RELEASE_TAG?=$(shell git tag --points-at HEAD)
