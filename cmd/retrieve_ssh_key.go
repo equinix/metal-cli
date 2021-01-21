@@ -32,6 +32,7 @@ var (
 // retrieveSshKeysCmd represents the retrieveSshKeys command
 var retrieveSSHKeysCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves a list of available SSH keys or a single SSH key",
 	Long: `Example:
 

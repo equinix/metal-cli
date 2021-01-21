@@ -34,6 +34,7 @@ var (
 
 var retriveDeviceCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves device list or device details",
 	Long: `Example:
 	

@@ -30,6 +30,7 @@ import (
 // retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
 var retrieveVirtualNetworksCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves a list of virtual networks for a single project.",
 	Long: `Example:
 

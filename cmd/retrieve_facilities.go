@@ -30,6 +30,7 @@ import (
 // facilitiesCmd represents the facilities command
 var retrieveFacilitiesCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves a list of available facilities.",
 	Long: `Example:
 	

@@ -35,6 +35,7 @@ var (
 // retriveVolumeCmd represents the retriveVolume command
 var retriveVolumeCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"list"},
 	Short: "Retrieves a volume list or volume details.",
 	Long: `Example:
 	

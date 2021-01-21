@@ -30,8 +30,9 @@ import (
 
 // retriveProjectCmd represents the retriveProject command
 var retriveProjectCmd = &cobra.Command{
-	Use:   "get",
-	Short: "Retrieves all available projects or a single project",
+	Use:     "get",
+	Aliases: []string{"list"},
+	Short:   "Retrieves all available projects or a single project",
 	Long: `Example:
 
 Retrieve all projects:
