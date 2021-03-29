@@ -33,6 +33,7 @@ import (
 var (
 	projectName     string
 	projectID       string
+	metro           string
 	facility        string
 	plan            string
 	hostname        string
@@ -57,7 +58,7 @@ var createDeviceCmd = &cobra.Command{
 	Short: "Creates a device",
 	Long: `Example:
 
-packet device create --hostname [hostname] --plan [plan] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
+packet device create --hostname [hostname] --plan [plan] --metro [metro_code] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -83,10 +84,16 @@ packet device create --hostname [hostname] --plan [plan] --facility [facility_co
 			endDt = &packngo.Timestamp{Time: parsedTime}
 		}
 
+		var facilityArgs []string
+		if facility != "" {
+			facilityArgs = append(facilityArgs, facility)
+		}
+
 		request := &packngo.DeviceCreateRequest{
 			Hostname:              hostname,
 			Plan:                  plan,
-			Facility:              []string{facility},
+			Facility:              facilityArgs,
+			Metro:                 metro,
 			OS:                    operatingSystem,
 			BillingCycle:          billingCycle,
 			ProjectID:             projectID,

@@ -34,13 +34,15 @@ var createVirtualNetworkCmd = &cobra.Command{
 	Short: "Creates a virtual network",
 	Long: `Example:
 
-packet virtual-network create --project-id [project_UUID] --facility [facility_code]
+packet virtual-network create --project-id [project_UUID] --metro [metro_code] --facility [facility_code]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		req := &packngo.VirtualNetworkCreateRequest{
 			ProjectID: projectID,
-			Facility:  facility,
+			// TODO(displague) metro is not in packngo
+			// Metro:     metro,
+			Facility: facility,
 		}
 		if description != "" {
 			req.Description = description
@@ -53,9 +55,10 @@ packet virtual-network create --project-id [project_UUID] --facility [facility_c
 
 		data := make([][]string, 1)
 
-		data[0] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.FacilityCode, n.CreatedAt}
+		// TODO(displague) metro is not in the response
+		data[0] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN) /* n.MetroCode, */, n.FacilityCode, n.CreatedAt}
 
-		header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
+		header := []string{"ID", "Description", "VXLAN" /* "Metro", */, "Facility", "Created"}
 
 		return output(n, header, &data)
 	},
@@ -64,8 +67,8 @@ packet virtual-network create --project-id [project_UUID] --facility [facility_c
 func init() {
 	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
+	createVirtualNetworkCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
 	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the virtual network")
 
 	_ = createVirtualNetworkCmd.MarkFlagRequired("project-id")
-	_ = createVirtualNetworkCmd.MarkFlagRequired("facility")
 }

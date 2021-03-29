@@ -2,6 +2,8 @@ module github.com/packethost/packet-cli
 
 go 1.13
 
+replace github.com/packethost/packngo => ../packngo
+
 require (
 	github.com/chzyer/logex v1.1.10 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
