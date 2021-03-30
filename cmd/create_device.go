@@ -125,11 +125,11 @@ packet device create --hostname [hostname] --plan [plan] --metro [metro_code] --
 func init() {
 	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project where the device will be created")
 	createDeviceCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility where the device will be created")
+	createDeviceCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro where the device will be created")
 	createDeviceCmd.Flags().StringVarP(&plan, "plan", "P", "", "Name of the plan")
 	createDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "Hostname")
 	createDeviceCmd.Flags().StringVarP(&operatingSystem, "operating-system", "o", "", "Operating system name for the device")
 	_ = createDeviceCmd.MarkFlagRequired("project-id")
-	_ = createDeviceCmd.MarkFlagRequired("facility")
 	_ = createDeviceCmd.MarkFlagRequired("plan")
 	_ = createDeviceCmd.MarkFlagRequired("hostname")
 	_ = createDeviceCmd.MarkFlagRequired("operating-system")
