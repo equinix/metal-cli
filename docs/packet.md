@@ -35,5 +35,4 @@ Command line interface for Equinix Metal
 * [packet user](packet_user.md)	 - User operations
 * [packet virtual-network](packet_virtual-network.md)	 - Virtual network operations
 * [packet volume](packet_volume.md)	 - Volume operations
-* [packet vpn](packet_vpn.md)	 - VPN service operations
 
