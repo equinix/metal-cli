@@ -29,9 +29,9 @@ import (
 
 // facilitiesCmd represents the facilities command
 var retrieveFacilitiesCmd = &cobra.Command{
-	Use:   "get",
+	Use:     "get",
 	Aliases: []string{"list"},
-	Short: "Retrieves a list of available facilities.",
+	Short:   "Retrieves a list of available facilities.",
 	Long: `Example:
 	
 packet facilities get
@@ -45,9 +45,9 @@ packet facilities get
 		data := make([][]string, len(facilities))
 
 		for i, facility := range facilities {
-			data[i] = []string{facility.Name, facility.Code, strings.Join(facility.Features, ",")}
+			data[i] = []string{facility.Name, facility.Code, facility.Metro.Code, strings.Join(facility.Features, ",")}
 		}
-		header := []string{"Name", "Code", "Features"}
+		header := []string{"Name", "Code", "Metro", "Features"}
 
 		return output(facilities, header, &data)
 	},

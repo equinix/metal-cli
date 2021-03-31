@@ -28,21 +28,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var vlan int
+
 // createVirtualNetworkCmd represents the createVirtualNetwork command
 var createVirtualNetworkCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Creates a virtual network",
 	Long: `Example:
 
-packet virtual-network create --project-id [project_UUID] --metro [metro_code] --facility [facility_code]
+packet virtual-network create --project-id [project_UUID] { --metro [metro_code] --vlan [vlan] | --facility [facility_code] }
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		req := &packngo.VirtualNetworkCreateRequest{
 			ProjectID: projectID,
-			// TODO(displague) metro is not in packngo
-			// Metro:     metro,
-			Facility: facility,
+			Metro:     metro,
+			Facility:  facility,
+			VLAN:      vlan,
 		}
 		if description != "" {
 			req.Description = description
@@ -56,9 +58,9 @@ packet virtual-network create --project-id [project_UUID] --metro [metro_code] -
 		data := make([][]string, 1)
 
 		// TODO(displague) metro is not in the response
-		data[0] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN) /* n.MetroCode, */, n.FacilityCode, n.CreatedAt}
+		data[0] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.MetroCode, n.FacilityCode, n.CreatedAt}
 
-		header := []string{"ID", "Description", "VXLAN" /* "Metro", */, "Facility", "Created"}
+		header := []string{"ID", "Description", "VXLAN", "Metro", "Facility", "Created"}
 
 		return output(n, header, &data)
 	},
@@ -69,6 +71,7 @@ func init() {
 	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	createVirtualNetworkCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
 	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the virtual network")
+	createVirtualNetworkCmd.Flags().IntVarP(&vlan, "vlan", "", 0, "VLAN id to use (can only be used with --metro)")
 
 	_ = createVirtualNetworkCmd.MarkFlagRequired("project-id")
 }
