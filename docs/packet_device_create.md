@@ -6,7 +6,7 @@ Creates a device
 
 Example:
 
-packet device create --hostname [hostname] --plan [plan] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
+packet device create --hostname [hostname] --plan [plan] --metro [metro_code] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
 
 
 
@@ -25,12 +25,13 @@ packet device create [flags]
   -h, --help                             help for create
   -H, --hostname string                  Hostname
   -i, --ipxe-script-url string           URL to the iPXE script
+  -m, --metro string                     Code of the metro where the device will be created
   -o, --operating-system string          Operating system name for the device
   -P, --plan string                      Name of the plan
   -p, --project-id string                UUID of the project where the device will be created
   -v, --public-ipv4-subnet-size int      Size of the public IPv4 subnet
   -I, --spot-instance                    Set the device as a spot instance
-  -m, --spot-price-max float             --spot-price-max=1.2 or -m=1.2
+      --spot-price-max float             --spot-price-max=1.2 or -m=1.2
   -t, --tags strings                     Tags for the device: --tags="tag1,tag2"
   -T, --termination-time string          Device termination time: --termination-time="15:04:05"
   -u, --userdata string                  Userdata for device initialization (can not be used with --userdata-file)

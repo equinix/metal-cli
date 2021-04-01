@@ -27,6 +27,7 @@ Command line interface for Equinix Metal
 * [packet facilities](packet_facilities.md)	 - Facility operations
 * [packet hardware-reservation](packet_hardware-reservation.md)	 - Hardware reservation operations
 * [packet ip](packet_ip.md)	 - IP operations
+* [packet metros](packet_metros.md)	 - Metro operations
 * [packet operating-systems](packet_operating-systems.md)	 - Operating system operations
 * [packet organization](packet_organization.md)	 - Organization operations
 * [packet plan](packet_plan.md)	 - Plan operations
