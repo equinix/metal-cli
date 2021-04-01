@@ -21,34 +21,32 @@
 package cmd
 
 import (
-	"strings"
-
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// facilitiesCmd represents the facilities command
-var retrieveFacilitiesCmd = &cobra.Command{
+// metrosCmd represents the metros command
+var retrieveMetrosCmd = &cobra.Command{
 	Use:     "get",
 	Aliases: []string{"list"},
-	Short:   "Retrieves a list of available facilities.",
+	Short:   "Retrieves a list of available metros.",
 	Long: `Example:
 	
-packet facilities get
+packet metros get
 	
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		facilities, _, err := apiClient.Facilities.List(listOptions(nil, nil))
+		metros, _, err := apiClient.Metros.List(listOptions(nil, nil))
 		if err != nil {
-			return errors.Wrap(err, "Could not list Facilities")
+			return errors.Wrap(err, "Could not list Metros")
 		}
-		data := make([][]string, len(facilities))
+		data := make([][]string, len(metros))
 
-		for i, facility := range facilities {
-			data[i] = []string{facility.Name, facility.Code, facility.Metro.Code, strings.Join(facility.Features, ",")}
+		for i, metro := range metros {
+			data[i] = []string{metro.ID, metro.Name, metro.Code}
 		}
-		header := []string{"Name", "Code", "Metro", "Features"}
+		header := []string{"ID", "Name", "Code"}
 
-		return output(facilities, header, &data)
+		return output(metros, header, &data)
 	},
 }

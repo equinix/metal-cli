@@ -6,7 +6,7 @@ Creates a virtual network
 
 Example:
 
-packet virtual-network create --project-id [project_UUID] --facility [facility_code]
+packet virtual-network create --project-id [project_UUID] { --metro [metro_code] --vlan [vlan] | --facility [facility_code] }
 
 
 
@@ -20,7 +20,9 @@ packet virtual-network create [flags]
   -d, --description string   Description of the virtual network
   -f, --facility string      Code of the facility
   -h, --help                 help for create
+  -m, --metro string         Code of the metro
   -p, --project-id string    UUID of the project
+      --vlan int             VLAN id to use (can only be used with --metro)
 ```
 
 ### Options inherited from parent commands
