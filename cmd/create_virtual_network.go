@@ -28,7 +28,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var vlan int
+var vxlan int
 
 // createVirtualNetworkCmd represents the createVirtualNetwork command
 var createVirtualNetworkCmd = &cobra.Command{
@@ -44,7 +44,7 @@ packet virtual-network create --project-id [project_UUID] { --metro [metro_code]
 			ProjectID: projectID,
 			Metro:     metro,
 			Facility:  facility,
-			VLAN:      vlan,
+			VXLAN:     vxlan,
 		}
 		if description != "" {
 			req.Description = description
@@ -71,7 +71,7 @@ func init() {
 	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	createVirtualNetworkCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
 	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the virtual network")
-	createVirtualNetworkCmd.Flags().IntVarP(&vlan, "vlan", "", 0, "VLAN id to use (can only be used with --metro)")
+	createVirtualNetworkCmd.Flags().IntVarP(&vxlan, "vxlan", "", 0, "VXLAN id to use (can only be used with --metro)")
 
 	_ = createVirtualNetworkCmd.MarkFlagRequired("project-id")
 }
