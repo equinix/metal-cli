@@ -34,10 +34,15 @@ var checkCapacityCommand = &cobra.Command{
 	Short: "Validates if a deploy can be fulfilled.",
 	Long: `Example:
 
-packet capacity check -f [facility] -p [plan] -q [quantity]
+packet capacity check {-m [metro] | -f [facility]} -p [plan] -q [quantity]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if facility != "" && metro != "" {
+			return errors.New("Either facility or metro should be set")
+		}
+
+		checker := apiClient.CapacityService.Check
 		req := &packngo.CapacityInput{
 			Servers: []packngo.ServerInfo{
 				{
@@ -46,28 +51,40 @@ packet capacity check -f [facility] -p [plan] -q [quantity]
 					Quantity: quantity},
 			},
 		}
+		locationField := "Facility"
+		locationer := func(si packngo.ServerInfo) string {
+			return si.Facility
+		}
 
-		availability, _, err := apiClient.CapacityService.Check(req)
+		if metro != "" {
+			req.Servers[0].Metro = metro
+			checker = apiClient.CapacityService.CheckMetros
+			locationer = func(si packngo.ServerInfo) string {
+				return si.Metro
+			}
+			locationField = "Metro"
+		}
+
+		availability, _, err := checker(req)
 		if err != nil {
 			return errors.Wrap(err, "Could not check capacity")
 		}
 
 		data := make([][]string, 1)
 
-		data[0] = []string{availability.Servers[0].Facility, availability.Servers[0].Plan,
+		data[0] = []string{locationer(availability.Servers[0]), availability.Servers[0].Plan,
 			strconv.Itoa(availability.Servers[0].Quantity), strconv.FormatBool(availability.Servers[0].Available)}
-		header := []string{"Facility", "Plan", "Quantiy", "Availability"}
-
+		header := []string{locationField, "Plan", "Quantity", "Availability"}
 		return output(availability, header, &data)
 	},
 }
 
 func init() {
+	checkCapacityCommand.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
 	checkCapacityCommand.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	checkCapacityCommand.Flags().StringVarP(&plan, "plan", "p", "", "Name of the plan")
 	checkCapacityCommand.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of devices wanted")
 
-	_ = checkCapacityCommand.MarkFlagRequired("facility")
 	_ = checkCapacityCommand.MarkFlagRequired("plan")
 	_ = checkCapacityCommand.MarkFlagRequired("quantity")
 }

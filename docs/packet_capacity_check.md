@@ -6,7 +6,7 @@ Validates if a deploy can be fulfilled.
 
 Example:
 
-packet capacity check -f [facility] -p [plan] -q [quantity]
+packet capacity check {-m [metro] | -f [facility]} -p [plan] -q [quantity]
 
 	
 
@@ -19,6 +19,7 @@ packet capacity check [flags]
 ```
   -f, --facility string   Code of the facility
   -h, --help              help for check
+  -m, --metro string      Code of the metro
   -p, --plan string       Name of the plan
   -q, --quantity int      Number of devices wanted
 ```

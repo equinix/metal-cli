@@ -25,30 +25,43 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	checkFacility bool
+	checkMetro    bool
+)
+
 // retrieveCapacitiesCmd represents the retrieveCapacity command
 var retrieveCapacityCmd = &cobra.Command{
-	Use:   "get",
+	Use:     "get",
 	Aliases: []string{"list"},
-	Short: "Returns a list of facilities and plans with their current capacity.",
+	Short:   "Returns a list of facilities or metros and plans with their current capacity.",
 	Long: `Example:
 Retrieve capacities:
-packet capacity get
+packet capacity get { --metro | --facility }
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
-		capacities, _, err := apiClient.CapacityService.List()
+		lister := apiClient.CapacityService.List
+		fieldName := "Facility"
+
+		if checkMetro {
+			fieldName = "Metro"
+			lister = apiClient.CapacityService.ListMetros
+		}
+
+		capacities, _, err := lister()
 		if err != nil {
 			return errors.Wrap(err, "Could not get Capacity")
 		}
 
-		header := []string{"Facility", "Plan", "Level"}
+		header := []string{fieldName, "Plan", "Level"}
 		requiredDataFormat := [][]string{}
 
-		for facilityCode, capacity := range *capacities {
+		for locCode, capacity := range *capacities {
 			for plan, bm := range capacity {
-				facility := []string{}
-				facility = append(facility, facilityCode, plan, bm.Level)
-				requiredDataFormat = append(requiredDataFormat, facility)
+				loc := []string{}
+				loc = append(loc, locCode, plan, bm.Level)
+				requiredDataFormat = append(requiredDataFormat, loc)
 			}
 		}
 
@@ -57,5 +70,8 @@ packet capacity get
 }
 
 func init() {
+	retrieveCapacityCmd.Flags().BoolVarP(&checkFacility, "facility", "f", true, "Facility code (sv15)")
+	retrieveCapacityCmd.Flags().BoolVarP(&checkMetro, "metro", "m", false, "Metro code (sv)")
+
 	capacityCmd.AddCommand(retrieveCapacityCmd)
 }
