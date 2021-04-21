@@ -22,7 +22,7 @@ packet virtual-network create [flags]
   -h, --help                 help for create
   -m, --metro string         Code of the metro
   -p, --project-id string    UUID of the project
-      --vlan int             VLAN id to use (can only be used with --metro)
+      --vxlan int            VXLAN id to use (can only be used with --metro)
 ```
 
 ### Options inherited from parent commands
