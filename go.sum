@@ -87,8 +87,8 @@ github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRW
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/olekukonko/tablewriter v0.0.0-20180506121414-d4647c9c7a84 h1:fiKJgB4JDUd43CApkmCeTSQlWjtTtABrU2qsgbuP0BI=
 github.com/olekukonko/tablewriter v0.0.0-20180506121414-d4647c9c7a84/go.mod h1:vsDQFd/mU46D+Z4whnwzcISnGGzXWMclvtLoiIKAKIo=
-github.com/packethost/packngo v0.10.0 h1:BpSu5eFtAaPqm1Xob05AmRDGempOySTEMc4Sjf8FA+A=
-github.com/packethost/packngo v0.10.0/go.mod h1:YrtUNN9IRjjqN6zK+cy2IYoi3EjHfoWTWxJkI1I1Vk0=
+github.com/packethost/packngo v0.15.0 h1:nyiVHJAhQdt37Vf141vvm83niZHRKbBs9FmFB+QRgd4=
+github.com/packethost/packngo v0.15.0/go.mod h1:YrtUNN9IRjjqN6zK+cy2IYoi3EjHfoWTWxJkI1I1Vk0=
 github.com/pelletier/go-toml v1.2.0 h1:T5zMGML61Wp+FlcbWjRDT7yAxhJNAiPPLOFECq181zc=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
