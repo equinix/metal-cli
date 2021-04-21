@@ -1,12 +1,12 @@
 ## packet capacity get
 
-Returns a list of facilities and plans with their current capacity.
+Returns a list of facilities or metros and plans with their current capacity.
 
 ### Synopsis
 
 Example:
 Retrieve capacities:
-packet capacity get
+packet capacity get { --metro | --facility }
 
 
 ```
@@ -16,7 +16,9 @@ packet capacity get [flags]
 ### Options
 
 ```
-  -h, --help   help for get
+  -f, --facility   Facility code (sv15) (default true)
+  -h, --help       help for get
+  -m, --metro      Metro code (sv)
 ```
 
 ### Options inherited from parent commands
