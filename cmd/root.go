@@ -55,7 +55,7 @@ var rootCmd = &cobra.Command{
 
 func apiConnect(cmd *cobra.Command, args []string) error {
 	if packetToken == "" {
-		return fmt.Errorf("Equinix Metal authentication token not provided. Please either set the 'PACKET_TOKEN' environment variable or create a JSON or YAML configuration file.")
+		return fmt.Errorf("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' or 'PACKET_TOKEN' environment variable or create a JSON or YAML configuration file.")
 	}
 	client, err := packngo.NewClientWithBaseURL(consumerToken, packetToken, nil, apiURL)
 	if err != nil {
@@ -67,7 +67,11 @@ func apiConnect(cmd *cobra.Command, args []string) error {
 }
 
 func apiToken() string {
-	return os.Getenv(apiTokenEnvVar)
+	token := os.Getenv(apiTokenEnvVar)
+	if token != "" {
+		return token
+	}
+	return os.Getenv(legacyApiTokenEnvVar)
 }
 
 func init() {
