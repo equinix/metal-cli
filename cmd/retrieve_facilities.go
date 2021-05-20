@@ -45,7 +45,11 @@ packet facilities get
 		data := make([][]string, len(facilities))
 
 		for i, facility := range facilities {
-			data[i] = []string{facility.Name, facility.Code, facility.Metro.Code, strings.Join(facility.Features, ",")}
+			var metro string
+			if facility.Metro != nil {
+				metro = facility.Metro.Code
+			}
+			data[i] = []string{facility.Name, facility.Code, metro, strings.Join(facility.Features, ",")}
 		}
 		header := []string{"Name", "Code", "Metro", "Features"}
 
