@@ -23,9 +23,10 @@ var (
 )
 
 const (
-	consumerToken  = "Equinix Metal CLI"
-	apiTokenEnvVar = "PACKET_TOKEN"
-	apiURL         = "https://api.equinix.com/metal/v1/"
+	consumerToken        = "Equinix Metal CLI"
+	apiTokenEnvVar       = "METAL_AUTH_TOKEN"
+	legacyApiTokenEnvVar = "PACKET_TOKEN"
+	apiURL               = "https://api.equinix.com/metal/v1/"
 )
 
 // NewCli struct
