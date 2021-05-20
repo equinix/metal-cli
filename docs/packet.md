@@ -22,7 +22,10 @@ Command line interface for Equinix Metal
 
 * [packet 2fa](packet_2fa.md)	 - Two Factor Authentication operations
 * [packet capacity](packet_capacity.md)	 - Capacities operations
+* [packet completion](packet_completion.md)	 - Generate completion script
 * [packet device](packet_device.md)	 - Device operations
+* [packet docs](packet_docs.md)	 - Generate command documentation
+* [packet env](packet_env.md)	 - Generate environment variables
 * [packet event](packet_event.md)	 - Events operations
 * [packet facilities](packet_facilities.md)	 - Facility operations
 * [packet hardware-reservation](packet_hardware-reservation.md)	 - Hardware reservation operations

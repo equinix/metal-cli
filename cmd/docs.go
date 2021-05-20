@@ -32,7 +32,6 @@ var docsCmd = &cobra.Command{
 	Short:                 "Generate command documentation",
 	Long:                  "To generate documentation in the ./docs directory: docs ./docs",
 	DisableFlagsInUseLine: true,
-	Hidden:                true,
 	Args:                  cobra.ExactValidArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		dest := args[0]
