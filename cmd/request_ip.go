@@ -48,6 +48,7 @@ packet ip request --quantity [quantity] --facility [facility_code] --type [addre
 			Type:     ttype,
 			Quantity: quantity,
 			Facility: &facility,
+			Tags:     tags,
 		}
 
 		reservation, _, err := apiClient.ProjectIPs.Request(projectID, req)
@@ -69,6 +70,7 @@ func init() {
 	requestIPCmd.Flags().StringVarP(&ttype, "type", "t", "", "Address type public_ipv4 or global_ipv6")
 	requestIPCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	requestIPCmd.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of IP addresses to reserve")
+	requestIPCmd.Flags().StringSliceVar(&tags, "tags", nil, "Tags to add, comma-separated for multiple, or repeat multiple times")
 
 	_ = requestIPCmd.MarkFlagRequired("project-id")
 	_ = requestIPCmd.MarkFlagRequired("type")
