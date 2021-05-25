@@ -50,7 +50,6 @@ var envCmd = &cobra.Command{
 	$ packet env | source
 	`, apiTokenEnvVar),
 	DisableFlagsInUseLine: true,
-	Hidden:                true,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("%s=%s\n", apiTokenEnvVar, packetToken)
 	},
