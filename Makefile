@@ -5,7 +5,7 @@ K := $(foreach exec,$(EXECUTABLES),\
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 PACKAGE_NAME?=github.com/packethost/packet-cli
-BINARY?=packet
+BINARY?=metal
 GIT_VERSION?=$(shell git log -1 --format="%h")
 VERSION?=$(GIT_VERSION)
 RELEASE_TAG?=$(shell git tag --points-at HEAD)
@@ -54,7 +54,7 @@ clean-docs:
 
 install:
 	go install ${LDFLAGS}
-	mv ${GOPATH}/bin/packet-cli ${GOPATH}/bin/packet
+	mv ${GOPATH}/bin/${BINARY} ${GOPATH}/bin/${BINARY}
 
 generate-docs: clean-docs
 	mkdir -p docs
