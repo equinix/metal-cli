@@ -22,6 +22,7 @@ packet ip request [flags]
   -h, --help                help for request
   -p, --project-id string   UUID of the project
   -q, --quantity int        Number of IP addresses to reserve
+      --tags strings        Tags to add, comma-separated for multiple, or repeat multiple times
   -t, --type string         Address type public_ipv4 or global_ipv6
 ```
 
