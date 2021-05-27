@@ -7,7 +7,6 @@ require (
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1 // indirect
 	github.com/ghodss/yaml v1.0.0
-	github.com/golangci/golangci-lint v1.30.0 // indirect
 	github.com/juju/ansiterm v0.0.0-20180109212912-720a0952cc2a // indirect
 	github.com/lunixbochs/vtclean v0.0.0-20170504063817-d14193dfc626 // indirect
 	github.com/manifoldco/promptui v0.3.0
