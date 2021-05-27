@@ -1,7 +1,7 @@
 # packet-cli
 
-[![GitHub release](https://img.shields.io/github/release/packethost/packet-cli/all.svg?style=flat-square)](https://github.com/packethost/packet-cli/releases)
-[![Go Report Card](https://goreportcard.com/badge/github.com/packethost/packet-cli)](https://goreportcard.com/report/github.com/packethost/packet-cli)
+[![GitHub release](https://img.shields.io/github/release/equinix/metal-cli/all.svg?style=flat-square)](https://github.com/equinix/metal-cli/releases)
+[![Go Report Card](https://goreportcard.com/badge/github.com/equinix/metal-cli)](https://goreportcard.com/report/github.com/equinix/metal-cli)
 [![Slack](https://slack.equinixmetal.com/badge.svg)](https://slack.equinixmetal.com)
 [![Twitter Follow](https://img.shields.io/twitter/follow/packethost.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=equinixmetal)
 ![](https://img.shields.io/badge/Stability-Maintained-green.svg)
@@ -34,11 +34,11 @@ The Equinix Metal CLI wraps the [Equinix Metal Go SDK](https://github.com/packet
 ## Requirements
 
 * Equinix Metal authentication token.
-* Equinix Metal CLI [binaries](https://github.com/packethost/packet-cli/releases).
+* Equinix Metal CLI [binaries](https://github.com/equinix/metal-cli/releases).
 
 ## Supported Platforms
 
-The [Equinix Metal CLI binaries](https://github.com/packethost/packet-cli/releases) are available for Linux, Windows, and Mac OS X for various architectures including ARM on Linux.
+The [Equinix Metal CLI binaries](https://github.com/equinix/metal-cli/releases) are available for Linux, Windows, and Mac OS X for various architectures including ARM on Linux.
 
 ## Installation
 
@@ -47,12 +47,10 @@ The [Equinix Metal CLI binaries](https://github.com/packethost/packet-cli/releas
 Download the appropriate Equinix Metal CLI package, build and install them. Type the following in your terminal:
 
 ```
-GO111MODULE=on go get github.com/packethost/packet-cli
+GO111MODULE=on go get github.com/equinix/metal-cli
 ```
 
 You can find the installed executable/binary in either `$GOPATH/bin` or `$HOME/go/bin` folder.
-
-Rename binary from `packet-cli` to `packet`. 
 
 ### Install binary from Release Download
 
@@ -318,5 +316,5 @@ Details on all available commands can be found by visiting the reference [pages]
 
 For help with this package:
 
-* Open up a GitHub issue [here](https://github.com/packethost/packet-cli/issues).
+* Open up a GitHub issue [here](https://github.com/equinix/metal-cli/issues).
 * Contact the [Equinix Metal Community Slack](http://slack.equinixmetal.net) or on Freenode IRC in the #equinixmetal channel.
