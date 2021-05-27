@@ -114,8 +114,9 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		viper.SetConfigName(".packet-cli")
-		viper.AddConfigPath(userHomeDir())
+		configDir := userHomeDir() + "/.config/equinix"
+		viper.SetConfigName(".metal")
+		viper.AddConfigPath(configDir)
 	}
 
 	if err := viper.ReadInConfig(); err != nil && !errors.As(err, &viper.ConfigFileNotFoundError{}) {
