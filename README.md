@@ -133,10 +133,10 @@ The binary can be trusted by enabling "App Store and identified developers" in "
 
 ### Windows
 
-If you plan to run the Equinix Metal CLI in PowerShell on Windows and placed the binary in `c:\packet-cli`, then type the following into PowerShell:
+If you plan to run the Equinix Metal CLI in PowerShell on Windows and placed the binary in `c:\metal-cli`, then type the following into PowerShell:
 
 ```
-$env:Path += ";c:\packet-cli"
+$env:Path += ";c:\metal-cli"
 ```
 If you plan to run the Equinix Metal CLI in PowerShell on Windows and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into PowerShell:
 
