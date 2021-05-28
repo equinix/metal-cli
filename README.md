@@ -171,14 +171,14 @@ The Equinix Metal authentication token can be stored in the `$PACKET_TOKEN` envi
 Environment variable:
 
 ```bash
-export PACKET_TOKEN=[PACKET_TOKEN]
+export METAL_AUTH_TOKEN=[METAL_AUTH_TOKEN]
 ```
 
-YAML configuration file - `$HOME/.packet-cli.yaml`:
+YAML configuration file - `$HOME/.config/equinix/.metal.yaml`:
 
 ```yaml
 ---
-token: PACKET_TOKEN
+token: METAL_AUTH_TOKEN
 
 ```
 
@@ -186,7 +186,7 @@ JSON configuration file - `$HOME/.packet-cli.json`:
 
 ```json
 {
-  "token": "PACKET_TOKEN"
+  "token": "METAL_AUTH_TOKEN"
 }
 ```
 
@@ -194,11 +194,11 @@ After installing Equinix Metal CLI, verify the installation by executing `packet
 
 
 ```bash
-$ packet
+$ metal
 Command line interface for Equinix Metal
 
 Usage:
-  packet [command]
+  metal [command]
 
 Available Commands:
   device            Device operations
@@ -219,7 +219,7 @@ Flags:
   -h, --help            help for packet
       --version         version for packet
 
-Use "packet [command] --help" for more information about a command.
+Use "metal [command] --help" for more information about a command.
 ```
 
 ## Includes and Excludes
@@ -237,14 +237,14 @@ speed up and reduce the size of responses.  By including referred-by-default
 resources, you can avoid the round trip of subsequent calls.
 
 ```sh
-packet devices get --project-id $ID --yaml --exclude=ssh_keys,plan --include=project
+metal devices get --project-id $ID --yaml --exclude=ssh_keys,plan --include=project
 ```
 
 These arguments are available in any command that returns a response document.
 The included and excluded fields requested from the API may differ based on the
-output format, for example, for historic reasons, `packet projects get --yaml`
+output format, for example, for historic reasons, `metal projects get --yaml`
 includes the details of all project members. In the table output format, no
-member related fields are displayed and so `packet projects get` will exclude
+member related fields are displayed and so `metal projects get` will exclude
 the member resource.
 
 Excluding fields needed for the table output will result in an error. Mixing
@@ -252,65 +252,65 @@ includes and excludes affecting the same top-level field is not supported.
 
 ## Reference
 
-The full CLI documentation can be found [here](docs/packet.md) or by clicking the links below.
+The full CLI documentation can be found [here](docs/metal.md) or by clicking the links below.
 
-* [Device operations](docs/packet_device.md)
-* [Facility operations](docs/packet_facilities.md)
-* [IP operations](docs/packet_ip.md)
-* [Operating system operations](docs/packet_operating-systems.md)
-* [Organization operations](docs/packet_organization.md)
-* [Plan operations](docs/packet_plan.md)
-* [Project operations](docs/packet_project.md)
-* [SSH key operations](docs/packet_ssh-key.md)
-* [User operations](docs/packet_user.md)
-* [Virtual network operations](docs/packet_virtual-network.md)
-* [Volume operations](docs/packet_volume.md)
+* [Device operations](docs/metal_device.md)
+* [Facility operations](docs/metal_facilities.md)
+* [IP operations](docs/metal_ip.md)
+* [Operating system operations](docs/metal_operating-systems.md)
+* [Organization operations](docs/metal_organization.md)
+* [Plan operations](docs/metal_plan.md)
+* [Project operations](docs/metal_project.md)
+* [SSH key operations](docs/metal_ssh-key.md)
+* [User operations](docs/metal_user.md)
+* [Virtual network operations](docs/metal_virtual-network.md)
+* [Volume operations](docs/metal_volume.md)
 
 ## Example Syntax
 
 ### Create a device
 
 ```
-packet device create --hostname [hostname] --plan [plan] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
+metal device create --hostname [hostname] --plan [plan] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
 ```
 
 ### Create a volume
 
 ```
-packet volume create --size [size_in_GB] --plan [plan_UUID] --project-id [project_UUID] --facility [facility_code]
+metal volume create --size [size_in_GB] --plan [plan_UUID] --project-id [project_UUID] --facility [facility_code]
 ```
 
 ### Attach a volume
 
 ```
-packet volume attach --id [volume_UUID] --device-id [device_UUID]
+metal volume attach --id [volume_UUID] --device-id [device_UUID]
 ```
 
 ### Get a device
 
 ```
-packet device get --id [device_UUID]
+metal device get --id [device_UUID]
 ```
 
 ### Get a volume
 
 ```
-packet volume get --id [volume_UUID]
+metal volume get --id [volume_UUID]
 ```
 
 ### List projects
 
 ```
-packet project get
+metal project get
 ```
 
 ### Get a project
 
 ```
-packet project get -i [project_UUID]
+metal project get -i [project_UUID]
 ```
 
-Details on all available commands can be found by visiting the reference [pages](docs/packet.md) or typing `packet [command] --help` for more information about the specific command.
+Details on all available commands can be found by visiting the reference [pages](docs/metal.md) or typing `metal [command] --help` for more information about the specific command.
 
 ## Support
 
