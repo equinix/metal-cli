@@ -162,7 +162,7 @@ echo $env:Path
 
 Once installed, shell completion can be enabled (in Bash) with `source <(packet completion bash)` (or for some versions of Bash, `eval "$(packet completion bash)").
 
-Check `packet completion -h` for instructions to use in other shells.
+Check `metal completion -h` for instructions to use in other shells.
 
 ## Authentication
 
@@ -182,7 +182,7 @@ token: METAL_AUTH_TOKEN
 
 ```
 
-JSON configuration file - `$HOME/.packet-cli.json`:
+JSON configuration file - `$HOME/.config/equinix/metal.json`:
 
 ```json
 {
