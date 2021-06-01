@@ -115,7 +115,7 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		configDir := userHomeDir() + "/.config/equinix"
-		viper.SetConfigName(".metal")
+		viper.SetConfigName("metal")
 		viper.AddConfigPath(configDir)
 	}
 

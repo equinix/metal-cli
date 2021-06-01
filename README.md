@@ -174,7 +174,7 @@ Environment variable:
 export METAL_AUTH_TOKEN=[METAL_AUTH_TOKEN]
 ```
 
-YAML configuration file - `$HOME/.config/equinix/.metal.yaml`:
+YAML configuration file - `$HOME/.config/equinix/metal.yaml`:
 
 ```yaml
 ---
@@ -182,7 +182,7 @@ token: METAL_AUTH_TOKEN
 
 ```
 
-JSON configuration file - `$HOME/.config/equinix/metal.json`:
+JSON configuration file - `$HOME/.packet-cli.json`:
 
 ```json
 {
