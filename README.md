@@ -182,7 +182,7 @@ token: METAL_AUTH_TOKEN
 
 ```
 
-JSON configuration file - `$HOME/.packet-cli.json`:
+JSON configuration file - `$HOME/.config/equinix/metal.json`:
 
 ```json
 {
