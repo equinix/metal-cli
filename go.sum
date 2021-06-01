@@ -156,8 +156,6 @@ github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRW
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/olekukonko/tablewriter v0.0.0-20180506121414-d4647c9c7a84 h1:fiKJgB4JDUd43CApkmCeTSQlWjtTtABrU2qsgbuP0BI=
 github.com/olekukonko/tablewriter v0.0.0-20180506121414-d4647c9c7a84/go.mod h1:vsDQFd/mU46D+Z4whnwzcISnGGzXWMclvtLoiIKAKIo=
-github.com/packethost/packet-cli v0.0.0-20210527020038-319668ff3c78 h1:CYqJdyQJH+hRPEks2V3h4N3Mhc9+a1wug4gcmlRlEjo=
-github.com/packethost/packet-cli v0.0.0-20210527020038-319668ff3c78/go.mod h1:iJUxmo08eXu0DtReJBDeyu/duw+l+5ewbhBZ9bF1p8I=
 github.com/packethost/packngo v0.15.0 h1:nyiVHJAhQdt37Vf141vvm83niZHRKbBs9FmFB+QRgd4=
 github.com/packethost/packngo v0.15.0/go.mod h1:YrtUNN9IRjjqN6zK+cy2IYoi3EjHfoWTWxJkI1I1Vk0=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=

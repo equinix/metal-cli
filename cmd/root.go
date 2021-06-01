@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
 	"runtime"
 
 	"github.com/packethost/packngo"
@@ -61,7 +62,7 @@ func apiConnect(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return errors.Wrap(err, "Could not create Client")
 	}
-	client.UserAgent = fmt.Sprintf("packet-cli/%s %s", Version, client.UserAgent)
+	client.UserAgent = fmt.Sprintf("metal-cli/%s %s", Version, client.UserAgent)
 	apiClient = *client
 	return nil
 }
@@ -114,7 +115,7 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		configDir := userHomeDir() + "/.config/equinix"
+		configDir := path.Join(userHomeDir(), "/.config/equinix")
 		viper.SetConfigName("metal")
 		viper.AddConfigPath(configDir)
 	}
