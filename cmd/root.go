@@ -34,10 +34,10 @@ import (
 
 var (
 	// apiClient client
-	apiClient   packngo.Client
-	cfgFile     string
-	isJSON      bool
-	isYaml      bool
+	apiClient  packngo.Client
+	cfgFile    string
+	isJSON     bool
+	isYaml     bool
 	metalToken string
 
 	includes *[]string // nolint:unused
