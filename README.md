@@ -1,4 +1,4 @@
-# packet-cli
+# metal-cli
 
 [![GitHub release](https://img.shields.io/github/release/equinix/metal-cli/all.svg?style=flat-square)](https://github.com/equinix/metal-cli/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/equinix/metal-cli)](https://goreportcard.com/report/github.com/equinix/metal-cli)
