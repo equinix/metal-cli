@@ -28,7 +28,8 @@ jobs:
     - uses: actions/setup-go@v1
       with:
         go-version: ${{ matrix.go }}
-    - run: touch ~/.packet-cli.yaml
+    - run: mkdir -p ~/.config/equinix
+    - run: touch ~/.config/equinix/metal.yaml
     - name: Detect formatting and build errors
       run: make
       env:

@@ -122,7 +122,7 @@ echo $PATH
 
 When running the downloaded binary on a Mac, you may be prompted with the following message:
 
-> "packet" cannot be opened because the developer cannot be verified
+> "metal" cannot be opened because the developer cannot be verified
 
 The binary can be trusted by enabling "App Store and identified developers" in "System Preferences -> Security & Privacy -> General".  Any blocked apps will appear in the bottom of this window, where they can be authorized.
 
@@ -160,7 +160,7 @@ echo $env:Path
 
 ### Shell Completion
 
-Once installed, shell completion can be enabled (in Bash) with `source <(packet completion bash)` (or for some versions of Bash, `eval "$(packet completion bash)").
+Once installed, shell completion can be enabled (in Bash) with `source <(metal completion bash)` (or for some versions of Bash, `eval "$(metal completion bash)").
 
 Check `metal completion -h` for instructions to use in other shells.
 
@@ -190,7 +190,7 @@ JSON configuration file - `$HOME/.config/equinix/metal.json`:
 }
 ```
 
-After installing Equinix Metal CLI, verify the installation by executing `packet` or `packet.exe`. You should see the default output:
+After installing Equinix Metal CLI, verify the installation by executing `metal` or `metal.exe`. You should see the default output:
 
 
 ```bash
