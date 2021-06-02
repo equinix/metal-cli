@@ -38,7 +38,7 @@ var updateDeviceCmd = &cobra.Command{
 	Short: "Updates a device",
 	Long: `Example:
 
-packet device update --id [device_UUID] --hostname [new_hostname]
+metal device update --id [device_UUID] --hostname [new_hostname]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

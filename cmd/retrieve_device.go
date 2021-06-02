@@ -38,7 +38,7 @@ var retriveDeviceCmd = &cobra.Command{
 	Short: "Retrieves device list or device details",
 	Long: `Example:
 	
-packet device get --id [device_UUID]
+metal device get --id [device_UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

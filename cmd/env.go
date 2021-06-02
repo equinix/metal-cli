@@ -39,19 +39,19 @@ var envCmd = &cobra.Command{
 
 	Bash, Zsh:
 
-	$ source <(packet env)
+	$ source <(metal env)
 
 	Bash (3.2.x):
 
-	$ eval "$(packet env)"
+	$ eval "$(metal env)"
 
 	Fish:
 
-	$ packet env | source
+	$ metal env | source
 	`, apiTokenEnvVar),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("%s=%s\n", apiTokenEnvVar, packetToken)
+		fmt.Printf("%s=%s\n", apiTokenEnvVar, metalToken)
 	},
 }
 

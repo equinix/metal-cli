@@ -37,31 +37,31 @@ var completionCmd = &cobra.Command{
 
 	Bash:
 
-	$ source <(packet completion bash)
+	$ source <(metal completion bash)
 
 	Bash (3.2.x):
 
-	$ eval "$(packet completion bash)"
+	$ eval "$(metal completion bash)"
 
 	# To load completions for each session, execute once:
 	Linux:
-	  $ packet completion bash > /etc/bash_completion.d/packet-cli
+	  $ metal completion bash > /etc/bash_completion.d/metal-cli
 	MacOS:
-	  $ packet completion bash > /usr/local/etc/bash_completion.d/packet-cli
+	  $ metal completion bash > /usr/local/etc/bash_completion.d/metal-cli
 
 	Zsh:
 
-	$ source <(packet completion zsh)
+	$ source <(metal completion zsh)
 
 	# To load completions for each session, execute once:
-	$ packet completion zsh > "${fpath[1]}/_packet-cli"
+	$ metal completion zsh > "${fpath[1]}/_metal-cli"
 
 	Fish:
 
-	$ packet completion fish | source
+	$ metal completion fish | source
 
 	# To load completions for each session, execute once:
-	$ packet completion fish > ~/.config/fish/completions/packet-cli.fish
+	$ metal completion fish > ~/.config/fish/completions/metal-cli.fish
 	`,
 	DisableFlagsInUseLine: true,
 	ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},

@@ -37,10 +37,10 @@ var retrieveSSHKeysCmd = &cobra.Command{
 	Long: `Example:
 
 Retrieve all SSH keys: 
-packet ssh-key get
+metal ssh-key get
   
 Retrieve a specific SSH key:
-packet ssh-key get --id [ssh-key_UUID] 
+metal ssh-key get --id [ssh-key_UUID] 
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

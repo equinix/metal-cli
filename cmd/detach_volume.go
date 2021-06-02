@@ -37,7 +37,7 @@ var detachVolumeCmd = &cobra.Command{
 	Short: "Detaches a volume from a device",
 	Long: `Example:
 
-packet volume detach --id [attachment_UUID]
+metal volume detach --id [attachment_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

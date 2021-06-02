@@ -31,7 +31,7 @@ var retrieveOperatingSystemCmd = &cobra.Command{
 	Aliases: []string{"list"},
 	Short: "Retrieves a list of available operating systems.",
 	Long: `Example:
-  packet operating-systems get`,
+  metal operating-systems get`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		oss, _, err := apiClient.OperatingSystems.List()
 		if err != nil {

@@ -34,7 +34,7 @@ var retrieveFacilitiesCmd = &cobra.Command{
 	Short:   "Retrieves a list of available facilities.",
 	Long: `Example:
 	
-packet facilities get
+metal facilities get
 	
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

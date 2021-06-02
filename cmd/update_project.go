@@ -32,7 +32,7 @@ var updateProjectCmd = &cobra.Command{
 	Short: "Updates a project",
 	Long: `Example:
 
-packet project update --id [project_UUID] --name [new_name]
+metal project update --id [project_UUID] --name [new_name]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

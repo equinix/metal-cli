@@ -32,7 +32,7 @@ var updateOrganizationCmd = &cobra.Command{
 	Short: "Updates an organization",
 	Long: `Example:
 
-packet organization update --id [organization_UUID] --name [new_name]
+metal organization update --id [organization_UUID] --name [new_name]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

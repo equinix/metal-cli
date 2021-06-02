@@ -23,7 +23,7 @@ package main
 import (
 	"os"
 
-	"github.com/packethost/packet-cli/cmd"
+	"github.com/equinix/metal-cli/cmd"
 )
 
 func main() {

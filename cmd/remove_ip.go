@@ -33,7 +33,7 @@ var removeIPCmd = &cobra.Command{
 	Short: "Command to remove IP reservation.",
 	Long: `Example:	
 
-packet ip remove --id [reservation-UUID]
+metal ip remove --id [reservation-UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

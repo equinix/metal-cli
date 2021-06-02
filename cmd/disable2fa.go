@@ -34,10 +34,10 @@ var disable2faCmd = &cobra.Command{
 	Long: `Example:
 
 Disable two factor authentication via SMS
-packet 2fa disable -s -t [token]
+metal 2fa disable -s -t [token]
 
 Disable two factor authentication via APP
-packet 2fa disable -a -t [token]
+metal 2fa disable -a -t [token]
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if sms == app {

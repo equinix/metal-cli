@@ -36,10 +36,10 @@ var receive2faCmd = &cobra.Command{
 	Short: "Receive two factor authentication token",
 	Long: `Example:
 Issue the token via SMS:
-packet 2fa receive -s 
+metal 2fa receive -s 
 
 Issue the token via app:
-packet 2fa receive -a
+metal 2fa receive -a
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

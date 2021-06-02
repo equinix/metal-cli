@@ -34,7 +34,7 @@ var retrieveVirtualNetworksCmd = &cobra.Command{
 	Short: "Retrieves a list of virtual networks for a single project.",
 	Long: `Example:
 
-packet virtual-network get -p [project_UUID]
+metal virtual-network get -p [project_UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

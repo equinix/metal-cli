@@ -33,7 +33,7 @@ var rebootDeviceCmd = &cobra.Command{
 	Short: "Reboots a device",
 	Long: `Example:
 
-packet device reboot --id [device_UUID]
+metal device reboot --id [device_UUID]
 
 	  `,
 	RunE: func(cmd *cobra.Command, args []string) error {

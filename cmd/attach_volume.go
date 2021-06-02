@@ -31,7 +31,7 @@ var attachVolumeCmd = &cobra.Command{
 	Short: "Attaches a volume to a device.",
 	Long: `Example:
 
-packet volume attach --id [volume_UUID] --device-id [device_UUID]
+metal volume attach --id [volume_UUID] --device-id [device_UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

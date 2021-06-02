@@ -58,7 +58,7 @@ var createDeviceCmd = &cobra.Command{
 	Short: "Creates a device",
 	Long: `Example:
 
-packet device create --hostname [hostname] --plan [plan] --metro [metro_code] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
+metal device create --hostname [hostname] --plan [plan] --metro [metro_code] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

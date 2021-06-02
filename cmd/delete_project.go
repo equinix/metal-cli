@@ -34,7 +34,7 @@ var deleteProjectCmd = &cobra.Command{
 	Short: "Deletes a project",
 	Long: `Example:
 
-packet project delete --id [project_UUID]
+metal project delete --id [project_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

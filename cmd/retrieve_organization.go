@@ -34,10 +34,10 @@ var retrieveOrganizationCmd = &cobra.Command{
 	Long: `Example:
 	
 To retrieve list of all available organizations:
-packet organization get
+metal organization get
 
 To retrieve a single organization:
-packet organization get -i [organization-id]
+metal organization get -i [organization-id]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

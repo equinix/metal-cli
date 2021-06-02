@@ -35,7 +35,7 @@ var deleteDeviceCmd = &cobra.Command{
 	Short: "Deletes a device",
 	Long: `Example:	
 
-  packet device delete -i [device_UUID]
+  metal device delete -i [device_UUID]
   
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -59,7 +59,7 @@ func deleteDevice(id string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("Device deletion initiated. Please check 'packet device get -i", deviceID, "' for status")
+	fmt.Println("Device deletion initiated. Please check 'metal device get -i", deviceID, "' for status")
 	return nil
 }
 

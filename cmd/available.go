@@ -36,7 +36,7 @@ var availableCmd = &cobra.Command{
 	Short: "Retrieves a list of IP resevations for a single project.",
 	Long: `Example:
 
-packet ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
+metal ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
 
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {

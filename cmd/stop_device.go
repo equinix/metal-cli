@@ -33,7 +33,7 @@ var stopDeviceCmd = &cobra.Command{
 	Short: "Stops a device",
 	Long: `Example:
 
-  packet device stop --id [device_UUID]
+  metal device stop --id [device_UUID]
   
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {

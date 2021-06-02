@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
 	"runtime"
 
 	"github.com/packethost/packngo"
@@ -33,11 +34,11 @@ import (
 
 var (
 	// apiClient client
-	apiClient   packngo.Client
-	cfgFile     string
-	isJSON      bool
-	isYaml      bool
-	packetToken string
+	apiClient  packngo.Client
+	cfgFile    string
+	isJSON     bool
+	isYaml     bool
+	metalToken string
 
 	includes *[]string // nolint:unused
 	excludes *[]string // nolint:unused
@@ -46,7 +47,7 @@ var (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:               "packet",
+	Use:               "metal",
 	Short:             "Command line interface for Equinix Metal",
 	Long:              `Command line interface for Equinix Metal`,
 	DisableAutoGenTag: true,
@@ -54,14 +55,14 @@ var rootCmd = &cobra.Command{
 }
 
 func apiConnect(cmd *cobra.Command, args []string) error {
-	if packetToken == "" {
+	if metalToken == "" {
 		return fmt.Errorf("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' or 'PACKET_TOKEN' environment variable or create a JSON or YAML configuration file.")
 	}
-	client, err := packngo.NewClientWithBaseURL(consumerToken, packetToken, nil, apiURL)
+	client, err := packngo.NewClientWithBaseURL(consumerToken, metalToken, nil, apiURL)
 	if err != nil {
 		return errors.Wrap(err, "Could not create Client")
 	}
-	client.UserAgent = fmt.Sprintf("packet-cli/%s %s", Version, client.UserAgent)
+	client.UserAgent = fmt.Sprintf("metal-cli/%s %s", Version, client.UserAgent)
 	apiClient = *client
 	return nil
 }
@@ -114,8 +115,9 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		viper.SetConfigName(".packet-cli")
-		viper.AddConfigPath(userHomeDir())
+		configDir := path.Join(userHomeDir(), "/.config/equinix")
+		viper.SetConfigName("metal")
+		viper.AddConfigPath(configDir)
 	}
 
 	if err := viper.ReadInConfig(); err != nil && !errors.As(err, &viper.ConfigFileNotFoundError{}) {
@@ -123,9 +125,9 @@ func initConfig() {
 	}
 
 	if viper.GetString("token") != "" {
-		packetToken = viper.GetString("token")
+		metalToken = viper.GetString("token")
 	} else {
-		packetToken = apiToken()
+		metalToken = apiToken()
 	}
 }
 
