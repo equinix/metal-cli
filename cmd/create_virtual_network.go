@@ -36,7 +36,7 @@ var createVirtualNetworkCmd = &cobra.Command{
 	Short: "Creates a virtual network",
 	Long: `Example:
 
-packet virtual-network create --project-id [project_UUID] { --metro [metro_code] --vlan [vlan] | --facility [facility_code] }
+metal virtual-network create --project-id [project_UUID] { --metro [metro_code] --vlan [vlan] | --facility [facility_code] }
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

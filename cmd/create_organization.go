@@ -38,7 +38,7 @@ var createOrganizationCmd = &cobra.Command{
 	Short: "Creates an organization",
 	Long: `Example:
 
-packet organization create -n [name]
+metal organization create -n [name]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

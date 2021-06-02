@@ -32,7 +32,7 @@ var updateSSHKeyCmd = &cobra.Command{
 	Short: "Updates a project",
 	Long: `Example:
 
-packet ssh-key update --id [ssh-key_UUID] --key [new_key]
+metal ssh-key update --id [ssh-key_UUID] --key [new_key]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

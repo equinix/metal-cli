@@ -33,7 +33,7 @@ var startDeviceCmd = &cobra.Command{
 	Short: "Starts a device",
 	Long: `Example:
 
-packet device start --id [device_UUID]
+metal device start --id [device_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

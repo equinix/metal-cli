@@ -34,7 +34,7 @@ var deleteOrganizationCmd = &cobra.Command{
 	Short: "Deletes an organization",
 	Long: `Example:
 	
-packet organization delete -i [organization_UUID]
+metal organization delete -i [organization_UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

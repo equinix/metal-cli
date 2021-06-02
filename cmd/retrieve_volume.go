@@ -40,10 +40,10 @@ var retriveVolumeCmd = &cobra.Command{
 	Long: `Example:
 	
 Retrieve the list of volumes:
-packet volume get --project-id [project_UUID]
+metal volume get --project-id [project_UUID]
   
 Retrieve a specific volume:
-packet volume get --id [volume_UUID]
+metal volume get --id [volume_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

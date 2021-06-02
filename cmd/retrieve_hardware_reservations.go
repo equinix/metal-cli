@@ -36,7 +36,7 @@ var retrieveHardwareReservationsCmd = &cobra.Command{
 	Long: `Example:
 
 Retrieve all hardware reservations of a project:
-packet hardware_reservations get -p [project_id]
+metal hardware_reservations get -p [project_id]
 
 When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 	`,

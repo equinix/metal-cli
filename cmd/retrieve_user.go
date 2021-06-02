@@ -37,10 +37,10 @@ var retriveUserCmd = &cobra.Command{
 	Long: `Example:
 
 Retrieve the current user:
-packet user get
+metal user get
   
 Retrieve a specific user:
-packet user get --id [user_UUID]
+metal user get --id [user_UUID]
 
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {

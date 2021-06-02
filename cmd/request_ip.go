@@ -40,7 +40,7 @@ var requestIPCmd = &cobra.Command{
 	Short: "Request an IP block",
 	Long: `Example:
 
-packet ip request --quantity [quantity] --facility [facility_code] --type [address_type]
+metal ip request --quantity [quantity] --facility [facility_code] --type [address_type]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

@@ -34,7 +34,7 @@ var deleteVolumeCmd = &cobra.Command{
 	Short: "Deletes a volume",
 	Long: `Example:
 
-packet volume delete --id [volume_UUID]
+metal volume delete --id [volume_UUID]
 
 	  `,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -59,7 +59,7 @@ func deleteVolume(id string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("Volume deletion initiated. Please check 'packet volume get -i", volumeID, "' for status")
+	fmt.Println("Volume deletion initiated. Please check 'metal volume get -i", volumeID, "' for status")
 	return nil
 }
 

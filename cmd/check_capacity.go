@@ -34,7 +34,7 @@ var checkCapacityCommand = &cobra.Command{
 	Short: "Validates if a deploy can be fulfilled.",
 	Long: `Example:
 
-packet capacity check {-m [metro] | -f [facility]} -p [plan] -q [quantity]
+metal capacity check {-m [metro] | -f [facility]} -p [plan] -q [quantity]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

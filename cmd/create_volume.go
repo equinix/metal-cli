@@ -38,7 +38,7 @@ var createVolumeCmd = &cobra.Command{
 	Short: "Creates a volume",
 	Long: `Example:
 
-  packet volume create --size [size_in_GB] --plan [plan_UUID] --project-id [project_UUID] --facility [facility_code]
+  metal volume create --size [size_in_GB] --plan [plan_UUID] --project-id [project_UUID] --facility [facility_code]
   
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {

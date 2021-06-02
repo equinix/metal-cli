@@ -32,7 +32,7 @@ var retrieveMetrosCmd = &cobra.Command{
 	Short:   "Retrieves a list of available metros.",
 	Long: `Example:
 	
-packet metros get
+metal metros get
 	
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

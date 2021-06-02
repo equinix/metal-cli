@@ -38,7 +38,7 @@ var deleteVirtualNetworkCmd = &cobra.Command{
 	Short: "Deletes a Virtual Network",
 	Long: `Example:
 
-packet virtual-network delete -i [virtual_network_UUID]
+metal virtual-network delete -i [virtual_network_UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

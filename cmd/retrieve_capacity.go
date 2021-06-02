@@ -37,7 +37,7 @@ var retrieveCapacityCmd = &cobra.Command{
 	Short:   "Returns a list of facilities or metros and plans with their current capacity.",
 	Long: `Example:
 Retrieve capacities:
-packet capacity get { --metro | --facility }
+metal capacity get { --metro | --facility }
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error

@@ -32,7 +32,7 @@ var retrievePlansCmd = &cobra.Command{
 	Short: "Retrieves a list of all available plans.",
 	Long: `Example:
 
-  packet plans get
+  metal plans get
   
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {

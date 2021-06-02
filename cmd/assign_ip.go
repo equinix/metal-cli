@@ -38,7 +38,7 @@ var assignIPCmd = &cobra.Command{
 	Short: "Assigns an IP address to a given device",
 	Long: `Example:
 
-packet ip assign -d [device-id] -a [ip-address]
+metal ip assign -d [device-id] -a [ip-address]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

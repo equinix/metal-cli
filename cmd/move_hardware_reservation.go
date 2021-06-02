@@ -31,7 +31,7 @@ var moveHardwareReservationCmd = &cobra.Command{
 	Short: "Move hardware reservation to another project",
 	Long: `Example:
 
-packet hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
+metal hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		header := []string{"ID", "Facility", "Plan", "Created"}

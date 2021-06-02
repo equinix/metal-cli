@@ -37,7 +37,7 @@ var createProjectCmd = &cobra.Command{
 	Short: "Creates a project",
 	Long: `Example:
 
-packet project create --name [project_name]
+metal project create --name [project_name]
   
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {

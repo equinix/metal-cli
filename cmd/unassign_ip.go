@@ -33,7 +33,7 @@ var unassignIPCmd = &cobra.Command{
 	Short: "Unassigns an IP address.",
 	Long: `Example:
 
-packet ip unassign --id [assignment-UUID]
+metal ip unassign --id [assignment-UUID]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {

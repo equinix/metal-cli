@@ -32,7 +32,7 @@ var paymentMethodsCmd = &cobra.Command{
 	Short:   "Retrieves a list of payment methods for the organization",
 	Long: `Example:
 
-packet organization get payment-methods --id [organization_UUID]
+metal organization get payment-methods --id [organization_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

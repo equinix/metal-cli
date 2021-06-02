@@ -34,7 +34,7 @@ var deleteSSHKeyCmd = &cobra.Command{
 	Short: "Deletes an SSH key",
 	Long: `Example:
 
-packet ssh-key delete --id [ssh-key_UUID]
+metal ssh-key delete --id [ssh-key_UUID]
 
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {

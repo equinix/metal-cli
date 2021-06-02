@@ -37,7 +37,7 @@ var createSSHKeyCmd = &cobra.Command{
 	Short: "Creates an SSH key",
 	Long: `Example:
 
-packet ssh-key create --key [public_key] --label [label]
+metal ssh-key create --key [public_key] --label [label]
 
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
