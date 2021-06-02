@@ -10,7 +10,7 @@ This repository is [Maintained](https://github.com/packethost/standards/blob/mas
 
 ## Table of Contents
 
-* [Equinix Metal Command Line Interface](#packet-command-line-interface)
+* [Equinix Metal Command Line Interface](#metal-command-line-interface)
 * [Requirements](#requirements)
 * [Supported Platforms](#supported-platforms)
 * [Installation](#installation)
@@ -52,7 +52,7 @@ You can find the installed executable/binary in either `$GOPATH/bin` or `$HOME/g
 
 ### Install binary from Release Download
 
-Download the appropriate Equinix Metal CLI binaries for your platform to the desired location,`chmod` it and rename it to `packet`.
+Download the appropriate Equinix Metal CLI binaries for your platform to the desired location,`chmod` it and rename it to `metal`.
 
 ### Configuring your Path
 
@@ -64,10 +64,10 @@ Choose the steps to follow for your platform to add directory to `PATH`.
 
 ## Linux
 
-If you plan to run the Equinix Metal CLI in a shell on Linux and placed the binary in `/home/YOUR-USER-NAME/packet-cli/`, then type the following into your terminal:
+If you plan to run the Equinix Metal CLI in a shell on Linux and placed the binary in `/home/YOUR-USER-NAME/metal-cli/`, then type the following into your terminal:
 
 ```
-export PATH=$PATH:/home/$USER/packet-cli
+export PATH=$PATH:/home/$USER/metal-cli
 ```
 If you plan to run the Equinix Metal CLI in a shell on Linux and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
 
@@ -94,10 +94,10 @@ echo $PATH
 
 ### Mac OS X
 
-If you plan to run the Equinix Metal CLI in a shell on a Mac, download the `darwin` binary and placed the it in `/Users/YOUR-USER-NAME/packet-cli/`, then type the following into your terminal.
+If you plan to run the Equinix Metal CLI in a shell on a Mac, download the `darwin` binary and placed the it in `/Users/YOUR-USER-NAME/metal-cli/`, then type the following into your terminal.
 
 ```
-export PATH=$PATH:/Users/$USER/packet-cli
+export PATH=$PATH:/Users/$USER/metal-cli
 ```
 
 If you plan to run the Equinix Metal CLI in a shell on a Mac and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
@@ -164,7 +164,7 @@ Check `metal completion -h` for instructions to use in other shells.
 
 ## Authentication
 
-The Equinix Metal authentication token can be stored in the `$PACKET_TOKEN` environment variable or in JSON or YAML configuration files. The configuration file path can be overridden with the `--config` flag.
+The Equinix Metal authentication token can be stored in the `$METAL_AUTH_TOKEN` environment variable or in JSON or YAML configuration files. The configuration file path can be overridden with the `--config` flag.
 
 Environment variable:
 

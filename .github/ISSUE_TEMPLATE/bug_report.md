@@ -24,4 +24,4 @@ Scripts that triggers the issue are highly appreciated!
 Include the version of the CLI that was used.
 -->
 
-CLI version (`packet --version`):
+CLI version (`metal --version`):
