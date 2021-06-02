@@ -54,7 +54,7 @@ clean-docs:
 
 install:
 	go install ${LDFLAGS}
-	mv ${GOPATH}/bin/${BINARY} ${GOPATH}/bin/${BINARY}
+	mv ${GOPATH}/bin/metal-cli ${GOPATH}/bin/${BINARY}
 
 generate-docs: clean-docs
 	mkdir -p docs
