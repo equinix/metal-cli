@@ -7,11 +7,11 @@ Retrieves all available projects or a single project
 Example:
 
 Retrieve all projects:
-packet project get
+metal project get
   
 Retrieve a specific project:
-packet project get -i [project_UUID]
-packet project get -n [project_name]
+metal project get -i [project_UUID]
+metal project get -n [project_name]
 
 When using "--json" or "--yaml", "--include=members" is implied.
 	

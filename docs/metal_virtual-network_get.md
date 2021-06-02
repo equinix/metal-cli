@@ -6,7 +6,7 @@ Retrieves a list of virtual networks for a single project.
 
 Example:
 
-packet virtual-network get -p [project_UUID]
+metal virtual-network get -p [project_UUID]
 
 	
 

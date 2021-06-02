@@ -6,7 +6,7 @@ Attaches a volume to a device.
 
 Example:
 
-packet volume attach --id [volume_UUID] --device-id [device_UUID]
+metal volume attach --id [volume_UUID] --device-id [device_UUID]
 
 	
 

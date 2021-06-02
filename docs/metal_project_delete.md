@@ -6,7 +6,7 @@ Deletes a project
 
 Example:
 
-packet project delete --id [project_UUID]
+metal project delete --id [project_UUID]
 
 
 

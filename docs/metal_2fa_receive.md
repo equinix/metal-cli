@@ -6,10 +6,10 @@ Receive two factor authentication token
 
 Example:
 Issue the token via SMS:
-packet 2fa receive -s 
+metal 2fa receive -s 
 
 Issue the token via app:
-packet 2fa receive -a
+metal 2fa receive -a
 
 
 

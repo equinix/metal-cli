@@ -6,7 +6,7 @@ Unassigns an IP address.
 
 Example:
 
-packet ip unassign --id [assignment-UUID]
+metal ip unassign --id [assignment-UUID]
 
 	
 

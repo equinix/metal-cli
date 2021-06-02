@@ -6,7 +6,7 @@ Command to remove IP reservation.
 
 Example:	
 
-packet ip remove --id [reservation-UUID]
+metal ip remove --id [reservation-UUID]
 
 
 

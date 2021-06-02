@@ -6,7 +6,7 @@ Creates a volume
 
 Example:
 
-  packet volume create --size [size_in_GB] --plan [plan_UUID] --project-id [project_UUID] --facility [facility_code]
+  metal volume create --size [size_in_GB] --plan [plan_UUID] --project-id [project_UUID] --facility [facility_code]
   
   
 

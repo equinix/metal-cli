@@ -6,7 +6,7 @@ Detaches a volume from a device
 
 Example:
 
-packet volume detach --id [attachment_UUID]
+metal volume detach --id [attachment_UUID]
 
 
 

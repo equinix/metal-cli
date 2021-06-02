@@ -7,10 +7,10 @@ Retrieves information about the current user or a specified user
 Example:
 
 Retrieve the current user:
-packet user get
+metal user get
   
 Retrieve a specific user:
-packet user get --id [user_UUID]
+metal user get --id [user_UUID]
 
   
 

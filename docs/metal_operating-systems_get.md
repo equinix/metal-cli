@@ -5,7 +5,7 @@ Retrieves a list of available operating systems.
 ### Synopsis
 
 Example:
-  packet operating-systems get
+  metal operating-systems get
 
 ```
 metal operating-systems get [flags]

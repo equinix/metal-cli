@@ -6,7 +6,7 @@ Retrieves a list of IP resevations for a single project.
 
 Example:
 
-packet ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
+metal ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
 
   
 

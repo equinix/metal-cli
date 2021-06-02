@@ -6,7 +6,7 @@ Updates a device
 
 Example:
 
-packet device update --id [device_UUID] --hostname [new_hostname]
+metal device update --id [device_UUID] --hostname [new_hostname]
 
 
 

@@ -7,10 +7,10 @@ Retrieves a list of available SSH keys or a single SSH key
 Example:
 
 Retrieve all SSH keys: 
-packet ssh-key get
+metal ssh-key get
   
 Retrieve a specific SSH key:
-packet ssh-key get --id [ssh-key_UUID] 
+metal ssh-key get --id [ssh-key_UUID] 
 
 
 

@@ -6,7 +6,7 @@ Stops a device
 
 Example:
 
-  packet device stop --id [device_UUID]
+  metal device stop --id [device_UUID]
   
   
 

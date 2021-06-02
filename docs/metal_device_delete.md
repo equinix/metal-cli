@@ -6,7 +6,7 @@ Deletes a device
 
 Example:	
 
-  packet device delete -i [device_UUID]
+  metal device delete -i [device_UUID]
   
 	
 

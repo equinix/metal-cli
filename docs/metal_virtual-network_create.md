@@ -6,7 +6,7 @@ Creates a virtual network
 
 Example:
 
-packet virtual-network create --project-id [project_UUID] { --metro [metro_code] --vlan [vlan] | --facility [facility_code] }
+metal virtual-network create --project-id [project_UUID] { --metro [metro_code] --vlan [vlan] | --facility [facility_code] }
 
 
 

@@ -6,7 +6,7 @@ Assigns an IP address to a given device
 
 Example:
 
-packet ip assign -d [device-id] -a [ip-address]
+metal ip assign -d [device-id] -a [ip-address]
 
 	
 

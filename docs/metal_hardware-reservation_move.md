@@ -6,7 +6,7 @@ Move hardware reservation to another project
 
 Example:
 
-packet hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
+metal hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
 
 
 ```

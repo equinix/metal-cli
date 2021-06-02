@@ -6,7 +6,7 @@ Creates a project
 
 Example:
 
-packet project create --name [project_name]
+metal project create --name [project_name]
   
   
 

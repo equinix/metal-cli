@@ -6,7 +6,7 @@ Returns a list of facilities or metros and plans with their current capacity.
 
 Example:
 Retrieve capacities:
-packet capacity get { --metro | --facility }
+metal capacity get { --metro | --facility }
 
 
 ```

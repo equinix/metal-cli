@@ -6,7 +6,7 @@ Reboots a device
 
 Example:
 
-packet device reboot --id [device_UUID]
+metal device reboot --id [device_UUID]
 
 	  
 

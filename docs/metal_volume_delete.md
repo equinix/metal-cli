@@ -6,7 +6,7 @@ Deletes a volume
 
 Example:
 
-packet volume delete --id [volume_UUID]
+metal volume delete --id [volume_UUID]
 
 	  
 

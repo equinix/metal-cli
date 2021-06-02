@@ -7,10 +7,10 @@ Retrieves a volume list or volume details.
 Example:
 	
 Retrieve the list of volumes:
-packet volume get --project-id [project_UUID]
+metal volume get --project-id [project_UUID]
   
 Retrieve a specific volume:
-packet volume get --id [volume_UUID]
+metal volume get --id [volume_UUID]
 
 
 

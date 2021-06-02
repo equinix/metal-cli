@@ -6,7 +6,7 @@ Deletes an SSH key
 
 Example:
 
-packet ssh-key delete --id [ssh-key_UUID]
+metal ssh-key delete --id [ssh-key_UUID]
 
 
 

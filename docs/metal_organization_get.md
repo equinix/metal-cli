@@ -7,10 +7,10 @@ Retrieves an organization or list of organizations
 Example:
 	
 To retrieve list of all available organizations:
-packet organization get
+metal organization get
 
 To retrieve a single organization:
-packet organization get -i [organization-id]
+metal organization get -i [organization-id]
 
 	
 

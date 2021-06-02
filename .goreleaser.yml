@@ -11,8 +11,8 @@ builds:
   - CGO_ENABLED=0
   binary: packet
   ldflags:
-   - -X github.com/packethost/packet-cli/cmd.Version={{.Version}}
-   - -X github.com/packethost/packet-cli/cmd.Build=${.Commit}"
+   - -X github.com/equinix/metal-cli/cmd.Version={{.Version}}
+   - -X github.com/equinix/metal-cli/cmd.Build=${.Commit}"
 
   goos:
     - freebsd

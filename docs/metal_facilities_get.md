@@ -6,7 +6,7 @@ Retrieves a list of available facilities.
 
 Example:
 	
-packet facilities get
+metal facilities get
 	
 	
 

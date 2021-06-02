@@ -6,22 +6,22 @@ Retrieves one or more events for organizations, projects, or devices.
 
 Example:
 Retrieve all events:
-packet event get
+metal event get
 
 Retrieve a specific event:
-packet event get -i [event_UUID]
+metal event get -i [event_UUID]
 
 Retrieve all events of an organization:
-packet event get -o [organization_UUID]
+metal event get -o [organization_UUID]
 
 Retrieve all events of a project:
-packet event get -p [project_UUID]
+metal event get -p [project_UUID]
 
 Retrieve all events of a device:
-packet event get -d [device_UUID]
+metal event get -d [device_UUID]
 
 Retrieve all events of a current user:
-packet event get
+metal event get
 
 When using "--json" or "--yaml", "--include=relationships" is implied.
 

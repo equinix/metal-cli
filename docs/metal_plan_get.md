@@ -6,7 +6,7 @@ Retrieves a list of all available plans.
 
 Example:
 
-  packet plans get
+  metal plans get
   
   
 

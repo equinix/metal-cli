@@ -6,7 +6,7 @@ Deletes an organization
 
 Example:
 	
-packet organization delete -i [organization_UUID]
+metal organization delete -i [organization_UUID]
 
 	
 

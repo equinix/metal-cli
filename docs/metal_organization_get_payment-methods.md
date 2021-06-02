@@ -6,7 +6,7 @@ Retrieves a list of payment methods for the organization
 
 Example:
 
-packet organization get payment-methods --id [organization_UUID]
+metal organization get payment-methods --id [organization_UUID]
 
 
 

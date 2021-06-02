@@ -6,7 +6,7 @@ Request an IP block
 
 Example:
 
-packet ip request --quantity [quantity] --facility [facility_code] --type [address_type]
+metal ip request --quantity [quantity] --facility [facility_code] --type [address_type]
 
 	
 

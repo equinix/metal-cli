@@ -6,7 +6,7 @@ Retrieves device list or device details
 
 Example:
 	
-packet device get --id [device_UUID]
+metal device get --id [device_UUID]
 
 	
 

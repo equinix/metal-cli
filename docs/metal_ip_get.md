@@ -8,15 +8,15 @@ Example:
 	
 To get all IP addresses under a project:
 
-packet ip get --project-id [project_UUID] 
+metal ip get --project-id [project_UUID] 
 
 To get IP addresses by assignment id:
 
-packet ip get --assignment-id [assignment_UUID]
+metal ip get --assignment-id [assignment_UUID]
 
 To get IP addresses by reservation ID:
 
-packet ip get --reservation-id [reservation_UUID]
+metal ip get --reservation-id [reservation_UUID]
 
 	
 

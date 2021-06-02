@@ -6,7 +6,7 @@ Updates an organization
 
 Example:
 
-packet organization update --id [organization_UUID] --name [new_name]
+metal organization update --id [organization_UUID] --name [new_name]
 
 
 

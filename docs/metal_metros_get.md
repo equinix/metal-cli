@@ -6,7 +6,7 @@ Retrieves a list of available metros.
 
 Example:
 	
-packet metros get
+metal metros get
 	
 	
 

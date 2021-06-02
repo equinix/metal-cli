@@ -6,7 +6,7 @@ Creates an SSH key
 
 Example:
 
-packet ssh-key create --key [public_key] --label [label]
+metal ssh-key create --key [public_key] --label [label]
 
 	
 

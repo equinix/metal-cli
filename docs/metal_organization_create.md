@@ -6,7 +6,7 @@ Creates an organization
 
 Example:
 
-packet organization create -n [name]
+metal organization create -n [name]
 
 	
 

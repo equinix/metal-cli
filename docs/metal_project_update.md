@@ -6,7 +6,7 @@ Updates a project
 
 Example:
 
-packet project update --id [project_UUID] --name [new_name]
+metal project update --id [project_UUID] --name [new_name]
 
 
 

@@ -6,7 +6,7 @@ Updates a project
 
 Example:
 
-packet ssh-key update --id [ssh-key_UUID] --key [new_key]
+metal ssh-key update --id [ssh-key_UUID] --key [new_key]
 
 
 

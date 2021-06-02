@@ -6,7 +6,7 @@ Starts a device
 
 Example:
 
-packet device start --id [device_UUID]
+metal device start --id [device_UUID]
 
 
 

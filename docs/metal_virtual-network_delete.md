@@ -6,7 +6,7 @@ Deletes a Virtual Network
 
 Example:
 
-packet virtual-network delete -i [virtual_network_UUID]
+metal virtual-network delete -i [virtual_network_UUID]
 
 	
 
