@@ -25,8 +25,6 @@ This repository is [Maintained](https://github.com/packethost/standards/blob/mas
 
 ## Equinix Metal Command Line Interface
 
-[Packet is now Equinix Metal!](https://blog.equinix.com/blog/2020/10/06/equinix-metal-metal-and-more/), keep an eye on this project for future project and command line name changes.
-
 [Equinix Metal](https://metal.equinix.com/) provides an API-driven bare metal platform that combines the automation experience of the cloud with the benefits of physical, bare metal servers.
 
 The Equinix Metal CLI wraps the [Equinix Metal Go SDK](https://github.com/packethost/packngo) allowing interaction with Equinix Metal platform from a command-line interface.
@@ -216,8 +214,8 @@ Available Commands:
 
 Flags:
       --config string   Path to JSON or YAML configuration file
-  -h, --help            help for packet
-      --version         version for packet
+  -h, --help            help for metal
+      --version         version for metal
 
 Use "metal [command] --help" for more information about a command.
 ```
