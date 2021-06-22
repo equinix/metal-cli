@@ -124,10 +124,11 @@ func initConfig() {
 		panic(fmt.Errorf("Could not read config: %s", err))
 	}
 
-	if viper.GetString("token") != "" {
-		metalToken = viper.GetString("token")
-	} else {
-		metalToken = apiToken()
+	metalToken = viper.GetString("token")
+
+	envToken := apiToken()
+	if envToken != "" {
+		metalToken = envToken
 	}
 }
 

@@ -33,7 +33,7 @@ const (
 func NewCli() *Cli {
 	var err error
 	cli := &Cli{}
-	cli.Client, err = packngo.NewClientWithBaseURL(consumerToken, apiToken(), nil, apiURL)
+	cli.Client, err = packngo.NewClientWithBaseURL(consumerToken, metalToken, nil, apiURL)
 	if err != nil {
 		fmt.Println("Client error:", err)
 		return nil
