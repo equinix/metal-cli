@@ -50,7 +50,7 @@ var (
 
 func apiConnect(cmd *cobra.Command, args []string) error {
 	if metalToken == "" {
-		return fmt.Errorf("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' or 'PACKET_TOKEN' environment variable or create a JSON or YAML configuration file.")
+		return fmt.Errorf("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a JSON or YAML configuration file.")
 	}
 	client, err := packngo.NewClientWithBaseURL(consumerToken, metalToken, nil, apiURL)
 	if err != nil {
@@ -59,14 +59,6 @@ func apiConnect(cmd *cobra.Command, args []string) error {
 	client.UserAgent = fmt.Sprintf("metal-cli/%s %s", Version, client.UserAgent)
 	apiClient = *client
 	return nil
-}
-
-func apiToken() string {
-	token := os.Getenv(apiTokenEnvVar)
-	if token != "" {
-		return token
-	}
-	return os.Getenv(legacyApiTokenEnvVar)
 }
 
 func NewRootCommand() *cobra.Command {

@@ -33,6 +33,6 @@ jobs:
     - name: Detect formatting and build errors
       run: make
       env:
-        PACKET_TOKEN: bogus
+        METAL_AUTH_TOKEN: bogus
     - name: Detect Uncommitted Docs
       run: git diff --exit-code docs
