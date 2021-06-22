@@ -32,9 +32,9 @@ var eventID string
 
 // retrieveEventsCmd represents the retrieveEvents command
 var retrieveEventCmd = &cobra.Command{
-	Use:   "get",
+	Use:     "get",
 	Aliases: []string{"list"},
-	Short: "Retrieves one or more events for organizations, projects, or devices.",
+	Short:   "Retrieves one or more events for organizations, projects, or devices.",
 	Long: `Example:
 Retrieve all events:
 metal event get
@@ -118,5 +118,5 @@ func init() {
 	retrieveEventCmd.Flags().StringVarP(&eventID, "id", "i", "", "UUID of the event")
 	retrieveEventCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	retrieveEventCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
-	retrieveEventCmd.Flags().StringVarP(&volumeID, "organization-id", "o", "", "UUID of the organization")
+	retrieveEventCmd.Flags().StringVarP(&organizationID, "organization-id", "o", "", "UUID of the organization")
 }

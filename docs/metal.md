@@ -38,5 +38,4 @@ Command line interface for Equinix Metal
 * [metal ssh-key](metal_ssh-key.md)	 - SSH key operations
 * [metal user](metal_user.md)	 - User operations
 * [metal virtual-network](metal_virtual-network.md)	 - Virtual network operations
-* [metal volume](metal_volume.md)	 - Volume operations
 

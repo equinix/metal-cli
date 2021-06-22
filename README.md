@@ -190,32 +190,42 @@ JSON configuration file - `$HOME/.config/equinix/metal.json`:
 
 After installing Equinix Metal CLI, verify the installation by executing `metal` or `metal.exe`. You should see the default output:
 
-
 ```bash
-$ metal
 Command line interface for Equinix Metal
 
 Usage:
   metal [command]
 
 Available Commands:
-  device            Device operations
-  facilities        Facility operations
-  help              Help about any command
-  ip                IP operations
-  operating-systems Operating system operations
-  organization      Organization operations
-  plan              Plan operations
-  project           Project operations
-  ssh-key           SSH key operations
-  user              User operations
-  virtual-network   Virtual network operations
-  volume            Volume operations
+  2fa                  Two Factor Authentication operations
+  capacity             Capacities operations
+  completion           Generate completion script
+  device               Device operations
+  docs                 Generate command documentation
+  env                  Generate environment variables
+  event                Events operations
+  facilities           Facility operations
+  hardware-reservation Hardware reservation operations
+  help                 Help about any command
+  ip                   IP operations
+  metros               Metro operations
+  operating-systems    Operating system operations
+  organization         Organization operations
+  plan                 Plan operations
+  project              Project operations
+  ssh-key              SSH key operations
+  user                 User operations
+  virtual-network      Virtual network operations
 
 Flags:
-      --config string   Path to JSON or YAML configuration file
-  -h, --help            help for metal
-      --version         version for metal
+      --config string     Path to JSON or YAML configuration file
+      --exclude strings   Comma seperated Href references to collapse in results, may be dotted three levels deep
+  -h, --help              help for metal
+      --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
+  -j, --json              JSON output
+      --search string     Search keyword for use in 'get' actions. Search is not supported by all resources.
+  -v, --version           version for metal
+  -y, --yaml              YAML output
 
 Use "metal [command] --help" for more information about a command.
 ```
