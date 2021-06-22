@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/equinix/metal-cli)](https://goreportcard.com/report/github.com/equinix/metal-cli)
 [![Slack](https://slack.equinixmetal.com/badge.svg)](https://slack.equinixmetal.com)
 [![Twitter Follow](https://img.shields.io/twitter/follow/packethost.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=equinixmetal)
-![](https://img.shields.io/badge/Stability-Maintained-green.svg)
+[![Stability: Maintained](https://img.shields.io/badge/Stability-Maintained-green.svg)](https://github.com/packethost/standards/blob/master/maintained-statement.md)
 
 This repository is [Maintained](https://github.com/packethost/standards/blob/master/maintained-statement.md) meaning that this software is supported by Equinix Metal and its community - available to use in production environments.
 
@@ -44,7 +44,7 @@ The [Equinix Metal CLI binaries](https://github.com/equinix/metal-cli/releases) 
 
 Download the appropriate Equinix Metal CLI package, build and install them. Type the following in your terminal:
 
-```
+```sh
 GO111MODULE=on go get github.com/equinix/metal-cli
 ```
 
@@ -66,24 +66,25 @@ Choose the steps to follow for your platform to add directory to `PATH`.
 
 If you plan to run the Equinix Metal CLI in a shell on Linux and placed the binary in `/home/YOUR-USER-NAME/metal-cli/`, then type the following into your terminal:
 
-```
+```sh
 export PATH=$PATH:/home/$USER/metal-cli
 ```
+
 If you plan to run the Equinix Metal CLI in a shell on Linux and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
 
-```
+```sh
 export PATH=$PATH:$GOPATH/bin
 ```
 
 or:
 
-```
+```sh
 export PATH=$PATH:$HOME/go/bin
 ```
 
 You can view the current value of `$PATH` by running:
 
-```
+```sh
 echo $PATH
 ```
 
@@ -96,25 +97,25 @@ echo $PATH
 
 If you plan to run the Equinix Metal CLI in a shell on a Mac, download the `darwin` binary and placed the it in `/Users/YOUR-USER-NAME/metal-cli/`, then type the following into your terminal.
 
-```
+```sh
 export PATH=$PATH:/Users/$USER/metal-cli
 ```
 
 If you plan to run the Equinix Metal CLI in a shell on a Mac and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into your terminal:
 
-```
+```sh
 export PATH=$PATH:$GOPATH/bin
 ```
 
 or:
 
-```
+```sh
 export PATH=$PATH:$HOME/go/bin
 ```
 
 You can view the current value of `$PATH` by running:
 
-```
+```sh
 echo $PATH
 ```
 
@@ -133,25 +134,25 @@ The binary can be trusted by enabling "App Store and identified developers" in "
 
 If you plan to run the Equinix Metal CLI in PowerShell on Windows and placed the binary in `c:\metal-cli`, then type the following into PowerShell:
 
-```
+```powershell
 $env:Path += ";c:\metal-cli"
 ```
+
 If you plan to run the Equinix Metal CLI in PowerShell on Windows and your binary is in `$GOPATH/bin` or `$HOME/go/bin`, then type the following into PowerShell:
 
-```
+```powershell
 $setx PATH "$($env:path);$GOPATH\bin"
 ```
 
 or:
 
-```
+```powershell
 $setx PATH "$($env:path);$HOME\go\bin"
 ```
 
 The path can be viewed by running:
 
-
-```
+```sh
 echo $env:Path
 ```
 </details>
@@ -177,7 +178,6 @@ YAML configuration file - `$HOME/.config/equinix/metal.yaml`:
 ```yaml
 ---
 token: METAL_AUTH_TOKEN
-
 ```
 
 JSON configuration file - `$HOME/.config/equinix/metal.json`:
@@ -190,32 +190,42 @@ JSON configuration file - `$HOME/.config/equinix/metal.json`:
 
 After installing Equinix Metal CLI, verify the installation by executing `metal` or `metal.exe`. You should see the default output:
 
-
 ```bash
-$ metal
 Command line interface for Equinix Metal
 
 Usage:
   metal [command]
 
 Available Commands:
-  device            Device operations
-  facilities        Facility operations
-  help              Help about any command
-  ip                IP operations
-  operating-systems Operating system operations
-  organization      Organization operations
-  plan              Plan operations
-  project           Project operations
-  ssh-key           SSH key operations
-  user              User operations
-  virtual-network   Virtual network operations
-  volume            Volume operations
+  2fa                  Two Factor Authentication operations
+  capacity             Capacities operations
+  completion           Generate completion script
+  device               Device operations
+  docs                 Generate command documentation
+  env                  Generate environment variables
+  event                Events operations
+  facilities           Facility operations
+  hardware-reservation Hardware reservation operations
+  help                 Help about any command
+  ip                   IP operations
+  metros               Metro operations
+  operating-systems    Operating system operations
+  organization         Organization operations
+  plan                 Plan operations
+  project              Project operations
+  ssh-key              SSH key operations
+  user                 User operations
+  virtual-network      Virtual network operations
 
 Flags:
-      --config string   Path to JSON or YAML configuration file
-  -h, --help            help for metal
-      --version         version for metal
+      --config string     Path to JSON or YAML configuration file
+      --exclude strings   Comma seperated Href references to collapse in results, may be dotted three levels deep
+  -h, --help              help for metal
+      --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
+  -j, --json              JSON output
+      --search string     Search keyword for use in 'get' actions. Search is not supported by all resources.
+  -v, --version           version for metal
+  -y, --yaml              YAML output
 
 Use "metal [command] --help" for more information about a command.
 ```
@@ -252,59 +262,29 @@ includes and excludes affecting the same top-level field is not supported.
 
 The full CLI documentation can be found [here](docs/metal.md) or by clicking the links below.
 
-* [Device operations](docs/metal_device.md)
-* [Facility operations](docs/metal_facilities.md)
-* [IP operations](docs/metal_ip.md)
-* [Operating system operations](docs/metal_operating-systems.md)
-* [Organization operations](docs/metal_organization.md)
-* [Plan operations](docs/metal_plan.md)
-* [Project operations](docs/metal_project.md)
-* [SSH key operations](docs/metal_ssh-key.md)
-* [User operations](docs/metal_user.md)
-* [Virtual network operations](docs/metal_virtual-network.md)
-* [Volume operations](docs/metal_volume.md)
-
 ## Example Syntax
 
 ### Create a device
 
-```
+```sh
 metal device create --hostname [hostname] --plan [plan] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
-```
-
-### Create a volume
-
-```
-metal volume create --size [size_in_GB] --plan [plan_UUID] --project-id [project_UUID] --facility [facility_code]
-```
-
-### Attach a volume
-
-```
-metal volume attach --id [volume_UUID] --device-id [device_UUID]
 ```
 
 ### Get a device
 
-```
+```sh
 metal device get --id [device_UUID]
-```
-
-### Get a volume
-
-```
-metal volume get --id [volume_UUID]
 ```
 
 ### List projects
 
-```
+```sh
 metal project get
 ```
 
 ### Get a project
 
-```
+```sh
 metal project get -i [project_UUID]
 ```
 
