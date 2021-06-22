@@ -33,6 +33,9 @@ var docsCmd = &cobra.Command{
 	Long:                  "To generate documentation in the ./docs directory: docs ./docs",
 	DisableFlagsInUseLine: true,
 	Args:                  cobra.ExactValidArgs(1),
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		return nil
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		dest := args[0]
 		return doc.GenMarkdownTree(cmd.Parent(), dest)

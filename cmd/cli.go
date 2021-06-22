@@ -23,17 +23,16 @@ var (
 )
 
 const (
-	consumerToken        = "Equinix Metal CLI"
-	apiTokenEnvVar       = "METAL_AUTH_TOKEN"
-	legacyApiTokenEnvVar = "PACKET_TOKEN"
-	apiURL               = "https://api.equinix.com/metal/v1/"
+	consumerToken  = "Equinix Metal CLI"
+	apiTokenEnvVar = "METAL_AUTH_TOKEN"
+	apiURL         = "https://api.equinix.com/metal/v1/"
 )
 
 // NewCli struct
 func NewCli() *Cli {
 	var err error
 	cli := &Cli{}
-	cli.Client, err = packngo.NewClientWithBaseURL(consumerToken, apiToken(), nil, apiURL)
+	cli.Client, err = packngo.NewClientWithBaseURL(consumerToken, metalToken, nil, apiURL)
 	if err != nil {
 		fmt.Println("Client error:", err)
 		return nil
