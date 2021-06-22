@@ -33,6 +33,9 @@ import (
 )
 
 var (
+	// rootCmd represents the base command when called without any subcommands
+	rootCmd *cobra.Command = NewRootCommand()
+
 	// apiClient client
 	apiClient  packngo.Client
 	cfgFile    string
@@ -44,15 +47,6 @@ var (
 	excludes *[]string // nolint:unused
 	search   string
 )
-
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:               "metal",
-	Short:             "Command line interface for Equinix Metal",
-	Long:              `Command line interface for Equinix Metal`,
-	DisableAutoGenTag: true,
-	PersistentPreRunE: apiConnect,
-}
 
 func apiConnect(cmd *cobra.Command, args []string) error {
 	if metalToken == "" {
@@ -75,8 +69,15 @@ func apiToken() string {
 	return os.Getenv(legacyApiTokenEnvVar)
 }
 
-func init() {
-	cobra.OnInitialize(initConfig)
+func NewRootCommand() *cobra.Command {
+	// rootCmd represents the base command when called without any subcommands
+	var rootCmd = &cobra.Command{
+		Use:               "metal",
+		Short:             "Command line interface for Equinix Metal",
+		Long:              `Command line interface for Equinix Metal`,
+		DisableAutoGenTag: true,
+		PersistentPreRunE: apiConnect,
+	}
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Path to JSON or YAML configuration file")
 
 	rootCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
@@ -87,6 +88,11 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&search, "search", "", "Search keyword for use in 'get' actions. Search is not supported by all resources.")
 
 	rootCmd.Version = Version
+	return rootCmd
+}
+
+func init() {
+	cobra.OnInitialize(initConfig)
 }
 
 // listOptions creates a ListOptions using the includes and excludes persistent
@@ -111,22 +117,29 @@ func listOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	v := viper.New()
 	if cfgFile != "" {
 		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
+		v.SetConfigFile(cfgFile)
 	} else {
 		configDir := path.Join(userHomeDir(), "/.config/equinix")
-		viper.SetConfigName("metal")
-		viper.AddConfigPath(configDir)
+		v.SetConfigName("metal")
+		v.AddConfigPath(configDir)
 	}
 
-	if err := viper.ReadInConfig(); err != nil && !errors.As(err, &viper.ConfigFileNotFoundError{}) {
-		panic(fmt.Errorf("Could not read config: %s", err))
+	if err := v.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			panic(fmt.Errorf("Could not read config: %s", err))
+		}
 	}
 
-	metalToken = viper.GetString("token")
+	metalToken = v.GetString("token")
 
-	envToken := apiToken()
+	v.SetEnvPrefix("METAL")
+	v.AutomaticEnv()
+	metalToken = v.GetString("token")
+	envToken := v.GetString("auth_token")
+	// TODO: are we ok with this being configured by file too? yes?
 	if envToken != "" {
 		metalToken = envToken
 	}
