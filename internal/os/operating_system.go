@@ -18,21 +18,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package os
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// operatingSystemCmd represents the operatingSystem command
-var operatingSystemCmd = &cobra.Command{
-	Use:     "operating-systems",
-	Aliases: []string{"os"},
-	Short:   "Operating system operations",
-	Long:    `Operating system operations: get`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.OSService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(operatingSystemCmd)
-	operatingSystemCmd.AddCommand(retrieveOperatingSystemCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "operating-systems",
+		Aliases: []string{"os"},
+		Short:   "Operating system operations",
+		Long:    `Operating system operations: get`,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().OperatingSystems
+		},
+	}
+
+	cmd.AddCommand(
+		c.Retrieve(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

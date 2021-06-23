@@ -18,33 +18,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package os
 
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// operatingSystemCmd represents the operatingSystem command
-var retrieveOperatingSystemCmd = &cobra.Command{
-	Use:   "get",
-	Aliases: []string{"list"},
-	Short: "Retrieves a list of available operating systems.",
-	Long: `Example:
+func (c *Client) Retrieve() *cobra.Command {
+	return &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves a list of available operating systems.",
+		Long: `Example:
   metal operating-systems get`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		oss, _, err := apiClient.OperatingSystems.List()
-		if err != nil {
-			return errors.Wrap(err, "Could not list OperatingSystems")
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			oss, _, err := c.Service.List()
+			if err != nil {
+				return errors.Wrap(err, "Could not list OperatingSystems")
+			}
 
-		data := make([][]string, len(oss))
+			data := make([][]string, len(oss))
 
-		for i, os := range oss {
-			data[i] = []string{os.Name, os.Slug, os.Distro, os.Version}
-		}
-		header := []string{"Name", "Slug", "Distro", "Version"}
+			for i, os := range oss {
+				data[i] = []string{os.Name, os.Slug, os.Distro, os.Version}
+			}
+			header := []string{"Name", "Slug", "Distro", "Version"}
 
-		return output(oss, header, &data)
-	},
+			return c.Out.Output(oss, header, &data)
+		},
+	}
 }
