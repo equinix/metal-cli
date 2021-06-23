@@ -18,40 +18,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package hardware
 
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// moveHardwareReservationCmd represents the moveHardwareReservation command
-var moveHardwareReservationCmd = &cobra.Command{
-	Use:   "move",
-	Short: "Move hardware reservation to another project",
-	Long: `Example:
+func (c *Client) Move() *cobra.Command {
+	var projectID, hardwareReservationID string
+
+	var moveHardwareReservationCmd = &cobra.Command{
+		Use:   "move",
+		Short: "Move hardware reservation to another project",
+		Long: `Example:
 
 metal hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		header := []string{"ID", "Facility", "Plan", "Created"}
-		r, _, err := apiClient.HardwareReservations.Move(hardwareReservationID, projectID)
-		if err != nil {
-			return errors.Wrap(err, "Could not move Hardware Reservation")
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			header := []string{"ID", "Facility", "Plan", "Created"}
+			r, _, err := c.Service.Move(hardwareReservationID, projectID)
+			if err != nil {
+				return errors.Wrap(err, "Could not move Hardware Reservation")
+			}
 
-		data := make([][]string, 1)
+			data := make([][]string, 1)
 
-		data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+			data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
 
-		return output(r, header, &data)
-	},
-}
+			return c.Out.Output(r, header, &data)
+		},
+	}
 
-func init() {
-	hardwareReservationsCmd.AddCommand(moveHardwareReservationCmd)
 	moveHardwareReservationCmd.Flags().StringVarP(&hardwareReservationID, "id", "i", "", "UUID of the hardware reservation")
 	moveHardwareReservationCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	_ = moveHardwareReservationCmd.MarkFlagRequired("project-id")
 	_ = moveHardwareReservationCmd.MarkFlagRequired("id")
+
+	return moveHardwareReservationCmd
 }

@@ -18,20 +18,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package hardware
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// hardwareReservationsCmd represents the hardwareReservations command
-var hardwareReservationsCmd = &cobra.Command{
-	Use:     "hardware-reservation",
-	Aliases: []string{"hardware-reservations"},
-	Short:   "Hardware reservation operations",
-	Long:    `Hardware reservation operations: get, move`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.HardwareReservationService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(hardwareReservationsCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "hardware-reservation",
+		Aliases: []string{"hardware-reservations"},
+		Short:   "Hardware reservation operations",
+		Long:    `Hardware reservation operations: get, move`,
+
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().HardwareReservations
+		},
+	}
+
+	cmd.AddCommand(
+		c.Retrieve(),
+		c.Move(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	Format() outputs.Format
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

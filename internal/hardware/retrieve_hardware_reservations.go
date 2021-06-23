@@ -18,75 +18,79 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package hardware
 
 import (
 	"fmt"
 
+	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// retrieveHardwareReservationsCmd represents the retrieveHardwareReservations command
-var retrieveHardwareReservationsCmd = &cobra.Command{
-	Use:   "get",
-	Aliases: []string{"list"},
-	Short: "Retrieves all hardware reservations of a project or a single hardware reservation",
-	Long: `Example:
+func (c *Client) Retrieve() *cobra.Command {
+	var projectID, hardwareReservationID string
+	var retrieveHardwareReservationsCmd = &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves all hardware reservations of a project or a single hardware reservation",
+		Long: `Example:
 
 Retrieve all hardware reservations of a project:
 metal hardware_reservations get -p [project_id]
 
 When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		header := []string{"ID", "Facility", "Plan", "Created"}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			header := []string{"ID", "Facility", "Plan", "Created"}
 
-		inc := []string{"project", "facility", "device"}
+			inc := []string{}
 
-		// don't fetch extra details that won't be rendered
-		if !isYaml && !isJSON {
-			inc = nil
-		}
-		listOpt := listOptions(inc, nil)
-
-		if hardwareReservationID == "" && projectID == "" {
-			return fmt.Errorf("Either id or project-id should be set.")
-		} else if hardwareReservationID != "" && projectID != "" {
-			return fmt.Errorf("Either id or project-id can be set.")
-		} else if projectID != "" {
-			reservations, _, err := apiClient.HardwareReservations.List(projectID, listOpt)
-			if err != nil {
-				return errors.Wrap(err, "Could not list Hardware Reservations")
+			// only fetch extra details when rendered
+			switch c.Servicer.Format() {
+			case outputs.FormatJSON, outputs.FormatYAML:
+				inc = append(inc, "project", "facility", "device")
 			}
 
-			data := make([][]string, len(reservations))
+			listOpt := c.Servicer.ListOptions(inc, nil)
 
-			for i, r := range reservations {
-				data[i] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+			if hardwareReservationID == "" && projectID == "" {
+				return fmt.Errorf("Either id or project-id should be set.")
+			} else if hardwareReservationID != "" && projectID != "" {
+				return fmt.Errorf("Either id or project-id can be set.")
+			} else if projectID != "" {
+				reservations, _, err := c.Service.List(projectID, listOpt)
+				if err != nil {
+					return errors.Wrap(err, "Could not list Hardware Reservations")
+				}
+
+				data := make([][]string, len(reservations))
+
+				for i, r := range reservations {
+					data[i] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+				}
+
+				return c.Out.Output(reservations, header, &data)
+			} else if hardwareReservationID != "" {
+				getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
+				r, _, err := c.Service.Get(hardwareReservationID, getOpts)
+				if err != nil {
+					return errors.Wrap(err, "Could not get Hardware Reservation")
+				}
+
+				data := make([][]string, 1)
+
+				data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+
+				return c.Out.Output(r, header, &data)
 			}
+			return nil
+		},
+	}
 
-			return output(reservations, header, &data)
-		} else if hardwareReservationID != "" {
-			getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
-			r, _, err := apiClient.HardwareReservations.Get(hardwareReservationID, getOpts)
-			if err != nil {
-				return errors.Wrap(err, "Could not get Hardware Reservation")
-			}
-
-			data := make([][]string, 1)
-
-			data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
-
-			return output(r, header, &data)
-		}
-		return nil
-	},
-}
-
-func init() {
-	hardwareReservationsCmd.AddCommand(retrieveHardwareReservationsCmd)
 	retrieveHardwareReservationsCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	retrieveHardwareReservationsCmd.Flags().StringVarP(&hardwareReservationID, "id", "i", "", "UUID of the hardware reservation")
+
+	return retrieveHardwareReservationsCmd
 }
