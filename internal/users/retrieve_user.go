@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package users
 
 import (
 	"github.com/packethost/packngo"
@@ -26,15 +26,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	userID string
-)
+func (c *Client) Retrieve() *cobra.Command {
+	var (
+		userID string
+	)
 
-// retriveUserCmd represents the retriveUser command
-var retriveUserCmd = &cobra.Command{
-	Use:   "get",
-	Short: "Retrieves information about the current user or a specified user",
-	Long: `Example:
+	// retriveUserCmd represents the retriveUser command
+	retrieveUserCmd := &cobra.Command{
+		Use:   "get",
+		Short: "Retrieves information about the current user or a specified user",
+		Long: `Example:
 
 Retrieve the current user:
 metal user get
@@ -43,30 +44,31 @@ Retrieve a specific user:
 metal user get --id [user_UUID]
 
   `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		var err error
-		var user *packngo.User
-		if userID == "" {
-			user, _, err = apiClient.Users.Current()
-			if err != nil {
-				return errors.Wrap(err, "Could not get current User")
+		RunE: func(cmd *cobra.Command, args []string) error {
+			var err error
+			var user *packngo.User
+			if userID == "" {
+				user, _, err = c.Service.Current()
+				if err != nil {
+					return errors.Wrap(err, "Could not get current User")
+				}
+			} else {
+				user, _, err = c.Service.Get(userID, c.Servicer.ListOptions(nil, nil))
+				if err != nil {
+					return errors.Wrap(err, "Could not get Users")
+				}
 			}
-		} else {
-			user, _, err = apiClient.Users.Get(userID, nil)
-			if err != nil {
-				return errors.Wrap(err, "Could not get Users")
-			}
-		}
 
-		data := make([][]string, 1)
+			data := make([][]string, 1)
 
-		data[0] = []string{user.ID, user.FullName, user.Email, user.Created}
-		header := []string{"ID", "Full Name", "Email", "Created"}
+			data[0] = []string{user.ID, user.FullName, user.Email, user.Created}
+			header := []string{"ID", "Full Name", "Email", "Created"}
 
-		return output(user, header, &data)
-	},
-}
+			return c.Out.Output(user, header, &data)
+		},
+	}
 
-func init() {
-	retriveUserCmd.Flags().StringVarP(&userID, "id", "i", "", "UUID of the user")
+	retrieveUserCmd.Flags().StringVarP(&userID, "id", "i", "", "UUID of the user")
+
+	return retrieveUserCmd
 }
