@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package cmd
+package completion
 
 import (
 	"fmt"
@@ -28,12 +28,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// completionCmd represents the completion command that, when run, generates a
-// bash or zsh completion script for the CLI
-var completionCmd = &cobra.Command{
-	Use:   "completion [bash|zsh|fish|powershell]",
-	Short: "Generate completion script",
-	Long: `To load completions:
+func NewCommand() *cobra.Command {
+	// completionCmd represents the completion command that, when run, generates a
+	// bash or zsh completion script for the CLI
+	var completionCmd = &cobra.Command{
+		Use:   "completion [bash|zsh|fish|powershell]",
+		Short: "Generate completion script",
+		Long: `To load completions:
 
 	Bash:
 
@@ -63,28 +64,27 @@ var completionCmd = &cobra.Command{
 	# To load completions for each session, execute once:
 	$ metal completion fish > ~/.config/fish/completions/metal-cli.fish
 	`,
-	DisableFlagsInUseLine: true,
-	ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},
-	Args:                  cobra.ExactValidArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		switch args[0] {
-		case "bash":
-			return cmd.Root().GenBashCompletion(os.Stdout)
-		case "zsh":
-			return cmd.Root().GenZshCompletion(os.Stdout)
-		case "fish":
-			return cmd.Root().GenFishCompletion(os.Stdout, true)
-		case "powershell":
-			return cmd.Root().GenPowerShellCompletion(os.Stdout)
-		}
-		// ValidArgs make this error response dead-code
-		return fmt.Errorf("unknown shell: %q", args[0])
-	},
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		return nil
-	},
-}
+		DisableFlagsInUseLine: true,
+		ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},
+		Args:                  cobra.ExactValidArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			switch args[0] {
+			case "bash":
+				return cmd.Root().GenBashCompletion(os.Stdout)
+			case "zsh":
+				return cmd.Root().GenZshCompletion(os.Stdout)
+			case "fish":
+				return cmd.Root().GenFishCompletion(os.Stdout, true)
+			case "powershell":
+				return cmd.Root().GenPowerShellCompletion(os.Stdout)
+			}
+			// ValidArgs make this error response dead-code
+			return fmt.Errorf("unknown shell: %q", args[0])
+		},
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			return nil
+		},
+	}
 
-func init() {
-	rootCmd.AddCommand(completionCmd)
+	return completionCmd
 }

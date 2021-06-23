@@ -7,6 +7,7 @@ import (
 	"github.com/equinix/metal-cli/internal/capacity"
 	"github.com/equinix/metal-cli/internal/cli"
 	root "github.com/equinix/metal-cli/internal/cli"
+	"github.com/equinix/metal-cli/internal/completion"
 	"github.com/equinix/metal-cli/internal/docs"
 	"github.com/equinix/metal-cli/internal/env"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
@@ -64,6 +65,7 @@ type Registrar interface {
 func (cli *Cli) RegisterCommands(client *root.Client) {
 	cli.MainCmd.AddCommand(
 		docs.NewCommand(),
+		completion.NewCommand(),
 
 		env.NewClient(client, apiTokenEnvVar).NewCommand(),
 
@@ -83,7 +85,6 @@ func (cli *Cli) RegisterCommands(client *root.Client) {
 			twofa.NewClient(c, cli.Outputer).NewCommand(),
 			users.NewClient(c, cli.Outputer).NewCommand(),
 			virtualNetworks.NewClient(c, cli.Outputer).NewCommand(),
-			completion.NewClient(cli.Outputer).NewCommand(),
 		*/
 	)
 }
