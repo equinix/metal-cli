@@ -19,29 +19,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package cmd
+package docs
 
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
 )
 
-// docsCmd represents the docs command
-var docsCmd = &cobra.Command{
-	Use:                   "docs [DESTINATION]",
-	Short:                 "Generate command documentation",
-	Long:                  "To generate documentation in the ./docs directory: docs ./docs",
-	DisableFlagsInUseLine: true,
-	Args:                  cobra.ExactValidArgs(1),
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		dest := args[0]
-		return doc.GenMarkdownTree(cmd.Parent(), dest)
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(docsCmd)
+func NewCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:                   "docs [DESTINATION]",
+		Short:                 "Generate command documentation",
+		Long:                  "To generate documentation in the ./docs directory: docs ./docs",
+		DisableFlagsInUseLine: true,
+		Args:                  cobra.ExactValidArgs(1),
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			dest := args[0]
+			return doc.GenMarkdownTree(cmd.Parent(), dest)
+		},
+	}
 }
