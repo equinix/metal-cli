@@ -18,22 +18,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package plans
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// planCmd represents the plan command
-var planCmd = &cobra.Command{
-	Use:     "plan",
-	Aliases: []string{"plans"},
-	Short:   "Plan operations",
-	Long:    `Plan operations: get`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.PlanService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(planCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "plan",
+		Aliases: []string{"plans"},
+		Short:   "Plan operations",
+		Long:    `Plan operations: get`,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().Plans
+		},
+	}
 
-	planCmd.AddCommand(retrievePlansCmd)
+	cmd.AddCommand(
+		c.Retrieve(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

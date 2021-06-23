@@ -18,36 +18,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package plans
 
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// plansCmd represents the plans command
-var retrievePlansCmd = &cobra.Command{
-	Use:   "get",
-	Aliases: []string{"list"},
-	Short: "Retrieves a list of all available plans.",
-	Long: `Example:
+func (c *Client) Retrieve() *cobra.Command {
+	return &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves a list of all available plans.",
+		Long: `Example:
 
   metal plans get
   
   `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		plans, _, err := apiClient.Plans.List(listOptions(nil, nil))
-		if err != nil {
-			return errors.Wrap(err, "Could not list Plans")
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			plans, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
+			if err != nil {
+				return errors.Wrap(err, "Could not list Plans")
+			}
 
-		data := make([][]string, len(plans))
+			data := make([][]string, len(plans))
 
-		for i, p := range plans {
-			data[i] = []string{p.ID, p.Slug, p.Name}
-		}
-		header := []string{"ID", "Slug", "Name"}
+			for i, p := range plans {
+				data[i] = []string{p.ID, p.Slug, p.Name}
+			}
+			header := []string{"ID", "Slug", "Name"}
 
-		return output(plans, header, &data)
-	},
+			return c.Out.Output(plans, header, &data)
+		},
+	}
 }
