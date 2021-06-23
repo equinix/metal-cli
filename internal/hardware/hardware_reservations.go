@@ -35,7 +35,7 @@ type Client struct {
 func (c *Client) NewCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:     "hardware-reservation",
-		Aliases: []string{"hardware-reservations"},
+		Aliases: []string{"hardware-reservations", "hardware"},
 		Short:   "Hardware reservation operations",
 		Long:    `Hardware reservation operations: get, move`,
 
