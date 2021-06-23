@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package vlan
 
 import (
 	"fmt"
@@ -28,47 +28,49 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	vnetID string
-)
+func (c *Client) Delete() *cobra.Command {
+	var (
+		vnetID string
+		force  bool
+	)
 
-// deleteVirtualNetworkCmd represents the deleteVirtualNetwork command
-var deleteVirtualNetworkCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "Deletes a Virtual Network",
-	Long: `Example:
+	deleteVnet := func(id string) error {
+		_, err := c.Service.Delete(id)
+		if err != nil {
+			return err
+		}
+		fmt.Println("Virtual Network", id, "successfully deleted.")
+		return err
+	}
+
+	// deleteVirtualNetworkCmd represents the deleteVirtualNetwork command
+	var deleteVirtualNetworkCmd = &cobra.Command{
+		Use:   "delete",
+		Short: "Deletes a Virtual Network",
+		Long: `Example:
 
 metal virtual-network delete -i [virtual_network_UUID]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if !force {
-			prompt := promptui.Prompt{
-				Label:     fmt.Sprintf("Are you sure you want to delete virual network %s", vnetID),
-				IsConfirm: true,
-			}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if !force {
+				prompt := promptui.Prompt{
+					Label:     fmt.Sprintf("Are you sure you want to delete virual network %s", vnetID),
+					IsConfirm: true,
+				}
 
-			_, err := prompt.Run()
-			if err != nil {
-				return nil
+				_, err := prompt.Run()
+				if err != nil {
+					return nil
+				}
 			}
-		}
-		return errors.Wrap(deleteVnet(vnetID), "Could not delete Virtual Network")
-	},
-}
-
-func deleteVnet(id string) error {
-	_, err := apiClient.ProjectVirtualNetworks.Delete(id)
-	if err != nil {
-		return err
+			return errors.Wrap(deleteVnet(vnetID), "Could not delete Virtual Network")
+		},
 	}
-	fmt.Println("Virtual Network", id, "successfully deleted.")
-	return err
-}
 
-func init() {
 	deleteVirtualNetworkCmd.Flags().StringVarP(&vnetID, "id", "i", "", "UUID of the vlan")
 	_ = deleteVirtualNetworkCmd.MarkFlagRequired("id")
 	deleteVirtualNetworkCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the virtual network")
 
+	return deleteVirtualNetworkCmd
 }

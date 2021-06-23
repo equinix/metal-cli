@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package vlan
 
 import (
 	"strconv"
@@ -28,45 +28,46 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var vxlan int
+func (c *Client) Create() *cobra.Command {
+	var vxlan int
+	var projectID, metro, facility, description string
 
-// createVirtualNetworkCmd represents the createVirtualNetwork command
-var createVirtualNetworkCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Creates a virtual network",
-	Long: `Example:
+	// createVirtualNetworkCmd represents the createVirtualNetwork command
+	var createVirtualNetworkCmd = &cobra.Command{
+		Use:   "create",
+		Short: "Creates a virtual network",
+		Long: `Example:
 
 metal virtual-network create --project-id [project_UUID] { --metro [metro_code] --vlan [vlan] | --facility [facility_code] }
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		req := &packngo.VirtualNetworkCreateRequest{
-			ProjectID: projectID,
-			Metro:     metro,
-			Facility:  facility,
-			VXLAN:     vxlan,
-		}
-		if description != "" {
-			req.Description = description
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			req := &packngo.VirtualNetworkCreateRequest{
+				ProjectID: projectID,
+				Metro:     metro,
+				Facility:  facility,
+				VXLAN:     vxlan,
+			}
+			if description != "" {
+				req.Description = description
+			}
 
-		n, _, err := apiClient.ProjectVirtualNetworks.Create(req)
-		if err != nil {
-			return errors.Wrap(err, "Could not create ProjectVirtualNetwork")
-		}
+			n, _, err := c.Service.Create(req)
+			if err != nil {
+				return errors.Wrap(err, "Could not create ProjectVirtualNetwork")
+			}
 
-		data := make([][]string, 1)
+			data := make([][]string, 1)
 
-		// TODO(displague) metro is not in the response
-		data[0] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.MetroCode, n.FacilityCode, n.CreatedAt}
+			// TODO(displague) metro is not in the response
+			data[0] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.MetroCode, n.FacilityCode, n.CreatedAt}
 
-		header := []string{"ID", "Description", "VXLAN", "Metro", "Facility", "Created"}
+			header := []string{"ID", "Description", "VXLAN", "Metro", "Facility", "Created"}
 
-		return output(n, header, &data)
-	},
-}
+			return c.Out.Output(n, header, &data)
+		},
+	}
 
-func init() {
 	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	createVirtualNetworkCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
@@ -74,4 +75,5 @@ func init() {
 	createVirtualNetworkCmd.Flags().IntVarP(&vxlan, "vxlan", "", 0, "VXLAN id to use (can only be used with --metro)")
 
 	_ = createVirtualNetworkCmd.MarkFlagRequired("project-id")
+	return createVirtualNetworkCmd
 }

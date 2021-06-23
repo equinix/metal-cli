@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package vlan
 
 import (
 	"strconv"
@@ -27,34 +27,37 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
-var retrieveVirtualNetworksCmd = &cobra.Command{
-	Use:   "get",
-	Aliases: []string{"list"},
-	Short: "Retrieves a list of virtual networks for a single project.",
-	Long: `Example:
+func (c *Client) Retrieve() *cobra.Command {
+	var projectID string
+
+	// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
+	var retrieveVirtualNetworksCmd = &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves a list of virtual networks for a single project.",
+		Long: `Example:
 
 metal virtual-network get -p [project_UUID]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		vnets, _, err := apiClient.ProjectVirtualNetworks.List(projectID, listOptions(nil, nil))
-		if err != nil {
-			return errors.Wrap(err, "Could not list Project Virtual Networks")
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			vnets, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))
+			if err != nil {
+				return errors.Wrap(err, "Could not list Project Virtual Networks")
+			}
 
-		data := make([][]string, len(vnets.VirtualNetworks))
+			data := make([][]string, len(vnets.VirtualNetworks))
 
-		for i, n := range vnets.VirtualNetworks {
-			data[i] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.FacilityCode, n.CreatedAt}
-		}
-		header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
+			for i, n := range vnets.VirtualNetworks {
+				data[i] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.FacilityCode, n.CreatedAt}
+			}
+			header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
 
-		return output(vnets, header, &data)
-	},
-}
-
-func init() {
+			return c.Out.Output(vnets, header, &data)
+		},
+	}
 	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	_ = retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
+
+	return retrieveVirtualNetworksCmd
 }

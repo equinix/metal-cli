@@ -18,21 +18,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package vlan
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// virtualNetworkCmd represents the virtualNetwork command
-var virtualNetworkCmd = &cobra.Command{
-	Use:     "virtual-network",
-	Aliases: []string{"vlan", "vlans"},
-	Short:   "Virtual network operations",
-	Long:    `Virtual network operations: create, delete and get`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.ProjectVirtualNetworkService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(virtualNetworkCmd)
-	virtualNetworkCmd.AddCommand(createVirtualNetworkCmd, deleteVirtualNetworkCmd, retrieveVirtualNetworksCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "virtual-network",
+		Aliases: []string{"vlan", "vlans"},
+		Short:   "Virtual network operations",
+		Long:    `Virtual network operations: create, delete and get`,
+
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().ProjectVirtualNetworks
+		},
+	}
+
+	cmd.AddCommand(
+		c.Retrieve(),
+		c.Create(),
+		c.Delete(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }
