@@ -18,60 +18,63 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package capacity
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-var (
-	checkFacility bool
-	checkMetro    bool
-)
-
-// retrieveCapacitiesCmd represents the retrieveCapacity command
-var retrieveCapacityCmd = &cobra.Command{
-	Use:     "get",
-	Aliases: []string{"list"},
-	Short:   "Returns a list of facilities or metros and plans with their current capacity.",
-	Long: `Example:
+func (c *Client) Retrieve() *cobra.Command {
+	var (
+		checkFacility bool
+		checkMetro    bool
+	)
+	// retrieveCapacitiesCmd represents the retrieveCapacity command
+	var retrieveCapacityCmd = &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Returns a list of facilities or metros and plans with their current capacity.",
+		Long: `Example:
 Retrieve capacities:
 metal capacity get { --metro | --facility }
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		var err error
-		lister := apiClient.CapacityService.List
-		fieldName := "Facility"
+		RunE: func(cmd *cobra.Command, args []string) error {
+			// TODO: going through extra hoops just to group by location name and level. Is it worth it?
+			format := c.Servicer.Format()
+			c.Out = &outputs.CellMerging{}
+			c.Out.SetFormat(format)
 
-		if checkMetro {
-			fieldName = "Metro"
-			lister = apiClient.CapacityService.ListMetros
-		}
+			var err error
+			lister := c.Service.List
+			fieldName := "Facility"
 
-		capacities, _, err := lister()
-		if err != nil {
-			return errors.Wrap(err, "Could not get Capacity")
-		}
-
-		header := []string{fieldName, "Plan", "Level"}
-		requiredDataFormat := [][]string{}
-
-		for locCode, capacity := range *capacities {
-			for plan, bm := range capacity {
-				loc := []string{}
-				loc = append(loc, locCode, plan, bm.Level)
-				requiredDataFormat = append(requiredDataFormat, loc)
+			if checkMetro {
+				fieldName = "Metro"
+				lister = c.Service.ListMetros
 			}
-		}
 
-		return outputMergingCells(capacities, header, &requiredDataFormat)
-	},
-}
+			capacities, _, err := lister()
+			if err != nil {
+				return errors.Wrap(err, "Could not get Capacity")
+			}
 
-func init() {
+			header := []string{fieldName, "Plan", "Level"}
+			requiredDataFormat := [][]string{}
+
+			for locCode, capacity := range *capacities {
+				for plan, bm := range capacity {
+					loc := []string{}
+					loc = append(loc, locCode, plan, bm.Level)
+					requiredDataFormat = append(requiredDataFormat, loc)
+				}
+			}
+
+			return c.Out.Output(capacities, header, &requiredDataFormat)
+		},
+	}
 	retrieveCapacityCmd.Flags().BoolVarP(&checkFacility, "facility", "f", true, "Facility code (sv15)")
 	retrieveCapacityCmd.Flags().BoolVarP(&checkMetro, "metro", "m", false, "Metro code (sv)")
-
-	capacityCmd.AddCommand(retrieveCapacityCmd)
+	return retrieveCapacityCmd
 }

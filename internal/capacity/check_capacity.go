@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package capacity
 
 import (
 	"strconv"
@@ -29,57 +29,60 @@ import (
 )
 
 // createOrganizationCmd represents the createOrganization command
-var checkCapacityCommand = &cobra.Command{
-	Use:   "check",
-	Short: "Validates if a deploy can be fulfilled.",
-	Long: `Example:
+func (c *Client) Check() *cobra.Command {
+	var (
+		metro, plan, facility string
+		quantity              int
+	)
+	var checkCapacityCommand = &cobra.Command{
+		Use:   "check",
+		Short: "Validates if a deploy can be fulfilled.",
+		Long: `Example:
 
 metal capacity check {-m [metro] | -f [facility]} -p [plan] -q [quantity]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if facility != "" && metro != "" {
-			return errors.New("Either facility or metro should be set")
-		}
-
-		checker := apiClient.CapacityService.Check
-		req := &packngo.CapacityInput{
-			Servers: []packngo.ServerInfo{
-				{
-					Facility: facility,
-					Plan:     plan,
-					Quantity: quantity},
-			},
-		}
-		locationField := "Facility"
-		locationer := func(si packngo.ServerInfo) string {
-			return si.Facility
-		}
-
-		if metro != "" {
-			req.Servers[0].Metro = metro
-			checker = apiClient.CapacityService.CheckMetros
-			locationer = func(si packngo.ServerInfo) string {
-				return si.Metro
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if facility != "" && metro != "" {
+				return errors.New("Either facility or metro should be set")
 			}
-			locationField = "Metro"
-		}
+			checker := c.Service.Check
+			req := &packngo.CapacityInput{
+				Servers: []packngo.ServerInfo{
+					{
+						Facility: facility,
+						Plan:     plan,
+						Quantity: quantity},
+				},
+			}
+			locationField := "Facility"
+			locationer := func(si packngo.ServerInfo) string {
+				return si.Facility
+			}
 
-		availability, _, err := checker(req)
-		if err != nil {
-			return errors.Wrap(err, "Could not check capacity")
-		}
+			if metro != "" {
+				req.Servers[0].Metro = metro
+				checker = c.Service.CheckMetros
+				locationer = func(si packngo.ServerInfo) string {
+					return si.Metro
+				}
+				locationField = "Metro"
+			}
 
-		data := make([][]string, 1)
+			availability, _, err := checker(req)
+			if err != nil {
+				return errors.Wrap(err, "Could not check capacity")
+			}
 
-		data[0] = []string{locationer(availability.Servers[0]), availability.Servers[0].Plan,
-			strconv.Itoa(availability.Servers[0].Quantity), strconv.FormatBool(availability.Servers[0].Available)}
-		header := []string{locationField, "Plan", "Quantity", "Availability"}
-		return output(availability, header, &data)
-	},
-}
+			data := make([][]string, 1)
 
-func init() {
+			data[0] = []string{locationer(availability.Servers[0]), availability.Servers[0].Plan,
+				strconv.Itoa(availability.Servers[0].Quantity), strconv.FormatBool(availability.Servers[0].Available)}
+			header := []string{locationField, "Plan", "Quantity", "Availability"}
+			return c.Out.Output(availability, header, &data)
+		},
+	}
+
 	checkCapacityCommand.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
 	checkCapacityCommand.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	checkCapacityCommand.Flags().StringVarP(&plan, "plan", "p", "", "Name of the plan")
@@ -87,4 +90,5 @@ func init() {
 
 	_ = checkCapacityCommand.MarkFlagRequired("plan")
 	_ = checkCapacityCommand.MarkFlagRequired("quantity")
+	return checkCapacityCommand
 }

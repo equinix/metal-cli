@@ -18,20 +18,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package capacity
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// capacityCmd represents the capacity command
-var capacityCmd = &cobra.Command{
-	Use:   "capacity",
-	Short: "Capacities operations",
-	Long:  `Capacities operations: get, check`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.CapacityService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(capacityCmd)
-	capacityCmd.AddCommand(checkCapacityCommand)
+func (c *Client) NewCommand() *cobra.Command {
+	// capacityCmd represents the capacity command
+	var cmd = &cobra.Command{
+		Use:   "capacity",
+		Short: "Capacities operations",
+		Long:  `Capacities operations: get, check`,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().CapacityService
+		},
+	}
+
+	cmd.AddCommand(
+		c.Check(),
+		c.Retrieve(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	Format() outputs.Format
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

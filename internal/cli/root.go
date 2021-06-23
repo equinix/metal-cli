@@ -18,10 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package cli
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path"
 	"runtime"
@@ -30,89 +31,123 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	outputPkg "github.com/equinix/metal-cli/internal/outputs"
 )
 
-var (
-	// rootCmd represents the base command when called without any subcommands
-	rootCmd *cobra.Command = NewRootCommand()
-
+type Client struct {
 	// apiClient client
-	apiClient  packngo.Client
-	cfgFile    string
-	isJSON     bool
-	isYaml     bool
-	metalToken string
+	apiClient *packngo.Client
 
-	includes *[]string // nolint:unused
-	excludes *[]string // nolint:unused
-	search   string
-)
+	includes      *[]string // nolint:unused
+	excludes      *[]string // nolint:unused
+	search        string
+	cfgFile       string
+	isJSON        bool
+	isYaml        bool
+	metalToken    string
+	consumerToken string
+	apiURL        string
+	Version       string
+	rootCmd       *cobra.Command
+}
 
-func apiConnect(cmd *cobra.Command, args []string) error {
-	if metalToken == "" {
+func NewClient(consumerToken, apiURL, Version string) *Client {
+	return &Client{
+		consumerToken: consumerToken,
+		apiURL:        apiURL,
+		Version:       Version,
+	}
+}
+
+type ResponseModifier interface {
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+}
+
+func (c *Client) apiConnect() error {
+	if c.metalToken == "" {
 		return fmt.Errorf("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a JSON or YAML configuration file.")
 	}
-	client, err := packngo.NewClientWithBaseURL(consumerToken, metalToken, nil, apiURL)
+	client, err := packngo.NewClientWithBaseURL(c.consumerToken, c.metalToken, nil, c.apiURL)
 	if err != nil {
 		return errors.Wrap(err, "Could not create Client")
 	}
-	client.UserAgent = fmt.Sprintf("metal-cli/%s %s", Version, client.UserAgent)
-	apiClient = *client
+	client.UserAgent = fmt.Sprintf("metal-cli/%s %s", c.Version, client.UserAgent)
+	c.apiClient = client
 	return nil
 }
 
-func NewRootCommand() *cobra.Command {
+func (c *Client) API() *packngo.Client {
+	if c.apiClient == nil {
+		err := c.apiConnect()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return c.apiClient
+}
+
+func (c *Client) Format() outputPkg.Format {
+	format := outputPkg.FormatText
+
+	// TODO(displague) remove isJSON and isYaml globals
+	switch {
+	case c.isJSON:
+		format = outputPkg.FormatJSON
+	case c.isYaml:
+		format = outputPkg.FormatYAML
+	}
+	return format
+}
+
+func (c *Client) NewCommand() *cobra.Command {
 	// rootCmd represents the base command when called without any subcommands
 	var rootCmd = &cobra.Command{
 		Use:               "metal",
 		Short:             "Command line interface for Equinix Metal",
 		Long:              `Command line interface for Equinix Metal`,
 		DisableAutoGenTag: true,
-		PersistentPreRunE: apiConnect,
 	}
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Path to JSON or YAML configuration file")
+	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", "", "Path to JSON or YAML configuration file")
 
-	rootCmd.PersistentFlags().BoolVarP(&isJSON, "json", "j", false, "JSON output")
-	rootCmd.PersistentFlags().BoolVarP(&isYaml, "yaml", "y", false, "YAML output")
+	rootCmd.PersistentFlags().BoolVarP(&c.isJSON, "json", "j", false, "JSON output")
+	rootCmd.PersistentFlags().BoolVarP(&c.isYaml, "yaml", "y", false, "YAML output")
 
-	includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma seperated Href references to expand in results, may be dotted three levels deep")
-	excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma seperated Href references to collapse in results, may be dotted three levels deep")
-	rootCmd.PersistentFlags().StringVar(&search, "search", "", "Search keyword for use in 'get' actions. Search is not supported by all resources.")
+	c.includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma seperated Href references to expand in results, may be dotted three levels deep")
+	c.excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma seperated Href references to collapse in results, may be dotted three levels deep")
+	rootCmd.PersistentFlags().StringVar(&c.search, "search", "", "Search keyword for use in 'get' actions. Search is not supported by all resources.")
 
-	rootCmd.Version = Version
-	return rootCmd
+	rootCmd.Version = c.Version
+	c.rootCmd = rootCmd
+	return c.rootCmd
 }
 
-func init() {
-	cobra.OnInitialize(initConfig)
-}
-
-// listOptions creates a ListOptions using the includes and excludes persistent
+// ListOptions creates a packngo.ListOptions using the includes and excludes persistent
 // flags. When not defined, the defaults given will be supplied.
-func listOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions {
+func (c *Client) ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions {
 	listOptions := &packngo.ListOptions{
 		Includes: defaultIncludes,
 		Excludes: defaultExcludes,
 	}
-	if rootCmd.Flags().Changed("include") {
-		listOptions.Includes = *includes
+	if c.rootCmd.Flags().Changed("include") {
+		listOptions.Includes = *c.includes
 	}
-	if rootCmd.Flags().Changed("exclude") {
-		listOptions.Excludes = *excludes
+	if c.rootCmd.Flags().Changed("exclude") {
+		listOptions.Excludes = *c.excludes
 	}
-	if rootCmd.Flags().Changed("search") {
-		listOptions.Search = search
+	if c.rootCmd.Flags().Changed("search") {
+		listOptions.Search = c.search
 	}
 
 	return listOptions
 }
 
 // initConfig reads in config file and ENV variables if set.
-func initConfig() {
+func (c *Client) Init() {
 	v := viper.New()
-	if cfgFile != "" {
+	if c.cfgFile != "" {
 		// Use config file from the flag.
-		v.SetConfigFile(cfgFile)
+		v.SetConfigFile(c.cfgFile)
 	} else {
 		configDir := path.Join(userHomeDir(), "/.config/equinix")
 		v.SetConfigName("metal")
@@ -125,15 +160,13 @@ func initConfig() {
 		}
 	}
 
-	metalToken = v.GetString("token")
-
 	v.SetEnvPrefix("METAL")
 	v.AutomaticEnv()
-	metalToken = v.GetString("token")
+	c.metalToken = v.GetString("token")
 	envToken := v.GetString("auth_token")
 	// TODO: are we ok with this being configured by file too? yes?
 	if envToken != "" {
-		metalToken = envToken
+		c.metalToken = envToken
 	}
 }
 
