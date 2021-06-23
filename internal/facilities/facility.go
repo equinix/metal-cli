@@ -18,21 +18,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package facilities
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// facilityCmd represents the facility command
-var facilityCmd = &cobra.Command{
-	Use:     "facilities",
-	Aliases: []string{"facility"},
-	Short:   "Facility operations",
-	Long:    `Facility operations: get`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.FacilityService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(facilityCmd)
-	facilityCmd.AddCommand(retrieveFacilitiesCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "facilities",
+		Aliases: []string{"facility"},
+		Short:   "Facility operations",
+		Long:    `Facility operations: get`,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().Facilities
+		},
+	}
+
+	cmd.AddCommand(
+		c.Retrieve(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

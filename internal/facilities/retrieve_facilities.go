@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package facilities
 
 import (
 	"strings"
@@ -27,32 +27,33 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// facilitiesCmd represents the facilities command
-var retrieveFacilitiesCmd = &cobra.Command{
-	Use:     "get",
-	Aliases: []string{"list"},
-	Short:   "Retrieves a list of available facilities.",
-	Long: `Example:
+func (c *Client) Retrieve() *cobra.Command {
+	return &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves a list of available facilities.",
+		Long: `Example:
 	
 metal facilities get
 	
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		facilities, _, err := apiClient.Facilities.List(listOptions(nil, nil))
-		if err != nil {
-			return errors.Wrap(err, "Could not list Facilities")
-		}
-		data := make([][]string, len(facilities))
-
-		for i, facility := range facilities {
-			var metro string
-			if facility.Metro != nil {
-				metro = facility.Metro.Code
+		RunE: func(cmd *cobra.Command, args []string) error {
+			facilities, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
+			if err != nil {
+				return errors.Wrap(err, "Could not list Facilities")
 			}
-			data[i] = []string{facility.Name, facility.Code, metro, strings.Join(facility.Features, ",")}
-		}
-		header := []string{"Name", "Code", "Metro", "Features"}
+			data := make([][]string, len(facilities))
 
-		return output(facilities, header, &data)
-	},
+			for i, facility := range facilities {
+				var metro string
+				if facility.Metro != nil {
+					metro = facility.Metro.Code
+				}
+				data[i] = []string{facility.Name, facility.Code, metro, strings.Join(facility.Features, ",")}
+			}
+			header := []string{"Name", "Code", "Metro", "Features"}
+
+			return c.Out.Output(facilities, header, &data)
+		},
+	}
 }
