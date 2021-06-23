@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package cmd
+package env
 
 import (
 	"fmt"
@@ -27,12 +27,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// envCmd represents a command that, when run, generates a
-// set of environment variables, for use in shell environments
-var envCmd = &cobra.Command{
-	Use:   "env",
-	Short: "Generate environment variables",
-	Long: fmt.Sprintf(`Currently emitted variables:
+type Tokener interface {
+	Token() string
+}
+
+type Client struct {
+	tokener        Tokener
+	apiTokenEnvVar string
+}
+
+func NewClient(t Tokener, apiTokenEnvVar string) *Client {
+	return &Client{
+		tokener:        t,
+		apiTokenEnvVar: apiTokenEnvVar,
+	}
+}
+
+func (c *Client) NewCommand() *cobra.Command {
+	// envCmd represents a command that, when run, generates a
+	// set of environment variables, for use in shell environments
+	return &cobra.Command{
+		Use:   "env",
+		Short: "Generate environment variables",
+		Long: fmt.Sprintf(`Currently emitted variables:
 	- %s
 
 	To load environment variables:
@@ -48,13 +65,10 @@ var envCmd = &cobra.Command{
 	Fish:
 
 	$ metal env | source
-	`, apiTokenEnvVar),
-	DisableFlagsInUseLine: true,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("%s=%s\n", apiTokenEnvVar, metalToken)
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(envCmd)
+	`, c.apiTokenEnvVar),
+		DisableFlagsInUseLine: true,
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Printf("%s=%s\n", c.apiTokenEnvVar, c.tokener.Token())
+		},
+	}
 }

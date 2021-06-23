@@ -87,6 +87,10 @@ func (c *Client) API() *packngo.Client {
 	return c.apiClient
 }
 
+func (c *Client) Token() string {
+	return c.metalToken
+}
+
 func (c *Client) Format() outputPkg.Format {
 	format := outputPkg.FormatText
 
