@@ -18,21 +18,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package metros
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// metroCmd represents the metro command
-var metroCmd = &cobra.Command{
-	Use:     "metros",
-	Aliases: []string{"metro"},
-	Short:   "Metro operations",
-	Long:    `Metro operations: get`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.MetroService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(metroCmd)
-	metroCmd.AddCommand(retrieveMetrosCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "metros",
+		Aliases: []string{"metro"},
+		Short:   "Metro operations",
+		Long:    `Metro operations: get`,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().Metros
+		},
+	}
+
+	cmd.AddCommand(
+		c.Retrieve(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

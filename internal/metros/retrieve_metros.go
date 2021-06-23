@@ -18,35 +18,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package metros
 
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// metrosCmd represents the metros command
-var retrieveMetrosCmd = &cobra.Command{
-	Use:     "get",
-	Aliases: []string{"list"},
-	Short:   "Retrieves a list of available metros.",
-	Long: `Example:
+func (c *Client) Retrieve() *cobra.Command {
+	// metrosCmd represents the metros command
+	var retrieveMetrosCmd = &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves a list of available metros.",
+		Long: `Example:
 	
 metal metros get
 	
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		metros, _, err := apiClient.Metros.List(listOptions(nil, nil))
-		if err != nil {
-			return errors.Wrap(err, "Could not list Metros")
-		}
-		data := make([][]string, len(metros))
+		RunE: func(cmd *cobra.Command, args []string) error {
+			metros, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
+			if err != nil {
+				return errors.Wrap(err, "Could not list Metros")
+			}
+			data := make([][]string, len(metros))
 
-		for i, metro := range metros {
-			data[i] = []string{metro.ID, metro.Name, metro.Code}
-		}
-		header := []string{"ID", "Name", "Code"}
+			for i, metro := range metros {
+				data[i] = []string{metro.ID, metro.Name, metro.Code}
+			}
+			header := []string{"ID", "Name", "Code"}
 
-		return output(metros, header, &data)
-	},
+			return c.Out.Output(metros, header, &data)
+		},
+	}
+	return retrieveMetrosCmd
 }
