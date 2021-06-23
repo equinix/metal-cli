@@ -10,6 +10,7 @@ import (
 	"github.com/equinix/metal-cli/internal/completion"
 	"github.com/equinix/metal-cli/internal/docs"
 	"github.com/equinix/metal-cli/internal/env"
+	"github.com/equinix/metal-cli/internal/events"
 	"github.com/equinix/metal-cli/internal/facilities"
 	"github.com/equinix/metal-cli/internal/metros"
 	"github.com/equinix/metal-cli/internal/os"
@@ -78,10 +79,10 @@ func (cli *Cli) RegisterCommands(client *root.Client) {
 		facilities.NewClient(client, cli.Outputer).NewCommand(),
 		os.NewClient(client, cli.Outputer).NewCommand(),
 		plans.NewClient(client, cli.Outputer).NewCommand(),
+		events.NewClient(client, cli.Outputer).NewCommand(),
 
 		/*
 			devices.NewClient(c, cli.Outputer).NewCommand(),
-			events.NewClient(c, cli.Outputer).NewCommand(),
 			hwReservations.NewClient(c, cli.Outputer).NewCommand(),
 			ips.NewClient(c, cli.Outputer).NewCommand(),
 			organizations.NewClient(c, cli.Outputer).NewCommand(),

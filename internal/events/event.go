@@ -18,20 +18,53 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package events
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// eventsCmd represents the events command
-var eventCmd = &cobra.Command{
-	Use:     "event",
-	Aliases: []string{"events"},
-	Short:   "Events operations",
-	Long:    `Events operations: get`,
+type Client struct {
+	Servicer            Servicer
+	EventService        packngo.EventService
+	DeviceService       packngo.DeviceService
+	ProjectService      packngo.ProjectService
+	OrganizationService packngo.OrganizationService
+
+	Out outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(eventCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "event",
+		Aliases: []string{"events"},
+		Short:   "Events operations",
+		Long:    `Events operations: get`,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.EventService = c.Servicer.API().Events
+			c.DeviceService = c.Servicer.API().Devices
+			c.ProjectService = c.Servicer.API().Projects
+			c.OrganizationService = c.Servicer.API().Organizations
+		},
+	}
+
+	cmd.AddCommand(
+		c.Retrieve(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	Format() outputs.Format
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

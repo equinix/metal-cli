@@ -18,24 +18,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package events
 
 import (
 	"fmt"
 
+	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-var eventID string
+func (c *Client) Retrieve() *cobra.Command {
+	var eventID, deviceID, projectID, organizationID string
 
-// retrieveEventsCmd represents the retrieveEvents command
-var retrieveEventCmd = &cobra.Command{
-	Use:     "get",
-	Aliases: []string{"list"},
-	Short:   "Retrieves one or more events for organizations, projects, or devices.",
-	Long: `Example:
+	retrieveEventCmd := &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves one or more events for organizations, projects, or devices.",
+		Long: `Example:
 Retrieve all events:
 metal event get
 
@@ -56,67 +57,65 @@ metal event get
 
 When using "--json" or "--yaml", "--include=relationships" is implied.
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		var events []packngo.Event
-		var err error
-		header := []string{"ID", "Body", "Type", "Created"}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			var events []packngo.Event
+			var err error
+			header := []string{"ID", "Body", "Type", "Created"}
+			inc := []string{}
 
-		inc := []string{"relationships"}
-
-		// don't fetch extra details that won't be rendered
-		if !isYaml && !isJSON {
-			inc = nil
-		}
-		listOpt := listOptions(inc, nil)
-
-		if deviceID != "" && projectID != "" && organizationID != "" && eventID != "" {
-			return fmt.Errorf("The id, project-id, device-id, and organization-id parameters are mutually exclusive")
-		} else if deviceID != "" {
-			events, _, err = apiClient.Devices.ListEvents(deviceID, listOpt)
-			if err != nil {
-				return errors.Wrap(err, "Could not list Device Events")
+			// only fetch extra details when rendered
+			switch c.Servicer.Format() {
+			case outputs.FormatJSON, outputs.FormatYAML:
+				inc = append(inc, "relationship")
 			}
-		} else if projectID != "" {
-			events, _, err = apiClient.Projects.ListEvents(projectID, listOpt)
-			if err != nil {
-				return errors.Wrap(err, "Could not list Project Events")
+
+			listOpt := c.Servicer.ListOptions(inc, nil)
+
+			if deviceID != "" && projectID != "" && organizationID != "" && eventID != "" {
+				return fmt.Errorf("The id, project-id, device-id, and organization-id parameters are mutually exclusive")
+			} else if deviceID != "" {
+				events, _, err = c.DeviceService.ListEvents(deviceID, listOpt)
+				if err != nil {
+					return errors.Wrap(err, "Could not list Device Events")
+				}
+			} else if projectID != "" {
+				events, _, err = c.ProjectService.ListEvents(projectID, listOpt)
+				if err != nil {
+					return errors.Wrap(err, "Could not list Project Events")
+				}
+			} else if organizationID != "" {
+				events, _, err = c.OrganizationService.ListEvents(organizationID, listOpt)
+				if err != nil {
+					return errors.Wrap(err, "Could not list Organization Events")
+				}
+			} else if eventID != "" {
+				event, _, err := c.EventService.Get(eventID, listOpt)
+				if err != nil {
+					return errors.Wrap(err, "Could not get Event")
+				}
+				data := make([][]string, 1)
+
+				data[0] = []string{event.ID, event.Body, event.Type, event.CreatedAt.String()}
+				return c.Out.Output(event, header, &data)
+			} else {
+				events, _, err = c.EventService.List(listOpt)
+				if err != nil {
+					return errors.Wrap(err, "Could not list Events")
+				}
 			}
-		} else if organizationID != "" {
-			events, _, err = apiClient.Organizations.ListEvents(organizationID, listOpt)
-			if err != nil {
-				return errors.Wrap(err, "Could not list Organization Events")
+
+			data := make([][]string, len(events))
+
+			for i, event := range events {
+				data[i] = []string{event.ID, event.Body, event.Type, event.CreatedAt.String()}
 			}
-		} else if eventID != "" {
-			getOpt := &packngo.GetOptions{Includes: listOpt.Includes}
-			event, _, err := apiClient.Events.Get(eventID, getOpt)
-			if err != nil {
-				return errors.Wrap(err, "Could not get Event")
-			}
-			data := make([][]string, 1)
 
-			data[0] = []string{event.ID, event.Body, event.Type, event.CreatedAt.String()}
-			return output(event, header, &data)
-		} else {
-			events, _, err = apiClient.Events.List(listOpt)
-			if err != nil {
-				return errors.Wrap(err, "Could not list Events")
-			}
-		}
-
-		data := make([][]string, len(events))
-
-		for i, event := range events {
-			data[i] = []string{event.ID, event.Body, event.Type, event.CreatedAt.String()}
-		}
-
-		return output(events, header, &data)
-	},
-}
-
-func init() {
-	eventCmd.AddCommand(retrieveEventCmd)
+			return c.Out.Output(events, header, &data)
+		},
+	}
 	retrieveEventCmd.Flags().StringVarP(&eventID, "id", "i", "", "UUID of the event")
 	retrieveEventCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	retrieveEventCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
 	retrieveEventCmd.Flags().StringVarP(&organizationID, "organization-id", "o", "", "UUID of the organization")
+	return retrieveEventCmd
 }
