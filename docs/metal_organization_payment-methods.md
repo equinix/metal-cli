@@ -1,4 +1,4 @@
-## metal organization get payment-methods
+## metal organization payment-methods
 
 Retrieves a list of payment methods for the organization
 
@@ -6,12 +6,12 @@ Retrieves a list of payment methods for the organization
 
 Example:
 
-metal organization get payment-methods --id [organization_UUID]
+metal organization payment-methods --id [organization_UUID]
 
 
 
 ```
-metal organization get payment-methods [flags]
+metal organization payment-methods [flags]
 ```
 
 ### Options
@@ -34,5 +34,5 @@ metal organization get payment-methods [flags]
 
 ### SEE ALSO
 
-* [metal organization get](metal_organization_get.md)	 - Retrieves an organization or list of organizations
+* [metal organization](metal_organization.md)	 - Organization operations
 

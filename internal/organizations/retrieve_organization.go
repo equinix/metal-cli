@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package organizations
 
 import (
 	"github.com/packethost/packngo"
@@ -26,12 +26,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// retrieveOrganizationCmd represents the retrieveOrganization command
-var retrieveOrganizationCmd = &cobra.Command{
-	Use:   "get",
-	Aliases: []string{"list"},
-	Short: "Retrieves an organization or list of organizations",
-	Long: `Example:
+func (c *Client) Retrieve() *cobra.Command {
+	var organizationID string
+	// retrieveOrganizationCmd represents the retrieveOrganization command
+	var retrieveOrganizationCmd = &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves an organization or list of organizations",
+		Long: `Example:
 	
 To retrieve list of all available organizations:
 metal organization get
@@ -40,39 +42,39 @@ To retrieve a single organization:
 metal organization get -i [organization-id]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		listOpts := listOptions(nil, nil)
-		if organizationID == "" {
-			orgs, _, err := apiClient.Organizations.List(listOpts)
-			if err != nil {
-				return errors.Wrap(err, "Could not list Organizations")
+		RunE: func(cmd *cobra.Command, args []string) error {
+			listOpts := c.Servicer.ListOptions(nil, nil)
+			if organizationID == "" {
+				orgs, _, err := c.Service.List(listOpts)
+				if err != nil {
+					return errors.Wrap(err, "Could not list Organizations")
+				}
+
+				data := make([][]string, len(orgs))
+
+				for i, p := range orgs {
+					data[i] = []string{p.ID, p.Name, p.Created}
+				}
+				header := []string{"ID", "Name", "Created"}
+
+				return c.Out.Output(orgs, header, &data)
+			} else {
+				getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
+				org, _, err := c.Service.Get(organizationID, getOpts)
+				if err != nil {
+					return errors.Wrap(err, "Could not get Organization")
+				}
+
+				data := make([][]string, 1)
+
+				data[0] = []string{org.ID, org.Name, org.Created}
+				header := []string{"ID", "Name", "Created"}
+
+				return c.Out.Output(org, header, &data)
 			}
+		},
+	}
 
-			data := make([][]string, len(orgs))
-
-			for i, p := range orgs {
-				data[i] = []string{p.ID, p.Name, p.Created}
-			}
-			header := []string{"ID", "Name", "Created"}
-
-			return output(orgs, header, &data)
-		} else {
-			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-			org, _, err := apiClient.Organizations.Get(organizationID, getOpts)
-			if err != nil {
-				return errors.Wrap(err, "Could not get Organization")
-			}
-
-			data := make([][]string, 1)
-
-			data[0] = []string{org.ID, org.Name, org.Created}
-			header := []string{"ID", "Name", "Created"}
-
-			return output(org, header, &data)
-		}
-	},
-}
-
-func init() {
 	retrieveOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "UUID of the organization")
+	return retrieveOrganizationCmd
 }

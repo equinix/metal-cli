@@ -18,42 +18,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package organizations
 
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// paymentMethodsCmd represents the paymentMethods command
-var paymentMethodsCmd = &cobra.Command{
-	Use:     "payment-methods",
-	Aliases: []string{"payment-method"},
-	Short:   "Retrieves a list of payment methods for the organization",
-	Long: `Example:
+func (c *Client) PaymentMethods() *cobra.Command {
+	var organizationID string
+	// paymentMethodsCmd represents the paymentMethods command
+	var paymentMethodsCmd = &cobra.Command{
+		Use:     "payment-methods",
+		Aliases: []string{"payment-method"},
+		Short:   "Retrieves a list of payment methods for the organization",
+		Long: `Example:
 
-metal organization get payment-methods --id [organization_UUID]
+metal organization payment-methods --id [organization_UUID]
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		paymentMethods, _, err := apiClient.Organizations.ListPaymentMethods(organizationID)
-		if err != nil {
-			return errors.Wrap(err, "Could not list Payment Methods")
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			paymentMethods, _, err := c.Service.ListPaymentMethods(organizationID)
+			if err != nil {
+				return errors.Wrap(err, "Could not list Payment Methods")
+			}
 
-		data := make([][]string, len(paymentMethods))
+			data := make([][]string, len(paymentMethods))
 
-		for i, p := range paymentMethods {
-			data[i] = []string{p.ID, p.CardholderName, p.ExpMonth, p.ExpYear, p.Created}
-		}
-		header := []string{"ID", "Cardholder", "Exp. Month", "Exp. Year", "Created"}
+			for i, p := range paymentMethods {
+				data[i] = []string{p.ID, p.CardholderName, p.ExpMonth, p.ExpYear, p.Created}
+			}
+			header := []string{"ID", "Cardholder", "Exp. Month", "Exp. Year", "Created"}
 
-		return output(paymentMethods, header, &data)
-	},
-}
+			return c.Out.Output(paymentMethods, header, &data)
+		},
+	}
 
-func init() {
-	retrieveOrganizationCmd.AddCommand(paymentMethodsCmd)
 	paymentMethodsCmd.Flags().StringVarP(&organizationID, "id", "i", "", "UUID of the organization")
 	_ = paymentMethodsCmd.MarkFlagRequired("id")
+	return paymentMethodsCmd
 }

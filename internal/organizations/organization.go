@@ -18,21 +18,51 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package organizations
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// organizationCmd represents the organization command
-var organizationCmd = &cobra.Command{
-	Use:     "organization",
-	Aliases: []string{"organizations", "org", "orgs"},
-	Short:   "Organization operations",
-	Long:    `Organization operations: create, update, delete and get`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.OrganizationService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(organizationCmd)
-	organizationCmd.AddCommand(createOrganizationCmd, deleteOrganizationCmd, updateOrganizationCmd, retrieveOrganizationCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "organization",
+		Aliases: []string{"organizations", "org", "orgs"},
+		Short:   "Organization operations",
+		Long:    `Organization operations: create, update, delete and get`,
+
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().Organizations
+		},
+	}
+
+	cmd.AddCommand(
+		c.Retrieve(),
+		c.Create(),
+		c.Delete(),
+		c.Update(),
+		c.PaymentMethods(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	Format() outputs.Format
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

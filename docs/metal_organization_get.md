@@ -39,5 +39,4 @@ metal organization get [flags]
 ### SEE ALSO
 
 * [metal organization](metal_organization.md)	 - Organization operations
-* [metal organization get payment-methods](metal_organization_get_payment-methods.md)	 - Retrieves a list of payment methods for the organization
 

@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package organizations
 
 import (
 	"github.com/packethost/packngo"
@@ -26,53 +26,55 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	website string
-	twitter string
-	logo    string
-)
+func (c *Client) Create() *cobra.Command {
+	var (
+		website     string
+		twitter     string
+		logo        string
+		name        string
+		description string
+	)
 
-// createOrganizationCmd represents the createOrganization command
-var createOrganizationCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Creates an organization",
-	Long: `Example:
+	// createOrganizationCmd represents the createOrganization command
+	var createOrganizationCmd = &cobra.Command{
+		Use:   "create",
+		Short: "Creates an organization",
+		Long: `Example:
 
 metal organization create -n [name]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		req := &packngo.OrganizationCreateRequest{
-			Name: name,
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			req := &packngo.OrganizationCreateRequest{
+				Name: name,
+			}
 
-		if description != "" {
-			req.Description = description
-		}
+			if description != "" {
+				req.Description = description
+			}
 
-		if twitter != "" {
-			req.Twitter = twitter
-		}
+			if twitter != "" {
+				req.Twitter = twitter
+			}
 
-		if logo != "" {
-			req.Logo = logo
-		}
+			if logo != "" {
+				req.Logo = logo
+			}
 
-		org, _, err := apiClient.Organizations.Create(req)
-		if err != nil {
-			return errors.Wrap(err, "Could not create Organization")
-		}
+			org, _, err := c.Service.Create(req)
+			if err != nil {
+				return errors.Wrap(err, "Could not create Organization")
+			}
 
-		data := make([][]string, 1)
+			data := make([][]string, 1)
 
-		data[0] = []string{org.ID, org.Name, org.Created}
-		header := []string{"ID", "Name", "Created"}
+			data[0] = []string{org.ID, org.Name, org.Created}
+			header := []string{"ID", "Name", "Created"}
 
-		return output(org, header, &data)
-	},
-}
+			return c.Out.Output(org, header, &data)
+		},
+	}
 
-func init() {
 	createOrganizationCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the organization")
 	createOrganizationCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the organization")
 	createOrganizationCmd.Flags().StringVarP(&website, "website", "w", "", "Website URL of the organization")
@@ -80,4 +82,5 @@ func init() {
 	createOrganizationCmd.Flags().StringVarP(&logo, "logo", "l", "", "Logo URL]")
 
 	_ = createOrganizationCmd.MarkFlagRequired("name")
+	return createOrganizationCmd
 }

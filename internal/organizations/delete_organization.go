@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package organizations
 
 import (
 	"fmt"
@@ -28,44 +28,49 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// deleteOrganizationCmd represents the deleteOrganization command
-var deleteOrganizationCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "Deletes an organization",
-	Long: `Example:
+func (c *Client) Delete() *cobra.Command {
+	var (
+		organizationID string
+		force          bool
+	)
+	deleteOrganization := func(id string) error {
+		_, err := c.Service.Delete(id)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("Organization", id, "has been deleted successfully.")
+		return nil
+	}
+
+	// deleteOrganizationCmd represents the deleteOrganization command
+	var deleteOrganizationCmd = &cobra.Command{
+		Use:   "delete",
+		Short: "Deletes an organization",
+		Long: `Example:
 	
 metal organization delete -i [organization_UUID]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if !force {
-			prompt := promptui.Prompt{
-				Label:     fmt.Sprintf("Are you sure you want to delete organization %s: ", organizationID),
-				IsConfirm: true,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if !force {
+				prompt := promptui.Prompt{
+					Label:     fmt.Sprintf("Are you sure you want to delete organization %s: ", organizationID),
+					IsConfirm: true,
+				}
+
+				_, err := prompt.Run()
+				if err != nil {
+					return nil
+				}
 			}
 
-			_, err := prompt.Run()
-			if err != nil {
-				return nil
-			}
-		}
-
-		return errors.Wrap(deleteOrganization(organizationID), "Could not delete Organization")
-	},
-}
-
-func deleteOrganization(id string) error {
-	_, err := apiClient.Organizations.Delete(id)
-	if err != nil {
-		return err
+			return errors.Wrap(deleteOrganization(organizationID), "Could not delete Organization")
+		},
 	}
 
-	fmt.Println("Organization", organizationID, "has been deleted successfully.")
-	return nil
-}
-
-func init() {
 	deleteOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "UUID of the organization")
 	_ = deleteOrganizationCmd.MarkFlagRequired("organization-id")
 	deleteOrganizationCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the organization")
+	return deleteOrganizationCmd
 }

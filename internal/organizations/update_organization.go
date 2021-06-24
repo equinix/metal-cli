@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package organizations
 
 import (
 	"github.com/packethost/packngo"
@@ -26,49 +26,50 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// createOrganizationCmd represents the createOrganization command
-var updateOrganizationCmd = &cobra.Command{
-	Use:   "update",
-	Short: "Updates an organization",
-	Long: `Example:
+func (c *Client) Update() *cobra.Command {
+	var organizationID, name, description, twitter, logo, website string
+	// createOrganizationCmd represents the createOrganization command
+	var updateOrganizationCmd = &cobra.Command{
+		Use:   "update",
+		Short: "Updates an organization",
+		Long: `Example:
 
 metal organization update --id [organization_UUID] --name [new_name]
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		req := &packngo.OrganizationUpdateRequest{}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			req := &packngo.OrganizationUpdateRequest{}
 
-		if name != "" {
-			req.Name = &name
-		}
+			if name != "" {
+				req.Name = &name
+			}
 
-		if description != "" {
-			req.Description = &description
-		}
+			if description != "" {
+				req.Description = &description
+			}
 
-		if twitter != "" {
-			req.Twitter = &twitter
-		}
+			if twitter != "" {
+				req.Twitter = &twitter
+			}
 
-		if logo != "" {
-			req.Logo = &logo
-		}
+			if logo != "" {
+				req.Logo = &logo
+			}
 
-		org, _, err := apiClient.Organizations.Update(organizationID, req)
-		if err != nil {
-			return errors.Wrap(err, "Could not update Organization")
-		}
+			org, _, err := c.Service.Update(organizationID, req)
+			if err != nil {
+				return errors.Wrap(err, "Could not update Organization")
+			}
 
-		data := make([][]string, 1)
+			data := make([][]string, 1)
 
-		data[0] = []string{org.ID, org.Name, org.Created}
-		header := []string{"ID", "Name", "Created"}
+			data[0] = []string{org.ID, org.Name, org.Created}
+			header := []string{"ID", "Name", "Created"}
 
-		return output(org, header, &data)
-	},
-}
+			return c.Out.Output(org, header, &data)
+		},
+	}
 
-func init() {
 	updateOrganizationCmd.Flags().StringVarP(&organizationID, "id", "i", "", "Organization ID")
 	updateOrganizationCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the organization")
 	updateOrganizationCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the organization")
@@ -77,4 +78,5 @@ func init() {
 	updateOrganizationCmd.Flags().StringVarP(&logo, "logo", "l", "", "Logo URL of the organization")
 
 	_ = updateOrganizationCmd.MarkFlagRequired("id")
+	return updateOrganizationCmd
 }
