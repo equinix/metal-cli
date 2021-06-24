@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package ips
 
 import (
 	"strconv"
@@ -28,38 +28,40 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	address string
-)
+func (c *Client) Assign() *cobra.Command {
+	var (
+		address  string
+		deviceID string
+	)
 
-// assignIpCmd represents the assignIp command
-var assignIPCmd = &cobra.Command{
-	Use:   "assign",
-	Short: "Assigns an IP address to a given device",
-	Long: `Example:
+	// assignIpCmd represents the assignIp command
+	var assignIPCmd = &cobra.Command{
+		Use:   "assign",
+		Short: "Assigns an IP address to a given device",
+		Long: `Example:
 
 metal ip assign -d [device-id] -a [ip-address]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		assignment, _, err := apiClient.DeviceIPs.Assign(deviceID, &packngo.AddressStruct{Address: address})
-		if err != nil {
-			return errors.Wrap(err, "Could not assign Device IP address")
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			assignment, _, err := c.DeviceService.Assign(deviceID, &packngo.AddressStruct{Address: address})
+			if err != nil {
+				return errors.Wrap(err, "Could not assign Device IP address")
+			}
 
-		data := make([][]string, 1)
+			data := make([][]string, 1)
 
-		data[0] = []string{assignment.ID, assignment.Address, strconv.FormatBool(assignment.Public), assignment.Created}
-		header := []string{"ID", "Address", "Public", "Created"}
+			data[0] = []string{assignment.ID, assignment.Address, strconv.FormatBool(assignment.Public), assignment.Created}
+			header := []string{"ID", "Address", "Public", "Created"}
 
-		return output(assignment, header, &data)
-	},
-}
+			return c.Out.Output(assignment, header, &data)
+		},
+	}
 
-func init() {
 	assignIPCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
 	assignIPCmd.Flags().StringVarP(&address, "address", "a", "", "IP address")
 
 	_ = assignIPCmd.MarkFlagRequired("device-id")
 	_ = assignIPCmd.MarkFlagRequired("address")
+	return assignIPCmd
 }

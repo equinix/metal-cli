@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package ips
 
 import (
 	"fmt"
@@ -27,27 +27,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// unassignIpCmd represents the unassignIp command
-var unassignIPCmd = &cobra.Command{
-	Use:   "unassign",
-	Short: "Unassigns an IP address.",
-	Long: `Example:
+func (c *Client) Unassign() *cobra.Command {
+	var assignmentID string
+	// unassignIpCmd represents the unassignIp command
+	var unassignIPCmd = &cobra.Command{
+		Use:   "unassign",
+		Short: "Unassigns an IP address.",
+		Long: `Example:
 
 metal ip unassign --id [assignment-UUID]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := apiClient.DeviceIPs.Unassign(assignmentID)
-		if err != nil {
-			return errors.Wrap(err, "Could not unassign IP address")
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			_, err := c.DeviceService.Unassign(assignmentID)
+			if err != nil {
+				return errors.Wrap(err, "Could not unassign IP address")
+			}
 
-		fmt.Println("IP address unassigned successfully.")
-		return nil
-	},
-}
+			fmt.Println("IP address unassigned successfully.")
+			return nil
+		},
+	}
 
-func init() {
 	unassignIPCmd.Flags().StringVarP(&assignmentID, "id", "i", "", "UUID of the assignment")
 	_ = unassignIPCmd.MarkFlagRequired("id")
+	return unassignIPCmd
 }

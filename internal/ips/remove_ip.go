@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package ips
 
 import (
 	"fmt"
@@ -27,28 +27,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// removeIPCmd represents the removeIp command
-var removeIPCmd = &cobra.Command{
-	Use:   "remove",
-	Short: "Command to remove IP reservation.",
-	Long: `Example:	
+func (c *Client) Remove() *cobra.Command {
+	var reservationID string
+	// removeIPCmd represents the removeIp command
+	var removeIPCmd = &cobra.Command{
+		Use:   "remove",
+		Short: "Command to remove IP reservation.",
+		Long: `Example:	
 
 metal ip remove --id [reservation-UUID]
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := apiClient.ProjectIPs.Remove(reservationID)
-		if err != nil {
-			return errors.Wrap(err, "Could not remove IP address Reservation")
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			_, err := c.ProjectService.Remove(reservationID)
+			if err != nil {
+				return errors.Wrap(err, "Could not remove IP address Reservation")
+			}
 
-		fmt.Println("IP reservation removed successfully.")
-		return nil
-	},
-}
+			fmt.Println("IP reservation removed successfully.")
+			return nil
+		},
+	}
 
-func init() {
 	removeIPCmd.Flags().StringVarP(&reservationID, "id", "i", "", "UUID of the reservation")
 
 	_ = removeIPCmd.MarkFlagRequired("id")
+	return removeIPCmd
 }

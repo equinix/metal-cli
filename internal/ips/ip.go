@@ -18,22 +18,53 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package ips
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// ipCmd represents the ip command
-var ipCmd = &cobra.Command{
-	Use:     "ip",
-	Aliases: []string{"ips", "ip-addresses", "ip-address"},
-	Short:   "IP operations",
-	Long:    `IP address, reservations and assignment operations: assign, unassign, remove, available, request and get `,
+type Client struct {
+	Servicer       Servicer
+	ProjectService packngo.ProjectIPService
+	DeviceService  packngo.DeviceIPService
+	Out            outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(ipCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "ip",
+		Aliases: []string{"ips", "ip-addresses", "ip-address"},
+		Short:   "IP operations",
+		Long:    `IP address, reservations and assignment operations: assign, unassign, remove, available, request and get `,
 
-	ipCmd.AddCommand(assignIPCmd, unassignIPCmd, removeIPCmd, requestIPCmd, retrieveIPCmd, availableCmd)
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.ProjectService = c.Servicer.API().ProjectIPs
+			c.DeviceService = c.Servicer.API().DeviceIPs
+		},
+	}
+
+	cmd.AddCommand(
+		c.Retrieve(),
+		c.Assign(),
+		c.Unassign(),
+		c.Request(),
+		c.Remove(),
+		c.Available(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

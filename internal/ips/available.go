@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package ips
 
 import (
 	"github.com/packethost/packngo"
@@ -30,35 +30,37 @@ var (
 	cidr int
 )
 
-// availableCmd represents the available command
-var availableCmd = &cobra.Command{
-	Use:   "available",
-	Short: "Retrieves a list of IP resevations for a single project.",
-	Long: `Example:
+func (c *Client) Available() *cobra.Command {
+	var reservationID string
+	// availableCmd represents the available command
+	var availableCmd = &cobra.Command{
+		Use:   "available",
+		Short: "Retrieves a list of IP resevations for a single project.",
+		Long: `Example:
 
 metal ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
 
   `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		result, _, err := apiClient.ProjectIPs.AvailableAddresses(reservationID, &packngo.AvailableRequest{CIDR: cidr})
+		RunE: func(cmd *cobra.Command, args []string) error {
+			result, _, err := c.ProjectService.AvailableAddresses(reservationID, &packngo.AvailableRequest{CIDR: cidr})
 
-		if err != nil {
-			return errors.Wrap(err, "Could not get available IP addresses")
-		}
-		data := make([][]string, len(result))
-		for i, r := range result {
-			data[i] = []string{r}
-		}
-		header := []string{"Available IPs"}
+			if err != nil {
+				return errors.Wrap(err, "Could not get available IP addresses")
+			}
+			data := make([][]string, len(result))
+			for i, r := range result {
+				data[i] = []string{r}
+			}
+			header := []string{"Available IPs"}
 
-		return output(result, header, &data)
-	},
-}
+			return c.Out.Output(result, header, &data)
+		},
+	}
 
-func init() {
 	availableCmd.Flags().StringVarP(&reservationID, "reservation-id", "r", "", "UUID of the reservation")
 	availableCmd.Flags().IntVarP(&cidr, "cidr", "c", 0, "Size of subnet")
 
 	_ = availableCmd.MarkFlagRequired("reservation-id")
 	_ = availableCmd.MarkFlagRequired("cidr")
+	return availableCmd
 }

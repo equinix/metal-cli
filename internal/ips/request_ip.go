@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package ips
 
 import (
 	"strconv"
@@ -28,44 +28,48 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	ttype    string
-	quantity int
-	comments string
-)
+func (c *Client) Request() *cobra.Command {
 
-// requestIPCmd represents the requestIp command
-var requestIPCmd = &cobra.Command{
-	Use:   "request",
-	Short: "Request an IP block",
-	Long: `Example:
+	var (
+		ttype     string
+		quantity  int
+		comments  string
+		facility  string
+		projectID string
+		tags      []string
+	)
+
+	// requestIPCmd represents the requestIp command
+	var requestIPCmd = &cobra.Command{
+		Use:   "request",
+		Short: "Request an IP block",
+		Long: `Example:
 
 metal ip request --quantity [quantity] --facility [facility_code] --type [address_type]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		req := &packngo.IPReservationRequest{
-			Type:     ttype,
-			Quantity: quantity,
-			Facility: &facility,
-			Tags:     tags,
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			req := &packngo.IPReservationRequest{
+				Type:     ttype,
+				Quantity: quantity,
+				Facility: &facility,
+				Tags:     tags,
+			}
 
-		reservation, _, err := apiClient.ProjectIPs.Request(projectID, req)
-		if err != nil {
-			return errors.Wrap(err, "Could not request IP addresses")
-		}
+			reservation, _, err := c.ProjectService.Request(projectID, req)
+			if err != nil {
+				return errors.Wrap(err, "Could not request IP addresses")
+			}
 
-		data := make([][]string, 1)
+			data := make([][]string, 1)
 
-		data[0] = []string{reservation.ID, reservation.Address, strconv.FormatBool(reservation.Public), reservation.Created}
-		header := []string{"ID", "Address", "Public", "Created"}
+			data[0] = []string{reservation.ID, reservation.Address, strconv.FormatBool(reservation.Public), reservation.Created}
+			header := []string{"ID", "Address", "Public", "Created"}
 
-		return output(reservation, header, &data)
-	},
-}
+			return c.Out.Output(reservation, header, &data)
+		},
+	}
 
-func init() {
 	requestIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
 	requestIPCmd.Flags().StringVarP(&ttype, "type", "t", "", "Address type public_ipv4 or global_ipv6")
 	requestIPCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
@@ -78,4 +82,5 @@ func init() {
 	_ = requestIPCmd.MarkFlagRequired("facility")
 
 	requestIPCmd.Flags().StringVarP(&comments, "comments", "c", "", "General comments")
+	return requestIPCmd
 }
