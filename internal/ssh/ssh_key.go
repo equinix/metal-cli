@@ -18,20 +18,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package ssh
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// sshKeyCmd represents the sshKey command
-var sshKeyCmd = &cobra.Command{
-	Use:   "ssh-key",
-	Short: "SSH key operations",
-	Long:  `SSH key operations: create, delete, update and get`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.SSHKeyService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(sshKeyCmd)
-	sshKeyCmd.AddCommand(createSSHKeyCmd, updateSSHKeyCmd, retrieveSSHKeysCmd, deleteSSHKeyCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:   "ssh-key",
+		Short: "SSH key operations",
+		Long:  `SSH key operations: create, delete, update and get`,
+
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().SSHKeys
+		},
+	}
+
+	cmd.AddCommand(
+		c.Retrieve(),
+		c.Create(),
+		c.Delete(),
+		c.Update(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

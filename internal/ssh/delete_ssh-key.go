@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package ssh
 
 import (
 	"fmt"
@@ -28,44 +28,48 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// deleteSSHKeyCmd represents the deleteSSHKey command
-var deleteSSHKeyCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "Deletes an SSH key",
-	Long: `Example:
+func (c *Client) Delete() *cobra.Command {
+	var (
+		sshKeyID string
+		force    bool
+	)
+	deleteSSHKey := func(id string) error {
+		_, err := c.Service.Delete(id)
+		if err != nil {
+			return err
+		}
+		fmt.Println("SSH Key", id, "successfully deleted.")
+		return nil
+	}
+	// deleteSSHKeyCmd represents the deleteSSHKey command
+	var deleteSSHKeyCmd = &cobra.Command{
+		Use:   "delete",
+		Short: "Deletes an SSH key",
+		Long: `Example:
 
 metal ssh-key delete --id [ssh-key_UUID]
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if !force {
-			prompt := promptui.Prompt{
-				Label:     fmt.Sprintf("Are you sure you want to delete SSH Key %s: ", sshKeyID),
-				IsConfirm: true,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if !force {
+				prompt := promptui.Prompt{
+					Label:     fmt.Sprintf("Are you sure you want to delete SSH Key %s: ", sshKeyID),
+					IsConfirm: true,
+				}
+
+				_, err := prompt.Run()
+				if err != nil {
+					return nil
+				}
 			}
 
-			_, err := prompt.Run()
-			if err != nil {
-				return nil
-			}
-		}
-
-		return errors.Wrap(deleteSSHKey(sshKeyID), "Could not delete SSH Key")
-	},
-}
-
-func deleteSSHKey(id string) error {
-	_, err := apiClient.SSHKeys.Delete(id)
-	if err != nil {
-		return err
+			return errors.Wrap(deleteSSHKey(sshKeyID), "Could not delete SSH Key")
+		},
 	}
-	fmt.Println("SSH Key", sshKeyID, "successfully deleted.")
-	return nil
-}
 
-func init() {
 	deleteSSHKeyCmd.Flags().StringVarP(&sshKeyID, "id", "i", "", "UUID of the SSH key")
 	_ = deleteSSHKeyCmd.MarkFlagRequired("id")
 
 	deleteSSHKeyCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the SSH key")
+	return deleteSSHKeyCmd
 }

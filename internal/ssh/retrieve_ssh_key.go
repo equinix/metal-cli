@@ -18,23 +18,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package ssh
 
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-var (
-	sshKeyID string
-)
+func (c *Client) Retrieve() *cobra.Command {
 
-// retrieveSshKeysCmd represents the retrieveSshKeys command
-var retrieveSSHKeysCmd = &cobra.Command{
-	Use:   "get",
-	Aliases: []string{"list"},
-	Short: "Retrieves a list of available SSH keys or a single SSH key",
-	Long: `Example:
+	var (
+		sshKeyID string
+	)
+
+	// retrieveSshKeysCmd represents the retrieveSshKeys command
+	var retrieveSSHKeysCmd = &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves a list of available SSH keys or a single SSH key",
+		Long: `Example:
 
 Retrieve all SSH keys: 
 metal ssh-key get
@@ -43,37 +45,37 @@ Retrieve a specific SSH key:
 metal ssh-key get --id [ssh-key_UUID] 
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if sshKeyID == "" {
-			sshKeys, _, err := apiClient.SSHKeys.List()
-			if err != nil {
-				return errors.Wrap(err, "Could not list SSH Keys")
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if sshKeyID == "" {
+				sshKeys, _, err := c.Service.List()
+				if err != nil {
+					return errors.Wrap(err, "Could not list SSH Keys")
+				}
+
+				data := make([][]string, len(sshKeys))
+
+				for i, s := range sshKeys {
+					data[i] = []string{s.ID, s.Label, s.Created}
+				}
+				header := []string{"ID", "Label", "Created"}
+
+				return c.Out.Output(sshKeys, header, &data)
+			} else {
+				sshKey, _, err := c.Service.Get(sshKeyID, nil)
+				if err != nil {
+					return errors.Wrap(err, "Could not get SSH Key")
+				}
+
+				data := make([][]string, 1)
+
+				data[0] = []string{sshKey.ID, sshKey.Label, sshKey.Created}
+				header := []string{"ID", "Label", "Created"}
+
+				return c.Out.Output(sshKey, header, &data)
 			}
+		},
+	}
 
-			data := make([][]string, len(sshKeys))
-
-			for i, s := range sshKeys {
-				data[i] = []string{s.ID, s.Label, s.Created}
-			}
-			header := []string{"ID", "Label", "Created"}
-
-			return output(sshKeys, header, &data)
-		} else {
-			sshKey, _, err := apiClient.SSHKeys.Get(sshKeyID, nil)
-			if err != nil {
-				return errors.Wrap(err, "Could not get SSH Key")
-			}
-
-			data := make([][]string, 1)
-
-			data[0] = []string{sshKey.ID, sshKey.Label, sshKey.Created}
-			header := []string{"ID", "Label", "Created"}
-
-			return output(sshKey, header, &data)
-		}
-	},
-}
-
-func init() {
 	retrieveSSHKeysCmd.Flags().StringVarP(&sshKeyID, "id", "i", "", "UUID of the SSH key")
+	return retrieveSSHKeysCmd
 }

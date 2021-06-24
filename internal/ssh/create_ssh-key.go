@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package ssh
 
 import (
 	"github.com/packethost/packngo"
@@ -31,38 +31,38 @@ var (
 	key   string
 )
 
-// projectCreateCmd represents the projectCreate command
-var createSSHKeyCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Creates an SSH key",
-	Long: `Example:
+func (c *Client) Create() *cobra.Command {
+	var createSSHKeyCmd = &cobra.Command{
+		Use:   "create",
+		Short: "Creates an SSH key",
+		Long: `Example:
 
 metal ssh-key create --key [public_key] --label [label]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		req := packngo.SSHKeyCreateRequest{
-			Label: label,
-			Key:   key,
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			req := packngo.SSHKeyCreateRequest{
+				Label: label,
+				Key:   key,
+			}
 
-		s, _, err := apiClient.SSHKeys.Create(&req)
-		if err != nil {
-			return errors.Wrap(err, "Could not create SSHKey")
-		}
+			s, _, err := c.Service.Create(&req)
+			if err != nil {
+				return errors.Wrap(err, "Could not create SSHKey")
+			}
 
-		data := make([][]string, 1)
+			data := make([][]string, 1)
 
-		data[0] = []string{s.ID, s.Label, s.Created}
-		header := []string{"ID", "Label", "Created"}
-		return output(s, header, &data)
-	},
-}
+			data[0] = []string{s.ID, s.Label, s.Created}
+			header := []string{"ID", "Label", "Created"}
+			return c.Out.Output(s, header, &data)
+		},
+	}
 
-func init() {
 	createSSHKeyCmd.Flags().StringVarP(&label, "label", "l", "", "Name of the SSH key")
 	createSSHKeyCmd.Flags().StringVarP(&key, "key", "k", "", "Public SSH key string")
 
 	_ = createSSHKeyCmd.MarkFlagRequired("label")
 	_ = createSSHKeyCmd.MarkFlagRequired("key")
+	return createSSHKeyCmd
 }
