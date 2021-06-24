@@ -18,20 +18,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package twofa
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// 2faCmd represents the 2fa command
-var twofaCmd = &cobra.Command{
-	Use:     "2fa",
-	Aliases: []string{"tfa", "mfa", "totp"},
-	Short:   "Two Factor Authentication operations",
-	Long:    `Two Factor Authentication operations: enable, disable, receive`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.TwoFactorAuthService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(twofaCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "2fa",
+		Aliases: []string{"tfa", "mfa", "totp"},
+		Short:   "Two Factor Authentication operations",
+		Long:    `Two Factor Authentication operations: enable, disable, receive`,
+
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().TwoFactorAuth
+		},
+	}
+
+	cmd.AddCommand(
+		c.Receive(),
+		c.Enable(),
+		c.Disable(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package twofa
 
 import (
 	"fmt"
@@ -27,11 +27,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// disable2faCmd represents the disable2fa command
-var disable2faCmd = &cobra.Command{
-	Use:   "disable",
-	Short: "Disables two factor authentication",
-	Long: `Example:
+func (c *Client) Disable() *cobra.Command {
+	var (
+		token    string
+		sms, app bool
+	)
+	// disable2faCmd represents the disable2fa command
+	var disable2faCmd = &cobra.Command{
+		Use:   "disable",
+		Short: "Disables two factor authentication",
+		Long: `Example:
 
 Disable two factor authentication via SMS
 metal 2fa disable -s -t [token]
@@ -39,29 +44,28 @@ metal 2fa disable -s -t [token]
 Disable two factor authentication via APP
 metal 2fa disable -a -t [token]
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if sms == app {
-			return fmt.Errorf("Either sms or app should be set")
-		} else if sms {
-			_, err := apiClient.TwoFactorAuth.DisableSms(token)
-			if err != nil {
-				return errors.Wrap(err, "Could not disable Two-Factor Authentication via SMS")
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if sms == app {
+				return fmt.Errorf("Either sms or app should be set")
+			} else if sms {
+				_, err := c.Service.DisableSms(token)
+				if err != nil {
+					return errors.Wrap(err, "Could not disable Two-Factor Authentication via SMS")
+				}
+			} else if app {
+				_, err := c.Service.DisableApp(token)
+				if err != nil {
+					return errors.Wrap(err, "Could not disable Two-Factor Authentication via App")
+				}
 			}
-		} else if app {
-			_, err := apiClient.TwoFactorAuth.DisableApp(token)
-			if err != nil {
-				return errors.Wrap(err, "Could not disable Two-Factor Authentication via App")
-			}
-		}
-		fmt.Println("Two factor authentication successfully disabled.")
-		return nil
-	},
-}
+			fmt.Println("Two factor authentication successfully disabled.")
+			return nil
+		},
+	}
 
-func init() {
-	twofaCmd.AddCommand(disable2faCmd)
 	disable2faCmd.Flags().BoolVarP(&sms, "sms", "s", false, "Issues SMS otp token to user's phone")
 	disable2faCmd.Flags().BoolVarP(&app, "app", "a", false, "Issues otp uri for auth application")
 	disable2faCmd.Flags().StringVarP(&token, "token", "t", "", "Two factor authentication token")
 	_ = disable2faCmd.MarkFlagRequired("token")
+	return disable2faCmd
 }

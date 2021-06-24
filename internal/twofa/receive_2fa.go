@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package twofa
 
 import (
 	"fmt"
@@ -27,14 +27,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var app bool
-var sms bool
+func (c *Client) Receive() *cobra.Command {
 
-// receive2faCmd represents the receive2fa command
-var receive2faCmd = &cobra.Command{
-	Use:   "receive",
-	Short: "Receive two factor authentication token",
-	Long: `Example:
+	var app, sms bool
+
+	// receive2faCmd represents the receive2fa command
+	var receive2faCmd = &cobra.Command{
+		Use:   "receive",
+		Short: "Receive two factor authentication token",
+		Long: `Example:
 Issue the token via SMS:
 metal 2fa receive -s 
 
@@ -42,36 +43,35 @@ Issue the token via app:
 metal 2fa receive -a
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if sms == app {
-			return fmt.Errorf("Either sms or app should be set")
-		}
-
-		if sms {
-			_, err := apiClient.TwoFactorAuth.ReceiveSms()
-			if err != nil {
-				return errors.Wrap(err, "Could not issue token via SMS")
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if sms == app {
+				return fmt.Errorf("Either sms or app should be set")
 			}
 
-			fmt.Println("SMS token sent to your phone")
-			return nil
-		}
+			if sms {
+				_, err := c.Service.ReceiveSms()
+				if err != nil {
+					return errors.Wrap(err, "Could not issue token via SMS")
+				}
 
-		otpURI, _, err := apiClient.TwoFactorAuth.SeedApp()
-		if err != nil {
-			return errors.Wrap(err, "Could not get the OTP Seed URI")
-		}
+				fmt.Println("SMS token sent to your phone")
+				return nil
+			}
 
-		data := make([][]string, 1)
+			otpURI, _, err := c.Service.SeedApp()
+			if err != nil {
+				return errors.Wrap(err, "Could not get the OTP Seed URI")
+			}
 
-		data[0] = []string{otpURI}
-		header := []string{"OTP URI"}
-		return output(otpURI, header, &data)
-	},
-}
+			data := make([][]string, 1)
 
-func init() {
-	twofaCmd.AddCommand(receive2faCmd)
+			data[0] = []string{otpURI}
+			header := []string{"OTP URI"}
+			return c.Out.Output(otpURI, header, &data)
+		},
+	}
+
 	receive2faCmd.Flags().BoolVarP(&sms, "sms", "s", false, "Issues SMS otp token to user's phone")
 	receive2faCmd.Flags().BoolVarP(&app, "app", "a", false, "Issues otp uri for auth application")
+	return receive2faCmd
 }
