@@ -29,5 +29,6 @@ Organization operations: create, update, delete and get
 * [metal organization create](metal_organization_create.md)	 - Creates an organization
 * [metal organization delete](metal_organization_delete.md)	 - Deletes an organization
 * [metal organization get](metal_organization_get.md)	 - Retrieves an organization or list of organizations
+* [metal organization payment-methods](metal_organization_payment-methods.md)	 - Retrieves a list of payment methods for the organization
 * [metal organization update](metal_organization_update.md)	 - Updates an organization
 

@@ -1,28 +1,24 @@
-## metal organization get
+## metal organization payment-methods
 
-Retrieves an organization or list of organizations
+Retrieves a list of payment methods for the organization
 
 ### Synopsis
 
 Example:
-	
-To retrieve list of all available organizations:
-metal organization get
 
-To retrieve a single organization:
-metal organization get -i [organization-id]
+metal organization payment-methods --id [organization_UUID]
 
-	
+
 
 ```
-metal organization get [flags]
+metal organization payment-methods [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for get
-  -i, --organization-id string   UUID of the organization
+  -h, --help        help for payment-methods
+  -i, --id string   UUID of the organization
 ```
 
 ### Options inherited from parent commands
