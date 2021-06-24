@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package projects
 
 import (
 	"github.com/packethost/packngo"
@@ -26,50 +26,52 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	name            string
-	paymentMethodID string
-)
+func (c *Client) Create() *cobra.Command {
+	var (
+		name            string
+		paymentMethodID string
+		organizationID  string
+	)
 
-// projectCreateCmd represents the projectCreate command
-var createProjectCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Creates a project",
-	Long: `Example:
+	// projectCreateCmd represents the projectCreate command
+	var createProjectCmd = &cobra.Command{
+		Use:   "create",
+		Short: "Creates a project",
+		Long: `Example:
 
 metal project create --name [project_name]
   
   `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		req := packngo.ProjectCreateRequest{
-			Name: name,
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			req := packngo.ProjectCreateRequest{
+				Name: name,
+			}
 
-		if organizationID != "" {
-			req.OrganizationID = organizationID
-		}
+			if organizationID != "" {
+				req.OrganizationID = organizationID
+			}
 
-		if paymentMethodID != "" {
-			req.PaymentMethodID = paymentMethodID
-		}
+			if paymentMethodID != "" {
+				req.PaymentMethodID = paymentMethodID
+			}
 
-		p, _, err := apiClient.Projects.Create(&req)
-		if err != nil {
-			return errors.Wrap(err, "Could not create Project")
-		}
+			p, _, err := c.Service.Create(&req)
+			if err != nil {
+				return errors.Wrap(err, "Could not create Project")
+			}
 
-		data := make([][]string, 1)
+			data := make([][]string, 1)
 
-		data[0] = []string{p.ID, p.Name, p.Created}
-		header := []string{"ID", "Name", "Created"}
-		return output(p, header, &data)
-	},
-}
+			data[0] = []string{p.ID, p.Name, p.Created}
+			header := []string{"ID", "Name", "Created"}
+			return c.Out.Output(p, header, &data)
+		},
+	}
 
-func init() {
 	createProjectCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the project")
 	createProjectCmd.Flags().StringVarP(&organizationID, "organization-id", "o", "", "UUID of the organization")
 	createProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "UUID of the payment method")
 
 	_ = createProjectCmd.MarkFlagRequired("name")
+	return createProjectCmd
 }

@@ -19,6 +19,7 @@ import (
 	"github.com/equinix/metal-cli/internal/os"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
 	"github.com/equinix/metal-cli/internal/plans"
+	"github.com/equinix/metal-cli/internal/projects"
 	"github.com/equinix/metal-cli/internal/users"
 	"github.com/equinix/metal-cli/internal/vlan"
 )
@@ -90,10 +91,10 @@ func (cli *Cli) RegisterCommands(client *root.Client) {
 		hardware.NewClient(client, cli.Outputer).NewCommand(),
 		devices.NewClient(client, cli.Outputer).NewCommand(),
 		organizations.NewClient(client, cli.Outputer).NewCommand(),
+		projects.NewClient(client, cli.Outputer).NewCommand(),
 
 		/*
 			ips.NewClient(c, cli.Outputer).NewCommand(),
-			projects.NewClient(c, cli.Outputer).NewCommand(),
 			sshKeys.NewClient(c, cli.Outputer).NewCommand(),
 			twofa.NewClient(c, cli.Outputer).NewCommand(),
 		*/

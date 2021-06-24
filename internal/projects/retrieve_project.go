@@ -18,22 +18,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package projects
 
 import (
 	"fmt"
 
+	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// retriveProjectCmd represents the retriveProject command
-var retriveProjectCmd = &cobra.Command{
-	Use:     "get",
-	Aliases: []string{"list"},
-	Short:   "Retrieves all available projects or a single project",
-	Long: `Example:
+func (c *Client) Retrieve() *cobra.Command {
+	var projectID, projectName string
+	// retrieveProjectCmd represents the retriveProject command
+	var retrieveProjectCmd = &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves all available projects or a single project",
+		Long: `Example:
 
 Retrieve all projects:
 metal project get
@@ -44,64 +47,65 @@ metal project get -n [project_name]
 
 When using "--json" or "--yaml", "--include=members" is implied.
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if projectID != "" && projectName != "" {
-			return fmt.Errorf("Must specify only one of project-id and project name")
-		}
-
-		inc := []string{"members"}
-
-		// don't fetch extra details that won't be rendered
-		if !isYaml && !isJSON {
-			inc = nil
-		}
-
-		listOpts := listOptions(inc, nil)
-
-		if projectID == "" {
-			projects, _, err := apiClient.Projects.List(listOpts)
-			if err != nil {
-				return errors.Wrap(err, "Could not list Projects")
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if projectID != "" && projectName != "" {
+				return fmt.Errorf("Must specify only one of project-id and project name")
 			}
 
-			var data [][]string
-			if projectName == "" {
-				data = make([][]string, len(projects))
-				for i, p := range projects {
-					data[i] = []string{p.ID, p.Name, p.Created}
+			inc := []string{}
+
+			// only fetch extra details when rendered
+			switch c.Servicer.Format() {
+			case outputs.FormatJSON, outputs.FormatYAML:
+				inc = append(inc, "members")
+			}
+
+			listOpts := c.Servicer.ListOptions(inc, nil)
+
+			if projectID == "" {
+				projects, _, err := c.Service.List(listOpts)
+				if err != nil {
+					return errors.Wrap(err, "Could not list Projects")
 				}
-			} else {
-				data = make([][]string, 0)
-				for _, p := range projects {
-					if p.Name == projectName {
-						data = append(data, []string{p.ID, p.Name, p.Created})
-						break
+
+				var data [][]string
+				if projectName == "" {
+					data = make([][]string, len(projects))
+					for i, p := range projects {
+						data[i] = []string{p.ID, p.Name, p.Created}
+					}
+				} else {
+					data = make([][]string, 0)
+					for _, p := range projects {
+						if p.Name == projectName {
+							data = append(data, []string{p.ID, p.Name, p.Created})
+							break
+						}
+					}
+					if len(data) == 0 {
+						return fmt.Errorf("Could not find project with name %q", projectName)
 					}
 				}
-				if len(data) == 0 {
-					return fmt.Errorf("Could not find project with name %q", projectName)
+
+				header := []string{"ID", "Name", "Created"}
+				return c.Out.Output(projects, header, &data)
+			} else {
+				getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
+				p, _, err := c.Service.Get(projectID, getOpts)
+				if err != nil {
+					return errors.Wrap(err, "Could not get Project")
 				}
+
+				data := make([][]string, 1)
+
+				data[0] = []string{p.ID, p.Name, p.Created}
+				header := []string{"ID", "Name", "Created"}
+				return c.Out.Output(p, header, &data)
 			}
+		},
+	}
 
-			header := []string{"ID", "Name", "Created"}
-			return output(projects, header, &data)
-		} else {
-			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-			p, _, err := apiClient.Projects.Get(projectID, getOpts)
-			if err != nil {
-				return errors.Wrap(err, "Could not get Project")
-			}
-
-			data := make([][]string, 1)
-
-			data[0] = []string{p.ID, p.Name, p.Created}
-			header := []string{"ID", "Name", "Created"}
-			return output(p, header, &data)
-		}
-	},
-}
-
-func init() {
-	retriveProjectCmd.Flags().StringVarP(&projectName, "project", "n", "", "Name of the project")
-	retriveProjectCmd.Flags().StringVarP(&projectID, "project-id", "i", "", "UUID of the project")
+	retrieveProjectCmd.Flags().StringVarP(&projectName, "project", "n", "", "Name of the project")
+	retrieveProjectCmd.Flags().StringVarP(&projectID, "project-id", "i", "", "UUID of the project")
+	return retrieveProjectCmd
 }

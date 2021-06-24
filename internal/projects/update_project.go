@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package projects
 
 import (
 	"github.com/packethost/packngo"
@@ -26,41 +26,43 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// updateProjectCmd represents the updateProject command
-var updateProjectCmd = &cobra.Command{
-	Use:   "update",
-	Short: "Updates a project",
-	Long: `Example:
+func (c *Client) Update() *cobra.Command {
+	var projectID, name, paymentMethodID string
+	// updateProjectCmd represents the updateProject command
+	var updateProjectCmd = &cobra.Command{
+		Use:   "update",
+		Short: "Updates a project",
+		Long: `Example:
 
 metal project update --id [project_UUID] --name [new_name]
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		req := &packngo.ProjectUpdateRequest{}
-		if name != "" {
-			req.Name = &name
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			req := &packngo.ProjectUpdateRequest{}
+			if name != "" {
+				req.Name = &name
+			}
 
-		if paymentMethodID != "" {
-			req.PaymentMethodID = &paymentMethodID
-		}
-		p, _, err := apiClient.Projects.Update(projectID, req)
-		if err != nil {
-			return errors.Wrap(err, "Could not update Project")
-		}
+			if paymentMethodID != "" {
+				req.PaymentMethodID = &paymentMethodID
+			}
+			p, _, err := c.Service.Update(projectID, req)
+			if err != nil {
+				return errors.Wrap(err, "Could not update Project")
+			}
 
-		data := make([][]string, 1)
+			data := make([][]string, 1)
 
-		data[0] = []string{p.ID, p.Name, p.Created}
-		header := []string{"ID", "Name", "Created"}
-		return output(p, header, &data)
-	},
-}
+			data[0] = []string{p.ID, p.Name, p.Created}
+			header := []string{"ID", "Name", "Created"}
+			return c.Out.Output(p, header, &data)
+		},
+	}
 
-func init() {
 	updateProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "UUID of the project")
 	updateProjectCmd.Flags().StringVarP(&name, "name", "n", "", "Name for the project")
 	updateProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "UUID of the payment method")
 
 	_ = updateProjectCmd.MarkFlagRequired("id")
+	return updateProjectCmd
 }

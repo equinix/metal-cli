@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package projects
 
 import (
 	"fmt"
@@ -28,43 +28,47 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// deleteProjectCmd represents the deleteProject command
-var deleteProjectCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "Deletes a project",
-	Long: `Example:
+func (c *Client) Delete() *cobra.Command {
+	var (
+		force     bool
+		projectID string
+	)
+	deleteProject := func(id string) error {
+		_, err := c.Service.Delete(id)
+		if err != nil {
+			return err
+		}
+		fmt.Println("Project", projectID, "successfully deleted.")
+		return nil
+	}
+	// deleteProjectCmd represents the deleteProject command
+	var deleteProjectCmd = &cobra.Command{
+		Use:   "delete",
+		Short: "Deletes a project",
+		Long: `Example:
 
 metal project delete --id [project_UUID]
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if !force {
-			prompt := promptui.Prompt{
-				Label:     fmt.Sprintf("Are you sure you want to delete project %s: ", projectID),
-				IsConfirm: true,
-			}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if !force {
+				prompt := promptui.Prompt{
+					Label:     fmt.Sprintf("Are you sure you want to delete project %s: ", projectID),
+					IsConfirm: true,
+				}
 
-			_, err := prompt.Run()
-			if err != nil {
-				return nil
+				_, err := prompt.Run()
+				if err != nil {
+					return nil
+				}
 			}
-		}
-		return errors.Wrap(deleteProject(projectID), "Could not delete Project")
-	},
-}
-
-func deleteProject(id string) error {
-	_, err := apiClient.Projects.Delete(id)
-	if err != nil {
-		return err
+			return errors.Wrap(deleteProject(projectID), "Could not delete Project")
+		},
 	}
-	fmt.Println("Project", projectID, "successfully deleted.")
-	return nil
-}
 
-func init() {
 	deleteProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "UUID of the project")
 	_ = deleteProjectCmd.MarkFlagRequired("id")
 
 	deleteProjectCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the project")
+	return deleteProjectCmd
 }
