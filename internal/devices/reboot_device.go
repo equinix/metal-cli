@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package devices
 
 import (
 	"fmt"
@@ -27,28 +27,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rebootDeviceCmd represents the rebootDevice command
-var rebootDeviceCmd = &cobra.Command{
-	Use:   "reboot",
-	Short: "Reboots a device",
-	Long: `Example:
+func (c *Client) Reboot() *cobra.Command {
+	var deviceID string
+
+	var rebootDeviceCmd = &cobra.Command{
+		Use:   "reboot",
+		Short: "Reboots a device",
+		Long: `Example:
 
 metal device reboot --id [device_UUID]
 
 	  `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := apiClient.Devices.Reboot(deviceID)
-		if err != nil {
-			return errors.Wrap(err, "Could not reboot Device")
-		}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			_, err := c.Service.Reboot(deviceID)
+			if err != nil {
+				return errors.Wrap(err, "Could not reboot Device")
+			}
 
-		fmt.Println("Device", deviceID, "successfully rebooted.")
-		return nil
-	},
-}
+			fmt.Println("Device", deviceID, "successfully rebooted.")
+			return nil
+		},
+	}
 
-func init() {
 	rebootDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "--id or -i [device_UUID]")
 
 	_ = rebootDeviceCmd.MarkFlagRequired("id")
+	return rebootDeviceCmd
 }

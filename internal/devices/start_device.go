@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package devices
 
 import (
 	"fmt"
@@ -27,28 +27,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// startdeviceCmd represents the startdevice command
-var startDeviceCmd = &cobra.Command{
-	Use:   "start",
-	Short: "Starts a device",
-	Long: `Example:
+func (c *Client) Start() *cobra.Command {
+	var deviceID string
+	// startdeviceCmd represents the startdevice command
+	var startDeviceCmd = &cobra.Command{
+		Use:   "start",
+		Short: "Starts a device",
+		Long: `Example:
 
 metal device start --id [device_UUID]
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := apiClient.Devices.PowerOn(deviceID)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			_, err := c.Service.PowerOn(deviceID)
 
-		if err != nil {
-			return errors.Wrap(err, "Could not start Device")
-		}
+			if err != nil {
+				return errors.Wrap(err, "Could not start Device")
+			}
 
-		fmt.Println("Device", deviceID, "successfully started.")
-		return nil
-	},
-}
+			fmt.Println("Device", deviceID, "successfully started.")
+			return nil
+		},
+	}
 
-func init() {
 	startDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
 	_ = startDeviceCmd.MarkFlagRequired("id")
+	return startDeviceCmd
 }

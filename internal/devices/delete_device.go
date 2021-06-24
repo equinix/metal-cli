@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package devices
 
 import (
 	"fmt"
@@ -28,43 +28,44 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var force bool
-
-var deleteDeviceCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "Deletes a device",
-	Long: `Example:	
+func (c *Client) Delete() *cobra.Command {
+	var deviceID string
+	var force bool
+	deleteDevice := func(id string) error {
+		_, err := c.Service.Delete(id, force)
+		if err != nil {
+			return err
+		}
+		fmt.Println("Device deletion initiated. Please check 'metal device get -i", deviceID, "' for status")
+		return nil
+	}
+	var deleteDeviceCmd = &cobra.Command{
+		Use:   "delete",
+		Short: "Deletes a device",
+		Long: `Example:	
 
   metal device delete -i [device_UUID]
   
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if !force {
-			prompt := promptui.Prompt{
-				Label:     fmt.Sprintf("Are you sure you want to delete device %s: ", deviceID),
-				IsConfirm: true,
-			}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if !force {
+				prompt := promptui.Prompt{
+					Label:     fmt.Sprintf("Are you sure you want to delete device %s: ", deviceID),
+					IsConfirm: true,
+				}
 
-			_, err := prompt.Run()
-			if err != nil {
-				return nil
+				_, err := prompt.Run()
+				if err != nil {
+					return nil
+				}
 			}
-		}
-		return errors.Wrap(deleteDevice(deviceID), "Could not delete Device")
-	},
-}
-
-func deleteDevice(id string) error {
-	_, err := apiClient.Devices.Delete(id, force)
-	if err != nil {
-		return err
+			return errors.Wrap(deleteDevice(deviceID), "Could not delete Device")
+		},
 	}
-	fmt.Println("Device deletion initiated. Please check 'metal device get -i", deviceID, "' for status")
-	return nil
-}
 
-func init() {
 	deleteDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
 	deleteDeviceCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the device")
 	_ = deleteDeviceCmd.MarkFlagRequired("id")
+
+	return deleteDeviceCmd
 }

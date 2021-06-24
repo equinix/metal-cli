@@ -8,6 +8,7 @@ import (
 	"github.com/equinix/metal-cli/internal/cli"
 	root "github.com/equinix/metal-cli/internal/cli"
 	"github.com/equinix/metal-cli/internal/completion"
+	"github.com/equinix/metal-cli/internal/devices"
 	"github.com/equinix/metal-cli/internal/docs"
 	"github.com/equinix/metal-cli/internal/env"
 	"github.com/equinix/metal-cli/internal/events"
@@ -86,9 +87,9 @@ func (cli *Cli) RegisterCommands(client *root.Client) {
 		users.NewClient(client, cli.Outputer).NewCommand(),
 		vlan.NewClient(client, cli.Outputer).NewCommand(),
 		hardware.NewClient(client, cli.Outputer).NewCommand(),
+		devices.NewClient(client, cli.Outputer).NewCommand(),
 
 		/*
-			devices.NewClient(c, cli.Outputer).NewCommand(),
 			ips.NewClient(c, cli.Outputer).NewCommand(),
 			organizations.NewClient(c, cli.Outputer).NewCommand(),
 			projects.NewClient(c, cli.Outputer).NewCommand(),

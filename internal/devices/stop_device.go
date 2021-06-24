@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package devices
 
 import (
 	"fmt"
@@ -27,28 +27,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// stopDeviceCmd represents the stopDevice command
-var stopDeviceCmd = &cobra.Command{
-	Use:   "stop",
-	Short: "Stops a device",
-	Long: `Example:
+func (c *Client) Stop() *cobra.Command {
+	var deviceID string
+	var stopDeviceCmd = &cobra.Command{
+		Use:   "stop",
+		Short: "Stops a device",
+		Long: `Example:
 
   metal device stop --id [device_UUID]
   
   `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := apiClient.Devices.PowerOff(deviceID)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			_, err := c.Service.PowerOff(deviceID)
 
-		if err != nil {
-			return errors.Wrap(err, "Could not stop Device")
-		}
+			if err != nil {
+				return errors.Wrap(err, "Could not stop Device")
+			}
 
-		fmt.Println("Device", deviceID, "successfully stopped.")
-		return nil
-	},
-}
+			fmt.Println("Device", deviceID, "successfully stopped.")
+			return nil
+		},
+	}
 
-func init() {
 	stopDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
 	_ = stopDeviceCmd.MarkFlagRequired("id")
+	return stopDeviceCmd
 }

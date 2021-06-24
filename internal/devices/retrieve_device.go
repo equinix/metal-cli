@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package devices
 
 import (
 	"fmt"
@@ -27,55 +27,56 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	organizationID string
-	deviceID       string
-)
+func (c *Client) Retrieve() *cobra.Command {
+	var (
+		projectID string
+		deviceID  string
+	)
 
-var retriveDeviceCmd = &cobra.Command{
-	Use:   "get",
-	Aliases: []string{"list"},
-	Short: "Retrieves device list or device details",
-	Long: `Example:
+	var retrieveDeviceCmd = &cobra.Command{
+		Use:     "get",
+		Aliases: []string{"list"},
+		Short:   "Retrieves device list or device details",
+		Long: `Example:
 	
 metal device get --id [device_UUID]
 
 	`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if deviceID != "" && projectID != "" {
-			return fmt.Errorf("Either id or project-id can be set.")
-		} else if deviceID == "" && projectID == "" {
-			return fmt.Errorf("Either id or project-id should be set.")
-		} else if projectID != "" {
-			devices, _, err := apiClient.Devices.List(projectID, listOptions(nil, nil))
-			if err != nil {
-				return errors.Wrap(err, "Could not list Devices")
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if deviceID != "" && projectID != "" {
+				return fmt.Errorf("Either id or project-id can be set.")
+			} else if deviceID == "" && projectID == "" {
+				return fmt.Errorf("Either id or project-id should be set.")
+			} else if projectID != "" {
+				devices, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))
+				if err != nil {
+					return errors.Wrap(err, "Could not list Devices")
+				}
+				data := make([][]string, len(devices))
+
+				for i, dc := range devices {
+					data[i] = []string{dc.ID, dc.Hostname, dc.OS.Name, dc.State, dc.Created}
+				}
+				header := []string{"ID", "Hostname", "OS", "State", "Created"}
+
+				return c.Out.Output(devices, header, &data)
+			} else if deviceID != "" {
+				device, _, err := c.Service.Get(deviceID, nil)
+				if err != nil {
+					return errors.Wrap(err, "Could not get Devices")
+				}
+				header := []string{"ID", "Hostname", "OS", "State", "Created"}
+
+				data := make([][]string, 1)
+				data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
+
+				return c.Out.Output(device, header, &data)
 			}
-			data := make([][]string, len(devices))
+			return nil
+		},
+	}
+	retrieveDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	retrieveDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
 
-			for i, dc := range devices {
-				data[i] = []string{dc.ID, dc.Hostname, dc.OS.Name, dc.State, dc.Created}
-			}
-			header := []string{"ID", "Hostname", "OS", "State", "Created"}
-
-			return output(devices, header, &data)
-		} else if deviceID != "" {
-			device, _, err := apiClient.Devices.Get(deviceID, nil)
-			if err != nil {
-				return errors.Wrap(err, "Could not get Devices")
-			}
-			header := []string{"ID", "Hostname", "OS", "State", "Created"}
-
-			data := make([][]string, 1)
-			data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
-
-			return output(device, header, &data)
-		}
-		return nil
-	},
-}
-
-func init() {
-	retriveDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
-	retriveDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
+	return retrieveDeviceCmd
 }

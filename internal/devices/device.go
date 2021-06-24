@@ -18,21 +18,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package devices
 
 import (
+	"github.com/equinix/metal-cli/internal/outputs"
+	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
-// deviceCmd represents the device command
-var deviceCmd = &cobra.Command{
-	Use:     "device",
-	Aliases: []string{"server", "servers", "devices"},
-	Short:   "Device operations",
-	Long:    `Device operations: create, delete, update, start/stop, reboot and get.`,
+type Client struct {
+	Servicer Servicer
+	Service  packngo.DeviceService
+	Out      outputs.Outputer
 }
 
-func init() {
-	rootCmd.AddCommand(deviceCmd)
-	deviceCmd.AddCommand(retriveDeviceCmd, createDeviceCmd, deleteDeviceCmd, updateDeviceCmd, rebootDeviceCmd, startDeviceCmd, stopDeviceCmd)
+func (c *Client) NewCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:     "device",
+		Aliases: []string{"server", "servers", "devices"},
+		Short:   "Device operations",
+		Long:    `Device operations: create, delete, update, start/stop, reboot and get.`,
+
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Service = c.Servicer.API().Devices
+		},
+	}
+
+	cmd.AddCommand(
+		c.Retrieve(),
+		c.Create(),
+		c.Delete(),
+		c.Update(),
+		c.Reboot(),
+		c.Start(),
+		c.Stop(),
+	)
+	return cmd
+}
+
+type Servicer interface {
+	API() *packngo.Client
+	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+}
+
+func NewClient(s Servicer, out outputs.Outputer) *Client {
+	return &Client{
+		Servicer: s,
+		Out:      out,
+	}
 }

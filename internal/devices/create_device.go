@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package devices
 
 import (
 	"fmt"
@@ -30,99 +30,98 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	projectName     string
-	projectID       string
-	metro           string
-	facility        string
-	plan            string
-	hostname        string
-	operatingSystem string
-	billingCycle    string
+func (c *Client) Create() *cobra.Command {
 
-	userdata              string
-	userdataFile          string
-	customdata            string
-	tags                  []string
-	ipxescripturl         string
-	publicIPv4SubnetSize  int
-	alwaysPXE             bool
-	hardwareReservationID string
-	spotInstance          bool
-	spotPriceMax          float64
-	terminationTime       string
-)
+	var (
+		projectID       string
+		metro           string
+		facility        string
+		plan            string
+		hostname        string
+		operatingSystem string
+		billingCycle    string
 
-var createDeviceCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Creates a device",
-	Long: `Example:
+		userdata              string
+		userdataFile          string
+		customdata            string
+		tags                  []string
+		ipxescripturl         string
+		publicIPv4SubnetSize  int
+		alwaysPXE             bool
+		hardwareReservationID string
+		spotInstance          bool
+		spotPriceMax          float64
+		terminationTime       string
+	)
+
+	var createDeviceCmd = &cobra.Command{
+		Use:   "create",
+		Short: "Creates a device",
+		Long: `Example:
 
 metal device create --hostname [hostname] --plan [plan] --metro [metro_code] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		var endDt *packngo.Timestamp
+		RunE: func(cmd *cobra.Command, args []string) error {
+			var endDt *packngo.Timestamp
 
-		if userdata != "" && userdataFile != "" {
-			return fmt.Errorf("Either userdata or userdata-file should be set")
-		}
-
-		if userdataFile != "" {
-			userdataRaw, readErr := ioutil.ReadFile(userdataFile)
-			if readErr != nil {
-				return errors.Wrap(readErr, "Could not read userdata-file")
+			if userdata != "" && userdataFile != "" {
+				return fmt.Errorf("Either userdata or userdata-file should be set")
 			}
-			userdata = string(userdataRaw)
-		}
 
-		if terminationTime != "" {
-			parsedTime, err := time.Parse(time.RFC3339, terminationTime)
+			if userdataFile != "" {
+				userdataRaw, readErr := ioutil.ReadFile(userdataFile)
+				if readErr != nil {
+					return errors.Wrap(readErr, "Could not read userdata-file")
+				}
+				userdata = string(userdataRaw)
+			}
+
+			if terminationTime != "" {
+				parsedTime, err := time.Parse(time.RFC3339, terminationTime)
+				if err != nil {
+					return errors.Wrap(err, fmt.Sprintf("Could not parse time %q", terminationTime))
+				}
+				endDt = &packngo.Timestamp{Time: parsedTime}
+			}
+
+			var facilityArgs []string
+			if facility != "" {
+				facilityArgs = append(facilityArgs, facility)
+			}
+
+			request := &packngo.DeviceCreateRequest{
+				Hostname:              hostname,
+				Plan:                  plan,
+				Facility:              facilityArgs,
+				Metro:                 metro,
+				OS:                    operatingSystem,
+				BillingCycle:          billingCycle,
+				ProjectID:             projectID,
+				UserData:              userdata,
+				CustomData:            customdata,
+				IPXEScriptURL:         ipxescripturl,
+				Tags:                  tags,
+				PublicIPv4SubnetSize:  publicIPv4SubnetSize,
+				AlwaysPXE:             alwaysPXE,
+				HardwareReservationID: hardwareReservationID,
+				SpotInstance:          spotInstance,
+				SpotPriceMax:          spotPriceMax,
+				TerminationTime:       endDt,
+			}
+
+			device, _, err := c.Service.Create(request)
 			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("Could not parse time %q", terminationTime))
+				return errors.Wrap(err, "Could not create Device")
 			}
-			endDt = &packngo.Timestamp{Time: parsedTime}
-		}
 
-		var facilityArgs []string
-		if facility != "" {
-			facilityArgs = append(facilityArgs, facility)
-		}
+			header := []string{"ID", "Hostname", "OS", "State", "Created"}
+			data := make([][]string, 1)
+			data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
 
-		request := &packngo.DeviceCreateRequest{
-			Hostname:              hostname,
-			Plan:                  plan,
-			Facility:              facilityArgs,
-			Metro:                 metro,
-			OS:                    operatingSystem,
-			BillingCycle:          billingCycle,
-			ProjectID:             projectID,
-			UserData:              userdata,
-			CustomData:            customdata,
-			IPXEScriptURL:         ipxescripturl,
-			Tags:                  tags,
-			PublicIPv4SubnetSize:  publicIPv4SubnetSize,
-			AlwaysPXE:             alwaysPXE,
-			HardwareReservationID: hardwareReservationID,
-			SpotInstance:          spotInstance,
-			SpotPriceMax:          spotPriceMax,
-			TerminationTime:       endDt,
-		}
-
-		device, _, err := apiClient.Devices.Create(request)
-		if err != nil {
-			return errors.Wrap(err, "Could not create Device")
-		}
-
-		header := []string{"ID", "Hostname", "OS", "State", "Created"}
-		data := make([][]string, 1)
-		data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
-
-		return output(device, header, &data)
-	},
-}
-
-func init() {
+			return c.Out.Output(device, header, &data)
+		},
+	}
 	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project where the device will be created")
 	createDeviceCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility where the device will be created")
 	createDeviceCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro where the device will be created")
@@ -146,4 +145,6 @@ func init() {
 	createDeviceCmd.Flags().BoolVarP(&spotInstance, "spot-instance", "I", false, `Set the device as a spot instance`)
 	createDeviceCmd.Flags().Float64VarP(&spotPriceMax, "spot-price-max", "", 0, `--spot-price-max=1.2 or -m=1.2`)
 	createDeviceCmd.Flags().StringVarP(&terminationTime, "termination-time", "T", "", `Device termination time: --termination-time="15:04:05"`)
+
+	return createDeviceCmd
 }

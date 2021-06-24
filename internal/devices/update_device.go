@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package devices
 
 import (
 	"github.com/packethost/packngo"
@@ -27,69 +27,77 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	description string
-	locked      bool
-)
+func (c *Client) Update() *cobra.Command {
 
-// updateDeviceCmd represents the updateDevice command
-var updateDeviceCmd = &cobra.Command{
-	Use:   "update",
-	Short: "Updates a device",
-	Long: `Example:
+	var (
+		description   string
+		locked        bool
+		userdata      string
+		hostname      string
+		tags          []string
+		alwaysPXE     bool
+		ipxescripturl string
+		customdata    string
+		deviceID      string
+	)
+
+	// updateDeviceCmd represents the updateDevice command
+	var updateDeviceCmd = &cobra.Command{
+		Use:   "update",
+		Short: "Updates a device",
+		Long: `Example:
 
 metal device update --id [device_UUID] --hostname [new_hostname]
 
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		req := &packngo.DeviceUpdateRequest{}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			req := &packngo.DeviceUpdateRequest{}
 
-		if hostname != "" {
-			req.Hostname = &hostname
-		}
+			if hostname != "" {
+				req.Hostname = &hostname
+			}
 
-		if description != "" {
-			req.Description = &description
-		}
+			if description != "" {
+				req.Description = &description
+			}
 
-		if userdata != "" {
-			req.UserData = &userdata
-		}
+			if userdata != "" {
+				req.UserData = &userdata
+			}
 
-		if locked {
-			req.Locked = &locked
-		}
+			if locked {
+				req.Locked = &locked
+			}
 
-		if len(tags) > 0 {
-			req.Tags = &tags
-		}
+			if len(tags) > 0 {
+				req.Tags = &tags
+			}
 
-		if alwaysPXE {
-			req.AlwaysPXE = &alwaysPXE
-		}
+			if alwaysPXE {
+				req.AlwaysPXE = &alwaysPXE
+			}
 
-		if ipxescripturl != "" {
-			req.IPXEScriptURL = &ipxescripturl
-		}
+			if ipxescripturl != "" {
+				req.IPXEScriptURL = &ipxescripturl
+			}
 
-		if customdata != "" {
-			req.CustomData = &customdata
-		}
+			if customdata != "" {
+				req.CustomData = &customdata
+			}
 
-		device, _, err := apiClient.Devices.Update(deviceID, req)
-		if err != nil {
-			return errors.Wrap(err, "Could not update Device")
-		}
+			device, _, err := c.Service.Update(deviceID, req)
+			if err != nil {
+				return errors.Wrap(err, "Could not update Device")
+			}
 
-		header := []string{"ID", "Hostname", "OS", "State"}
-		data := make([][]string, 1)
-		data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State}
+			header := []string{"ID", "Hostname", "OS", "State"}
+			data := make([][]string, 1)
+			data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State}
 
-		return output(device, header, &data)
-	},
-}
+			return c.Out.Output(device, header, &data)
+		},
+	}
 
-func init() {
 	updateDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
 	updateDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "Hostname")
 	updateDeviceCmd.Flags().StringVarP(&description, "description", "d", "", "Description for the device")
@@ -101,5 +109,5 @@ func init() {
 	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Custom data")
 
 	_ = updateDeviceCmd.MarkFlagRequired("id")
-
+	return updateDeviceCmd
 }
