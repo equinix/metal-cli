@@ -1,11 +1,9 @@
 package cmd
 
 import (
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 
 	"github.com/equinix/metal-cli/internal/capacity"
-	"github.com/equinix/metal-cli/internal/cli"
 	root "github.com/equinix/metal-cli/internal/cli"
 	"github.com/equinix/metal-cli/internal/completion"
 	"github.com/equinix/metal-cli/internal/devices"
@@ -29,10 +27,8 @@ import (
 
 // Cli struct
 type Cli struct {
-	//	Client     *packngo.Client
-	MainCmd    *cobra.Command
-	Outputer   outputPkg.Outputer
-	rootClient *cli.Client
+	MainCmd  *cobra.Command
+	Outputer outputPkg.Outputer
 }
 
 // VERSION build
@@ -66,14 +62,6 @@ func NewCli() *Cli {
 		},
 	)
 	return cli
-}
-
-func (cli *Cli) API() *packngo.Client {
-	return cli.rootClient.API()
-}
-
-type Registrar interface {
-	NewCommand() *cobra.Command
 }
 
 func (cli *Cli) RegisterCommands(client *root.Client) {

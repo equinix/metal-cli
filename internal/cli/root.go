@@ -60,10 +60,6 @@ func NewClient(consumerToken, apiURL, Version string) *Client {
 	}
 }
 
-type ResponseModifier interface {
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
-}
-
 func (c *Client) apiConnect() error {
 	if c.metalToken == "" {
 		return fmt.Errorf("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a JSON or YAML configuration file.")

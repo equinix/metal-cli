@@ -87,16 +87,3 @@ func (o *CellMerging) Output(in interface{}, header []string, data *[][]string) 
 func (o *CellMerging) SetFormat(fmt Format) {
 	o.Format = fmt
 }
-
-// FormatSwitch returns the Format chosen between JSON, Yaml, and Text based on
-// the supplied boolean values
-func FormatSwitch(json, yaml bool) Format {
-	switch {
-	case json:
-		return FormatJSON
-	case yaml:
-		return FormatYAML
-	default:
-		return FormatText
-	}
-}
