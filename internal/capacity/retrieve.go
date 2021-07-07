@@ -21,7 +21,6 @@
 package capacity
 
 import (
-	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -41,11 +40,6 @@ Retrieve capacities:
 metal capacity get { --metro | --facility }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// TODO: going through extra hoops just to group by location name and level. Is it worth it?
-			format := c.Servicer.Format()
-			c.Out = &outputs.CellMerging{}
-			c.Out.SetFormat(format)
-
 			var err error
 			lister := c.Service.List
 			fieldName := "Facility"
