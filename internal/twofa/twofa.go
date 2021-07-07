@@ -40,7 +40,12 @@ func (c *Client) NewCommand() *cobra.Command {
 		Long:    `Two Factor Authentication operations: enable, disable, receive`,
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			c.Service = c.Servicer.API().TwoFactorAuth
+			if root := cmd.Root(); root != nil {
+				if root.PersistentPreRun != nil {
+					root.PersistentPreRun(cmd, args)
+				}
+			}
+			c.Service = c.Servicer.API(cmd).TwoFactorAuth
 		},
 	}
 
@@ -53,7 +58,7 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API() *packngo.Client
+	API(*cobra.Command) *packngo.Client
 	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 }
 

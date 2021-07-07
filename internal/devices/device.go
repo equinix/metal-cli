@@ -24,6 +24,7 @@ import (
 	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 type Client struct {
@@ -40,7 +41,13 @@ func (c *Client) NewCommand() *cobra.Command {
 		Long:    `Device operations: create, delete, update, start/stop, reboot and get.`,
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			c.Service = c.Servicer.API().Devices
+			if root := cmd.Root(); root != nil {
+				if root.PersistentPreRun != nil {
+					root.PersistentPreRun(cmd, args)
+				}
+			}
+
+			c.Service = c.Servicer.API(cmd).Devices
 		},
 	}
 
@@ -57,8 +64,9 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API() *packngo.Client
+	API(*cobra.Command) *packngo.Client
 	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	Config(cmd *cobra.Command) *viper.Viper
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {

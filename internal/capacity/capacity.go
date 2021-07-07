@@ -39,7 +39,12 @@ func (c *Client) NewCommand() *cobra.Command {
 		Short: "Capacities operations",
 		Long:  `Capacities operations: get, check`,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			c.Service = c.Servicer.API().CapacityService
+			if root := cmd.Root(); root != nil {
+				if root.PersistentPreRun != nil {
+					root.PersistentPreRun(cmd, args)
+				}
+			}
+			c.Service = c.Servicer.API(cmd).CapacityService
 		},
 	}
 
@@ -51,7 +56,7 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API() *packngo.Client
+	API(*cobra.Command) *packngo.Client
 	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 	Format() outputs.Format
 }

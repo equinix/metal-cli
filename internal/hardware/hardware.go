@@ -38,9 +38,13 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"hardware-reservations", "hardware"},
 		Short:   "Hardware reservation operations",
 		Long:    `Hardware reservation operations: get, move`,
-
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			c.Service = c.Servicer.API().HardwareReservations
+			if root := cmd.Root(); root != nil {
+				if root.PersistentPreRun != nil {
+					root.PersistentPreRun(cmd, args)
+				}
+			}
+			c.Service = c.Servicer.API(cmd).HardwareReservations
 		},
 	}
 
@@ -52,7 +56,7 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API() *packngo.Client
+	API(*cobra.Command) *packngo.Client
 	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 	Format() outputs.Format
 }

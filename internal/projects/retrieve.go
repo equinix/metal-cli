@@ -106,6 +106,6 @@ When using "--json" or "--yaml", "--include=members" is implied.
 	}
 
 	retrieveProjectCmd.Flags().StringVarP(&projectName, "project", "n", "", "Name of the project")
-	retrieveProjectCmd.Flags().StringVarP(&projectID, "project-id", "i", "", "UUID of the project")
+	retrieveProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "UUID of the project")
 	return retrieveProjectCmd
 }

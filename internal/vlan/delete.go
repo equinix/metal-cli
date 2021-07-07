@@ -55,7 +55,7 @@ metal virtual-network delete -i [virtual_network_UUID]
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !force {
 				prompt := promptui.Prompt{
-					Label:     fmt.Sprintf("Are you sure you want to delete virual network %s", vnetID),
+					Label:     fmt.Sprintf("Are you sure you want to delete virtual network %s", vnetID),
 					IsConfirm: true,
 				}
 
