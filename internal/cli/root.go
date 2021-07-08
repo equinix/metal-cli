@@ -90,12 +90,12 @@ func (c *Client) Config(cmd *cobra.Command) *viper.Viper {
 			v.SetConfigName("metal")
 			v.AddConfigPath(configDir)
 		}
-
 		if err := v.ReadInConfig(); err != nil {
 			if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 				panic(fmt.Errorf("Could not read config: %s", err))
 			}
 		}
+		c.cfgFile = v.ConfigFileUsed()
 
 		v.SetEnvPrefix(envPrefix)
 		c.viper = v
@@ -179,7 +179,7 @@ func (c *Client) NewCommand() *cobra.Command {
 	rootCmd.PersistentFlags().String("auth-token", "", "Metal API Token (Alias)")
 	authtoken := rootCmd.PersistentFlags().Lookup("auth-token")
 	authtoken.Hidden = true
-	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", "", "Path to JSON or YAML configuration file")
+	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", c.cfgFile, "Path to JSON or YAML configuration file")
 
 	rootCmd.PersistentFlags().BoolVarP(&c.isJSON, "json", "j", false, "JSON output")
 	rootCmd.PersistentFlags().BoolVarP(&c.isYaml, "yaml", "y", false, "YAML output")
