@@ -66,7 +66,7 @@ metal project delete --id [project_UUID]
 		},
 	}
 
-	deleteProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "UUID of the project")
+	deleteProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
 	_ = deleteProjectCmd.MarkFlagRequired("id")
 
 	deleteProjectCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the project")

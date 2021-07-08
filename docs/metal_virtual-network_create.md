@@ -21,7 +21,7 @@ metal virtual-network create [flags]
   -f, --facility string      Code of the facility
   -h, --help                 help for create
   -m, --metro string         Code of the metro
-  -p, --project-id string    UUID of the project
+  -p, --project-id string    Project ID (METAL_PROJECT_ID)
       --vxlan int            VXLAN id to use (can only be used with --metro)
 ```
 
@@ -33,6 +33,7 @@ metal virtual-network create [flags]
       --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
   -j, --json              JSON output
       --search string     Search keyword for use in 'get' actions. Search is not supported by all resources.
+      --token string      Metal API Token (METAL_AUTH_TOKEN)
   -y, --yaml              YAML output
 ```
 

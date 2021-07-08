@@ -41,8 +41,13 @@ func (c *Client) NewCommand() *cobra.Command {
 		Long:    `IP address, reservations and assignment operations: assign, unassign, remove, available, request and get `,
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			c.ProjectService = c.Servicer.API().ProjectIPs
-			c.DeviceService = c.Servicer.API().DeviceIPs
+			if root := cmd.Root(); root != nil {
+				if root.PersistentPreRun != nil {
+					root.PersistentPreRun(cmd, args)
+				}
+			}
+			c.ProjectService = c.Servicer.API(cmd).ProjectIPs
+			c.DeviceService = c.Servicer.API(cmd).DeviceIPs
 		},
 	}
 
@@ -58,7 +63,7 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API() *packngo.Client
+	API(*cobra.Command) *packngo.Client
 	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 }
 

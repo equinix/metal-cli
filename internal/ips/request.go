@@ -70,7 +70,7 @@ metal ip request --quantity [quantity] --facility [facility_code] --type [addres
 		},
 	}
 
-	requestIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	requestIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 	requestIPCmd.Flags().StringVarP(&ttype, "type", "t", "", "Address type public_ipv4 or global_ipv6")
 	requestIPCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	requestIPCmd.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of IP addresses to reserve")

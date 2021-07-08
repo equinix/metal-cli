@@ -18,7 +18,7 @@ metal project update [flags]
 
 ```
   -h, --help                       help for update
-  -i, --id string                  UUID of the project
+  -i, --id string                  Project ID (METAL_PROJECT_ID)
   -n, --name string                Name for the project
   -m, --payment-method-id string   UUID of the payment method
 ```
@@ -31,6 +31,7 @@ metal project update [flags]
       --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
   -j, --json              JSON output
       --search string     Search keyword for use in 'get' actions. Search is not supported by all resources.
+      --token string      Metal API Token (METAL_AUTH_TOKEN)
   -y, --yaml              YAML output
 ```
 

@@ -30,7 +30,6 @@ import (
 )
 
 func (c *Client) Retrieve() *cobra.Command {
-	var projectID, hardwareReservationID string
 	var retrieveHardwareReservationsCmd = &cobra.Command{
 		Use:     "get",
 		Aliases: []string{"list"},
@@ -42,7 +41,11 @@ metal hardware_reservations get -p [project_id]
 
 When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 	`,
+
 		RunE: func(cmd *cobra.Command, args []string) error {
+			projectID, _ := cmd.Flags().GetString("project-id")
+			hardwareReservationID, _ := cmd.Flags().GetString("id")
+
 			header := []string{"ID", "Facility", "Plan", "Created"}
 
 			inc := []string{}
@@ -89,8 +92,8 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 		},
 	}
 
-	retrieveHardwareReservationsCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
-	retrieveHardwareReservationsCmd.Flags().StringVarP(&hardwareReservationID, "id", "i", "", "UUID of the hardware reservation")
+	retrieveHardwareReservationsCmd.Flags().StringP("project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
+	retrieveHardwareReservationsCmd.Flags().StringP("id", "i", "", "UUID of the hardware reservation")
 
 	return retrieveHardwareReservationsCmd
 }

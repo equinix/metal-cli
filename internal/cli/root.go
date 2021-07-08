@@ -26,14 +26,18 @@ import (
 	"os"
 	"path"
 	"runtime"
+	"strings"
 
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
 )
+
+const envPrefix = "METAL"
 
 type Client struct {
 	// apiClient client
@@ -50,6 +54,7 @@ type Client struct {
 	apiURL        string
 	Version       string
 	rootCmd       *cobra.Command
+	viper         *viper.Viper
 }
 
 func NewClient(consumerToken, apiURL, Version string) *Client {
@@ -61,9 +66,6 @@ func NewClient(consumerToken, apiURL, Version string) *Client {
 }
 
 func (c *Client) apiConnect() error {
-	if c.metalToken == "" {
-		return fmt.Errorf("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a JSON or YAML configuration file.")
-	}
 	client, err := packngo.NewClientWithBaseURL(c.consumerToken, c.metalToken, nil, c.apiURL)
 	if err != nil {
 		return errors.Wrap(err, "Could not create Client")
@@ -73,7 +75,68 @@ func (c *Client) apiConnect() error {
 	return nil
 }
 
-func (c *Client) API() *packngo.Client {
+func (c *Client) Config(cmd *cobra.Command) *viper.Viper {
+	if c.viper == nil {
+		v := viper.New()
+		v.AutomaticEnv()
+
+		replacer := strings.NewReplacer("-", "_", ".", "_")
+		v.SetEnvKeyReplacer(replacer)
+		if c.cfgFile != "" {
+			// Use config file from the flag.
+			v.SetConfigFile(c.cfgFile)
+		} else {
+			configDir := path.Join(userHomeDir(), "/.config/equinix")
+			v.SetConfigName("metal")
+			v.AddConfigPath(configDir)
+		}
+
+		if err := v.ReadInConfig(); err != nil {
+			if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+				panic(fmt.Errorf("Could not read config: %s", err))
+			}
+		}
+
+		v.SetEnvPrefix(envPrefix)
+		c.viper = v
+		bindFlags(cmd, v)
+	}
+
+	flagToken := cmd.Flag("token").Value.String()
+	envToken := cmd.Flag("auth-token").Value.String()
+	// TODO: are we ok with this being configured by file too? yes?
+	// TODO: let cli arg take higher priority
+	c.metalToken = flagToken
+	if envToken != "" {
+		c.metalToken = envToken
+	}
+
+	return c.viper
+}
+
+// Credit to https://carolynvanslyck.com/blog/2020/08/sting-of-the-viper/
+func bindFlags(cmd *cobra.Command, v *viper.Viper) {
+	cmd.Flags().VisitAll(func(f *pflag.Flag) {
+		// Environment variables can't have dashes in them, so bind them to their equivalent
+		// keys with underscores, e.g. --favorite-color to STING_FAVORITE_COLOR
+		if strings.Contains(f.Name, "-") {
+			envVarSuffix := strings.ToUpper(strings.ReplaceAll(f.Name, "-", "_"))
+			_ = v.BindEnv(f.Name, fmt.Sprintf("%s_%s", envPrefix, envVarSuffix))
+		}
+
+		// Apply the viper config value to the flag when the flag is not set and viper has a value
+		if !f.Changed && v.IsSet(f.Name) {
+			val := v.Get(f.Name)
+			_ = cmd.Flags().Set(f.Name, fmt.Sprintf("%v", val))
+		}
+	})
+}
+
+func (c *Client) API(cmd *cobra.Command) *packngo.Client {
+	if c.metalToken == "" {
+		log.Fatal("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a JSON or YAML configuration file.")
+	}
+
 	if c.apiClient == nil {
 		err := c.apiConnect()
 		if err != nil {
@@ -107,7 +170,15 @@ func (c *Client) NewCommand() *cobra.Command {
 		Short:             "Command line interface for Equinix Metal",
 		Long:              `Command line interface for Equinix Metal`,
 		DisableAutoGenTag: true,
+
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			c.Config(cmd)
+		},
 	}
+	rootCmd.PersistentFlags().String("token", "", "Metal API Token (METAL_AUTH_TOKEN)")
+	rootCmd.PersistentFlags().String("auth-token", "", "Metal API Token (Alias)")
+	authtoken := rootCmd.PersistentFlags().Lookup("auth-token")
+	authtoken.Hidden = true
 	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", "", "Path to JSON or YAML configuration file")
 
 	rootCmd.PersistentFlags().BoolVarP(&c.isJSON, "json", "j", false, "JSON output")
@@ -143,31 +214,16 @@ func (c *Client) ListOptions(defaultIncludes, defaultExcludes []string) *packngo
 }
 
 // initConfig reads in config file and ENV variables if set.
-func (c *Client) Init() {
-	v := viper.New()
-	if c.cfgFile != "" {
-		// Use config file from the flag.
-		v.SetConfigFile(c.cfgFile)
-	} else {
-		configDir := path.Join(userHomeDir(), "/.config/equinix")
-		v.SetConfigName("metal")
-		v.AddConfigPath(configDir)
-	}
+func (c *Client) Init(cmd *cobra.Command) {
 
-	if err := v.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-			panic(fmt.Errorf("Could not read config: %s", err))
-		}
-	}
-
-	v.SetEnvPrefix("METAL")
-	v.AutomaticEnv()
-	c.metalToken = v.GetString("token")
-	envToken := v.GetString("auth_token")
+	//v := c.Config(cmd)
+	c.Config(cmd)
+	//c.metalToken = v.GetString("token")
+	//envToken := v.GetString("auth_token")
 	// TODO: are we ok with this being configured by file too? yes?
-	if envToken != "" {
-		c.metalToken = envToken
-	}
+	//if envToken != "" {
+	//		c.metalToken = envToken
+	//	}
 }
 
 func userHomeDir() string {

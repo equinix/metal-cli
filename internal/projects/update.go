@@ -59,7 +59,7 @@ metal project update --id [project_UUID] --name [new_name]
 		},
 	}
 
-	updateProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "UUID of the project")
+	updateProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
 	updateProjectCmd.Flags().StringVarP(&name, "name", "n", "", "Name for the project")
 	updateProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "UUID of the payment method")
 

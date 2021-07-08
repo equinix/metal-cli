@@ -20,7 +20,7 @@ metal ip request [flags]
   -c, --comments string     General comments
   -f, --facility string     Code of the facility
   -h, --help                help for request
-  -p, --project-id string   UUID of the project
+  -p, --project-id string   Project ID (METAL_PROJECT_ID)
   -q, --quantity int        Number of IP addresses to reserve
       --tags strings        Tags to add, comma-separated for multiple, or repeat multiple times
   -t, --type string         Address type public_ipv4 or global_ipv6
@@ -34,6 +34,7 @@ metal ip request [flags]
       --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
   -j, --json              JSON output
       --search string     Search keyword for use in 'get' actions. Search is not supported by all resources.
+      --token string      Metal API Token (METAL_AUTH_TOKEN)
   -y, --yaml              YAML output
 ```
 

@@ -49,7 +49,6 @@ func NewCli() *Cli {
 	}
 
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
-	rootClient.Init()
 	rootCmd := rootClient.NewCommand()
 	rootCmd.DisableSuggestions = false
 	cli.MainCmd = rootCmd

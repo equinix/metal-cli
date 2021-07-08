@@ -28,6 +28,7 @@ import (
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func (c *Client) Create() *cobra.Command {
@@ -122,7 +123,9 @@ metal device create --hostname [hostname] --plan [plan] --metro [metro_code] --f
 			return c.Out.Output(device, header, &data)
 		},
 	}
-	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project where the device will be created")
+	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID) where the device will be created")
+	_ = viper.BindPFlag("project-id", createDeviceCmd.Flags().Lookup("project-id"))
+
 	createDeviceCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility where the device will be created")
 	createDeviceCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro where the device will be created")
 	createDeviceCmd.Flags().StringVarP(&plan, "plan", "P", "", "Name of the plan")

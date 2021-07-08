@@ -114,7 +114,7 @@ When using "--json" or "--yaml", "--include=relationships" is implied.
 		},
 	}
 	retrieveEventCmd.Flags().StringVarP(&eventID, "id", "i", "", "UUID of the event")
-	retrieveEventCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	retrieveEventCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 	retrieveEventCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
 	retrieveEventCmd.Flags().StringVarP(&organizationID, "organization-id", "o", "", "UUID of the organization")
 	return retrieveEventCmd

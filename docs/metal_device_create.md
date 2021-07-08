@@ -28,7 +28,7 @@ metal device create [flags]
   -m, --metro string                     Code of the metro where the device will be created
   -o, --operating-system string          Operating system name for the device
   -P, --plan string                      Name of the plan
-  -p, --project-id string                UUID of the project where the device will be created
+  -p, --project-id string                Project ID (METAL_PROJECT_ID) where the device will be created
   -v, --public-ipv4-subnet-size int      Size of the public IPv4 subnet
   -I, --spot-instance                    Set the device as a spot instance
       --spot-price-max float             --spot-price-max=1.2 or -m=1.2
@@ -46,6 +46,7 @@ metal device create [flags]
       --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
   -j, --json              JSON output
       --search string     Search keyword for use in 'get' actions. Search is not supported by all resources.
+      --token string      Metal API Token (METAL_AUTH_TOKEN)
   -y, --yaml              YAML output
 ```
 

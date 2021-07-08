@@ -28,21 +28,20 @@ import (
 )
 
 func (c *Client) Retrieve() *cobra.Command {
-	var (
-		projectID string
-		deviceID  string
-	)
-
 	var retrieveDeviceCmd = &cobra.Command{
 		Use:     "get",
 		Aliases: []string{"list"},
 		Short:   "Retrieves device list or device details",
+
 		Long: `Example:
 	
 metal device get --id [device_UUID]
 
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			deviceID, _ := cmd.Flags().GetString("id")
+			projectID, _ := cmd.Flags().GetString("project-id")
+
 			if deviceID != "" && projectID != "" {
 				return fmt.Errorf("Either id or project-id can be set.")
 			} else if deviceID == "" && projectID == "" {
@@ -75,8 +74,9 @@ metal device get --id [device_UUID]
 			return nil
 		},
 	}
-	retrieveDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
-	retrieveDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
+
+	retrieveDeviceCmd.Flags().StringP("project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
+	retrieveDeviceCmd.Flags().StringP("id", "i", "", "UUID of the device")
 
 	return retrieveDeviceCmd
 }
