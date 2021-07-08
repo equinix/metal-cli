@@ -39,10 +39,10 @@ func (c *Client) Enable() *cobra.Command {
 		Long: `Example:
 
 Enable two factor authentication via SMS
-metal 2fa enable -s -t [token]
+metal 2fa enable -s -c [code]
 
 Enable two factor authentication via APP
-metal 2fa enable -a -t [token]
+metal 2fa enable -a -c [code]
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if sms == app {
@@ -65,7 +65,7 @@ metal 2fa enable -a -t [token]
 
 	enable2faCmd.Flags().BoolVarP(&sms, "sms", "s", false, "Issues SMS otp token to user's phone")
 	enable2faCmd.Flags().BoolVarP(&app, "app", "a", false, "Issues otp uri for auth application")
-	enable2faCmd.Flags().StringVarP(&token, "token", "t", "", "Two factor authentication token")
-	_ = enable2faCmd.MarkFlagRequired("token")
+	enable2faCmd.Flags().StringVarP(&token, "code", "c", "", "Two factor authentication code")
+	_ = enable2faCmd.MarkFlagRequired("code")
 	return enable2faCmd
 }
