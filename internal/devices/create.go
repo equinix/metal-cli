@@ -124,7 +124,7 @@ metal device create --hostname [hostname] --plan [plan] --metro [metro_code] --f
 		},
 	}
 	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID) where the device will be created")
-	viper.BindPFlag("project-id", createDeviceCmd.Flags().Lookup("project-id"))
+	_ = viper.BindPFlag("project-id", createDeviceCmd.Flags().Lookup("project-id"))
 
 	createDeviceCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility where the device will be created")
 	createDeviceCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro where the device will be created")
