@@ -175,9 +175,10 @@ func (c *Client) NewCommand() *cobra.Command {
 			c.Config(cmd)
 		},
 	}
-	rootCmd.PersistentFlags().String("token", "", "Metal API Token")
+	rootCmd.PersistentFlags().String("token", "", "Metal API Token (METAL_AUTH_TOKEN)")
 	rootCmd.PersistentFlags().String("auth-token", "", "Metal API Token (Alias)")
-
+	authtoken := rootCmd.PersistentFlags().Lookup("auth-token")
+	authtoken.Hidden = true
 	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", "", "Path to JSON or YAML configuration file")
 
 	rootCmd.PersistentFlags().BoolVarP(&c.isJSON, "json", "j", false, "JSON output")
