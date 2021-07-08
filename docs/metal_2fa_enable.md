@@ -7,10 +7,10 @@ Enables two factor authentication
 Example:
 
 Enable two factor authentication via SMS
-metal 2fa enable -s -t [token]
+metal 2fa enable -s -c [code]
 
 Enable two factor authentication via APP
-metal 2fa enable -a -t [token]
+metal 2fa enable -a -c [code]
 
 
 ```
@@ -20,10 +20,10 @@ metal 2fa enable [flags]
 ### Options
 
 ```
-  -a, --app            Issues otp uri for auth application
-  -h, --help           help for enable
-  -s, --sms            Issues SMS otp token to user's phone
-  -t, --token string   Two factor authentication token
+  -a, --app           Issues otp uri for auth application
+  -c, --code string   Two factor authentication code
+  -h, --help          help for enable
+  -s, --sms           Issues SMS otp token to user's phone
 ```
 
 ### Options inherited from parent commands
@@ -34,6 +34,7 @@ metal 2fa enable [flags]
       --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
   -j, --json              JSON output
       --search string     Search keyword for use in 'get' actions. Search is not supported by all resources.
+      --token string      Metal API Token (METAL_AUTH_TOKEN)
   -y, --yaml              YAML output
 ```
 

@@ -23,9 +23,9 @@ metal project get [flags]
 ### Options
 
 ```
-  -h, --help                help for get
-  -n, --project string      Name of the project
-  -i, --project-id string   UUID of the project
+  -h, --help             help for get
+  -i, --id string        Project ID (METAL_PROJECT_ID)
+  -n, --project string   Name of the project
 ```
 
 ### Options inherited from parent commands
@@ -36,6 +36,7 @@ metal project get [flags]
       --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
   -j, --json              JSON output
       --search string     Search keyword for use in 'get' actions. Search is not supported by all resources.
+      --token string      Metal API Token (METAL_AUTH_TOKEN)
   -y, --yaml              YAML output
 ```
 
