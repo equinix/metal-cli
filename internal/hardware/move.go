@@ -51,7 +51,7 @@ metal hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
 	}
 
 	moveHardwareReservationCmd.Flags().StringVarP(&hardwareReservationID, "id", "i", "", "UUID of the hardware reservation")
-	moveHardwareReservationCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	moveHardwareReservationCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 	_ = moveHardwareReservationCmd.MarkFlagRequired("project-id")
 	_ = moveHardwareReservationCmd.MarkFlagRequired("id")
 

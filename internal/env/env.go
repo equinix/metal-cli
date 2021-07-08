@@ -78,8 +78,8 @@ func (c *Client) NewCommand() *cobra.Command {
 		},
 	}
 
-	// 	envCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
-	envCmd.Flags().StringP("project-id", "p", "", "UUID of the project")
+	// 	envCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
+	envCmd.Flags().StringP("project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 
 	return envCmd
 

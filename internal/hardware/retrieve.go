@@ -92,7 +92,7 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 		},
 	}
 
-	retrieveHardwareReservationsCmd.Flags().StringP("project-id", "p", "", "UUID of the project")
+	retrieveHardwareReservationsCmd.Flags().StringP("project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 	retrieveHardwareReservationsCmd.Flags().StringP("id", "i", "", "UUID of the hardware reservation")
 
 	return retrieveHardwareReservationsCmd

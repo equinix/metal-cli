@@ -105,7 +105,7 @@ metal ip get --reservation-id [reservation_UUID]
 		},
 	}
 
-	retrieveIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	retrieveIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 	retrieveIPCmd.Flags().StringVarP(&assignmentID, "assignment-id", "a", "", "UUID of the assignment")
 	retrieveIPCmd.Flags().StringVarP(&reservationID, "reservation-id", "r", "", "UUID of the reservation")
 	return retrieveIPCmd

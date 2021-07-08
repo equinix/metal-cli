@@ -68,7 +68,7 @@ metal virtual-network create --project-id [project_UUID] { --metro [metro_code] 
 		},
 	}
 
-	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	createVirtualNetworkCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
 	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the virtual network")

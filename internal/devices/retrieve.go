@@ -75,7 +75,7 @@ metal device get --id [device_UUID]
 		},
 	}
 
-	retrieveDeviceCmd.Flags().StringP("project-id", "p", "", "UUID of the project")
+	retrieveDeviceCmd.Flags().StringP("project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 	retrieveDeviceCmd.Flags().StringP("id", "i", "", "UUID of the device")
 
 	return retrieveDeviceCmd

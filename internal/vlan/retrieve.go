@@ -56,7 +56,7 @@ metal virtual-network get -p [project_UUID]
 			return c.Out.Output(vnets, header, &data)
 		},
 	}
-	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "UUID of the project")
+	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 	_ = retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
 
 	return retrieveVirtualNetworksCmd
