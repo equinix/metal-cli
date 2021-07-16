@@ -30,6 +30,7 @@ Command line interface for Equinix Metal
 * [metal event](metal_event.md)	 - Events operations
 * [metal facilities](metal_facilities.md)	 - Facility operations
 * [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations
+* [metal init](metal_init.md)	 - Create a configuration file
 * [metal ip](metal_ip.md)	 - IP operations
 * [metal metros](metal_metros.md)	 - Metro operations
 * [metal operating-systems](metal_operating-systems.md)	 - Operating system operations

@@ -137,7 +137,7 @@ func bindFlags(cmd *cobra.Command, v *viper.Viper) {
 
 func (c *Client) API(cmd *cobra.Command) *packngo.Client {
 	if c.metalToken == "" {
-		log.Fatal("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a JSON or YAML configuration file.")
+		log.Fatal("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a configuration file using 'metal init'.")
 	}
 
 	if c.apiClient == nil {

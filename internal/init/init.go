@@ -83,7 +83,7 @@ func (c *Client) NewCommand() *cobra.Command {
 				config = c.Servicer.DefaultConfig(true)
 			}
 
-			fmt.Println("Equinix Metal API Tokens can be obtained through the portal at https://console.equinix.com/.\nSee https://metal.equinix.com/developers/docs/accounts/users/ for more details.")
+			fmt.Print("Equinix Metal API Tokens can be obtained through the portal at https://console.equinix.com/.\nSee https://metal.equinix.com/developers/docs/accounts/users/ for more details.\n\n")
 			fmt.Print("Token (hidden): ")
 			b, err := term.ReadPassword(int(syscall.Stdin))
 			if err != nil {
@@ -168,7 +168,7 @@ func formatConfig(userProj, userOrg, token string) ([]byte, error) {
 }
 
 func writeConfig(config string, b []byte) error {
-	fmt.Fprintf(os.Stderr, "Writing %s\n", config)
+	fmt.Fprintf(os.Stderr, "\nWriting %s\n", config)
 	dir := filepath.Dir(config)
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		return fmt.Errorf("could not make directory %q: %s", dir, err)
