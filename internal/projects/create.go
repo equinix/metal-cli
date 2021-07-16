@@ -69,7 +69,7 @@ metal project create --name [project_name]
 	}
 
 	createProjectCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the project")
-	createProjectCmd.Flags().StringVarP(&organizationID, "organization-id", "o", "", "UUID of the organization")
+	createProjectCmd.Flags().StringVarP(&organizationID, "organization-id", "O", "", "UUID of the organization")
 	createProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "UUID of the payment method")
 
 	_ = createProjectCmd.MarkFlagRequired("name")
