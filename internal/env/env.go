@@ -72,9 +72,12 @@ func (c *Client) NewCommand() *cobra.Command {
 		DisableFlagsInUseLine: true,
 		Run: func(cmd *cobra.Command, args []string) {
 			projectID, _ := cmd.Flags().GetString("project-id")
+			config, _ := cmd.Flags().GetString("config")
 
 			fmt.Printf("%s=%s\n", c.apiTokenEnvVar, c.tokener.Token())
 			fmt.Printf("METAL_PROJECT_ID=%s\n", projectID)
+			fmt.Printf("METAL_CONFIG=%s\n", config)
+
 		},
 	}
 

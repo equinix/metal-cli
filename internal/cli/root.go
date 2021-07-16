@@ -37,7 +37,10 @@ import (
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
 )
 
-const envPrefix = "METAL"
+const (
+	envPrefix                  = "METAL"
+	configFileWithoutExtension = "metal"
+)
 
 type Client struct {
 	// apiClient client
@@ -86,16 +89,16 @@ func (c *Client) Config(cmd *cobra.Command) *viper.Viper {
 			// Use config file from the flag.
 			v.SetConfigFile(c.cfgFile)
 		} else {
-			configDir := path.Join(userHomeDir(), "/.config/equinix")
-			v.SetConfigName("metal")
+			configDir := c.DefaultConfig(false)
+			v.SetConfigName(configFileWithoutExtension)
 			v.AddConfigPath(configDir)
 		}
-
 		if err := v.ReadInConfig(); err != nil {
 			if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 				panic(fmt.Errorf("Could not read config: %s", err))
 			}
 		}
+		c.cfgFile = v.ConfigFileUsed()
 
 		v.SetEnvPrefix(envPrefix)
 		c.viper = v
@@ -134,7 +137,7 @@ func bindFlags(cmd *cobra.Command, v *viper.Viper) {
 
 func (c *Client) API(cmd *cobra.Command) *packngo.Client {
 	if c.metalToken == "" {
-		log.Fatal("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a JSON or YAML configuration file.")
+		log.Fatal("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a configuration file using 'metal init'.")
 	}
 
 	if c.apiClient == nil {
@@ -148,6 +151,10 @@ func (c *Client) API(cmd *cobra.Command) *packngo.Client {
 
 func (c *Client) Token() string {
 	return c.metalToken
+}
+
+func (c *Client) SetToken(token string) {
+	c.metalToken = token
 }
 
 func (c *Client) Format() outputPkg.Format {
@@ -179,7 +186,7 @@ func (c *Client) NewCommand() *cobra.Command {
 	rootCmd.PersistentFlags().String("auth-token", "", "Metal API Token (Alias)")
 	authtoken := rootCmd.PersistentFlags().Lookup("auth-token")
 	authtoken.Hidden = true
-	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", "", "Path to JSON or YAML configuration file")
+	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", c.cfgFile, "Path to JSON or YAML configuration file")
 
 	rootCmd.PersistentFlags().BoolVarP(&c.isJSON, "json", "j", false, "JSON output")
 	rootCmd.PersistentFlags().BoolVarP(&c.isYaml, "yaml", "y", false, "YAML output")
@@ -224,6 +231,15 @@ func (c *Client) Init(cmd *cobra.Command) {
 	//if envToken != "" {
 	//		c.metalToken = envToken
 	//	}
+}
+
+func (c *Client) DefaultConfig(withExtension bool) string {
+	dir := path.Join(userHomeDir(), "/.config/equinix")
+	config := path.Join(dir, configFileWithoutExtension)
+	if withExtension {
+		config = config + ".yaml"
+	}
+	return config
 }
 
 func userHomeDir() string {

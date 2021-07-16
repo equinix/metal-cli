@@ -165,70 +165,21 @@ Check `metal completion -h` for instructions to use in other shells.
 
 ## Authentication
 
-The Equinix Metal authentication token can be stored in the `$METAL_AUTH_TOKEN` environment variable or in JSON or YAML configuration files. The configuration file path can be overridden with the `--config` flag.
-
-Environment variable:
+After installing Equinix Metal CLI, configure your account using `metal init`:
 
 ```bash
-export METAL_AUTH_TOKEN=[METAL_AUTH_TOKEN]
+$ metal init
+Equinix Metal API Tokens can be obtained through the portal at https://console.equinix.com/.
+See https://metal.equinix.com/developers/docs/accounts/users/ for more details.
+
+Token (hidden): 
+Organization ID []: 87e62b5c-7e4e-4a29-ac40-d5df9535868f
+Project ID []: a4e48c3a-6819-485a-822f-81b3845d5aa5
+
+Writing /Users/username/.config/equinix/metal.yaml
 ```
 
-YAML configuration file - `$HOME/.config/equinix/metal.yaml`:
-
-```yaml
----
-token: METAL_AUTH_TOKEN
-```
-
-JSON configuration file - `$HOME/.config/equinix/metal.json`:
-
-```json
-{
-  "token": "METAL_AUTH_TOKEN"
-}
-```
-
-After installing Equinix Metal CLI, verify the installation by executing `metal` or `metal.exe`. You should see the default output:
-
-```bash
-Command line interface for Equinix Metal
-
-Usage:
-  metal [command]
-
-Available Commands:
-  2fa                  Two Factor Authentication operations
-  capacity             Capacities operations
-  completion           Generate completion script
-  device               Device operations
-  docs                 Generate command documentation
-  env                  Generate environment variables
-  event                Events operations
-  facilities           Facility operations
-  hardware-reservation Hardware reservation operations
-  help                 Help about any command
-  ip                   IP operations
-  metros               Metro operations
-  operating-systems    Operating system operations
-  organization         Organization operations
-  plan                 Plan operations
-  project              Project operations
-  ssh-key              SSH key operations
-  user                 User operations
-  virtual-network      Virtual network operations
-
-Flags:
-      --config string     Path to JSON or YAML configuration file
-      --exclude strings   Comma seperated Href references to collapse in results, may be dotted three levels deep
-  -h, --help              help for metal
-      --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
-  -j, --json              JSON output
-      --search string     Search keyword for use in 'get' actions. Search is not supported by all resources.
-  -v, --version           version for metal
-  -y, --yaml              YAML output
-
-Use "metal [command] --help" for more information about a command.
-```
+The Equinix Metal authentication token can be stored in the `$METAL_AUTH_TOKEN` environment variable or in JSON or YAML configuration files. The configuration file path can be overridden with the `--config` flag.  The default configuration path is "$HOME/config/equinix/metal.*" (any supported filetype).
 
 ## Includes and Excludes
 

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ghodss/yaml"
 	"github.com/olekukonko/tablewriter"
+	"sigs.k8s.io/yaml"
 )
 
 type Format string
