@@ -50,8 +50,7 @@ type Client struct {
 	excludes      *[]string // nolint:unused
 	search        string
 	cfgFile       string
-	isJSON        bool
-	isYaml        bool
+	outputFormat  string
 	metalToken    string
 	consumerToken string
 	apiURL        string
@@ -89,7 +88,7 @@ func (c *Client) Config(cmd *cobra.Command) *viper.Viper {
 			// Use config file from the flag.
 			v.SetConfigFile(c.cfgFile)
 		} else {
-			configDir := c.DefaultConfig(false)
+			configDir := defaultConfigPath()
 			v.SetConfigName(configFileWithoutExtension)
 			v.AddConfigPath(configDir)
 		}
@@ -158,14 +157,15 @@ func (c *Client) SetToken(token string) {
 }
 
 func (c *Client) Format() outputPkg.Format {
-	format := outputPkg.FormatText
+	format := outputPkg.FormatTable
 
-	// TODO(displague) remove isJSON and isYaml globals
-	switch {
-	case c.isJSON:
-		format = outputPkg.FormatJSON
-	case c.isYaml:
-		format = outputPkg.FormatYAML
+	switch f := outputPkg.Format(c.outputFormat); f {
+	case outputPkg.FormatTable:
+	case outputPkg.FormatJSON:
+	case outputPkg.FormatYAML:
+		format = f
+	default:
+		log.Printf("unknown format: %q. Using default.", f)
 	}
 	return format
 }
@@ -188,9 +188,7 @@ func (c *Client) NewCommand() *cobra.Command {
 	authtoken.Hidden = true
 	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", c.cfgFile, "Path to JSON or YAML configuration file")
 
-	rootCmd.PersistentFlags().BoolVarP(&c.isJSON, "json", "j", false, "JSON output")
-	rootCmd.PersistentFlags().BoolVarP(&c.isYaml, "yaml", "y", false, "YAML output")
-
+	rootCmd.PersistentFlags().StringVarP(&c.outputFormat, "output", "o", "", "Output format (*table, json, yaml)")
 	c.includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma seperated Href references to expand in results, may be dotted three levels deep")
 	c.excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma seperated Href references to collapse in results, may be dotted three levels deep")
 	rootCmd.PersistentFlags().StringVar(&c.search, "search", "", "Search keyword for use in 'get' actions. Search is not supported by all resources.")
@@ -233,8 +231,12 @@ func (c *Client) Init(cmd *cobra.Command) {
 	//	}
 }
 
+func defaultConfigPath() string {
+	return path.Join(userHomeDir(), "/.config/equinix")
+}
+
 func (c *Client) DefaultConfig(withExtension bool) string {
-	dir := path.Join(userHomeDir(), "/.config/equinix")
+	dir := defaultConfigPath()
 	config := path.Join(dir, configFileWithoutExtension)
 	if withExtension {
 		config = config + ".yaml"

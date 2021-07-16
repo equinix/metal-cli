@@ -12,9 +12,9 @@ import (
 type Format string
 
 const (
-	FormatText Format = "text"
-	FormatJSON Format = "json"
-	FormatYAML Format = "yaml"
+	FormatTable Format = "table"
+	FormatJSON  Format = "json"
+	FormatYAML  Format = "yaml"
 )
 
 type Outputer interface {
