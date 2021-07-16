@@ -37,7 +37,10 @@ import (
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
 )
 
-const envPrefix = "METAL"
+const (
+	envPrefix                  = "METAL"
+	configFileWithoutExtension = "metal"
+)
 
 type Client struct {
 	// apiClient client
@@ -86,8 +89,8 @@ func (c *Client) Config(cmd *cobra.Command) *viper.Viper {
 			// Use config file from the flag.
 			v.SetConfigFile(c.cfgFile)
 		} else {
-			configDir := path.Join(userHomeDir(), "/.config/equinix")
-			v.SetConfigName("metal")
+			configDir := c.DefaultConfig(false)
+			v.SetConfigName(configFileWithoutExtension)
 			v.AddConfigPath(configDir)
 		}
 		if err := v.ReadInConfig(); err != nil {
@@ -148,6 +151,10 @@ func (c *Client) API(cmd *cobra.Command) *packngo.Client {
 
 func (c *Client) Token() string {
 	return c.metalToken
+}
+
+func (c *Client) SetToken(token string) {
+	c.metalToken = token
 }
 
 func (c *Client) Format() outputPkg.Format {
@@ -224,6 +231,15 @@ func (c *Client) Init(cmd *cobra.Command) {
 	//if envToken != "" {
 	//		c.metalToken = envToken
 	//	}
+}
+
+func (c *Client) DefaultConfig(withExtension bool) string {
+	dir := path.Join(userHomeDir(), "/.config/equinix")
+	config := path.Join(dir, configFileWithoutExtension)
+	if withExtension {
+		config = config + ".yaml"
+	}
+	return config
 }
 
 func userHomeDir() string {

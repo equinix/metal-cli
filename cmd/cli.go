@@ -12,6 +12,7 @@ import (
 	"github.com/equinix/metal-cli/internal/events"
 	"github.com/equinix/metal-cli/internal/facilities"
 	"github.com/equinix/metal-cli/internal/hardware"
+	initPkg "github.com/equinix/metal-cli/internal/init"
 	"github.com/equinix/metal-cli/internal/ips"
 	"github.com/equinix/metal-cli/internal/metros"
 	"github.com/equinix/metal-cli/internal/organizations"
@@ -69,6 +70,7 @@ func (cli *Cli) RegisterCommands(client *root.Client) {
 		completion.NewCommand(),
 
 		env.NewClient(client, apiTokenEnvVar).NewCommand(),
+		initPkg.NewClient(client).NewCommand(),
 
 		capacity.NewClient(client, cli.Outputer).NewCommand(),
 		metros.NewClient(client, cli.Outputer).NewCommand(),
