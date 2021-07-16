@@ -24,13 +24,13 @@ metal device create [flags]
   -r, --hardware-reservation-id string   UUID of the hardware reservation
   -h, --help                             help for create
   -H, --hostname string                  Hostname
-  -i, --ipxe-script-url string           URL to the iPXE script
+  -I, --ipxe-script-url string           URL to the iPXE script
   -m, --metro string                     Code of the metro where the device will be created
-  -o, --operating-system string          Operating system name for the device
+  -O, --operating-system string          Operating system name for the device
   -P, --plan string                      Name of the plan
   -p, --project-id string                Project ID (METAL_PROJECT_ID) where the device will be created
-  -v, --public-ipv4-subnet-size int      Size of the public IPv4 subnet
-  -I, --spot-instance                    Set the device as a spot instance
+  -S, --public-ipv4-subnet-size int      Size of the public IPv4 subnet
+  -s, --spot-instance                    Set the device as a spot instance
       --spot-price-max float             --spot-price-max=1.2 or -m=1.2
   -t, --tags strings                     Tags for the device: --tags="tag1,tag2"
   -T, --termination-time string          Device termination time: --termination-time="15:04:05"
@@ -44,10 +44,9 @@ metal device create [flags]
       --config string     Path to JSON or YAML configuration file
       --exclude strings   Comma seperated Href references to collapse in results, may be dotted three levels deep
       --include strings   Comma seperated Href references to expand in results, may be dotted three levels deep
-  -j, --json              JSON output
+  -o, --output string     Output format (*table, json, yaml)
       --search string     Search keyword for use in 'get' actions. Search is not supported by all resources.
       --token string      Metal API Token (METAL_AUTH_TOKEN)
-  -y, --yaml              YAML output
 ```
 
 ### SEE ALSO

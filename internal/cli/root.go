@@ -160,6 +160,8 @@ func (c *Client) Format() outputPkg.Format {
 	format := outputPkg.FormatTable
 
 	switch f := outputPkg.Format(c.outputFormat); f {
+	case "":
+		break
 	case outputPkg.FormatTable:
 	case outputPkg.FormatJSON:
 	case outputPkg.FormatYAML:
