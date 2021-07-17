@@ -39,11 +39,11 @@ $(LINTER):
 	go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.30.0
 
 build:
-	go build ${LDFLAGS} -o bin/${BINARY}
+	go build ${LDFLAGS} ./cmd/metal -o bin/${BINARY}
 
 build-all:
 	$(foreach GOOS, $(PLATFORMS),\
-	$(foreach GOARCH, $(ARCHITECTURES), $(shell export GOOS=$(GOOS); export GOARCH=$(GOARCH); go build -v -o bin/$(BINARY)-$(GOOS)-$(GOARCH))))
+	$(foreach GOARCH, $(ARCHITECTURES), $(shell export GOOS=$(GOOS); export GOARCH=$(GOARCH); go build ./cmd/metal -v -o bin/$(BINARY)-$(GOOS)-$(GOARCH))))
 
 clean:
 	rm -rf bin/
@@ -53,12 +53,11 @@ clean-docs:
 	rm -rf docs/
 
 install:
-	go install ${LDFLAGS}
-	mv ${GOPATH}/bin/metal-cli ${GOPATH}/bin/${BINARY}
+	go install ${LDFLAGS} ./cmd/metal
 
 generate-docs: clean-docs
 	mkdir -p docs
-	go run main.go docs ./docs
+	go run ./cmd/metal docs ./docs
 
 test:
 	go test ./tests
