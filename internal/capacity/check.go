@@ -85,7 +85,7 @@ metal capacity check {-m [metro] | -f [facility]} -p [plan] -q [quantity]
 
 	checkCapacityCommand.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
 	checkCapacityCommand.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
-	checkCapacityCommand.Flags().StringVarP(&plan, "plan", "p", "", "Name of the plan")
+	checkCapacityCommand.Flags().StringVarP(&plan, "plan", "P", "", "Name of the plan")
 	checkCapacityCommand.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of devices wanted")
 
 	_ = checkCapacityCommand.MarkFlagRequired("plan")
