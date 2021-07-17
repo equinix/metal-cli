@@ -7,12 +7,13 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
 builds:
-- env:
+- main: ./cmd/metal
+  env:
   - CGO_ENABLED=0
-  binary: packet
+  binary: metal
   ldflags:
-   - -X github.com/packethost/packet-cli/cmd.Version={{.Version}}
-   - -X github.com/packethost/packet-cli/cmd.Build=${.Commit}"
+   - -X github.com/equinix/metal-cli/cmd.Version={{.Version}}
+   - -X github.com/equinix/metal-cli/cmd.Build=${.Commit}"
 
   goos:
     - freebsd

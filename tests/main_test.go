@@ -13,11 +13,11 @@ import (
 	"github.com/packethost/packngo"
 )
 
-const binaryName = "packet"
+const binaryName = "metal"
 
 const (
 	consumerToken  = "Equinix Metal CLI"
-	apiTokenEnvVar = "PACKET_TOKEN"
+	apiTokenEnvVar = "METAL_AUTH_TOKEN"
 	apiURL         = "https://api.equinix.com/metal/v1/"
 )
 

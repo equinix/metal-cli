@@ -25,5 +25,5 @@ git push origin --tags 0.0.9
 
 This will build and release binaries for several different OS and Architecture combinations.
 
-Any special instructions or notes should be added by editing the release notes that goreleaser publishes. These notes can be found at https://github.com/packethost/packet-cli/releases
+Any special instructions or notes should be added by editing the release notes that goreleaser publishes. These notes can be found at https://github.com/equinix/metal-cli/releases
 
