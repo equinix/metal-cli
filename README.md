@@ -45,7 +45,7 @@ The [Equinix Metal CLI binaries](https://github.com/equinix/metal-cli/releases) 
 If you have `go` installed, you can build and install the latest version with:
 
 ```sh
-go get -u github.com/equinix/metal/cmd/metal
+go get -u github.com/equinix/metal-cli/cmd/metal
 ```
 
 You can find the installed executable/binary in either `$GOPATH/bin` or `$HOME/go/bin` folder.
