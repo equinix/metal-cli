@@ -22,6 +22,7 @@ package main
 
 import (
 	"os"
+	"runtime/debug"
 
 	"github.com/equinix/metal-cli/cmd"
 )
@@ -31,4 +32,19 @@ func main() {
 	if err := cli.MainCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
+}
+
+func init() {
+	// look for the default version and replace it, if found, from runtime build info
+	if cmd.Version != "devel" {
+		return
+	}
+	bi, ok := debug.ReadBuildInfo()
+	if !ok {
+		return
+	}
+
+	// Version is set in artifacts built with -X github.com/equinix/metal-cli/cmd.Version=1.2.3
+	// Ensure version is also set when installed via go install github.com/equinix/metal-cli/cmd/metal
+	cmd.Version = bi.Main.Version
 }
