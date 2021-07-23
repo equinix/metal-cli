@@ -235,6 +235,7 @@ func (c *Client) Format() outputPkg.Format {
 		break
 	case outputPkg.FormatTable,
 		outputPkg.FormatTerraform,
+		outputPkg.FormatCrossplane,
 		outputPkg.FormatJSON,
 		outputPkg.FormatYAML:
 		format = f
