@@ -162,9 +162,9 @@ func (c *Client) Format() outputPkg.Format {
 	switch f := outputPkg.Format(c.outputFormat); f {
 	case "":
 		break
-	case outputPkg.FormatTable:
-	case outputPkg.FormatJSON:
-	case outputPkg.FormatYAML:
+	case outputPkg.FormatTable,
+		outputPkg.FormatJSON,
+		outputPkg.FormatYAML:
 		format = f
 	default:
 		log.Printf("unknown format: %q. Using default.", f)
