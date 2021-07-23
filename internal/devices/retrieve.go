@@ -42,10 +42,19 @@ metal device get --id [device_UUID]
 			deviceID, _ := cmd.Flags().GetString("id")
 			projectID, _ := cmd.Flags().GetString("project-id")
 
-			if deviceID != "" && projectID != "" {
-				return fmt.Errorf("Either id or project-id can be set.")
-			} else if deviceID == "" && projectID == "" {
+			if deviceID == "" && projectID == "" {
 				return fmt.Errorf("Either id or project-id should be set.")
+			} else if deviceID != "" {
+				device, _, err := c.Service.Get(deviceID, nil)
+				if err != nil {
+					return errors.Wrap(err, "Could not get Devices")
+				}
+				header := []string{"ID", "Hostname", "OS", "State", "Created"}
+
+				data := make([][]string, 1)
+				data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
+
+				return c.Out.Output(device, header, &data)
 			} else if projectID != "" {
 				devices, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))
 				if err != nil {
@@ -59,17 +68,6 @@ metal device get --id [device_UUID]
 				header := []string{"ID", "Hostname", "OS", "State", "Created"}
 
 				return c.Out.Output(devices, header, &data)
-			} else if deviceID != "" {
-				device, _, err := c.Service.Get(deviceID, nil)
-				if err != nil {
-					return errors.Wrap(err, "Could not get Devices")
-				}
-				header := []string{"ID", "Hostname", "OS", "State", "Created"}
-
-				data := make([][]string, 1)
-				data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
-
-				return c.Out.Output(device, header, &data)
 			}
 			return nil
 		},
