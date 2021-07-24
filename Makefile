@@ -13,7 +13,7 @@ ifneq (,$(RELEASE_TAG))
 VERSION:=$(RELEASE_TAG)-$(VERSION)
 endif
 
-BUILD=`git rev-parse --short HEAD`
+BUILD?=$(shell git rev-parse --short HEAD)
 PLATFORMS?=darwin linux windows freebsd
 ARCHITECTURES?=amd64 arm64
 GOBIN?=$(shell go env GOPATH)/bin
@@ -36,14 +36,14 @@ $(FORMATTER):
 lint: $(LINTER)
 	$(LINTER) run ./...
 $(LINTER):
-	go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.30.0
+	go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1
 
 build:
-	go build ${LDFLAGS} ./cmd/metal -o bin/${BINARY}
+	go build $(LDFLAGS) -o bin/$(BINARY) ./cmd/metal
 
 build-all:
 	$(foreach GOOS, $(PLATFORMS),\
-	$(foreach GOARCH, $(ARCHITECTURES), $(shell export GOOS=$(GOOS); export GOARCH=$(GOARCH); go build ./cmd/metal -v -o bin/$(BINARY)-$(GOOS)-$(GOARCH))))
+	$(foreach GOARCH, $(ARCHITECTURES), $(shell export GOOS=$(GOOS); export GOARCH=$(GOARCH); go build $(LDFLAGS) -o bin/$(BINARY)-$(GOOS)-$(GOARCH) -v ./cmd/metal)))
 
 clean:
 	rm -rf bin/
