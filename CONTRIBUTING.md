@@ -1,5 +1,5 @@
 ## Hello Contributors!
-  Thx for your interest! We're so glad you're here. 
+  Thx for your interest! We're so glad you're here.
 
 ### Important Resources
   - bugs: [https://github.com/equinix/metal-cli/issues](https://github.com/equinix/metal/issues)
