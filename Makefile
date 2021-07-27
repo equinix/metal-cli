@@ -1,3 +1,5 @@
+SHELL:=/usr/bin/env bash
+
 EXECUTABLES = git go find pwd
 K := $(foreach exec,$(EXECUTABLES),\
         $(if $(shell which $(exec)),some string,$(error "No $(exec) in PATH)))
@@ -17,9 +19,16 @@ BUILD?=$(shell git rev-parse --short HEAD)
 PLATFORMS?=darwin linux windows freebsd
 ARCHITECTURES?=amd64 arm64
 GOBIN?=$(shell go env GOPATH)/bin
-LINTER?=$(GOBIN)/golangci-lint
 FORMATTER?=$(GOBIN)/goimports
+GO_INSTALL = ./hack/go_install.sh
+TOOLS_DIR := hack/tools
+TOOLS_BIN_DIR := $(abspath $(TOOLS_DIR)/bin)
 
+
+# Binaries.
+GOLANGCI_LINT_VER := v1.41.1
+GOLANGCI_LINT_BIN := golangci-lint
+GOLANGCI_LINT := $(TOOLS_BIN_DIR)/$(GOLANGCI_LINT_BIN)-$(GOLANGCI_LINT_VER)
 
 # Setup linker flags option for build that interoperate with variable names in src code
 LDFLAGS?=-ldflags "-X $(PACKAGE_NAME)/cmd.Version=$(VERSION) -X $(PACKAGE_NAME)/cmd.Build=$(BUILD)"
@@ -33,10 +42,8 @@ fmt: $(FORMATTER)
 $(FORMATTER):
 	go get golang.org/x/tools/cmd/goimports
 
-lint: $(LINTER)
-	$(LINTER) run ./...
-$(LINTER):
-	go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1
+lint: $(GOLANGCI_LINT) ## Lint codebase
+	$(GOLANGCI_LINT) run -v --fast=false
 
 build:
 	go build $(LDFLAGS) -o bin/$(BINARY) ./cmd/metal
@@ -47,6 +54,7 @@ build-all:
 
 clean:
 	rm -rf bin/
+	rm -rf hack/tools
 	find ${ROOT_DIR} -name '${BINARY}[-?][a-zA-Z0-9]*[-?][a-zA-Z0-9]*' -delete
 
 clean-docs:
@@ -61,3 +69,11 @@ generate-docs: clean-docs
 
 test:
 	go test ./tests
+
+
+## --------------------------------------
+## Tooling Binaries
+## --------------------------------------
+
+$(GOLANGCI_LINT): ## Build golangci-lint from tools folder.
+	GOBIN=$(TOOLS_BIN_DIR) $(GO_INSTALL) github.com/golangci/golangci-lint/cmd/golangci-lint $(GOLANGCI_LINT_BIN) $(GOLANGCI_LINT_VER)
