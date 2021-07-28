@@ -5,6 +5,7 @@
 *.so
 *.dylib
 /metal
+hack/tools/
 
 # Test binary, build with `go test -c`
 *.test
