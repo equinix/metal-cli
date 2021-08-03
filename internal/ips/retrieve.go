@@ -56,7 +56,33 @@ metal ip get --reservation-id [reservation_UUID]
 
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if projectID != "" && assignmentID == "" && reservationID == "" {
+			if assignmentID != "" && reservationID != "" {
+				return fmt.Errorf("Either assignment-id or reservation-id can be set.")
+			} else if assignmentID != "" {
+				ip, _, err := c.ProjectService.Get(assignmentID, nil)
+				if err != nil {
+					return errors.Wrap(err, "Could not get Device IP address")
+				}
+
+				data := make([][]string, 1)
+
+				data[0] = []string{ip.ID, ip.Address, strconv.FormatBool(ip.Public), ip.Created}
+				header := []string{"ID", "Address", "Public", "Created"}
+
+				return c.Out.Output(ip, header, &data)
+			} else if reservationID != "" {
+				ip, _, err := c.ProjectService.Get(reservationID, nil)
+				if err != nil {
+					return errors.Wrap(err, "Could not get Reservation IP address")
+				}
+
+				data := make([][]string, 1)
+
+				data[0] = []string{ip.ID, ip.Address, ip.Facility.Code, strconv.FormatBool(ip.Public), ip.Created}
+				header := []string{"ID", "Address", "Facility", "Public", "Created"}
+
+				return c.Out.Output(ip, header, &data)
+			} else if projectID != "" {
 				ips, _, err := c.ProjectService.List(projectID, nil)
 				if err != nil {
 					return errors.Wrap(err, "Could not list Project IP addresses")
@@ -74,34 +100,9 @@ metal ip get --reservation-id [reservation_UUID]
 				header := []string{"ID", "Address", "Facility", "Public", "Created"}
 
 				return c.Out.Output(ips, header, &data)
-			} else if projectID == "" && reservationID == "" && assignmentID != "" {
-				ip, _, err := c.ProjectService.Get(assignmentID, nil)
-				if err != nil {
-					return errors.Wrap(err, "Could not get Device IP address")
-				}
-
-				data := make([][]string, 1)
-
-				data[0] = []string{ip.ID, ip.Address, strconv.FormatBool(ip.Public), ip.Created}
-				header := []string{"ID", "Address", "Public", "Created"}
-
-				return c.Out.Output(ip, header, &data)
-			} else if projectID == "" && assignmentID == "" && reservationID != "" {
-				ip, _, err := c.ProjectService.Get(reservationID, nil)
-				if err != nil {
-					return errors.Wrap(err, "Could not get Reservation IP address")
-				}
-
-				data := make([][]string, 1)
-
-				data[0] = []string{ip.ID, ip.Address, ip.Facility.Code, strconv.FormatBool(ip.Public), ip.Created}
-				header := []string{"ID", "Address", "Facility", "Public", "Created"}
-
-				return c.Out.Output(ip, header, &data)
-			} else if (projectID != "" && (assignmentID != "" || reservationID != "")) || (projectID == "" && assignmentID == "" && reservationID == "") {
-				return fmt.Errorf("Either project-id or assignment-id or reservation-id can be passed as parameters.")
 			}
-			return nil
+
+			return fmt.Errorf("Either project-id or assignment-id or reservation-id must be set.")
 		},
 	}
 

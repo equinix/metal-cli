@@ -60,8 +60,18 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 
 			if hardwareReservationID == "" && projectID == "" {
 				return fmt.Errorf("Either id or project-id should be set.")
-			} else if hardwareReservationID != "" && projectID != "" {
-				return fmt.Errorf("Either id or project-id can be set.")
+			} else if hardwareReservationID != "" {
+				getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
+				r, _, err := c.Service.Get(hardwareReservationID, getOpts)
+				if err != nil {
+					return errors.Wrap(err, "Could not get Hardware Reservation")
+				}
+
+				data := make([][]string, 1)
+
+				data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+
+				return c.Out.Output(r, header, &data)
 			} else if projectID != "" {
 				reservations, _, err := c.Service.List(projectID, listOpt)
 				if err != nil {
@@ -75,18 +85,6 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 				}
 
 				return c.Out.Output(reservations, header, &data)
-			} else if hardwareReservationID != "" {
-				getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
-				r, _, err := c.Service.Get(hardwareReservationID, getOpts)
-				if err != nil {
-					return errors.Wrap(err, "Could not get Hardware Reservation")
-				}
-
-				data := make([][]string, 1)
-
-				data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
-
-				return c.Out.Output(r, header, &data)
 			}
 			return nil
 		},
