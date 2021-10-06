@@ -49,6 +49,8 @@ type Client struct {
 	includes      *[]string // nolint:unused
 	excludes      *[]string // nolint:unused
 	search        string
+	sortBy        string
+	sortDir       string
 	cfgFile       string
 	outputFormat  string
 	metalToken    string
@@ -194,6 +196,8 @@ func (c *Client) NewCommand() *cobra.Command {
 	c.includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma seperated Href references to expand in results, may be dotted three levels deep")
 	c.excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma seperated Href references to collapse in results, may be dotted three levels deep")
 	rootCmd.PersistentFlags().StringVar(&c.search, "search", "", "Search keyword for use in 'get' actions. Search is not supported by all resources.")
+	rootCmd.PersistentFlags().StringVar(&c.sortBy, "sort-by", "", "Sort fields for use in 'get' actions. Sort is not supported by all resources.")
+	rootCmd.PersistentFlags().StringVar(&c.sortDir, "sort-dir", "", "Sort field direction for use in 'get' actions. Sort is not supported by all resources.")
 
 	rootCmd.Version = c.Version
 	c.rootCmd = rootCmd
@@ -215,6 +219,12 @@ func (c *Client) ListOptions(defaultIncludes, defaultExcludes []string) *packngo
 	}
 	if c.rootCmd.Flags().Changed("search") {
 		listOptions.Search = c.search
+	}
+	if c.rootCmd.Flags().Changed("sort-by") {
+		listOptions.SortBy = c.sortBy
+	}
+	if c.rootCmd.Flags().Changed("sort-dir") {
+		listOptions.SortDirection = packngo.ListSortDirection(c.sortDir)
 	}
 
 	return listOptions
