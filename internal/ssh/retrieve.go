@@ -21,16 +21,22 @@
 package ssh
 
 import (
+	"fmt"
+
+	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Retrieve() *cobra.Command {
-	var sshKeyID string
+	var (
+		sshKeyID string
+		projKeys bool
+	)
 
 	// retrieveSshKeysCmd represents the retrieveSshKeys command
 	retrieveSSHKeysCmd := &cobra.Command{
-		Use:     `get [-i <SSH-key_UUID>]`,
+		Use:     `get [-i <SSH-key_UUID>] [-P] [-p <project_id>]`,
 		Aliases: []string{"list"},
 		Short:   "Retrieves a list of SSH keys or a specified SSH key.",
 		Long:    "Retrieves a list of SSH keys associated with the current user's account or the details of single SSH key.",
@@ -38,12 +44,29 @@ func (c *Client) Retrieve() *cobra.Command {
   metal ssh-key get
   
   # Returns the details of SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e:
-  metal ssh-key get --id 5cb96463-88fd-4d68-94ba-2c9505ff265e`,
+  metal ssh-key get --id 5cb96463-88fd-4d68-94ba-2c9505ff265e
 
+  # Retrieve all project SSH keys
+  metal ssh-key get --project-ssh-keys --project-id [project_UUID]`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			if sshKeyID == "" {
-				sshKeys, _, err := c.Service.List()
+				projectID, _ := cmd.LocalFlags().GetString("project-id")
+				listFn := func() ([]packngo.SSHKey, *packngo.Response, error) {
+					return c.Service.List()
+				}
+
+				if projKeys {
+					if projectID == "" {
+						return fmt.Errorf("Project (--project-id) is required with --project-keys")
+					}
+
+					listFn = func() ([]packngo.SSHKey, *packngo.Response, error) {
+						return c.Service.ProjectList(projectID)
+					}
+				}
+				sshKeys, _, err := listFn()
+
 				if err != nil {
 					return errors.Wrap(err, "Could not list SSH Keys")
 				}
@@ -73,5 +96,7 @@ func (c *Client) Retrieve() *cobra.Command {
 	}
 
 	retrieveSSHKeysCmd.Flags().StringVarP(&sshKeyID, "id", "i", "", "The UUID of an SSH key.")
+	retrieveSSHKeysCmd.Flags().BoolVarP(&projKeys, "project-ssh-keys", "P", false, "List SSH Keys for projects")
+	retrieveSSHKeysCmd.Flags().StringP("project-id", "p", "", "List SSH Keys for the project identified by Project ID (ignored without -P)")
 	return retrieveSSHKeysCmd
 }

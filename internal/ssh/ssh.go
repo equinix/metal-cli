@@ -34,9 +34,10 @@ type Client struct {
 
 func (c *Client) NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   `ssh-key`,
-		Short: "SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.",
-		Long:  "SSH key operations: create, get, update, and delete.",
+		Use:     `ssh-key`,
+		Aliases: []string{`ssh-keys`},
+		Short:   "SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.",
+		Long:    "SSH key operations: create, get, update, and delete.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
