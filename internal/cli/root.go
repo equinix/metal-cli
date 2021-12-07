@@ -48,6 +48,7 @@ type Client struct {
 
 	includes      *[]string // nolint:unused
 	excludes      *[]string // nolint:unused
+	filters       *[]string
 	search        string
 	sortBy        string
 	sortDir       string
@@ -195,6 +196,7 @@ func (c *Client) NewCommand() *cobra.Command {
 	rootCmd.PersistentFlags().StringVarP(&c.outputFormat, "output", "o", "", "Output format (*table, json, yaml)")
 	c.includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma seperated Href references to expand in results, may be dotted three levels deep")
 	c.excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma seperated Href references to collapse in results, may be dotted three levels deep")
+	c.filters = rootCmd.PersistentFlags().StringSlice("filter", nil, "Filter 'get' actions with name value pairs. Filter is not supported by all resources and is implemented as request query parameters.")
 	rootCmd.PersistentFlags().StringVar(&c.search, "search", "", "Search keyword for use in 'get' actions. Search is not supported by all resources.")
 	rootCmd.PersistentFlags().StringVar(&c.sortBy, "sort-by", "", "Sort fields for use in 'get' actions. Sort is not supported by all resources.")
 	rootCmd.PersistentFlags().StringVar(&c.sortDir, "sort-dir", "", "Sort field direction for use in 'get' actions. Sort is not supported by all resources.")
@@ -216,6 +218,14 @@ func (c *Client) ListOptions(defaultIncludes, defaultExcludes []string) *packngo
 	}
 	if c.rootCmd.Flags().Changed("exclude") {
 		listOptions.Excludes = *c.excludes
+	}
+	if c.rootCmd.Flags().Changed("filter") {
+		for _, kv := range *c.filters {
+			tokens := strings.SplitN(kv, "=", 2)
+			k := strings.TrimSpace(tokens[0])
+			v := strings.TrimSpace(tokens[1])
+			listOptions = listOptions.Filter(k, v)
+		}
 	}
 	if c.rootCmd.Flags().Changed("search") {
 		listOptions.Search = c.search
