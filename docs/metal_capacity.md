@@ -29,6 +29,6 @@ Capacities operations: get, check
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal capacity check](metal_capacity_check.md)	 - Validates if a deploy can be fulfilled.
+* [metal capacity check](metal_capacity_check.md)	 - Validates if a deploy can be fulfilled with the given quantity in any of the given locations and plans
 * [metal capacity get](metal_capacity_get.md)	 - Returns a list of facilities or metros and plans with their current capacity.
 
