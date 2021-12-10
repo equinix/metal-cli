@@ -78,6 +78,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		DisableFlagsInUseLine: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
+			cmd.SilenceUsage = true
 			config, _ := cmd.Flags().GetString("config")
 			if config == "" {
 				config = c.Servicer.DefaultConfig(true)

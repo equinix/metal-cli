@@ -38,6 +38,7 @@ func (c *Client) Stop() *cobra.Command {
   
   `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			_, err := c.Service.PowerOff(deviceID)
 
 			if err != nil {

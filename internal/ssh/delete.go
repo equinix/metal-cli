@@ -51,6 +51,7 @@ metal ssh-key delete --id [ssh-key_UUID]
 
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			if !force {
 				prompt := promptui.Prompt{
 					Label:     fmt.Sprintf("Are you sure you want to delete SSH Key %s: ", sshKeyID),

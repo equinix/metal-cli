@@ -53,6 +53,12 @@ func (c *Client) Check() *cobra.Command {
 			if facility != "" {
 				facilities = append(facilities, facility)
 			}
+
+			if (len(facilities) > 0) == (len(metros) > 0) {
+				return errors.New("Either facilities or metros should be set")
+			}
+			cmd.SilenceUsage = true
+
 			if plan != "" {
 				plans = append(plans, plan)
 			}
@@ -87,8 +93,6 @@ func (c *Client) Check() *cobra.Command {
 						)
 					}
 				}
-			} else {
-				return errors.New("Either facility or metro should be set")
 			}
 
 			availability, _, err := checker(req)

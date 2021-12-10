@@ -39,6 +39,7 @@ metal ip remove --id [reservation-UUID]
 
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			_, err := c.ProjectService.Remove(reservationID)
 			if err != nil {
 				return errors.Wrap(err, "Could not remove IP address Reservation")

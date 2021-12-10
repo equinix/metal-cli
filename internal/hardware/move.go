@@ -36,6 +36,7 @@ func (c *Client) Move() *cobra.Command {
 metal hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			header := []string{"ID", "Facility", "Plan", "Created"}
 			r, _, err := c.Service.Move(hardwareReservationID, projectID)
 			if err != nil {

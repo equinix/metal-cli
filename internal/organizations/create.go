@@ -45,6 +45,7 @@ metal organization create -n [name]
 
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			req := &packngo.OrganizationCreateRequest{
 				Name: name,
 			}

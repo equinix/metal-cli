@@ -47,7 +47,10 @@ metal 2fa enable -a -c [code]
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if sms == app {
 				return fmt.Errorf("Either sms or app should be set")
-			} else if sms {
+			}
+
+			cmd.SilenceUsage = true
+			if sms {
 				_, err := c.Service.EnableSms(token)
 				if err != nil {
 					return errors.Wrap(err, "Could not enable Two-Factor Authentication")

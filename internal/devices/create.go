@@ -69,6 +69,7 @@ metal device create --hostname [hostname] --plan [plan] --metro [metro_code] --f
 			if userdata != "" && userdataFile != "" {
 				return fmt.Errorf("Either userdata or userdata-file should be set")
 			}
+			cmd.SilenceUsage = true
 
 			if userdataFile != "" {
 				userdataRaw, readErr := ioutil.ReadFile(userdataFile)

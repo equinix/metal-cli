@@ -58,6 +58,7 @@ metal event get
 When using "--json" or "--yaml", "--include=relationships" is implied.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			var events []packngo.Event
 			var err error
 			header := []string{"ID", "Body", "Type", "Created"}

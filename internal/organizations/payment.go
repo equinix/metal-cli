@@ -38,6 +38,7 @@ metal organization payment-methods --id [organization_UUID]
 
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			paymentMethods, _, err := c.Service.ListPaymentMethods(organizationID)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Payment Methods")

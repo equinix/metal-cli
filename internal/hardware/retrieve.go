@@ -60,7 +60,10 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 
 			if hardwareReservationID == "" && projectID == "" {
 				return fmt.Errorf("Either id or project-id should be set.")
-			} else if hardwareReservationID != "" {
+			}
+
+			cmd.SilenceUsage = true
+			if hardwareReservationID != "" {
 				getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
 				r, _, err := c.Service.Get(hardwareReservationID, getOpts)
 				if err != nil {
@@ -72,21 +75,20 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 				data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
 
 				return c.Out.Output(r, header, &data)
-			} else if projectID != "" {
-				reservations, _, err := c.Service.List(projectID, listOpt)
-				if err != nil {
-					return errors.Wrap(err, "Could not list Hardware Reservations")
-				}
-
-				data := make([][]string, len(reservations))
-
-				for i, r := range reservations {
-					data[i] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
-				}
-
-				return c.Out.Output(reservations, header, &data)
 			}
-			return nil
+
+			reservations, _, err := c.Service.List(projectID, listOpt)
+			if err != nil {
+				return errors.Wrap(err, "Could not list Hardware Reservations")
+			}
+
+			data := make([][]string, len(reservations))
+
+			for i, r := range reservations {
+				data[i] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+			}
+
+			return c.Out.Output(reservations, header, &data)
 		},
 	}
 

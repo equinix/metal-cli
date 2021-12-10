@@ -39,6 +39,7 @@ metal ip unassign --id [assignment-UUID]
 
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			_, err := c.DeviceService.Unassign(assignmentID)
 			if err != nil {
 				return errors.Wrap(err, "Could not unassign IP address")

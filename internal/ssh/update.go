@@ -38,6 +38,7 @@ metal ssh-key update --id [ssh-key_UUID] --key [new_key]
 
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			req := &packngo.SSHKeyUpdateRequest{}
 			if key != "" {
 				req.Key = &key

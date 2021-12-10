@@ -39,6 +39,7 @@ metal device reboot --id [device_UUID]
 
 	  `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			_, err := c.Service.Reboot(deviceID)
 			if err != nil {
 				return errors.Wrap(err, "Could not reboot Device")
