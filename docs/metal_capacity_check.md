@@ -1,27 +1,25 @@
 ## metal capacity check
 
-Validates if a deploy can be fulfilled.
-
-### Synopsis
-
-Example:
-
-metal capacity check {-m [metro] | -f [facility]} -p [plan] -q [quantity]
-
-	
+Validates if a deploy can be fulfilled with the given quantity in any of the given locations and plans
 
 ```
-metal capacity check [flags]
+metal capacity check {-m [metros,...] | -f [facilities,...]} -P [plans,...] -q [quantity] [flags]
+```
+
+### Examples
+
+```
+metal capacity check -m sv,ny,da -P c3.large.arm,c3.medium.x86 -q 10
 ```
 
 ### Options
 
 ```
-  -f, --facility string   Code of the facility
-  -h, --help              help for check
-  -m, --metro string      Code of the metro
-  -P, --plan string       Name of the plan
-  -q, --quantity int      Number of devices wanted
+  -f, --facilities strings   Codes of the facilities
+  -h, --help                 help for check
+  -m, --metros strings       Codes of the metros
+  -P, --plans strings        Names of the plans
+  -q, --quantity int         Number of devices wanted
 ```
 
 ### Options inherited from parent commands

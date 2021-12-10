@@ -31,42 +31,64 @@ import (
 // createOrganizationCmd represents the createOrganization command
 func (c *Client) Check() *cobra.Command {
 	var (
-		metro, plan, facility string
-		quantity              int
+		metros, facilities, plans []string
+		metro, facility, plan     string
+		quantity                  int
 	)
 	var checkCapacityCommand = &cobra.Command{
-		Use:   "check",
-		Short: "Validates if a deploy can be fulfilled.",
-		Long: `Example:
-
-metal capacity check {-m [metro] | -f [facility]} -p [plan] -q [quantity]
-
-	`,
+		Short:   "Validates if a deploy can be fulfilled with the given quantity in any of the given locations and plans",
+		Use:     `check {-m [metros,...] | -f [facilities,...]} -P [plans,...] -q [quantity]`,
+		Example: `metal capacity check -m sv,ny,da -P c3.large.arm,c3.medium.x86 -q 10`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if facility != "" && metro != "" {
-				return errors.New("Either facility or metro should be set")
-			}
-			checker := c.Service.Check
-			req := &packngo.CapacityInput{
-				Servers: []packngo.ServerInfo{
-					{
-						Facility: facility,
-						Plan:     plan,
-						Quantity: quantity},
-				},
-			}
-			locationField := "Facility"
-			locationer := func(si packngo.ServerInfo) string {
-				return si.Facility
+			var checker func(*packngo.CapacityInput) (*packngo.CapacityInput, *packngo.Response, error)
+			var locationField string
+			var locationer func(si packngo.ServerInfo) string
+			var req = &packngo.CapacityInput{
+				Servers: []packngo.ServerInfo{},
 			}
 
 			if metro != "" {
-				req.Servers[0].Metro = metro
+				metros = append(metros, metro)
+			}
+			if facility != "" {
+				facilities = append(facilities, facility)
+			}
+			if plan != "" {
+				plans = append(plans, plan)
+			}
+
+			if len(facilities) > 0 {
+				checker = c.Service.Check
+				locationField = "Facility"
+				locationer = func(si packngo.ServerInfo) string {
+					return si.Facility
+				}
+				for _, f := range facilities {
+					for _, p := range plans {
+						req.Servers = append(req.Servers, packngo.ServerInfo{
+							Facility: f,
+							Plan:     p,
+							Quantity: quantity},
+						)
+					}
+				}
+			} else if len(metros) > 0 {
 				checker = c.Service.CheckMetros
+				locationField = "Metro"
 				locationer = func(si packngo.ServerInfo) string {
 					return si.Metro
 				}
-				locationField = "Metro"
+				for _, m := range metros {
+					for _, p := range plans {
+						req.Servers = append(req.Servers, packngo.ServerInfo{
+							Metro:    m,
+							Plan:     p,
+							Quantity: quantity},
+						)
+					}
+				}
+			} else {
+				return errors.New("Either facility or metro should be set")
 			}
 
 			availability, _, err := checker(req)
@@ -74,21 +96,36 @@ metal capacity check {-m [metro] | -f [facility]} -p [plan] -q [quantity]
 				return errors.Wrap(err, "Could not check capacity")
 			}
 
-			data := make([][]string, 1)
+			data := make([][]string, len(availability.Servers))
+			for i, s := range availability.Servers {
+				data[i] = []string{
+					locationer(s),
+					s.Plan,
+					strconv.Itoa(s.Quantity),
+					strconv.FormatBool(s.Available),
+				}
+			}
 
-			data[0] = []string{locationer(availability.Servers[0]), availability.Servers[0].Plan,
-				strconv.Itoa(availability.Servers[0].Quantity), strconv.FormatBool(availability.Servers[0].Available)}
 			header := []string{locationField, "Plan", "Quantity", "Availability"}
 			return c.Out.Output(availability, header, &data)
 		},
 	}
 
-	checkCapacityCommand.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
-	checkCapacityCommand.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
-	checkCapacityCommand.Flags().StringVarP(&plan, "plan", "P", "", "Name of the plan")
-	checkCapacityCommand.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of devices wanted")
+	fs := checkCapacityCommand.Flags()
 
-	_ = checkCapacityCommand.MarkFlagRequired("plan")
+	fs.StringSliceVarP(&metros, "metros", "m", []string{}, "Codes of the metros")
+	fs.StringSliceVarP(&facilities, "facilities", "f", []string{}, "Codes of the facilities")
+	fs.StringSliceVarP(&plans, "plans", "P", []string{}, "Names of the plans")
+	fs.IntVarP(&quantity, "quantity", "q", 0, "Number of devices wanted")
+
+	fs.StringVar(&metro, "metro", "", "Code of the metro")
+	fs.StringVar(&facility, "facility", "", "Code of the facility")
+	fs.StringVar(&plan, "plan", "", "Name of the plan")
+	_ = fs.MarkDeprecated("metro", "use --metros instead")
+	_ = fs.MarkDeprecated("plan", "use --plans instead")
+	_ = fs.MarkDeprecated("facility", "use --facilities instead")
+
+	_ = checkCapacityCommand.MarkFlagRequired("plans")
 	_ = checkCapacityCommand.MarkFlagRequired("quantity")
 	return checkCapacityCommand
 }
