@@ -31,8 +31,9 @@ import (
 // createOrganizationCmd represents the createOrganization command
 func (c *Client) Check() *cobra.Command {
 	var (
-		metro, facility, plan []string
-		quantity              int
+		metros, facilities, plans []string
+		metro, facility, plan     string
+		quantity                  int
 	)
 	var checkCapacityCommand = &cobra.Command{
 		Short:   "Validates if a deploy can be fulfilled with the given quantity in any of the given locations and plans",
@@ -46,14 +47,24 @@ func (c *Client) Check() *cobra.Command {
 				Servers: []packngo.ServerInfo{},
 			}
 
-			if len(facility) > 0 {
+			if metro != "" {
+				metros = append(metros, metro)
+			}
+			if facility != "" {
+				facilities = append(facilities, facility)
+			}
+			if plan != "" {
+				plans = append(plans, plan)
+			}
+
+			if len(facilities) > 0 {
 				checker = c.Service.Check
 				locationField = "Facility"
 				locationer = func(si packngo.ServerInfo) string {
 					return si.Facility
 				}
-				for _, f := range facility {
-					for _, p := range plan {
+				for _, f := range facilities {
+					for _, p := range plans {
 						req.Servers = append(req.Servers, packngo.ServerInfo{
 							Facility: f,
 							Plan:     p,
@@ -61,14 +72,14 @@ func (c *Client) Check() *cobra.Command {
 						)
 					}
 				}
-			} else if len(metro) > 0 {
+			} else if len(metros) > 0 {
 				checker = c.Service.CheckMetros
 				locationField = "Metro"
 				locationer = func(si packngo.ServerInfo) string {
 					return si.Metro
 				}
-				for _, m := range metro {
-					for _, p := range plan {
+				for _, m := range metros {
+					for _, p := range plans {
 						req.Servers = append(req.Servers, packngo.ServerInfo{
 							Metro:    m,
 							Plan:     p,
@@ -100,12 +111,21 @@ func (c *Client) Check() *cobra.Command {
 		},
 	}
 
-	checkCapacityCommand.Flags().StringSliceVarP(&metro, "metros", "m", []string{}, "Codes of the metros")
-	checkCapacityCommand.Flags().StringSliceVarP(&facility, "facilities", "f", []string{}, "Codes of the facilities")
-	checkCapacityCommand.Flags().StringSliceVarP(&plan, "plans", "P", []string{}, "Names of the plans")
-	checkCapacityCommand.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of devices wanted")
+	fs := checkCapacityCommand.Flags()
 
-	_ = checkCapacityCommand.MarkFlagRequired("plan")
+	fs.StringSliceVarP(&metros, "metros", "m", []string{}, "Codes of the metros")
+	fs.StringSliceVarP(&facilities, "facilities", "f", []string{}, "Codes of the facilities")
+	fs.StringSliceVarP(&plans, "plans", "P", []string{}, "Names of the plans")
+	fs.IntVarP(&quantity, "quantity", "q", 0, "Number of devices wanted")
+
+	fs.StringVar(&metro, "metro", "", "Code of the metro")
+	fs.StringVar(&facility, "facility", "", "Code of the facility")
+	fs.StringVar(&plan, "plan", "", "Name of the plan")
+	_ = fs.MarkDeprecated("metro", "use --metros instead")
+	_ = fs.MarkDeprecated("plan", "use --plans instead")
+	_ = fs.MarkDeprecated("facility", "use --facilities instead")
+
+	_ = checkCapacityCommand.MarkFlagRequired("plans")
 	_ = checkCapacityCommand.MarkFlagRequired("quantity")
 	return checkCapacityCommand
 }
