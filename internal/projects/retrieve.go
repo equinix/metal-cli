@@ -48,6 +48,7 @@ metal project get -n [project_name]
 When using "--json" or "--yaml", "--include=members" is implied.
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			if projectID != "" && projectName != "" {
 				return fmt.Errorf("Must specify only one of project-id and project name")
 			}

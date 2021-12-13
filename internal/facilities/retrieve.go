@@ -38,6 +38,7 @@ metal facilities get
 	
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			facilities, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
 			if err != nil {
 				return errors.Wrap(err, "Could not list Facilities")

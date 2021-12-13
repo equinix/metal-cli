@@ -68,6 +68,7 @@ func NewCommand() *cobra.Command {
 		ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},
 		Args:                  cobra.ExactValidArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			switch args[0] {
 			case "bash":
 				return cmd.Root().GenBashCompletion(os.Stdout)
@@ -82,6 +83,7 @@ func NewCommand() *cobra.Command {
 			return fmt.Errorf("unknown shell: %q", args[0])
 		},
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			return nil
 		},
 	}

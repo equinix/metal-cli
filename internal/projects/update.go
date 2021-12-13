@@ -38,6 +38,7 @@ metal project update --id [project_UUID] --name [new_name]
 
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			req := &packngo.ProjectUpdateRequest{}
 			if name != "" {
 				req.Name = &name

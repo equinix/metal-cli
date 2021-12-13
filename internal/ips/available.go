@@ -42,6 +42,7 @@ metal ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
 
   `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			result, _, err := c.ProjectService.AvailableAddresses(reservationID, &packngo.AvailableRequest{CIDR: cidr})
 
 			if err != nil {

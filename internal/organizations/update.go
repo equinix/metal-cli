@@ -38,6 +38,7 @@ metal organization update --id [organization_UUID] --name [new_name]
 
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			req := &packngo.OrganizationUpdateRequest{}
 
 			if name != "" {

@@ -49,6 +49,7 @@ metal ip request --quantity [quantity] --facility [facility_code] --type [addres
 
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			req := &packngo.IPReservationRequest{
 				Type:     ttype,
 				Quantity: quantity,

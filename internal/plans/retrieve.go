@@ -36,6 +36,7 @@ func (c *Client) Retrieve() *cobra.Command {
   
   `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			plans, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
 			if err != nil {
 				return errors.Wrap(err, "Could not list Plans")

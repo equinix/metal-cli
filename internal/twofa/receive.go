@@ -48,6 +48,7 @@ metal 2fa receive -a
 				return fmt.Errorf("Either sms or app should be set")
 			}
 
+			cmd.SilenceUsage = true
 			if sms {
 				_, err := c.Service.ReceiveSms()
 				if err != nil {

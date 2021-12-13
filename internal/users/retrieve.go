@@ -45,6 +45,7 @@ metal user get --id [user_UUID]
 
   `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			var err error
 			var user *packngo.User
 			if userID == "" {

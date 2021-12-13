@@ -58,7 +58,14 @@ metal ip get --reservation-id [reservation_UUID]
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if assignmentID != "" && reservationID != "" {
 				return fmt.Errorf("Either assignment-id or reservation-id can be set.")
-			} else if assignmentID != "" {
+			}
+
+			if assignmentID == "" && reservationID == "" && projectID == "" {
+				return fmt.Errorf("Either project-id or assignment-id or reservation-id must be set.")
+			}
+
+			cmd.SilenceUsage = true
+			if assignmentID != "" {
 				ip, _, err := c.ProjectService.Get(assignmentID, nil)
 				if err != nil {
 					return errors.Wrap(err, "Could not get Device IP address")
@@ -82,27 +89,25 @@ metal ip get --reservation-id [reservation_UUID]
 				header := []string{"ID", "Address", "Facility", "Public", "Created"}
 
 				return c.Out.Output(ip, header, &data)
-			} else if projectID != "" {
-				ips, _, err := c.ProjectService.List(projectID, nil)
-				if err != nil {
-					return errors.Wrap(err, "Could not list Project IP addresses")
-				}
-
-				data := make([][]string, len(ips))
-
-				for i, ip := range ips {
-					code := ""
-					if ip.Facility != nil {
-						code = ip.Facility.Code
-					}
-					data[i] = []string{ip.ID, ip.Address, code, strconv.FormatBool(ip.Public), ip.Created}
-				}
-				header := []string{"ID", "Address", "Facility", "Public", "Created"}
-
-				return c.Out.Output(ips, header, &data)
 			}
 
-			return fmt.Errorf("Either project-id or assignment-id or reservation-id must be set.")
+			ips, _, err := c.ProjectService.List(projectID, nil)
+			if err != nil {
+				return errors.Wrap(err, "Could not list Project IP addresses")
+			}
+
+			data := make([][]string, len(ips))
+
+			for i, ip := range ips {
+				code := ""
+				if ip.Facility != nil {
+					code = ip.Facility.Code
+				}
+				data[i] = []string{ip.ID, ip.Address, code, strconv.FormatBool(ip.Public), ip.Created}
+			}
+			header := []string{"ID", "Address", "Facility", "Public", "Created"}
+
+			return c.Out.Output(ips, header, &data)
 		},
 	}
 

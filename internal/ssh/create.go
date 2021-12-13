@@ -41,6 +41,7 @@ metal ssh-key create --key [public_key] --label [label]
 
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			req := packngo.SSHKeyCreateRequest{
 				Label: label,
 				Key:   key,

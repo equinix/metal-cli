@@ -42,6 +42,7 @@ metal virtual-network create --project-id [project_UUID] { --metro [metro_code] 
 
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			req := &packngo.VirtualNetworkCreateRequest{
 				ProjectID: projectID,
 				Metro:     metro,

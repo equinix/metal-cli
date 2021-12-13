@@ -48,6 +48,7 @@ func (c *Client) Delete() *cobra.Command {
   
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			if !force {
 				prompt := promptui.Prompt{
 					Label:     fmt.Sprintf("Are you sure you want to delete device %s: ", deviceID),

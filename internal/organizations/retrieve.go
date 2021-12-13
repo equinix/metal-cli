@@ -43,6 +43,7 @@ metal organization get -i [organization-id]
 
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			listOpts := c.Servicer.ListOptions(nil, nil)
 			if organizationID == "" {
 				orgs, _, err := c.Service.List(listOpts)

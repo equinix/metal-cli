@@ -51,6 +51,7 @@ metal device update --id [device_UUID] --hostname [new_hostname]
 
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			req := &packngo.DeviceUpdateRequest{}
 
 			if hostname != "" {

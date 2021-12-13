@@ -43,6 +43,7 @@ metal project create --name [project_name]
   
   `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			req := packngo.ProjectCreateRequest{
 				Name: name,
 			}

@@ -46,6 +46,7 @@ metal ssh-key get --id [ssh-key_UUID]
 
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			if sshKeyID == "" {
 				sshKeys, _, err := c.Service.List()
 				if err != nil {

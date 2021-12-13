@@ -40,6 +40,7 @@ Retrieve capacities:
 metal capacity get { --metro | --facility }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			var err error
 			lister := c.Service.List
 			fieldName := "Facility"

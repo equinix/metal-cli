@@ -44,6 +44,7 @@ metal ip assign -d [device-id] -a [ip-address]
 
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			assignment, _, err := c.DeviceService.Assign(deviceID, &packngo.AddressStruct{Address: address})
 			if err != nil {
 				return errors.Wrap(err, "Could not assign Device IP address")

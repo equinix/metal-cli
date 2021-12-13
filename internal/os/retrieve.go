@@ -33,6 +33,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		Long: `Example:
   metal operating-systems get`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			oss, _, err := c.Service.List()
 			if err != nil {
 				return errors.Wrap(err, "Could not list OperatingSystems")

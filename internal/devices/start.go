@@ -39,6 +39,7 @@ metal device start --id [device_UUID]
 
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			_, err := c.Service.PowerOn(deviceID)
 
 			if err != nil {

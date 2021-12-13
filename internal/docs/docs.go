@@ -34,9 +34,11 @@ func NewCommand() *cobra.Command {
 		DisableFlagsInUseLine: true,
 		Args:                  cobra.ExactValidArgs(1),
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			dest := args[0]
 			return doc.GenMarkdownTree(cmd.Parent(), dest)
 		},

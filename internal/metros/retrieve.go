@@ -37,6 +37,7 @@ metal metros get
 	
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
 			metros, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
 			if err != nil {
 				return errors.Wrap(err, "Could not list Metros")
