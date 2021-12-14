@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Lint
+    name: docs
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -30,8 +30,8 @@ jobs:
         go-version: ${{ matrix.go }}
     - run: mkdir -p ~/.config/equinix
     - run: touch ~/.config/equinix/metal.yaml
-    - name: Detect formatting and build errors
-      run: make
+    - name: Build docs
+      run: make generate-docs
       env:
         METAL_AUTH_TOKEN: bogus
     - name: Detect Uncommitted Docs
