@@ -32,7 +32,6 @@ import (
 )
 
 func (c *Client) Create() *cobra.Command {
-
 	var (
 		projectID       string
 		metro           string
@@ -55,14 +54,9 @@ func (c *Client) Create() *cobra.Command {
 		terminationTime       string
 	)
 
-	var createDeviceCmd = &cobra.Command{
-		Use:   "create",
+	createDeviceCmd := &cobra.Command{
 		Short: "Creates a device",
-		Long: `Example:
-
-metal device create --hostname [hostname] --plan [plan] --metro [metro_code] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
-
-`,
+		Use:   `create --plan plan --operating-system operating_system --project-id project_UUID {--metro metro_code | --facility facility_code} [--hostname hostname] [--billing-cycle billing_cycle] [--userdata userdata] [--userdata-file userdata_file] [--customdata customdata] [--tags tag...] [--ipxe-script-url ipxe_script_url] [--public-ipv4-subnet-size subnet_size] [--always-pxe] [--hardware-reservation-id hardware_reservation_id] [--spot-instance] [--spot-price-max spot_price_max] [--termination-time termination_time]`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var endDt *packngo.Timestamp
 
@@ -134,7 +128,6 @@ metal device create --hostname [hostname] --plan [plan] --metro [metro_code] --f
 	createDeviceCmd.Flags().StringVarP(&operatingSystem, "operating-system", "O", "", "Operating system name for the device")
 	_ = createDeviceCmd.MarkFlagRequired("project-id")
 	_ = createDeviceCmd.MarkFlagRequired("plan")
-	_ = createDeviceCmd.MarkFlagRequired("hostname")
 	_ = createDeviceCmd.MarkFlagRequired("operating-system")
 
 	createDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "I", "", "URL to the iPXE script")
