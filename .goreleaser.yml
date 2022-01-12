@@ -51,3 +51,18 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
+
+brews: 
+  - homepage: "https://metal.equinix.com/developers/docs/libraries/cli/"
+    description: "Official Equinix Metal CLI"
+    license: "MIT"
+    dependencies:
+      - name: "go"
+        type: build
+    commit_author:
+      name: "Aaron Aldrich"
+      email: "aaldrich@equinix.com"
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    tap:
+      owner: equinix
+      name: homebrew-tap
