@@ -64,5 +64,5 @@ brews:
       email: "aaldrich@equinix.com"
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
     tap:
-      owner: crayzeigh
+      owner: equinix
       name: homebrew-tap
