@@ -55,7 +55,6 @@ changelog:
 brews: 
   - homepage: "https://metal.equinix.com/developers/docs/libraries/cli/"
     description: "Official Equinix Metal CLI"
-    folder: homebrew-formula
     license: "MIT"
     dependencies:
       - name: "go"
