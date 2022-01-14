@@ -21,33 +21,52 @@
 package capacity
 
 import (
+	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Retrieve() *cobra.Command {
 	var (
-		checkFacility bool
-		checkMetro    bool
+		metros, facilities, plans, locs []string
+		metro, facility, plan           string
 	)
 	// retrieveCapacitiesCmd represents the retrieveCapacity command
 	var retrieveCapacityCmd = &cobra.Command{
-		Use:     "get",
+		Use:     `get {-m [metros,...] | -f [facilities,...]} -P [plans,...]`,
 		Aliases: []string{"list"},
-		Short:   "Returns a list of facilities or metros and plans with their current capacity.",
-		Long: `Example:
-Retrieve capacities:
-metal capacity get { --metro | --facility }
-`,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd.SilenceUsage = true
-			var err error
-			lister := c.Service.List
-			fieldName := "Facility"
+		Short:   "Returns a list of facilities or metros and plans with their current capacity, optionally filtered by given locations and plans.",
+		Example: `metal capacity get -m sv,ny,da -P c3.large.arm,c3.medium.x86`,
 
-			if checkMetro {
-				fieldName = "Metro"
+		RunE: func(cmd *cobra.Command, args []string) error {
+			var err error
+			var lister func() (*packngo.CapacityReport, *packngo.Response, error)
+			var locationField string
+
+			if metro != "" {
+				metros = append(metros, metro)
+			}
+			if facility != "" {
+				facilities = append(facilities, facility)
+			}
+
+			if (len(facilities) > 0) == (len(metros) > 0) {
+				return errors.New("Either facilities or metros should be set")
+			}
+			cmd.SilenceUsage = true
+
+			if plan != "" {
+				plans = append(plans, plan)
+			}
+
+			if len(facilities) > 0 {
+				lister = c.Service.List
+				locationField = "Facility"
+				locs = append(locs, facilities...)
+			} else if len(metros) > 0 {
 				lister = c.Service.ListMetros
+				locationField = "Metro"
+				locs = append(locs, metros...)
 			}
 
 			capacities, _, err := lister()
@@ -55,21 +74,62 @@ metal capacity get { --metro | --facility }
 				return errors.Wrap(err, "Could not get Capacity")
 			}
 
-			header := []string{fieldName, "Plan", "Level"}
-			requiredDataFormat := [][]string{}
+			header := []string{locationField, "Plan", "Level"}
+			data := [][]string{}
 
 			for locCode, capacity := range *capacities {
 				for plan, bm := range capacity {
-					loc := []string{}
-					loc = append(loc, locCode, plan, bm.Level)
-					requiredDataFormat = append(requiredDataFormat, loc)
+					if len(locs) > 0 {
+						for _, location := range locs {
+							if location == locCode {
+								if len(plans) > 0 {
+									for _, p := range plans {
+										if plan == p {
+											loc := []string{}
+											loc = append(loc, locCode, plan, bm.Level)
+											data = append(data, loc)
+										}
+									}
+								} else {
+									loc := []string{}
+									loc = append(loc, locCode, plan, bm.Level)
+									data = append(data, loc)
+								}
+							}
+						}
+					} else {
+						if len(plans) > 0 {
+							for _, p := range plans {
+								if plan == p {
+									loc := []string{}
+									loc = append(loc, locCode, plan, bm.Level)
+									data = append(data, loc)
+								}
+							}
+						} else {
+							loc := []string{}
+							loc = append(loc, locCode, plan, bm.Level)
+							data = append(data, loc)
+						}
+					}
 				}
 			}
-
-			return c.Out.Output(capacities, header, &requiredDataFormat)
+			return c.Out.Output(capacities, header, &data)
 		},
 	}
-	retrieveCapacityCmd.Flags().BoolVarP(&checkFacility, "facility", "f", true, "Facility code (sv15)")
-	retrieveCapacityCmd.Flags().BoolVarP(&checkMetro, "metro", "m", false, "Metro code (sv)")
+
+	fs := retrieveCapacityCmd.Flags()
+
+	fs.StringSliceVarP(&metros, "metros", "m", []string{}, "Codes of the metros")
+	fs.StringSliceVarP(&facilities, "facilities", "f", []string{}, "Codes of the facilities")
+	fs.StringSliceVarP(&plans, "plans", "P", []string{}, "Names of the plans")
+
+	fs.StringVar(&metro, "metro", "", "Code of the metro")
+	fs.StringVar(&facility, "facility", "", "Code of the facility")
+	fs.StringVar(&plan, "plan", "", "Name of the plan")
+	_ = fs.MarkDeprecated("metro", "use --metros instead")
+	_ = fs.MarkDeprecated("plan", "use --plans instead")
+	_ = fs.MarkDeprecated("facility", "use --facilities instead")
+
 	return retrieveCapacityCmd
 }
