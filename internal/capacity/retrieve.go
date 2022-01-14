@@ -79,38 +79,10 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			for locCode, capacity := range *capacities {
 				for plan, bm := range capacity {
-					if len(locs) > 0 {
-						for _, location := range locs {
-							if location == locCode {
-								if len(plans) > 0 {
-									for _, p := range plans {
-										if plan == p {
-											loc := []string{}
-											loc = append(loc, locCode, plan, bm.Level)
-											data = append(data, loc)
-										}
-									}
-								} else {
-									loc := []string{}
-									loc = append(loc, locCode, plan, bm.Level)
-									data = append(data, loc)
-								}
-							}
-						}
-					} else {
-						if len(plans) > 0 {
-							for _, p := range plans {
-								if plan == p {
-									loc := []string{}
-									loc = append(loc, locCode, plan, bm.Level)
-									data = append(data, loc)
-								}
-							}
-						} else {
-							loc := []string{}
-							loc = append(loc, locCode, plan, bm.Level)
-							data = append(data, loc)
-						}
+					loc := []string{}
+					if !(len(plans) > 0 && !contains(plans, plan)) && !(len(locs) > 0 && !contains(locs, locCode)) {
+						loc = append(loc, locCode, plan, bm.Level)
+						data = append(data, loc)
 					}
 				}
 			}
@@ -132,4 +104,13 @@ func (c *Client) Retrieve() *cobra.Command {
 	_ = fs.MarkDeprecated("facility", "use --facilities instead")
 
 	return retrieveCapacityCmd
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
