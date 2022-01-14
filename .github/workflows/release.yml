@@ -26,4 +26,8 @@ jobs:
           version: latest
           args: release --rm-dist
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 
+          # Token for robot account @equinix-homebrew-tap, which can publish
+          # to metal-cli and homebrew-tap GH repos
+          GITHUB_TOKEN: ${{ secrets.GH_HOMEBREW_TAP_TOKEN }}
