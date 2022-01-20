@@ -55,7 +55,6 @@ func (c *Client) Retrieve() *cobra.Command {
 			if fs.Changed("metro") && fs.Changed("metros") || fs.Changed("facility") && fs.Changed("facilities") {
 				return errors.New("Cannot use both --metro (-m) and --metros or --facility (-f) and --facilities")
 			}
-			// add other bad combos
 
 			cmd.SilenceUsage = true
 
