@@ -75,21 +75,26 @@ func (c *Client) Retrieve() *cobra.Command {
 			header := []string{locationField, "Plan", "Level"}
 			data := [][]string{}
 
+			filtered := map[string]map[string]map[string]string{}
+
 			for locCode, capacity := range *capacities {
-				// If the list of locations isn't empty and contains this location code
-				if !(len(locs) > 0 && !contains(locs, locCode)) {
-					for plan, bm := range capacity {
-						loc := []string{}
-						// If the list of plans isn't empty and contains this plan
-						if !(len(plans) > 0 && !contains(plans, plan)) {
-							loc = append(loc, locCode, plan, bm.Level)
-							data = append(data, loc)
-						}
+				if len(locs) > 0 && !contains(locs, locCode) {
+					continue
+				}
+				for plan, bm := range capacity {
+					if len(plans) > 0 && !contains(plans, plan) {
+						continue
 					}
+					loc := []string{locCode, plan, bm.Level}
+					data = append(data, loc)
+					if len(filtered[locCode]) == 0 {
+						filtered[locCode] = map[string]map[string]string{}
+					}
+					filtered[locCode][plan] = map[string]string{"levels": bm.Level}
 				}
 			}
 
-			return c.Out.Output(capacities, header, &data)
+			return c.Out.Output(filtered, header, &data)
 		},
 	}
 
