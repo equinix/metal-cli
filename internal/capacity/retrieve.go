@@ -27,27 +27,44 @@ import (
 
 func (c *Client) Retrieve() *cobra.Command {
 	var (
-		checkFacility bool
-		checkMetro    bool
+		checkFacility, checkMetro       bool
+		metros, facilities, plans, locs []string
 	)
 	// retrieveCapacitiesCmd represents the retrieveCapacity command
 	var retrieveCapacityCmd = &cobra.Command{
-		Use:     "get",
+		Use:     `get [[-m | -f] | [--metros metros,... | --facilities facilities,...]] [-P plans,...]`,
 		Aliases: []string{"list"},
-		Short:   "Returns a list of facilities or metros and plans with their current capacity.",
-		Long: `Example:
-Retrieve capacities:
-metal capacity get { --metro | --facility }
-`,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd.SilenceUsage = true
-			var err error
-			lister := c.Service.List
-			fieldName := "Facility"
+		Short:   "Returns a list of facilities or metros and plans with their current capacity, with filtering.",
+		Example: `metal capacity get -m sv,ny,da -P c3.large.arm,c3.medium.x86`,
 
-			if checkMetro {
-				fieldName = "Metro"
+		RunE: func(cmd *cobra.Command, args []string) error {
+			var err error
+			var locationField string
+			lister := c.Service.List // Default to facilities
+
+			fs := cmd.Flags()
+			if fs.Changed("metros") && fs.Changed("facilities") {
+				return errors.New("Either facilities or metros, but not both, can be set")
+			}
+			if fs.Changed("facility") && fs.Changed("metro") {
+				return errors.New("Either --facility (-f) or --metro (-m), but not both, can be set")
+			}
+			if fs.Changed("facility") && fs.Changed("metros") || fs.Changed("facilities") && fs.Changed("metro") {
+				return errors.New("Cannot specify both facility and metro filtering")
+			}
+			if fs.Changed("metro") && fs.Changed("metros") || fs.Changed("facility") && fs.Changed("facilities") {
+				return errors.New("Cannot use both --metro (-m) and --metros or --facility (-f) and --facilities")
+			}
+
+			cmd.SilenceUsage = true
+
+			if len(facilities) > 0 {
+				locationField = "Facility"
+				locs = append(locs, facilities...)
+			} else if len(metros) > 0 || checkMetro {
 				lister = c.Service.ListMetros
+				locationField = "Metro"
+				locs = append(locs, metros...)
 			}
 
 			capacities, _, err := lister()
@@ -55,21 +72,46 @@ metal capacity get { --metro | --facility }
 				return errors.Wrap(err, "Could not get Capacity")
 			}
 
-			header := []string{fieldName, "Plan", "Level"}
-			requiredDataFormat := [][]string{}
+			header := []string{locationField, "Plan", "Level"}
+			data := [][]string{}
+
+			filtered := map[string]map[string]map[string]string{}
 
 			for locCode, capacity := range *capacities {
+				if len(locs) > 0 && !contains(locs, locCode) {
+					continue
+				}
 				for plan, bm := range capacity {
-					loc := []string{}
-					loc = append(loc, locCode, plan, bm.Level)
-					requiredDataFormat = append(requiredDataFormat, loc)
+					if len(plans) > 0 && !contains(plans, plan) {
+						continue
+					}
+					loc := []string{locCode, plan, bm.Level}
+					data = append(data, loc)
+					if len(filtered[locCode]) == 0 {
+						filtered[locCode] = map[string]map[string]string{}
+					}
+					filtered[locCode][plan] = map[string]string{"levels": bm.Level}
 				}
 			}
 
-			return c.Out.Output(capacities, header, &requiredDataFormat)
+			return c.Out.Output(filtered, header, &data)
 		},
 	}
-	retrieveCapacityCmd.Flags().BoolVarP(&checkFacility, "facility", "f", true, "Facility code (sv15)")
-	retrieveCapacityCmd.Flags().BoolVarP(&checkMetro, "metro", "m", false, "Metro code (sv)")
+
+	fs := retrieveCapacityCmd.Flags()
+	fs.BoolVarP(&checkFacility, "facility", "f", true, "Report all facilites")
+	fs.BoolVarP(&checkMetro, "metro", "m", false, "Report all metros")
+	fs.StringSliceVar(&metros, "metros", []string{}, "Codes of the metros (client side filtering)")
+	fs.StringSliceVar(&facilities, "facilities", []string{}, "Codes of the facilities (client side filtering)")
+	fs.StringSliceVarP(&plans, "plans", "P", []string{}, "Names of the plans")
 	return retrieveCapacityCmd
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }

@@ -1,24 +1,26 @@
 ## metal capacity get
 
-Returns a list of facilities or metros and plans with their current capacity.
-
-### Synopsis
-
-Example:
-Retrieve capacities:
-metal capacity get { --metro | --facility }
-
+Returns a list of facilities or metros and plans with their current capacity, with filtering.
 
 ```
-metal capacity get [flags]
+metal capacity get [[-m | -f] | [--metros metros,... | --facilities facilities,...]] [-P plans,...] [flags]
+```
+
+### Examples
+
+```
+metal capacity get -m sv,ny,da -P c3.large.arm,c3.medium.x86
 ```
 
 ### Options
 
 ```
-  -f, --facility   Facility code (sv15) (default true)
-  -h, --help       help for get
-  -m, --metro      Metro code (sv)
+      --facilities strings   Codes of the facilities (client side filtering)
+  -f, --facility             Report all facilites (default true)
+  -h, --help                 help for get
+  -m, --metro                Report all metros
+      --metros strings       Codes of the metros (client side filtering)
+  -P, --plans strings        Names of the plans
 ```
 
 ### Options inherited from parent commands
