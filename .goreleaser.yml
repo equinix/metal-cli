@@ -59,9 +59,8 @@ brews:
     dependencies:
       - name: "go"
         type: build
-    commit_author:
-      name: "Aaron Aldrich"
-      email: "aaldrich@equinix.com"
+    test: |
+      system "#{bin}/metal -v"
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
     tap:
       owner: equinix
