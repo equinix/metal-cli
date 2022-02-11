@@ -34,13 +34,10 @@ func (c *Client) Create() *cobra.Command {
 
 	// createVirtualNetworkCmd represents the createVirtualNetwork command
 	var createVirtualNetworkCmd = &cobra.Command{
-		Use:   "create",
-		Short: "Creates a virtual network",
-		Long: `Example:
-
-metal virtual-network create --project-id [project_UUID] { --metro [metro_code] --vlan [vlan] | --facility [facility_code] }
-
-`,
+		Use:   `metal virtual-network create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> | -f <facility_code>] [-d <description>] [global_options]`,
+		Short: "Creates a virtual network.",
+		Long: "Creates a VLAN in the specified project. If creating a VXLAN in a metro, you can optionally specify the VXLAN ID. If creating a VLAN in a facility, the VXLAN ID is auto-assigned.",
+		
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := &packngo.VirtualNetworkCreateRequest{
@@ -73,7 +70,7 @@ metal virtual-network create --project-id [project_UUID] { --metro [metro_code] 
 	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
 	createVirtualNetworkCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
 	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the virtual network")
-	createVirtualNetworkCmd.Flags().IntVarP(&vxlan, "vxlan", "", 0, "VXLAN id to use (can only be used with --metro)")
+	createVirtualNetworkCmd.Flags().IntVarP(&vxlan, "vxlan", "", 0, "Optional VXLAN ID. Must be between 2 and 3999 and can only be used with --metro.")
 
 	_ = createVirtualNetworkCmd.MarkFlagRequired("project-id")
 	return createVirtualNetworkCmd
