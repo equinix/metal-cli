@@ -1,17 +1,24 @@
 ## metal virtual-network create
 
-Creates a virtual network
+Creates a virtual network.
 
 ### Synopsis
 
-Example:
-
-metal virtual-network create --project-id [project_UUID] { --metro [metro_code] --vlan [vlan] | --facility [facility_code] }
-
-
+Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID. If you are creating a VLAN in a facility, the VXLAN ID is auto-assigned.
 
 ```
 metal virtual-network create [flags]
+```
+
+### Examples
+
+```
+# Creates a VLAN with vxlan ID 1999 in the Dallas metro:
+metal virtual-network create -p <METAL_PROJECT_ID> -m da -vxlan 1999
+		
+# Creates a VLAN with vxlan ID 1999 in the Dallas metro:
+metal virtual-network create -p <METAL_PROJECT_ID> -m da -vxlan 1999
+
 ```
 
 ### Options
@@ -22,7 +29,7 @@ metal virtual-network create [flags]
   -h, --help                 help for create
   -m, --metro string         Code of the metro
   -p, --project-id string    Project ID (METAL_PROJECT_ID)
-      --vxlan int            VXLAN id to use (can only be used with --metro)
+      --vxlan int            Optional VXLAN ID. Must be between 2 and 3999 and can only be used with --metro.
 ```
 
 ### Options inherited from parent commands

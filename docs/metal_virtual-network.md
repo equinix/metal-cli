@@ -29,7 +29,7 @@ Virtual network operations: create, delete and get
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal virtual-network create](metal_virtual-network_create.md)	 - Creates a virtual network
+* [metal virtual-network create](metal_virtual-network_create.md)	 - Creates a virtual network.
 * [metal virtual-network delete](metal_virtual-network_delete.md)	 - Deletes a Virtual Network
 * [metal virtual-network get](metal_virtual-network_get.md)	 - Retrieves a list of virtual networks for a single project.
 
