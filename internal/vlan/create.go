@@ -26,6 +26,7 @@ import (
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/MakeNowJust/heredoc"
 )
 
 func (c *Client) Create() *cobra.Command {
@@ -34,12 +35,24 @@ func (c *Client) Create() *cobra.Command {
 
 	// createVirtualNetworkCmd represents the createVirtualNetwork command
 	var createVirtualNetworkCmd = &cobra.Command{
-		Use:   `metal virtual-network create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> | -f <facility_code>] [-d <description>] [global_options]`,
+		Use:    `create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> | -f <facility_code>] [-d <description>] [global_options]`,
 		Short: "Creates a virtual network.",
-		Long: "Creates a VLAN in the specified project. If creating a VXLAN in a metro, you can optionally specify the VXLAN ID. If creating a VLAN in a facility, the VXLAN ID is auto-assigned.",
+		Long: "Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID. If you are creating a VLAN in a facility, the VXLAN ID is auto-assigned.",
+		Example: heredoc.Doc(`
+			# Creates a VLAN with vxlan ID 1999 in the Dallas metro:
+			metal virtual-network create -p <METAL_PROJECT_ID> -m da -vxlan 1999
+		
+			# Creates a VLAN with an auto-assigned vxlan ID in the Dallas metro:
+			metal virtual-network create -p <METAL_PROJECT_ID> -m da
+
+			# Creates a VLAN in the sjc1 facility
+			metal virtual-network create -p <METAL_PROJECT_ID> -f sjc1
+		`),
 		
 		RunE: func(cmd *cobra.Command, args []string) error {
+			
 			cmd.SilenceUsage = true
+			
 			req := &packngo.VirtualNetworkCreateRequest{
 				ProjectID: projectID,
 				Metro:     metro,
