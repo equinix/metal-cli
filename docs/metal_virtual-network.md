@@ -1,10 +1,10 @@
 ## metal virtual-network
 
-Virtual network operations
+Virtual network (VLAN) operations
 
 ### Synopsis
 
-Virtual network operations: create, delete and get
+Virtual network (VLAN) operations : create, get, delete
 
 ### Options
 
@@ -16,9 +16,9 @@ Virtual network operations: create, delete and get
 
 ```
       --config string        Path to JSON or YAML configuration file
-      --exclude strings      Comma seperated Href references to collapse in results, may be dotted three levels deep
+      --exclude strings      Comma separated Href references to collapse in results, may be dotted three levels deep
       --filter stringArray   Filter 'get' actions with name value pairs. Filter is not supported by all resources and is implemented as request query parameters.
-      --include strings      Comma seperated Href references to expand in results, may be dotted three levels deep
+      --include strings      Comma separated Href references to expand in results, may be dotted three levels deep
   -o, --output string        Output format (*table, json, yaml)
       --search string        Search keyword for use in 'get' actions. Search is not supported by all resources.
       --sort-by string       Sort fields for use in 'get' actions. Sort is not supported by all resources.
@@ -30,6 +30,6 @@ Virtual network operations: create, delete and get
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
 * [metal virtual-network create](metal_virtual-network_create.md)	 - Creates a virtual network.
-* [metal virtual-network delete](metal_virtual-network_delete.md)	 - Deletes a Virtual Network
-* [metal virtual-network get](metal_virtual-network_get.md)	 - Retrieves a list of virtual networks for a single project.
+* [metal virtual-network delete](metal_virtual-network_delete.md)	 - Deletes a virtual network.
+* [metal virtual-network get](metal_virtual-network_get.md)	 - Lists virtual networks.
 

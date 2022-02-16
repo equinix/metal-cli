@@ -10,10 +10,10 @@ Command line interface for Equinix Metal
 
 ```
       --config string        Path to JSON or YAML configuration file
-      --exclude strings      Comma seperated Href references to collapse in results, may be dotted three levels deep
+      --exclude strings      Comma separated Href references to collapse in results, may be dotted three levels deep
       --filter stringArray   Filter 'get' actions with name value pairs. Filter is not supported by all resources and is implemented as request query parameters.
   -h, --help                 help for metal
-      --include strings      Comma seperated Href references to expand in results, may be dotted three levels deep
+      --include strings      Comma separated Href references to expand in results, may be dotted three levels deep
   -o, --output string        Output format (*table, json, yaml)
       --search string        Search keyword for use in 'get' actions. Search is not supported by all resources.
       --sort-by string       Sort fields for use in 'get' actions. Sort is not supported by all resources.
@@ -41,5 +41,5 @@ Command line interface for Equinix Metal
 * [metal project](metal_project.md)	 - Project operations
 * [metal ssh-key](metal_ssh-key.md)	 - SSH key operations
 * [metal user](metal_user.md)	 - User operations
-* [metal virtual-network](metal_virtual-network.md)	 - Virtual network operations
+* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations
 
