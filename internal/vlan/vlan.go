@@ -34,10 +34,10 @@ type Client struct {
 
 func (c *Client) NewCommand() *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:     "virtual-network",
+		Use: `virtual-network`,
 		Aliases: []string{"vlan", "vlans"},
-		Short:   "Virtual network operations",
-		Long:    `Virtual network operations: create, delete and get`,
+		Short: "Virtual network (VLAN) operations",
+		Long: "Virtual network (VLAN) operations : create, get, delete",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {

@@ -25,6 +25,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/MakeNowJust/heredoc"
 )
 
 func (c *Client) Retrieve() *cobra.Command {
@@ -32,14 +33,14 @@ func (c *Client) Retrieve() *cobra.Command {
 
 	// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
 	var retrieveVirtualNetworksCmd = &cobra.Command{
-		Use:     "get",
+		Use: `get -p <project_UUID> [global_options]`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves a list of virtual networks for a single project.",
-		Long: `Example:
-
-metal virtual-network get -p [project_UUID]
-
-	`,
+		Short:   "Retrieves a list of virtual networks for the specified project.",
+		Example: heredoc.Doc(`
+			# Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
+			virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
+		`),
+		
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			vnets, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))

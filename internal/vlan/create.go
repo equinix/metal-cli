@@ -35,7 +35,7 @@ func (c *Client) Create() *cobra.Command {
 
 	// createVirtualNetworkCmd represents the createVirtualNetwork command
 	var createVirtualNetworkCmd = &cobra.Command{
-		Use:    `create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> | -f <facility_code>] [-d <description>] [global_options]`,
+		Use: `create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> | -f <facility_code>] [-d <description>] [global_options]`,
 		Short: "Creates a virtual network.",
 		Long: "Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID. If you are creating a VLAN in a facility, the VXLAN ID is auto-assigned.",
 		Example: heredoc.Doc(`
