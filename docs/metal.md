@@ -28,6 +28,7 @@ Command line interface for Equinix Metal
 * [metal completion](metal_completion.md)	 - Generates completion scripts.
 * [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
 * [metal docs](metal_docs.md)	 - Generate command markdown documentation.
+* [metal emdocs](metal_emdocs.md)	 - Generate command documentation
 * [metal env](metal_env.md)	 - Prints or generates environment variables.
 * [metal event](metal_event.md)	 - Events operations for organizations, projects, devices, and the current user.
 * [metal facilities](metal_facilities.md)	 - Facility operations. For more information on Equinix Metal facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/. 

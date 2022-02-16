@@ -8,6 +8,7 @@ import (
 	"github.com/equinix/metal-cli/internal/completion"
 	"github.com/equinix/metal-cli/internal/devices"
 	"github.com/equinix/metal-cli/internal/docs"
+	"github.com/equinix/metal-cli/internal/emdocs"
 	"github.com/equinix/metal-cli/internal/env"
 	"github.com/equinix/metal-cli/internal/events"
 	"github.com/equinix/metal-cli/internal/facilities"
@@ -69,6 +70,7 @@ func NewCli() *Cli {
 func (cli *Cli) RegisterCommands(client *root.Client) {
 	cli.MainCmd.AddCommand(
 		docs.NewCommand(),
+		emdocs.NewCommand(),
 		completion.NewCommand(),
 
 		env.NewClient(client, apiTokenEnvVar).NewCommand(),
