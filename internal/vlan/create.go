@@ -80,9 +80,9 @@ func (c *Client) Create() *cobra.Command {
 	}
 
 	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
-	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
-	createVirtualNetworkCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro")
-	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the virtual network")
+	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility.")
+	createVirtualNetworkCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro.")
+	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "A user-friendly description of the virtual network.")
 	createVirtualNetworkCmd.Flags().IntVarP(&vxlan, "vxlan", "", 0, "Optional VXLAN ID. Must be between 2 and 3999 and can only be used with --metro.")
 
 	_ = createVirtualNetworkCmd.MarkFlagRequired("project-id")

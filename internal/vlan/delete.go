@@ -47,9 +47,9 @@ func (c *Client) Delete() *cobra.Command {
 	// deleteVirtualNetworkCmd represents the deleteVirtualNetwork command
 	var deleteVirtualNetworkCmd = &cobra.Command{
 		Use: `delete -i <virtual_network_UUID> [-f] [global_options]`,
-		Short: "Deletes a virtual network",
+		Short: "Deletes a virtual network.",
 		Long: "Deletes the specified VLAN with a confirmation prompt. To skip the confirmation use --force. You are not able to delete a VLAN that is attached to any ports.",
-		Example: heredoc.Doc(` 
+		Example: heredoc.Doc(`
 			# Deletes a VLAN, with confirmation.
 			metal virtual-network delete -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
 			>
@@ -78,9 +78,9 @@ func (c *Client) Delete() *cobra.Command {
 		},
 	}
 
-	deleteVirtualNetworkCmd.Flags().StringVarP(&vnetID, "id", "i", "", "UUID of the vlan")
+	deleteVirtualNetworkCmd.Flags().StringVarP(&vnetID, "id", "i", "", "UUID of the VLAN.")
 	_ = deleteVirtualNetworkCmd.MarkFlagRequired("id")
-	deleteVirtualNetworkCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the virtual network")
+	deleteVirtualNetworkCmd.Flags().BoolVarP(&force, "force", "f", false, "Skips confirmation for the removal of the virtual network.")
 
 	return deleteVirtualNetworkCmd
 }
