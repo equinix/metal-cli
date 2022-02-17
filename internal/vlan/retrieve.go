@@ -25,7 +25,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/MakeNowJust/heredoc"
 )
 
 func (c *Client) Retrieve() *cobra.Command {
@@ -33,14 +32,13 @@ func (c *Client) Retrieve() *cobra.Command {
 
 	// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
 	var retrieveVirtualNetworksCmd = &cobra.Command{
-		Use: `get -p <project_UUID> [global_options]`,
+		Use: `get -p <project_UUID>`,
 		Aliases: []string{"list"},
 		Short: "Lists virtual networks.",
 		Long: "Retrieves a list of virtual networks for the specified project.",
-		Example: heredoc.Doc(`
-			# Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
-			virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
-		`),
+		Example:  `
+  # Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
+  virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c`,
 		
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
@@ -59,7 +57,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			return c.Out.Output(vnets, header, &data)
 		},
 	}
-	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
+	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
 	_ = retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
 
 	return retrieveVirtualNetworksCmd

@@ -26,7 +26,6 @@ import (
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/MakeNowJust/heredoc"
 )
 
 func (c *Client) Create() *cobra.Command {
@@ -35,19 +34,17 @@ func (c *Client) Create() *cobra.Command {
 
 	// createVirtualNetworkCmd represents the createVirtualNetwork command
 	var createVirtualNetworkCmd = &cobra.Command{
-		Use: `create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> | -f <facility_code>] [-d <description>] [global_options]`,
+		Use: `create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> | -f <facility_code>] [-d <description>]`,
 		Short: "Creates a virtual network.",
 		Long: "Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID. If you are creating a VLAN in a facility, the VXLAN ID is auto-assigned.",
-		Example: heredoc.Doc(`
-			# Creates a VLAN with vxlan ID 1999 in the Dallas metro:
-			metal virtual-network create -p <METAL_PROJECT_ID> -m da -vxlan 1999
-		
-			# Creates a VLAN with an auto-assigned vxlan ID in the Dallas metro:
-			metal virtual-network create -p <METAL_PROJECT_ID> -m da
+		Example: `  # Creates a VLAN with vxlan ID 1999 in the Dallas metro:
+  metal virtual-network create -p <METAL_PROJECT_ID> -m da -vxlan 1999
 
-			# Creates a VLAN in the sjc1 facility
-			metal virtual-network create -p <METAL_PROJECT_ID> -f sjc1
-		`),
+  # Creates a VLAN with an auto-assigned vxlan ID in the Dallas metro:
+  metal virtual-network create -p <METAL_PROJECT_ID> -m da
+
+  # Creates a VLAN in the sjc1 facility
+  metal virtual-network create -p <METAL_PROJECT_ID> -f sjc1`,
 		
 		RunE: func(cmd *cobra.Command, args []string) error {
 			
@@ -79,7 +76,7 @@ func (c *Client) Create() *cobra.Command {
 		},
 	}
 
-	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
+	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
 	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility.")
 	createVirtualNetworkCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro.")
 	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "A user-friendly description of the virtual network.")
