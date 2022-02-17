@@ -7,20 +7,19 @@ Deletes a virtual network.
 Deletes the specified VLAN with a confirmation prompt. To skip the confirmation use --force. You are not able to delete a VLAN that is attached to any ports.
 
 ```
-metal virtual-network delete -i <virtual_network_UUID> [-f] [global_options] [flags]
+metal virtual-network delete -i <virtual_network_UUID> [-f] [flags]
 ```
 
 ### Examples
 
 ```
-# Deletes a VLAN, with confirmation.
-metal virtual-network delete -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
->
-✔ Are you sure you want to delete virtual network 77e6d57a-d7a4-4816-b451-cf9b043444e2: y
+  # Deletes a VLAN, with confirmation.
+  metal virtual-network delete -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
+  >
+  ✔ Are you sure you want to delete virtual network 77e6d57a-d7a4-4816-b451-cf9b043444e2: y
 		
-# Deletes a VLAN, skipping confirmation.
-metal virtual-network delete -f -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
-
+  # Deletes a VLAN, skipping confirmation.
+  metal virtual-network delete -f -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
 ```
 
 ### Options

@@ -7,22 +7,22 @@ Lists virtual networks.
 Retrieves a list of virtual networks for the specified project.
 
 ```
-metal virtual-network get -p <project_UUID> [global_options] [flags]
+metal virtual-network get -p <project_UUID> [flags]
 ```
 
 ### Examples
 
 ```
-# Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
-virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
 
+  # Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
+  virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
 ```
 
 ### Options
 
 ```
   -h, --help                help for get
-  -p, --project-id string   Project ID (METAL_PROJECT_ID)
+  -p, --project-id string   The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
 ```
 
 ### Options inherited from parent commands
