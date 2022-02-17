@@ -4,7 +4,7 @@ Creates a virtual network.
 
 ### Synopsis
 
-Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID. If you are creating a VLAN in a facility, the VXLAN ID is auto-assigned.
+Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID otherwise it is auto-assigned. If you are creating a VLAN in a facility, the VXLAN ID is auto-assigned.
 
 ```
 metal virtual-network create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> | -f <facility_code>] [-d <description>] [flags]
@@ -14,10 +14,7 @@ metal virtual-network create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> |
 
 ```
   # Creates a VLAN with vxlan ID 1999 in the Dallas metro:
-  metal virtual-network create -p <METAL_PROJECT_ID> -m da -vxlan 1999
-
-  # Creates a VLAN with an auto-assigned vxlan ID in the Dallas metro:
-  metal virtual-network create -p <METAL_PROJECT_ID> -m da
+  metal virtual-network create -p <METAL_PROJECT_ID> -m da --vxlan 1999
 
   # Creates a VLAN in the sjc1 facility
   metal virtual-network create -p <METAL_PROJECT_ID> -f sjc1
@@ -50,5 +47,5 @@ metal virtual-network create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> |
 
 ### SEE ALSO
 
-* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations
+* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
 

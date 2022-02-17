@@ -1,10 +1,10 @@
 ## metal virtual-network
 
-Virtual network (VLAN) operations
+Virtual network (VLAN) operations. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
 
 ### Synopsis
 
-Virtual network (VLAN) operations : create, get, delete
+Virtual network (VLAN) operations : create, get, delete.
 
 ### Options
 

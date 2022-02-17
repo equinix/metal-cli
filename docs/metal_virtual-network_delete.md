@@ -46,5 +46,5 @@ metal virtual-network delete -i <virtual_network_UUID> [-f] [flags]
 
 ### SEE ALSO
 
-* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations
+* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
 

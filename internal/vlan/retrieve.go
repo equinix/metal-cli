@@ -35,7 +35,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		Use: `get -p <project_UUID>`,
 		Aliases: []string{"list"},
 		Short: "Lists virtual networks.",
-		Long: "Retrieves a list of virtual networks for the specified project.",
+		Long: "Retrieves a list of all VLANs for the specified project.",
 		Example:  `
   # Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
   virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c`,

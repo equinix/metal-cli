@@ -4,7 +4,7 @@ Lists virtual networks.
 
 ### Synopsis
 
-Retrieves a list of virtual networks for the specified project.
+Retrieves a list of all VLANs for the specified project.
 
 ```
 metal virtual-network get -p <project_UUID> [flags]
@@ -41,5 +41,5 @@ metal virtual-network get -p <project_UUID> [flags]
 
 ### SEE ALSO
 
-* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations
+* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
 
