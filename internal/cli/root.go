@@ -194,8 +194,8 @@ func (c *Client) NewCommand() *cobra.Command {
 	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", c.cfgFile, "Path to JSON or YAML configuration file")
 
 	rootCmd.PersistentFlags().StringVarP(&c.outputFormat, "output", "o", "", "Output format (*table, json, yaml)")
-	c.includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma seperated Href references to expand in results, may be dotted three levels deep")
-	c.excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma seperated Href references to collapse in results, may be dotted three levels deep")
+	c.includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma separated Href references to expand in results, may be dotted three levels deep")
+	c.excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma separated Href references to collapse in results, may be dotted three levels deep")
 	c.filters = rootCmd.PersistentFlags().StringArray("filter", nil, "Filter 'get' actions with name value pairs. Filter is not supported by all resources and is implemented as request query parameters.")
 	rootCmd.PersistentFlags().StringVar(&c.search, "search", "", "Search keyword for use in 'get' actions. Search is not supported by all resources.")
 	rootCmd.PersistentFlags().StringVar(&c.sortBy, "sort-by", "", "Sort fields for use in 'get' actions. Sort is not supported by all resources.")

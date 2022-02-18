@@ -32,14 +32,14 @@ func (c *Client) Retrieve() *cobra.Command {
 
 	// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
 	var retrieveVirtualNetworksCmd = &cobra.Command{
-		Use:     "get",
+		Use: `get -p <project_UUID>`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves a list of virtual networks for a single project.",
-		Long: `Example:
-
-metal virtual-network get -p [project_UUID]
-
-	`,
+		Short: "Lists virtual networks.",
+		Long: "Retrieves a list of all VLANs for the specified project.",
+		Example:  `
+  # Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
+  metal virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c`,
+		
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			vnets, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))
@@ -57,7 +57,7 @@ metal virtual-network get -p [project_UUID]
 			return c.Out.Output(vnets, header, &data)
 		},
 	}
-	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
+	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
 	_ = retrieveVirtualNetworksCmd.MarkFlagRequired("project-id")
 
 	return retrieveVirtualNetworksCmd

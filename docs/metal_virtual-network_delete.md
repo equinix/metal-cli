@@ -1,34 +1,42 @@
 ## metal virtual-network delete
 
-Deletes a Virtual Network
+Deletes a virtual network.
 
 ### Synopsis
 
-Example:
-
-metal virtual-network delete -i [virtual_network_UUID]
-
-	
+Deletes the specified VLAN with a confirmation prompt. To skip the confirmation use --force. You are not able to delete a VLAN that is attached to any ports.
 
 ```
-metal virtual-network delete [flags]
+metal virtual-network delete -i <virtual_network_UUID> [-f] [flags]
+```
+
+### Examples
+
+```
+  # Deletes a VLAN, with confirmation.
+  metal virtual-network delete -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
+  >
+  ✔ Are you sure you want to delete virtual network 77e6d57a-d7a4-4816-b451-cf9b043444e2: y
+		
+  # Deletes a VLAN, skipping confirmation.
+  metal virtual-network delete -f -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
 ```
 
 ### Options
 
 ```
-  -f, --force       Force removal of the virtual network
+  -f, --force       Skips confirmation for the removal of the virtual network.
   -h, --help        help for delete
-  -i, --id string   UUID of the vlan
+  -i, --id string   UUID of the VLAN.
 ```
 
 ### Options inherited from parent commands
 
 ```
       --config string        Path to JSON or YAML configuration file
-      --exclude strings      Comma seperated Href references to collapse in results, may be dotted three levels deep
+      --exclude strings      Comma separated Href references to collapse in results, may be dotted three levels deep
       --filter stringArray   Filter 'get' actions with name value pairs. Filter is not supported by all resources and is implemented as request query parameters.
-      --include strings      Comma seperated Href references to expand in results, may be dotted three levels deep
+      --include strings      Comma separated Href references to expand in results, may be dotted three levels deep
   -o, --output string        Output format (*table, json, yaml)
       --search string        Search keyword for use in 'get' actions. Search is not supported by all resources.
       --sort-by string       Sort fields for use in 'get' actions. Sort is not supported by all resources.
@@ -38,5 +46,5 @@ metal virtual-network delete [flags]
 
 ### SEE ALSO
 
-* [metal virtual-network](metal_virtual-network.md)	 - Virtual network operations
+* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
 
