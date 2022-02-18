@@ -14,10 +14,10 @@ metal virtual-network create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> |
 
 ```
   # Creates a VLAN with vxlan ID 1999 in the Dallas metro:
-  metal virtual-network create -p <METAL_PROJECT_ID> -m da --vxlan 1999
+  metal virtual-network create -p $METAL_PROJECT_ID -m da --vxlan 1999
 
   # Creates a VLAN in the sjc1 facility
-  metal virtual-network create -p <METAL_PROJECT_ID> -f sjc1
+  metal virtual-network create -p $METAL_PROJECT_ID -f sjc1
 ```
 
 ### Options

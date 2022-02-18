@@ -38,10 +38,10 @@ func (c *Client) Create() *cobra.Command {
 		Short: "Creates a virtual network.",
 		Long: "Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID otherwise it is auto-assigned. If you are creating a VLAN in a facility, the VXLAN ID is auto-assigned.",
 		Example: `  # Creates a VLAN with vxlan ID 1999 in the Dallas metro:
-  metal virtual-network create -p <METAL_PROJECT_ID> -m da --vxlan 1999
+  metal virtual-network create -p $METAL_PROJECT_ID -m da --vxlan 1999
 
   # Creates a VLAN in the sjc1 facility
-  metal virtual-network create -p <METAL_PROJECT_ID> -f sjc1`,
+  metal virtual-network create -p $METAL_PROJECT_ID -f sjc1`,
 		
 		RunE: func(cmd *cobra.Command, args []string) error {
 			
