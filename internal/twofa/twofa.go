@@ -34,10 +34,10 @@ type Client struct {
 
 func (c *Client) NewCommand() *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:     "2fa",
+		Use: `2fa`,
 		Aliases: []string{"tfa", "mfa", "totp"},
-		Short:   "Two Factor Authentication operations",
-		Long:    `Two Factor Authentication operations: enable, disable, receive`,
+		Short: "Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.",
+		Long: "Two-factor Authentication operations: enable, disable, receive.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
