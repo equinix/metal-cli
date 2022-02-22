@@ -43,13 +43,17 @@ func (c *Client) Delete() *cobra.Command {
 	}
 	// deleteSSHKeyCmd represents the deleteSSHKey command
 	var deleteSSHKeyCmd = &cobra.Command{
-		Use:   "delete",
-		Short: "Deletes an SSH key",
-		Long: `Example:
+		Use: `delete --id <SSH-key_UUID> [--force]`,
+		Short: "Deletes an SSH key.",
+		Long: "Deletes an SSH key with a confirmation prompt. To skip the confirmation use --force. Does not remove the SSH key from existing servers.",
+		Example: `  # Deletes an SSH key, with confirmation:
+  metal ssh-key delete -i 5cb96463-88fd-4d68-94ba-2c9505ff265e
+  >
+  ✔ Are you sure you want to delete SSH Key 5cb96463-88fd-4d68-94ba-2c9505ff265e: y
+  
+  # Deletes an SSH key, skipping confirmation:
+  metal ssh-key delete -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -f`,
 
-metal ssh-key delete --id [ssh-key_UUID]
-
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			if !force {
@@ -68,9 +72,9 @@ metal ssh-key delete --id [ssh-key_UUID]
 		},
 	}
 
-	deleteSSHKeyCmd.Flags().StringVarP(&sshKeyID, "id", "i", "", "UUID of the SSH key")
+	deleteSSHKeyCmd.Flags().StringVarP(&sshKeyID, "id", "i", "", "The UUID of the SSH key.")
 	_ = deleteSSHKeyCmd.MarkFlagRequired("id")
 
-	deleteSSHKeyCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the SSH key")
+	deleteSSHKeyCmd.Flags().BoolVarP(&force, "force", "f", false, "Skips confirmation for the deletion of the SSH key.")
 	return deleteSSHKeyCmd
 }
