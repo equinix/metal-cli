@@ -37,7 +37,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Use: `2fa`,
 		Aliases: []string{"tfa", "mfa", "totp"},
 		Short: "Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.",
-		Long: "Two-factor Authentication operations: enable, disable, receive.",
+		Long: "Two-factor Authentication operations: receive, enable, disable.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
