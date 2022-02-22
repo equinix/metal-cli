@@ -1,10 +1,10 @@
 ## metal ssh-key
 
-SSH key operations
+SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.
 
 ### Synopsis
 
-SSH key operations: create, delete, update and get
+SSH key operations: create, get, update, and delete.
 
 ### Options
 
@@ -29,8 +29,8 @@ SSH key operations: create, delete, update and get
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal ssh-key create](metal_ssh-key_create.md)	 - Creates an SSH key
-* [metal ssh-key delete](metal_ssh-key_delete.md)	 - Deletes an SSH key
-* [metal ssh-key get](metal_ssh-key_get.md)	 - Retrieves a list of available SSH keys or a single SSH key
-* [metal ssh-key update](metal_ssh-key_update.md)	 - Updates a project
+* [metal ssh-key create](metal_ssh-key_create.md)	 - Adds an SSH key for the current user's account.
+* [metal ssh-key delete](metal_ssh-key_delete.md)	 - Deletes an SSH key.
+* [metal ssh-key get](metal_ssh-key_get.md)	 - Retrieves a list of SSH keys or a specified SSH key.
+* [metal ssh-key update](metal_ssh-key_update.md)	 - Updates an SSH key.
 

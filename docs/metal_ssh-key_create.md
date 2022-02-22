@@ -1,25 +1,28 @@
 ## metal ssh-key create
 
-Creates an SSH key
+Adds an SSH key for the current user's account.
 
 ### Synopsis
 
-Example:
-
-metal ssh-key create --key [public_key] --label [label]
-
-	
+Adds an SSH key for the current user's account. The key will then be added to the user's servers at provision time.
 
 ```
-metal ssh-key create [flags]
+metal ssh-key create --key <public_key> --label <label> [flags]
+```
+
+### Examples
+
+```
+ # Adds a key labled "example-key" to the current user account.
+  metal ssh-key create --key ssh-rsa AAAAB3N...user@domain.com --label example-key
 ```
 
 ### Options
 
 ```
   -h, --help           help for create
-  -k, --key string     Public SSH key string
-  -l, --label string   Name of the SSH key
+  -k, --key string     User's full SSH public key string.
+  -l, --label string   Name or other user-friendly description of the SSH key.
 ```
 
 ### Options inherited from parent commands
@@ -38,5 +41,5 @@ metal ssh-key create [flags]
 
 ### SEE ALSO
 
-* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations
+* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.
 

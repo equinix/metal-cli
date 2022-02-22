@@ -1,29 +1,32 @@
 ## metal 2fa disable
 
-Disables two factor authentication
+Disables two-factor authentication.
 
 ### Synopsis
 
-Example:
-
-Disable two factor authentication via SMS
-metal 2fa disable -s -c [code]
-
-Disable two factor authentication via APP
-metal 2fa disable -a -c [code]
-
+ Disables two-factor authentication. Requires the current OTP code from either SMS or application. If you no longer have access to your two-factor authentication device, please contact support.
 
 ```
-metal 2fa disable [flags]
+metal 2fa disable (-a | -s) --code <OTP_code>  [flags]
+```
+
+### Examples
+
+```
+  # Disable two-factor authentication via SMS
+  metal 2fa disable -s -c <OTP_code>
+
+  # Disable two-factor authentication via APP
+  metal 2fa disable -a -c <OTP_code>
 ```
 
 ### Options
 
 ```
-  -a, --app           Issues otp uri for auth application
-  -c, --code string   Two factor authentication code
+  -a, --app           The OTP code is issued from an application.
+  -c, --code string   The two-factor authentication OTP code.
   -h, --help          help for disable
-  -s, --sms           Issues SMS otp token to user's phone
+  -s, --sms           The OTP code is issued to you via SMS.
 ```
 
 ### Options inherited from parent commands
@@ -42,5 +45,5 @@ metal 2fa disable [flags]
 
 ### SEE ALSO
 
-* [metal 2fa](metal_2fa.md)	 - Two Factor Authentication operations
+* [metal 2fa](metal_2fa.md)	 - Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.
 

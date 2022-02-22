@@ -1,10 +1,10 @@
 ## metal 2fa
 
-Two Factor Authentication operations
+Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.
 
 ### Synopsis
 
-Two Factor Authentication operations: enable, disable, receive
+Two-factor Authentication operations: receive, enable, disable.
 
 ### Options
 
@@ -29,7 +29,7 @@ Two Factor Authentication operations: enable, disable, receive
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal 2fa disable](metal_2fa_disable.md)	 - Disables two factor authentication
-* [metal 2fa enable](metal_2fa_enable.md)	 - Enables two factor authentication
-* [metal 2fa receive](metal_2fa_receive.md)	 - Receive two factor authentication token
+* [metal 2fa disable](metal_2fa_disable.md)	 - Disables two-factor authentication.
+* [metal 2fa enable](metal_2fa_enable.md)	 - Enables two factor authentication.
+* [metal 2fa receive](metal_2fa_receive.md)	 - Generates a two-factor authentication token for use in enabling two-factor authentication on the current user's account.
 

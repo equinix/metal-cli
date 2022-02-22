@@ -23,7 +23,7 @@ Command line interface for Equinix Metal
 
 ### SEE ALSO
 
-* [metal 2fa](metal_2fa.md)	 - Two Factor Authentication operations
+* [metal 2fa](metal_2fa.md)	 - Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.
 * [metal capacity](metal_capacity.md)	 - Capacities operations
 * [metal completion](metal_completion.md)	 - Generate completion script
 * [metal device](metal_device.md)	 - Device operations
@@ -39,7 +39,7 @@ Command line interface for Equinix Metal
 * [metal organization](metal_organization.md)	 - Organization operations
 * [metal plan](metal_plan.md)	 - Plan operations
 * [metal project](metal_project.md)	 - Project operations
-* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations
-* [metal user](metal_user.md)	 - User operations
+* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.
+* [metal user](metal_user.md)	 - User operations. For more information on user and account management, visit https://metal.equinix.com/developers/docs/accounts/users/ in the Equinix Metal documentation.
 * [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
 

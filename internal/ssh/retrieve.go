@@ -37,7 +37,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		Aliases: []string{"list"},
 		Short: "Retrieves a list of SSH keys or a specified SSH key.",
 		Long: "Retrieves a list of SSH keys associated with the current user's account or the details of single SSH key.",
-		Example: `# Retrieves the SSH keys of the current user: 
+		Example: `  # Retrieves the SSH keys of the current user: 
   metal ssh-key get
   
   # Returns the details of SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e:
