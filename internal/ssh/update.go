@@ -30,13 +30,15 @@ func (c *Client) Update() *cobra.Command {
 	var sshKeyID string
 	// updateSSHKeyCmd represents the updateSSHKey command
 	var updateSSHKeyCmd = &cobra.Command{
-		Use:   "update",
-		Short: "Updates a project",
-		Long: `Example:
+		Use: `update -i <SSH-key_UUID> [-k <public_key>] [-l <label>]`,
+		Short: "Updates an SSH key.",
+		Long: "Updates an SSH key with either a new public key, a new label, or both.",
+		Example: `  # Updates SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e with a new public key: 
+  metal ssh-key update -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -k AAAAB3N...user@domain.com
+  
+  # Updates SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e with a new label:
+  metal ssh-key update -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -l test-machine-2`,
 
-metal ssh-key update --id [ssh-key_UUID] --key [new_key]
-
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := &packngo.SSHKeyUpdateRequest{}
