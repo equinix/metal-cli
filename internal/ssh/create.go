@@ -33,13 +33,12 @@ var (
 
 func (c *Client) Create() *cobra.Command {
 	var createSSHKeyCmd = &cobra.Command{
-		Use:   "create",
-		Short: "Creates an SSH key",
-		Long: `Example:
+		Use: `create --key <public_key> --label <label>`,
+		Short: "Adds an SSH key for the current user's account.",
+		Long: "Adds an SSH key for the current user's account. The key will then be added to the user's servers at provision time.",
+		Example: ` # Adds a key labled "example-key" to the current user account.
+  metal ssh-key create --key ssh-rsa AAAAB3N...user@domain.com --label example-key`,
 
-metal ssh-key create --key [public_key] --label [label]
-
-	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := packngo.SSHKeyCreateRequest{
@@ -60,8 +59,8 @@ metal ssh-key create --key [public_key] --label [label]
 		},
 	}
 
-	createSSHKeyCmd.Flags().StringVarP(&label, "label", "l", "", "Name of the SSH key")
-	createSSHKeyCmd.Flags().StringVarP(&key, "key", "k", "", "Public SSH key string")
+	createSSHKeyCmd.Flags().StringVarP(&label, "label", "l", "", "Name or other user-friendly description of the SSH key.")
+	createSSHKeyCmd.Flags().StringVarP(&key, "key", "k", "", "User's full SSH public key string.")
 
 	_ = createSSHKeyCmd.MarkFlagRequired("label")
 	_ = createSSHKeyCmd.MarkFlagRequired("key")
