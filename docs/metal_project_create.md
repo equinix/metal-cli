@@ -1,17 +1,23 @@
 ## metal project create
 
-Creates a project
+Creates a project.
 
 ### Synopsis
 
-Example:
-
-metal project create --name [project_name]
-  
-  
+Creates a project with the specified name. If no organization is specified, the project is created in the current user's default organization. If no payment method is specified the organization's default payment method is used.
 
 ```
-metal project create [flags]
+metal project create -n <project_name> [-O <organization_UUID>] [-m <payment_method_UUID>] [flags]
+```
+
+### Examples
+
+```
+  # Creates a new project named dev-cluster02: 
+  metal project create --name dev-cluster02
+  
+  # Creates a new project named dev-cluster03 in the specified organization with a payment method:
+  metal project create -n dev-cluster03 -O 814b09ca-0d0c-4656-9de0-4ce65c6faf70 -m ab1fbdaa-8b25-4c3e-8360-e283852e3747
 ```
 
 ### Options
@@ -19,8 +25,8 @@ metal project create [flags]
 ```
   -h, --help                       help for create
   -n, --name string                Name of the project
-  -O, --organization-id string     UUID of the organization
-  -m, --payment-method-id string   UUID of the payment method
+  -O, --organization-id string     The UUID of the organization.
+  -m, --payment-method-id string   The UUID of the payment method.
 ```
 
 ### Options inherited from parent commands
@@ -39,5 +45,5 @@ metal project create [flags]
 
 ### SEE ALSO
 
-* [metal project](metal_project.md)	 - Project operations
+* [metal project](metal_project.md)	 - Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
 

@@ -37,8 +37,8 @@ Command line interface for Equinix Metal
 * [metal metros](metal_metros.md)	 - Metro operations
 * [metal operating-systems](metal_operating-systems.md)	 - Operating system operations
 * [metal organization](metal_organization.md)	 - Organization operations
-* [metal plan](metal_plan.md)	 - Plan operations
-* [metal project](metal_project.md)	 - Project operations
+* [metal plan](metal_plan.md)	 - Plan operations. For more information on the different Equinix Metal plans, visit https://metal.equinix.com/developers/docs/servers/server-specs/.
+* [metal project](metal_project.md)	 - Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
 * [metal ssh-key](metal_ssh-key.md)	 - SSH key operations
 * [metal user](metal_user.md)	 - User operations
 * [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.

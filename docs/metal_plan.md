@@ -1,10 +1,10 @@
 ## metal plan
 
-Plan operations
+Plan operations. For more information on the different Equinix Metal plans, visit https://metal.equinix.com/developers/docs/servers/server-specs/.
 
 ### Synopsis
 
-Plan operations: get
+Plan operations: get.
 
 ### Options
 
@@ -29,5 +29,5 @@ Plan operations: get
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal plan get](metal_plan_get.md)	 - Retrieves a list of all available plans.
+* [metal plan get](metal_plan_get.md)	 - Retrieves a list plans.
 

@@ -1,17 +1,25 @@
 ## metal project delete
 
-Deletes a project
+Deletes a project.
 
 ### Synopsis
 
-Example:
-
-metal project delete --id [project_UUID]
-
-
+Deletes the specified project with a confirmation prompt. To skip the confirmation use --force. You can't delete a project that has active resources. You have to deprovision all servers and other infrastructure from a project in order to delete it.
 
 ```
-metal project delete [flags]
+metal project delete --id <project_UUID> [--force] [flags]
+```
+
+### Examples
+
+```
+  # Deletes project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
+  metal project delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
+  >
+  ✔ Are you sure you want to delete project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375: y
+  
+  # Deletes project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375, skipping confirmation:
+  metal project delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 -f
 ```
 
 ### Options
@@ -19,7 +27,7 @@ metal project delete [flags]
 ```
   -f, --force       Force removal of the project
   -h, --help        help for delete
-  -i, --id string   Project ID (METAL_PROJECT_ID)
+  -i, --id string   The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
 ```
 
 ### Options inherited from parent commands
@@ -38,5 +46,5 @@ metal project delete [flags]
 
 ### SEE ALSO
 
-* [metal project](metal_project.md)	 - Project operations
+* [metal project](metal_project.md)	 - Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
 

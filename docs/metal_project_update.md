@@ -1,26 +1,32 @@
 ## metal project update
 
-Updates a project
+Updates a project.
 
 ### Synopsis
 
-Example:
-
-metal project update --id [project_UUID] --name [new_name]
-
-
+Updates the specified project with a new name, a new payment method, or both.
 
 ```
-metal project update [flags]
+metal project update -i <project_UUID> [-n <name>] [-m <payment_method_UUID>] [flags]
+```
+
+### Examples
+
+```
+  # Updates the specified project with a new name:
+  metal project update -i $METAL_PROJECT_ID -n new-prod-cluster05
+  
+  # Updates the specified project with a new payment method:
+  metal project update -i $METAL_PROJECT_ID -m e2fcdf91-b6dc-4d6a-97ad-b26a14b66839
 ```
 
 ### Options
 
 ```
   -h, --help                       help for update
-  -i, --id string                  Project ID (METAL_PROJECT_ID)
-  -n, --name string                Name for the project
-  -m, --payment-method-id string   UUID of the payment method
+  -i, --id string                  The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
+  -n, --name string                The new name for the project.
+  -m, --payment-method-id string   The UUID of the new payment method.
 ```
 
 ### Options inherited from parent commands
@@ -39,5 +45,5 @@ metal project update [flags]
 
 ### SEE ALSO
 
-* [metal project](metal_project.md)	 - Project operations
+* [metal project](metal_project.md)	 - Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
 

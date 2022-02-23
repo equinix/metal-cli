@@ -1,31 +1,34 @@
 ## metal project get
 
-Retrieves all available projects or a single project
+Retrieves all the current user's projects or the details of a specified project.
 
 ### Synopsis
 
-Example:
-
-Retrieve all projects:
-metal project get
-  
-Retrieve a specific project:
-metal project get -i [project_UUID]
-metal project get -n [project_name]
-
-When using "--json" or "--yaml", "--include=members" is implied.
-	
+Retrieves all the current user's projects or the details of a specified project. You can specify which project by UUID or name. When using `--json` or `--yaml` flags, the `--include=members` flag is implied.
 
 ```
-metal project get [flags]
+metal project get [-i <project_UUID> | -n <project_name>] [flags]
+```
+
+### Examples
+
+```
+  # Retrieve all projects:
+  metal project get
+  
+  # Retrieve a specific project by UUID: 
+  metal project get -i 2008f885-1aac-406b-8d99-e6963fd21333
+
+  # Retrieve a specific project by name:
+  metal project get -n dev-cluster03
 ```
 
 ### Options
 
 ```
   -h, --help             help for get
-  -i, --id string        Project ID (METAL_PROJECT_ID)
-  -n, --project string   Name of the project
+  -i, --id string        The project's UUID, which can be specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
+  -n, --project string   The name of the project.
 ```
 
 ### Options inherited from parent commands
@@ -44,5 +47,5 @@ metal project get [flags]
 
 ### SEE ALSO
 
-* [metal project](metal_project.md)	 - Project operations
+* [metal project](metal_project.md)	 - Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
 

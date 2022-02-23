@@ -1,17 +1,20 @@
 ## metal plan get
 
-Retrieves a list of all available plans.
+Retrieves a list plans.
 
 ### Synopsis
 
-Example:
-
-  metal plans get
-  
-  
+Retrieves a list of plans available to the current user. Response includes plan UUID, slug, and name.
 
 ```
 metal plan get [flags]
+```
+
+### Examples
+
+```
+  # Lists the plans available to the current user:
+  metal plans get
 ```
 
 ### Options
@@ -36,5 +39,5 @@ metal plan get [flags]
 
 ### SEE ALSO
 
-* [metal plan](metal_plan.md)	 - Plan operations
+* [metal plan](metal_plan.md)	 - Plan operations. For more information on the different Equinix Metal plans, visit https://metal.equinix.com/developers/docs/servers/server-specs/.
 
