@@ -37,13 +37,15 @@ func (c *Client) Create() *cobra.Command {
 
 	// createOrganizationCmd represents the createOrganization command
 	var createOrganizationCmd = &cobra.Command{
-		Use:   "create",
-		Short: "Creates an organization",
-		Long: `Example:
+		Use: `create -n <name> [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>]`,
+		Short: "Creates an organization.",
+		Long: "Creates a new organization with the current user as the organization's owner. ",
+		Example: `  # Creates a new organization named "it-backend-infra": 
+  metal organization create -n it-backend-infra
+  
+  # Creates a new organization with name, website, and twitter:
+  metal organization create -n test-org -w www.metal.equinix.com -t https://twitter.com/equinixmetal `,
 
-metal organization create -n [name]
-
-	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := &packngo.OrganizationCreateRequest{
@@ -76,11 +78,11 @@ metal organization create -n [name]
 		},
 	}
 
-	createOrganizationCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the organization")
-	createOrganizationCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the organization")
-	createOrganizationCmd.Flags().StringVarP(&website, "website", "w", "", "Website URL of the organization")
-	createOrganizationCmd.Flags().StringVarP(&twitter, "twitter", "t", "", "Twitter URL of the organization")
-	createOrganizationCmd.Flags().StringVarP(&logo, "logo", "l", "", "Logo URL]")
+	createOrganizationCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the organization.")
+	createOrganizationCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the organization.")
+	createOrganizationCmd.Flags().StringVarP(&website, "website", "w", "", "Website URL of the organization.")
+	createOrganizationCmd.Flags().StringVarP(&twitter, "twitter", "t", "", "Twitter URL of the organization.")
+	createOrganizationCmd.Flags().StringVarP(&logo, "logo", "l", "", "A Logo image URL.]")
 
 	_ = createOrganizationCmd.MarkFlagRequired("name")
 	return createOrganizationCmd
