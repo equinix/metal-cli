@@ -27,11 +27,13 @@ import (
 
 func (c *Client) Retrieve() *cobra.Command {
 	return &cobra.Command{
-		Use:     "get",
+		Use: `get`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves a list of available operating systems.",
-		Long: `Example:
+		Short: "Retrieves a list of operating systems.",
+		Long: "Retrieves a list of operating systems available to the current user. Response includes the operating system's slug, distro, version, and name.", 
+		Example: `  # Lists the operating systems available to the current user:
   metal operating-systems get`,
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			oss, _, err := c.Service.List()
