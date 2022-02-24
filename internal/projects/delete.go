@@ -43,13 +43,17 @@ func (c *Client) Delete() *cobra.Command {
 	}
 	// deleteProjectCmd represents the deleteProject command
 	var deleteProjectCmd = &cobra.Command{
-		Use:   "delete",
-		Short: "Deletes a project",
-		Long: `Example:
+		Use: `delete --id <project_UUID> [--force]`,
+		Short: "Deletes a project.",
+		Long: "Deletes the specified project with a confirmation prompt. To skip the confirmation use --force. You can't delete a project that has active resources. You have to deprovision all servers and other infrastructure from a project in order to delete it.",
+		Example: `  # Deletes project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
+  metal project delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
+  >
+  ✔ Are you sure you want to delete project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375: y
+  
+  # Deletes project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375, skipping confirmation:
+  metal project delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 -f`,
 
-metal project delete --id [project_UUID]
-
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			if !force {
@@ -67,7 +71,7 @@ metal project delete --id [project_UUID]
 		},
 	}
 
-	deleteProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
+	deleteProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
 	_ = deleteProjectCmd.MarkFlagRequired("id")
 
 	deleteProjectCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the project")

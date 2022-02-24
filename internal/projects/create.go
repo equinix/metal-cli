@@ -35,13 +35,15 @@ func (c *Client) Create() *cobra.Command {
 
 	// projectCreateCmd represents the projectCreate command
 	var createProjectCmd = &cobra.Command{
-		Use:   "create",
-		Short: "Creates a project",
-		Long: `Example:
-
-metal project create --name [project_name]
+		Use: `create -n <project_name> [-O <organization_UUID>] [-m <payment_method_UUID>]`,
+		Short: "Creates a project.",
+		Long: "Creates a project with the specified name. If no organization is specified, the project is created in the current user's default organization. If no payment method is specified the organization's default payment method is used.",
+		Example: `  # Creates a new project named dev-cluster02: 
+  metal project create --name dev-cluster02
   
-  `,
+  # Creates a new project named dev-cluster03 in the specified organization with a payment method:
+  metal project create -n dev-cluster03 -O 814b09ca-0d0c-4656-9de0-4ce65c6faf70 -m ab1fbdaa-8b25-4c3e-8360-e283852e3747`,
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := packngo.ProjectCreateRequest{
@@ -70,8 +72,8 @@ metal project create --name [project_name]
 	}
 
 	createProjectCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the project")
-	createProjectCmd.Flags().StringVarP(&organizationID, "organization-id", "O", "", "UUID of the organization")
-	createProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "UUID of the payment method")
+	createProjectCmd.Flags().StringVarP(&organizationID, "organization-id", "O", "", "The UUID of the organization.")
+	createProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "The UUID of the payment method.")
 
 	_ = createProjectCmd.MarkFlagRequired("name")
 	return createProjectCmd

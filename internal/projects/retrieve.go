@@ -33,20 +33,19 @@ func (c *Client) Retrieve() *cobra.Command {
 	var projectID, projectName string
 	// retrieveProjectCmd represents the retriveProject command
 	var retrieveProjectCmd = &cobra.Command{
-		Use:     "get",
+		Use: `get [-i <project_UUID> | -n <project_name>]`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves all available projects or a single project",
-		Long: `Example:
-
-Retrieve all projects:
-metal project get
+		Short: "Retrieves all the current user's projects or the details of a specified project.",
+		Long: "Retrieves all the current user's projects or the details of a specified project. You can specify which project by UUID or name. When using `--json` or `--yaml` flags, the `--include=members` flag is implied.",
+		Example: `  # Retrieve all projects:
+  metal project get
   
-Retrieve a specific project:
-metal project get -i [project_UUID]
-metal project get -n [project_name]
+  # Retrieve a specific project by UUID: 
+  metal project get -i 2008f885-1aac-406b-8d99-e6963fd21333
 
-When using "--json" or "--yaml", "--include=members" is implied.
-	`,
+  # Retrieve a specific project by name:
+  metal project get -n dev-cluster03`,
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			if projectID != "" && projectName != "" {
@@ -106,7 +105,7 @@ When using "--json" or "--yaml", "--include=members" is implied.
 		},
 	}
 
-	retrieveProjectCmd.Flags().StringVarP(&projectName, "project", "n", "", "Name of the project")
-	retrieveProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
+	retrieveProjectCmd.Flags().StringVarP(&projectName, "project", "n", "", "The name of the project.")
+	retrieveProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "The project's UUID, which can be specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
 	return retrieveProjectCmd
 }

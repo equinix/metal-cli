@@ -1,10 +1,10 @@
 ## metal project
 
-Project operations
+Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
 
 ### Synopsis
 
-Project operations: create, delete, update and get
+Project operations: create, get, update, and delete.
 
 ### Options
 
@@ -29,8 +29,8 @@ Project operations: create, delete, update and get
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal project create](metal_project_create.md)	 - Creates a project
-* [metal project delete](metal_project_delete.md)	 - Deletes a project
-* [metal project get](metal_project_get.md)	 - Retrieves all available projects or a single project
-* [metal project update](metal_project_update.md)	 - Updates a project
+* [metal project create](metal_project_create.md)	 - Creates a project.
+* [metal project delete](metal_project_delete.md)	 - Deletes a project.
+* [metal project get](metal_project_get.md)	 - Retrieves all the current user's projects or the details of a specified project.
+* [metal project update](metal_project_update.md)	 - Updates a project.
 

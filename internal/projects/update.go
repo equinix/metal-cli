@@ -30,13 +30,15 @@ func (c *Client) Update() *cobra.Command {
 	var projectID, name, paymentMethodID string
 	// updateProjectCmd represents the updateProject command
 	var updateProjectCmd = &cobra.Command{
-		Use:   "update",
-		Short: "Updates a project",
-		Long: `Example:
+		Use: `update -i <project_UUID> [-n <name>] [-m <payment_method_UUID>]`,
+		Short: "Updates a project.",
+		Long: "Updates the specified project with a new name, a new payment method, or both.",
+		Example: `  # Updates the specified project with a new name:
+  metal project update -i $METAL_PROJECT_ID -n new-prod-cluster05
+  
+  # Updates the specified project with a new payment method:
+  metal project update -i $METAL_PROJECT_ID -m e2fcdf91-b6dc-4d6a-97ad-b26a14b66839`,
 
-metal project update --id [project_UUID] --name [new_name]
-
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := &packngo.ProjectUpdateRequest{}
@@ -60,9 +62,9 @@ metal project update --id [project_UUID] --name [new_name]
 		},
 	}
 
-	updateProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
-	updateProjectCmd.Flags().StringVarP(&name, "name", "n", "", "Name for the project")
-	updateProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "UUID of the payment method")
+	updateProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
+	updateProjectCmd.Flags().StringVarP(&name, "name", "n", "", "The new name for the project.")
+	updateProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "The UUID of the new payment method.")
 
 	_ = updateProjectCmd.MarkFlagRequired("id")
 	return updateProjectCmd

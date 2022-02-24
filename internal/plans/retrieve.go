@@ -27,14 +27,13 @@ import (
 
 func (c *Client) Retrieve() *cobra.Command {
 	return &cobra.Command{
-		Use:     "get",
+		Use: `get`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves a list of all available plans.",
-		Long: `Example:
+		Short: "Retrieves a list plans.",
+		Long: "Retrieves a list of plans available to the current user. Response includes plan UUID, slug, and name.",
+		Example: `  # Lists the plans available to the current user:
+  metal plans get`,
 
-  metal plans get
-  
-  `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			plans, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
