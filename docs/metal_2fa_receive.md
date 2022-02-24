@@ -1,28 +1,31 @@
 ## metal 2fa receive
 
-Receive two factor authentication token
+Generates a two-factor authentication token for use in enabling two-factor authentication on the current user's account.
 
 ### Synopsis
 
-Example:
-Issue the token via SMS:
-metal 2fa receive -s 
-
-Issue the token via app:
-metal 2fa receive -a
-
-
+Generates a two-factor authentication token for use in enabling two-factor authentication on the current user's account. In order to use SMS, a phone number must be associated with the account to receive the code. If you are using an app, a URI for the application is returned.
 
 ```
-metal 2fa receive [flags]
+metal 2fa receive (-s | -a) [flags]
+```
+
+### Examples
+
+```
+  # Issue the token via SMS:
+  metal 2fa receive -s 
+
+  # Issue the token via app:
+  metal 2fa receive -a
 ```
 
 ### Options
 
 ```
-  -a, --app    Issues otp uri for auth application
+  -a, --app    Issues an OTP URI for an authentication application.
   -h, --help   help for receive
-  -s, --sms    Issues SMS otp token to user's phone
+  -s, --sms    Issues SMS OTP token to the phone number associated with the current user account.
 ```
 
 ### Options inherited from parent commands
@@ -41,5 +44,5 @@ metal 2fa receive [flags]
 
 ### SEE ALSO
 
-* [metal 2fa](metal_2fa.md)	 - Two Factor Authentication operations
+* [metal 2fa](metal_2fa.md)	 - Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.
 

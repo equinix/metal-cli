@@ -1,28 +1,30 @@
 ## metal ssh-key get
 
-Retrieves a list of available SSH keys or a single SSH key
+Retrieves a list of SSH keys or a specified SSH key.
 
 ### Synopsis
 
-Example:
-
-Retrieve all SSH keys: 
-metal ssh-key get
-  
-Retrieve a specific SSH key:
-metal ssh-key get --id [ssh-key_UUID] 
-
-
+Retrieves a list of SSH keys associated with the current user's account or the details of single SSH key.
 
 ```
-metal ssh-key get [flags]
+metal ssh-key get [-i <SSH-key_UUID>] [flags]
+```
+
+### Examples
+
+```
+  # Retrieves the SSH keys of the current user: 
+  metal ssh-key get
+  
+  # Returns the details of SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e:
+  metal ssh-key get --id 5cb96463-88fd-4d68-94ba-2c9505ff265e
 ```
 
 ### Options
 
 ```
   -h, --help        help for get
-  -i, --id string   UUID of the SSH key
+  -i, --id string   The UUID of an SSH key.
 ```
 
 ### Options inherited from parent commands
@@ -41,5 +43,5 @@ metal ssh-key get [flags]
 
 ### SEE ALSO
 
-* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations
+* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.
 
