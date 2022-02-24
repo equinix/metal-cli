@@ -1,25 +1,33 @@
 ## metal ssh-key delete
 
-Deletes an SSH key
+Deletes an SSH key.
 
 ### Synopsis
 
-Example:
-
-metal ssh-key delete --id [ssh-key_UUID]
-
-
+Deletes an SSH key with a confirmation prompt. To skip the confirmation use --force. Does not remove the SSH key from existing servers.
 
 ```
-metal ssh-key delete [flags]
+metal ssh-key delete --id <SSH-key_UUID> [--force] [flags]
+```
+
+### Examples
+
+```
+  # Deletes an SSH key, with confirmation:
+  metal ssh-key delete -i 5cb96463-88fd-4d68-94ba-2c9505ff265e
+  >
+  ✔ Are you sure you want to delete SSH Key 5cb96463-88fd-4d68-94ba-2c9505ff265e: y
+  
+  # Deletes an SSH key, skipping confirmation:
+  metal ssh-key delete -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -f
 ```
 
 ### Options
 
 ```
-  -f, --force       Force removal of the SSH key
+  -f, --force       Skips confirmation for the deletion of the SSH key.
   -h, --help        help for delete
-  -i, --id string   UUID of the SSH key
+  -i, --id string   The UUID of the SSH key.
 ```
 
 ### Options inherited from parent commands
@@ -38,5 +46,5 @@ metal ssh-key delete [flags]
 
 ### SEE ALSO
 
-* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations
+* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.
 

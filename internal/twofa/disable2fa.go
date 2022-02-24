@@ -34,16 +34,15 @@ func (c *Client) Disable() *cobra.Command {
 	)
 	// disable2faCmd represents the disable2fa command
 	var disable2faCmd = &cobra.Command{
-		Use:   "disable",
-		Short: "Disables two factor authentication",
-		Long: `Example:
+		Use: `disable (-a | -s) --code <OTP_code> `,
+		Short: "Disables two-factor authentication.",
+		Long: " Disables two-factor authentication. Requires the current OTP code from either SMS or application. If you no longer have access to your two-factor authentication device, please contact support.",
+		Example:`  # Disable two-factor authentication via SMS
+  metal 2fa disable -s -c <OTP_code>
 
-Disable two factor authentication via SMS
-metal 2fa disable -s -c [code]
+  # Disable two-factor authentication via APP
+  metal 2fa disable -a -c <OTP_code>`,
 
-Disable two factor authentication via APP
-metal 2fa disable -a -c [code]
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if sms == app {
 				return fmt.Errorf("Either sms or app should be set")
@@ -66,9 +65,9 @@ metal 2fa disable -a -c [code]
 		},
 	}
 
-	disable2faCmd.Flags().BoolVarP(&sms, "sms", "s", false, "Issues SMS otp token to user's phone")
-	disable2faCmd.Flags().BoolVarP(&app, "app", "a", false, "Issues otp uri for auth application")
-	disable2faCmd.Flags().StringVarP(&token, "code", "c", "", "Two factor authentication code")
+	disable2faCmd.Flags().BoolVarP(&sms, "sms", "s", false, "The OTP code is issued to you via SMS.")
+	disable2faCmd.Flags().BoolVarP(&app, "app", "a", false, "The OTP code is issued from an application.")
+	disable2faCmd.Flags().StringVarP(&token, "code", "c", "", "The two-factor authentication OTP code.")
 	_ = disable2faCmd.MarkFlagRequired("code")
 	return disable2faCmd
 }

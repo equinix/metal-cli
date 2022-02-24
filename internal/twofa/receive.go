@@ -33,16 +33,15 @@ func (c *Client) Receive() *cobra.Command {
 
 	// receive2faCmd represents the receive2fa command
 	var receive2faCmd = &cobra.Command{
-		Use:   "receive",
-		Short: "Receive two factor authentication token",
-		Long: `Example:
-Issue the token via SMS:
-metal 2fa receive -s 
+		Use: `receive (-s | -a)`,
+		Short: "Generates a two-factor authentication token for use in enabling two-factor authentication on the current user's account.",
+		Long: "Generates a two-factor authentication token for use in enabling two-factor authentication on the current user's account. In order to use SMS, a phone number must be associated with the account to receive the code. If you are using an app, a URI for the application is returned.",
+		Example: `  # Issue the token via SMS:
+  metal 2fa receive -s 
 
-Issue the token via app:
-metal 2fa receive -a
+  # Issue the token via app:
+  metal 2fa receive -a`,
 
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if sms == app {
 				return fmt.Errorf("Either sms or app should be set")
@@ -72,7 +71,7 @@ metal 2fa receive -a
 		},
 	}
 
-	receive2faCmd.Flags().BoolVarP(&sms, "sms", "s", false, "Issues SMS otp token to user's phone")
-	receive2faCmd.Flags().BoolVarP(&app, "app", "a", false, "Issues otp uri for auth application")
+	receive2faCmd.Flags().BoolVarP(&sms, "sms", "s", false, "Issues SMS OTP token to the phone number associated with the current user account.")
+	receive2faCmd.Flags().BoolVarP(&app, "app", "a", false, "Issues an OTP URI for an authentication application.")
 	return receive2faCmd
 }

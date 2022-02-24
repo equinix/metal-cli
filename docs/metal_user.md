@@ -1,10 +1,10 @@
 ## metal user
 
-User operations
+User operations. For more information on user and account management, visit https://metal.equinix.com/developers/docs/accounts/users/ in the Equinix Metal documentation.
 
 ### Synopsis
 
-User operations: get
+User operations: get.
 
 ### Options
 
@@ -29,5 +29,5 @@ User operations: get
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal user get](metal_user_get.md)	 - Retrieves information about the current user or a specified user
+* [metal user get](metal_user_get.md)	 - Retrieves information about the current user or a specified user.
 

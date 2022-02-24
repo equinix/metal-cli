@@ -33,18 +33,16 @@ func (c *Client) Retrieve() *cobra.Command {
 
 	// retrieveSshKeysCmd represents the retrieveSshKeys command
 	var retrieveSSHKeysCmd = &cobra.Command{
-		Use:     "get",
+		Use: `get [-i <SSH-key_UUID>]`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves a list of available SSH keys or a single SSH key",
-		Long: `Example:
-
-Retrieve all SSH keys: 
-metal ssh-key get
+		Short: "Retrieves a list of SSH keys or a specified SSH key.",
+		Long: "Retrieves a list of SSH keys associated with the current user's account or the details of single SSH key.",
+		Example: `  # Retrieves the SSH keys of the current user: 
+  metal ssh-key get
   
-Retrieve a specific SSH key:
-metal ssh-key get --id [ssh-key_UUID] 
+  # Returns the details of SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e:
+  metal ssh-key get --id 5cb96463-88fd-4d68-94ba-2c9505ff265e`,
 
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			if sshKeyID == "" {
@@ -77,6 +75,6 @@ metal ssh-key get --id [ssh-key_UUID]
 		},
 	}
 
-	retrieveSSHKeysCmd.Flags().StringVarP(&sshKeyID, "id", "i", "", "UUID of the SSH key")
+	retrieveSSHKeysCmd.Flags().StringVarP(&sshKeyID, "id", "i", "", "The UUID of an SSH key.")
 	return retrieveSSHKeysCmd
 }

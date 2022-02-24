@@ -1,17 +1,23 @@
 ## metal ssh-key update
 
-Updates a project
+Updates an SSH key.
 
 ### Synopsis
 
-Example:
-
-metal ssh-key update --id [ssh-key_UUID] --key [new_key]
-
-
+Updates an SSH key with either a new public key, a new label, or both.
 
 ```
-metal ssh-key update [flags]
+metal ssh-key update -i <SSH-key_UUID> [-k <public_key>] [-l <label>] [flags]
+```
+
+### Examples
+
+```
+  # Updates SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e with a new public key: 
+  metal ssh-key update -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -k AAAAB3N...user@domain.com
+  
+  # Updates SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e with a new label:
+  metal ssh-key update -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -l test-machine-2
 ```
 
 ### Options
@@ -39,5 +45,5 @@ metal ssh-key update [flags]
 
 ### SEE ALSO
 
-* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations
+* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.
 
