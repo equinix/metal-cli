@@ -30,18 +30,16 @@ func (c *Client) Retrieve() *cobra.Command {
 	var organizationID string
 	// retrieveOrganizationCmd represents the retrieveOrganization command
 	var retrieveOrganizationCmd = &cobra.Command{
-		Use:     "get",
+		Use:     `get -i <organization_UUID>`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves an organization or list of organizations",
-		Long: `Example:
-	
-To retrieve list of all available organizations:
-metal organization get
+		Short:   "Retrieves a list of organizations or the details of the specified organization.",
+		Long:    "Retrieves a list of organizations or the details of the specified organization. Details of an organization are only available to its members.",
+		Example: `  # Retrieves list of the current user's organizations:
+  metal organization get
 
-To retrieve a single organization:
-metal organization get -i [organization-id]
+  # Retrieves details of an organization:
+  metal organization get -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8`,
 
-	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			listOpts := c.Servicer.ListOptions(nil, nil)
@@ -76,6 +74,6 @@ metal organization get -i [organization-id]
 		},
 	}
 
-	retrieveOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "UUID of the organization")
+	retrieveOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "The UUID of an organization.")
 	return retrieveOrganizationCmd
 }
