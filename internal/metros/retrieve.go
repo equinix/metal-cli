@@ -30,12 +30,11 @@ func (c *Client) Retrieve() *cobra.Command {
 	var retrieveMetrosCmd = &cobra.Command{
 		Use:     "get",
 		Aliases: []string{"list"},
-		Short:   "Retrieves a list of available metros.",
-		Long: `Example:
-	
-metal metros get
-	
-	`,
+		Short:   "Retrieves a list of metros.",
+		Long:    "Retrieves a list of metros available to the current user.",
+		Example: `  # Lists metros available to the current user:	
+  metal metros get`,
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			metros, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
