@@ -1,29 +1,32 @@
 ## metal organization update
 
-Updates an organization
+Updates the specified organization.
 
 ### Synopsis
 
-Example:
-
-metal organization update --id [organization_UUID] --name [new_name]
-
-
+Updates the specified organization. You can update the name, website, Twitter, or logo.
 
 ```
-metal organization update [flags]
+metal organization update -i <organization_UUID> [-n <name>] [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>] [flags]
+```
+
+### Examples
+
+```
+  # Updates the name of an organization:
+  metal organization update -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 --name test-cluster02
 ```
 
 ### Options
 
 ```
-  -d, --description string   Description of the organization
+  -d, --description string   User-friendly description of the organization.
   -h, --help                 help for update
-  -i, --id string            Organization ID
-  -l, --logo string          Logo URL of the organization
-  -n, --name string          Name of the organization
-  -t, --twitter string       Twitter URL of the organization
-  -w, --website string       Website of the organization
+  -i, --id string            An organization UUID.
+  -l, --logo string          A logo image URL for the organization.
+  -n, --name string          New name for the organization.
+  -t, --twitter string       A Twitter URL of the organization.
+  -w, --website string       A website URL for the organization.
 ```
 
 ### Options inherited from parent commands
@@ -42,5 +45,5 @@ metal organization update [flags]
 
 ### SEE ALSO
 
-* [metal organization](metal_organization.md)	 - Organization operations
+* [metal organization](metal_organization.md)	 - Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.
 

@@ -1,24 +1,27 @@
 ## metal organization payment-methods
 
-Retrieves a list of payment methods for the organization
+Retrieves a list of payment methods.
 
 ### Synopsis
 
-Example:
-
-metal organization payment-methods --id [organization_UUID]
-
-
+Retrieves a list of payment methods for the specified organization if the current user is a member with the proper role.
 
 ```
-metal organization payment-methods [flags]
+metal organization payment-methods -i <organization_UUID> [flags]
+```
+
+### Examples
+
+```
+  # Lists the payment methods for an organization:
+  metal organization payment-methods --id 3bd5bf07-6094-48ad-bd03-d94e8712fdc8
 ```
 
 ### Options
 
 ```
   -h, --help        help for payment-methods
-  -i, --id string   UUID of the organization
+  -i, --id string   The UUID of the organization.
 ```
 
 ### Options inherited from parent commands
@@ -37,5 +40,5 @@ metal organization payment-methods [flags]
 
 ### SEE ALSO
 
-* [metal organization](metal_organization.md)	 - Organization operations
+* [metal organization](metal_organization.md)	 - Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.
 

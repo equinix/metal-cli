@@ -1,14 +1,20 @@
 ## metal operating-systems get
 
-Retrieves a list of available operating systems.
+Retrieves a list of operating systems.
 
 ### Synopsis
 
-Example:
-  metal operating-systems get
+Retrieves a list of operating systems available to the current user. Response includes the operating system's slug, distro, version, and name.
 
 ```
 metal operating-systems get [flags]
+```
+
+### Examples
+
+```
+  # Lists the operating systems available to the current user:
+  metal operating-systems get
 ```
 
 ### Options
@@ -33,5 +39,5 @@ metal operating-systems get [flags]
 
 ### SEE ALSO
 
-* [metal operating-systems](metal_operating-systems.md)	 - Operating system operations
+* [metal operating-systems](metal_operating-systems.md)	 - Operating system operations. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.
 

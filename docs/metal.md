@@ -34,9 +34,9 @@ Command line interface for Equinix Metal
 * [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations
 * [metal init](metal_init.md)	 - Create a configuration file
 * [metal ip](metal_ip.md)	 - IP operations
-* [metal metros](metal_metros.md)	 - Metro operations
-* [metal operating-systems](metal_operating-systems.md)	 - Operating system operations
-* [metal organization](metal_organization.md)	 - Organization operations
+* [metal metros](metal_metros.md)	 - Metro operations. For more information on Equinix Metal metros and availability, visit https://metal.equinix.com/developers/docs/locations/metros/.
+* [metal operating-systems](metal_operating-systems.md)	 - Operating system operations. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.
+* [metal organization](metal_organization.md)	 - Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.
 * [metal plan](metal_plan.md)	 - Plan operations. For more information on the different Equinix Metal plans, visit https://metal.equinix.com/developers/docs/servers/server-specs/.
 * [metal project](metal_project.md)	 - Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
 * [metal ssh-key](metal_ssh-key.md)	 - SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.

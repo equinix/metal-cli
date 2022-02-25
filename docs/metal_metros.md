@@ -1,10 +1,10 @@
 ## metal metros
 
-Metro operations
+Metro operations. For more information on Equinix Metal metros and availability, visit https://metal.equinix.com/developers/docs/locations/metros/.
 
 ### Synopsis
 
-Metro operations: get
+Metro operations: get.
 
 ### Options
 
@@ -29,5 +29,5 @@ Metro operations: get
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal metros get](metal_metros_get.md)	 - Retrieves a list of available metros.
+* [metal metros get](metal_metros_get.md)	 - Retrieves a list of metros.
 

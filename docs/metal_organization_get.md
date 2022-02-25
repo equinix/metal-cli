@@ -1,28 +1,30 @@
 ## metal organization get
 
-Retrieves an organization or list of organizations
+Retrieves a list of organizations or the details of the specified organization.
 
 ### Synopsis
 
-Example:
-	
-To retrieve list of all available organizations:
-metal organization get
-
-To retrieve a single organization:
-metal organization get -i [organization-id]
-
-	
+Retrieves a list of organizations or the details of the specified organization. Details of an organization are only available to its members.
 
 ```
-metal organization get [flags]
+metal organization get -i <organization_UUID> [flags]
+```
+
+### Examples
+
+```
+  # Retrieves list of the current user's organizations:
+  metal organization get
+
+  # Retrieves details of an organization:
+  metal organization get -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8
 ```
 
 ### Options
 
 ```
   -h, --help                     help for get
-  -i, --organization-id string   UUID of the organization
+  -i, --organization-id string   The UUID of an organization.
 ```
 
 ### Options inherited from parent commands
@@ -41,5 +43,5 @@ metal organization get [flags]
 
 ### SEE ALSO
 
-* [metal organization](metal_organization.md)	 - Organization operations
+* [metal organization](metal_organization.md)	 - Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.
 

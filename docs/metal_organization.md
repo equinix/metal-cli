@@ -1,10 +1,10 @@
 ## metal organization
 
-Organization operations
+Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.
 
 ### Synopsis
 
-Organization operations: create, update, delete and get
+Organization operations: create, get, update, payment-methods, and delete.
 
 ### Options
 
@@ -29,9 +29,9 @@ Organization operations: create, update, delete and get
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal organization create](metal_organization_create.md)	 - Creates an organization
-* [metal organization delete](metal_organization_delete.md)	 - Deletes an organization
-* [metal organization get](metal_organization_get.md)	 - Retrieves an organization or list of organizations
-* [metal organization payment-methods](metal_organization_payment-methods.md)	 - Retrieves a list of payment methods for the organization
-* [metal organization update](metal_organization_update.md)	 - Updates an organization
+* [metal organization create](metal_organization_create.md)	 - Creates an organization.
+* [metal organization delete](metal_organization_delete.md)	 - Deletes an organization.
+* [metal organization get](metal_organization_get.md)	 - Retrieves a list of organizations or the details of the specified organization.
+* [metal organization payment-methods](metal_organization_payment-methods.md)	 - Retrieves a list of payment methods.
+* [metal organization update](metal_organization_update.md)	 - Updates the specified organization.
 

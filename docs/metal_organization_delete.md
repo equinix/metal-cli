@@ -1,25 +1,33 @@
 ## metal organization delete
 
-Deletes an organization
+Deletes an organization.
 
 ### Synopsis
 
-Example:
-	
-metal organization delete -i [organization_UUID]
-
-	
+Deletes an organization. You can not delete an organization that contains projects or has outstanding charges. Only organization owners can delete an organization.
 
 ```
-metal organization delete [flags]
+metal organization delete -i <organization_UUID> [flags]
+```
+
+### Examples
+
+```
+  # Deletes an organization, with confirmation: 
+  metal organization delete -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8
+  >
+  ✔ Are you sure you want to delete organization 3bd5bf07-6094-48ad-bd03-d94e8712fdc8: y
+  
+  # Deletes an organization, skipping confirmation:
+  metal organization delete -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 -f
 ```
 
 ### Options
 
 ```
-  -f, --force                    Force removal of the organization
+  -f, --force                    Skips confirmation for the removal of the organization.
   -h, --help                     help for delete
-  -i, --organization-id string   UUID of the organization
+  -i, --organization-id string   The UUID of the organization.
 ```
 
 ### Options inherited from parent commands
@@ -38,5 +46,5 @@ metal organization delete [flags]
 
 ### SEE ALSO
 
-* [metal organization](metal_organization.md)	 - Organization operations
+* [metal organization](metal_organization.md)	 - Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.
 
