@@ -41,13 +41,12 @@ func (c *Client) Request() *cobra.Command {
 
 	// requestIPCmd represents the requestIp command
 	var requestIPCmd = &cobra.Command{
-		Use:   "request",
-		Short: "Request an IP block",
-		Long: `Example:
+		Use:   `request -p <project_id> -t <ip_address_type> -q <quantity> -f <facility_code> [-f <flags>] [-c <comments>]`,
+		Short: "Request a block of IP addresses.",
+		Long:  "Requests either a block of public IPv4 addresses or global IPv4 addresses for your project in a specific facility.",
+		Example: `  # Requests a block of 4 public IPv4 addresses in DA11: 
+  metal ip request -p $METAL_PROJECT_ID -t public_ipv4 -q 4 -f da11`,
 
-metal ip request --quantity [quantity] --facility [facility_code] --type [address_type]
-
-	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := &packngo.IPReservationRequest{
@@ -71,17 +70,17 @@ metal ip request --quantity [quantity] --facility [facility_code] --type [addres
 		},
 	}
 
-	requestIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
-	requestIPCmd.Flags().StringVarP(&ttype, "type", "t", "", "Address type public_ipv4 or global_ipv6")
-	requestIPCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility")
-	requestIPCmd.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of IP addresses to reserve")
-	requestIPCmd.Flags().StringSliceVar(&tags, "tags", nil, "Tags to add, comma-separated for multiple, or repeat multiple times")
+	requestIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
+	requestIPCmd.Flags().StringVarP(&ttype, "type", "t", "", "The type of IP Address, either public_ipv4 or global_ipv4.")
+	requestIPCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility.")
+	requestIPCmd.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of IP addresses to reserve.")
+	requestIPCmd.Flags().StringSliceVar(&tags, "tags", nil, "Tag or Tags to add to the reservation, in a comma-separated list.")
 
 	_ = requestIPCmd.MarkFlagRequired("project-id")
 	_ = requestIPCmd.MarkFlagRequired("type")
 	_ = requestIPCmd.MarkFlagRequired("quantity")
 	_ = requestIPCmd.MarkFlagRequired("facility")
 
-	requestIPCmd.Flags().StringVarP(&comments, "comments", "c", "", "General comments")
+	requestIPCmd.Flags().StringVarP(&comments, "comments", "c", "", "General comments or description.")
 	return requestIPCmd
 }
