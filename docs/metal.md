@@ -33,7 +33,7 @@ Command line interface for Equinix Metal
 * [metal facilities](metal_facilities.md)	 - Facility operations
 * [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations
 * [metal init](metal_init.md)	 - Create a configuration file
-* [metal ip](metal_ip.md)	 - IP operations
+* [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 * [metal metros](metal_metros.md)	 - Metro operations
 * [metal operating-systems](metal_operating-systems.md)	 - Operating system operations
 * [metal organization](metal_organization.md)	 - Organization operations

@@ -1,36 +1,35 @@
 ## metal ip get
 
-Retrieves information about IP addresses, IP reservations and IP assignments
+Retrieves information about IP addresses, IP address reservations, and IP address assignments.
 
 ### Synopsis
 
-Example:
-	
-To get all IP addresses under a project:
-
-metal ip get --project-id [project_UUID] 
-
-To get IP addresses by assignment id:
-
-metal ip get --assignment-id [assignment_UUID]
-
-To get IP addresses by reservation ID:
-
-metal ip get --reservation-id [reservation_UUID]
-
-	
+Retrieves information about the IP addresses in a project, the IP addresses that are in a specified assignment, or the IP addresses that are in a specified reservation.
 
 ```
-metal ip get [flags]
+metal ip get -p <project_UUID> | -a <assignment_UUID> | -r <reservation_UUID> [flags]
+```
+
+### Examples
+
+```
+  # Lists all IP addresses in a project:
+  metal ip get -p bb73aa19-c216-4ce2-a613-e5ca93732722 
+
+  # Gets information about the IP addresses from an assignment ID:
+  metal ip get -a bb526d47-8536-483c-b436-116a5fb72235
+
+  # Gets the IP addresses from a reservation ID:
+  metal ip get -r da1bb048-ea6e-4911-8ab9-b95635ca127a
 ```
 
 ### Options
 
 ```
-  -a, --assignment-id string    UUID of the assignment
+  -a, --assignment-id string    UUID of an IP address assignment. When you assign an IP address to a server, it gets an assignment UUID.
   -h, --help                    help for get
-  -p, --project-id string       Project ID (METAL_PROJECT_ID)
-  -r, --reservation-id string   UUID of the reservation
+  -p, --project-id string       A Project UUID (METAL_PROJECT_ID).
+  -r, --reservation-id string   UUID of an IP address reservation.
 ```
 
 ### Options inherited from parent commands
@@ -49,5 +48,5 @@ metal ip get [flags]
 
 ### SEE ALSO
 
-* [metal ip](metal_ip.md)	 - IP operations
+* [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 

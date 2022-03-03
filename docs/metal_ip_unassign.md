@@ -1,24 +1,27 @@
 ## metal ip unassign
 
-Unassigns an IP address.
+Unassigns an IP address assignment.
 
 ### Synopsis
 
-Example:
-
-metal ip unassign --id [assignment-UUID]
-
-	
+Unassigns an subnet and IP address assignment from a device by its assignment ID. 
 
 ```
-metal ip unassign [flags]
+metal ip unassign -i <assignment_UUID>  [flags]
+```
+
+### Examples
+
+```
+  # Unassigns an IP address assignment:
+  metal ip unassign --id abd8674b-96c4-4271-92f5-2eaf5944c86f
 ```
 
 ### Options
 
 ```
   -h, --help        help for unassign
-  -i, --id string   UUID of the assignment
+  -i, --id string   The UUID of the assignment.
 ```
 
 ### Options inherited from parent commands
@@ -37,5 +40,5 @@ metal ip unassign [flags]
 
 ### SEE ALSO
 
-* [metal ip](metal_ip.md)	 - IP operations
+* [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 
