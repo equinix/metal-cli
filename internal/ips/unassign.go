@@ -31,13 +31,12 @@ func (c *Client) Unassign() *cobra.Command {
 	var assignmentID string
 	// unassignIpCmd represents the unassignIp command
 	var unassignIPCmd = &cobra.Command{
-		Use:   "unassign",
-		Short: "Unassigns an IP address.",
-		Long: `Example:
+		Use:   `unassign -i <assignment_UUID> `,
+		Short: "Unassigns an IP address assignment.",
+		Long:  "Unassigns an subnet and IP address assignment from a device by its assignment ID. ",
+		Example: `  # Unassigns an IP address assignment:
+  metal ip unassign --id abd8674b-96c4-4271-92f5-2eaf5944c86f`,
 
-metal ip unassign --id [assignment-UUID]
-
-	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			_, err := c.DeviceService.Unassign(assignmentID)
@@ -50,7 +49,7 @@ metal ip unassign --id [assignment-UUID]
 		},
 	}
 
-	unassignIPCmd.Flags().StringVarP(&assignmentID, "id", "i", "", "UUID of the assignment")
+	unassignIPCmd.Flags().StringVarP(&assignmentID, "id", "i", "", "The UUID of the assignment.")
 	_ = unassignIPCmd.MarkFlagRequired("id")
 	return unassignIPCmd
 }
