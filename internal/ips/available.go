@@ -34,13 +34,12 @@ func (c *Client) Available() *cobra.Command {
 	var reservationID string
 	// availableCmd represents the available command
 	var availableCmd = &cobra.Command{
-		Use:   "available",
-		Short: "Retrieves a list of IP resevations for a single project.",
-		Long: `Example:
+		Use:   `available -r <reservation_UUID> -c <size_of_subnet>`,
+		Short: "Lists available IP addresses from a reservation.",
+		Long:  "Lists available IP addresses in a specified reservation for the desired subnet size.",
+		Example: `  # Lists available IP addresses in a reservation for a /31 subnet:
+  metal ip available --reservation-id da1bb048-ea6e-4911-8ab9-b95635ca127a --cidr 31`,
 
-metal ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
-
-  `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			result, _, err := c.ProjectService.AvailableAddresses(reservationID, &packngo.AvailableRequest{CIDR: cidr})
@@ -58,8 +57,8 @@ metal ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
 		},
 	}
 
-	availableCmd.Flags().StringVarP(&reservationID, "reservation-id", "r", "", "UUID of the reservation")
-	availableCmd.Flags().IntVarP(&cidr, "cidr", "c", 0, "Size of subnet")
+	availableCmd.Flags().StringVarP(&reservationID, "reservation-id", "r", "", "The UUID of the IP address reservation.")
+	availableCmd.Flags().IntVarP(&cidr, "cidr", "c", 0, "The size of the desired subnet in bits.")
 
 	_ = availableCmd.MarkFlagRequired("reservation-id")
 	_ = availableCmd.MarkFlagRequired("cidr")
