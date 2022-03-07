@@ -31,16 +31,15 @@ import (
 
 func (c *Client) Retrieve() *cobra.Command {
 	var retrieveHardwareReservationsCmd = &cobra.Command{
-		Use:     "get",
+		Use:     `get -p <project_id> | -i <hardware_reservation_id>`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves all hardware reservations of a project or a single hardware reservation",
-		Long: `Example:
-
-Retrieve all hardware reservations of a project:
-metal hardware_reservations get -p [project_id]
-
-When using "--json" or "--yaml", "--include=project,facility,device" is implied.
-	`,
+		Short:   "Lists a Project's hardware reservations or the details of a specified hardware reservation.",
+		Long:    "Lists a Project's hardware reservations or the details of a specified hardware reservation. When using --json or --yaml flags, the --include=project,facility,device flag is implied.",
+		Example: `  # Retrieve all hardware reservations of a project:
+  metal hardware_reservations get -p $METAL_PROJECT_ID
+  
+  # Retrieve the details of a specific hardware reservation:
+  metal hardware_reservations get -i 8404b73c-d18f-4190-8c49-20bb17501f88`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			projectID, _ := cmd.Flags().GetString("project-id")
@@ -59,7 +58,7 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 			listOpt := c.Servicer.ListOptions(inc, nil)
 
 			if hardwareReservationID == "" && projectID == "" {
-				return fmt.Errorf("Either id or project-id should be set.")
+				return fmt.Errorf("either id or project-id should be set")
 			}
 
 			cmd.SilenceUsage = true
@@ -92,8 +91,8 @@ When using "--json" or "--yaml", "--include=project,facility,device" is implied.
 		},
 	}
 
-	retrieveHardwareReservationsCmd.Flags().StringP("project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
-	retrieveHardwareReservationsCmd.Flags().StringP("id", "i", "", "UUID of the hardware reservation")
+	retrieveHardwareReservationsCmd.Flags().StringP("project-id", "p", "", "A project's UUID.")
+	retrieveHardwareReservationsCmd.Flags().StringP("id", "i", "", "The UUID of a hardware reservation.")
 
 	return retrieveHardwareReservationsCmd
 }
