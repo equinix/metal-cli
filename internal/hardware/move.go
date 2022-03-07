@@ -29,12 +29,12 @@ func (c *Client) Move() *cobra.Command {
 	var projectID, hardwareReservationID string
 
 	var moveHardwareReservationCmd = &cobra.Command{
-		Use:   "move",
-		Short: "Move hardware reservation to another project",
-		Long: `Example:
+		Use:   `move -i <hardware_reservation_id> -p <project_id>`,
+		Short: "Moves a hardware reservation.",
+		Long:  "Moves a hardware reservation to a specified project. Both the hardware reservation ID and the Project ID for the new project are required.",
+		Example: `  # Moves a hardware reservation to the specified Project:
+  metal hardware_reservation move -i 8404b73c-d18f-4190-8c49-20bb17501f88 -p 278bca90-f6b2-4659-b1a4-1bdffa0d80b7`,
 
-metal hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			header := []string{"ID", "Facility", "Plan", "Created"}
@@ -51,8 +51,8 @@ metal hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
 		},
 	}
 
-	moveHardwareReservationCmd.Flags().StringVarP(&hardwareReservationID, "id", "i", "", "UUID of the hardware reservation")
-	moveHardwareReservationCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
+	moveHardwareReservationCmd.Flags().StringVarP(&hardwareReservationID, "id", "i", "", "The UUID of the hardware reservation.")
+	moveHardwareReservationCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The Project ID of the Project you are moving the hardware reservation to.")
 	_ = moveHardwareReservationCmd.MarkFlagRequired("project-id")
 	_ = moveHardwareReservationCmd.MarkFlagRequired("id")
 
