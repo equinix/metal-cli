@@ -58,23 +58,16 @@ func (c *Client) NewCommand() *cobra.Command {
 	//v := c.tokener.Config()
 	//projectId := v.GetString("project-id")
 	initCmd := &cobra.Command{
-		Use:   "init",
-		Short: "Create a configuration file",
-		Long: `Init will prompt for account settings and store the values as defaults in a configuration file that may be shared with other Equinix Metal tools. This file is typically stored in $HOME/.config/equinix/metal.yaml.
+		Use:   `init`,
+		Short: "Create a configuration file.",
+		Long:  "Init will prompt for account settings and store the values as defaults in a configuration file that may be shared with other Equinix Metal tools. This file is typically stored in $HOME/.config/equinix/metal.yaml. Any Metal CLI command line argument can be specified in the config file. Be careful not to define options that you do not intend to use as defaults. The configuration file written to can be changed with METAL_CONFIG and --config.",
 
-		Any Metal CLI command line argument can be specified in the config file. Be careful not to define options that you do not intend to use as defaults.
+		Example: `  # Example config:
+  --
+  token: foo
+  project-id: 1857dc19-76a5-4589-a9b6-adb729a7d18b
+  organization-id: 253e9cf1-5b3d-41f5-a4fa-839c130c8c1d`,
 
-		This action may request additional settings in the future.
-
-		The configuration file written to can be changed with METAL_CONFIG and --config.
-
-	Example config:
-
-	--
-	token: foo
-	project-id: uuid
-	organization-id: uuid
-	`,
 		DisableFlagsInUseLine: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
