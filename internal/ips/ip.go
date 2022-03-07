@@ -38,7 +38,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Use:     `ip`,
 		Aliases: []string{"ips", "ip-addresses", "ip-address"},
 		Short:   "IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.",
-		Long:    "IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get",
+		Long:    "IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
