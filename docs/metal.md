@@ -31,8 +31,8 @@ Command line interface for Equinix Metal
 * [metal env](metal_env.md)	 - Generate environment variables
 * [metal event](metal_event.md)	 - Events operations
 * [metal facilities](metal_facilities.md)	 - Facility operations
-* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations
-* [metal init](metal_init.md)	 - Create a configuration file
+* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations. Information on reserving hardware on Equinix Metal is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
+* [metal init](metal_init.md)	 - Create a configuration file.
 * [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 * [metal metros](metal_metros.md)	 - Metro operations
 * [metal operating-systems](metal_operating-systems.md)	 - Operating system operations

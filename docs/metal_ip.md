@@ -4,7 +4,7 @@ IP address and subnet operations. For more information on IP addresses, subnets,
 
 ### Synopsis
 
-IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get
+IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get.
 
 ### Options
 
