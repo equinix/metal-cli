@@ -1,17 +1,20 @@
 ## metal ip remove
 
-Command to remove IP reservation.
+Removes an IP address reservation from a project.
 
 ### Synopsis
 
-Example:	
-
-metal ip remove --id [reservation-UUID]
-
-
+Removes an IP address reservation from a project. Any subnets and IP addresses in the reservation will no longer be able to be used by your devices.
 
 ```
-metal ip remove [flags]
+metal ip remove -i <reservation_UUID> [flags]
+```
+
+### Examples
+
+```
+  # Removes an IP address reservation:
+  metal ip remove --id a9dfc9d5-ba1a-4d11-8cfc-6e30b9630876
 ```
 
 ### Options
@@ -37,5 +40,5 @@ metal ip remove [flags]
 
 ### SEE ALSO
 
-* [metal ip](metal_ip.md)	 - IP operations
+* [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 

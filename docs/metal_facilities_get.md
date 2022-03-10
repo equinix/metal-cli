@@ -1,17 +1,20 @@
 ## metal facilities get
 
-Retrieves a list of available facilities.
+Retrieves a list of facilities.
 
 ### Synopsis
 
-Example:
-	
-metal facilities get
-	
-	
+Retrieves a list of facilities available to the current user.
 
 ```
 metal facilities get [flags]
+```
+
+### Examples
+
+```
+  # Lists facilities for current user:
+  metal facilities get
 ```
 
 ### Options
@@ -36,5 +39,5 @@ metal facilities get [flags]
 
 ### SEE ALSO
 
-* [metal facilities](metal_facilities.md)	 - Facility operations
+* [metal facilities](metal_facilities.md)	 - Facility operations. For more information on Equinix Metal facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/. 
 

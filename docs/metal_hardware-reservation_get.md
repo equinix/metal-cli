@@ -1,27 +1,31 @@
 ## metal hardware-reservation get
 
-Retrieves all hardware reservations of a project or a single hardware reservation
+Lists a Project's hardware reservations or the details of a specified hardware reservation.
 
 ### Synopsis
 
-Example:
-
-Retrieve all hardware reservations of a project:
-metal hardware_reservations get -p [project_id]
-
-When using "--json" or "--yaml", "--include=project,facility,device" is implied.
-	
+Lists a Project's hardware reservations or the details of a specified hardware reservation. When using --json or --yaml flags, the --include=project,facility,device flag is implied.
 
 ```
-metal hardware-reservation get [flags]
+metal hardware-reservation get [-p <project_id>] | [-i <hardware_reservation_id>] [flags]
+```
+
+### Examples
+
+```
+  # Retrieve all hardware reservations of a project:
+  metal hardware_reservations get -p $METAL_PROJECT_ID
+  
+  # Retrieve the details of a specific hardware reservation:
+  metal hardware_reservations get -i 8404b73c-d18f-4190-8c49-20bb17501f88
 ```
 
 ### Options
 
 ```
   -h, --help                help for get
-  -i, --id string           UUID of the hardware reservation
-  -p, --project-id string   Project ID (METAL_PROJECT_ID)
+  -i, --id string           The UUID of a hardware reservation.
+  -p, --project-id string   A project's UUID.
 ```
 
 ### Options inherited from parent commands
@@ -40,5 +44,5 @@ metal hardware-reservation get [flags]
 
 ### SEE ALSO
 
-* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations
+* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations. Information on reserving hardware on Equinix Metal is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
 

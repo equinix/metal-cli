@@ -27,13 +27,13 @@ Command line interface for Equinix Metal
 * [metal capacity](metal_capacity.md)	 - Capacities operations
 * [metal completion](metal_completion.md)	 - Generate completion script
 * [metal device](metal_device.md)	 - Device operations
-* [metal docs](metal_docs.md)	 - Generate command documentation
-* [metal env](metal_env.md)	 - Generate environment variables
-* [metal event](metal_event.md)	 - Events operations
-* [metal facilities](metal_facilities.md)	 - Facility operations
-* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations
-* [metal init](metal_init.md)	 - Create a configuration file
-* [metal ip](metal_ip.md)	 - IP operations
+* [metal docs](metal_docs.md)	 - Generate command markdown documentation.
+* [metal env](metal_env.md)	 - Prints or generates environment variables.
+* [metal event](metal_event.md)	 - Events operations for organizations, projects, devices, and the current user.
+* [metal facilities](metal_facilities.md)	 - Facility operations. For more information on Equinix Metal facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/. 
+* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations. Information on reserving hardware on Equinix Metal is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
+* [metal init](metal_init.md)	 - Create a configuration file.
+* [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 * [metal metros](metal_metros.md)	 - Metro operations. For more information on Equinix Metal metros and availability, visit https://metal.equinix.com/developers/docs/locations/metros/.
 * [metal operating-systems](metal_operating-systems.md)	 - Operating system operations. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.
 * [metal organization](metal_organization.md)	 - Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.

@@ -1,24 +1,28 @@
 ## metal hardware-reservation move
 
-Move hardware reservation to another project
+Moves a hardware reservation.
 
 ### Synopsis
 
-Example:
-
-metal hardware_reservation move -i [hardware_reservation_UUID] -p [project_UUID]
-
+Moves a hardware reservation to a specified project. Both the hardware reservation ID and the Project ID for the destination project are required.
 
 ```
-metal hardware-reservation move [flags]
+metal hardware-reservation move -i <hardware_reservation_id> -p <project_id> [flags]
+```
+
+### Examples
+
+```
+  # Moves a hardware reservation to the specified Project:
+  metal hardware_reservation move -i 8404b73c-d18f-4190-8c49-20bb17501f88 -p 278bca90-f6b2-4659-b1a4-1bdffa0d80b7
 ```
 
 ### Options
 
 ```
   -h, --help                help for move
-  -i, --id string           UUID of the hardware reservation
-  -p, --project-id string   Project ID (METAL_PROJECT_ID)
+  -i, --id string           The UUID of the hardware reservation.
+  -p, --project-id string   The Project ID of the Project you are moving the hardware reservation to.
 ```
 
 ### Options inherited from parent commands
@@ -37,5 +41,5 @@ metal hardware-reservation move [flags]
 
 ### SEE ALSO
 
-* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations
+* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations. Information on reserving hardware on Equinix Metal is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
 

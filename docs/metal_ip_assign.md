@@ -1,24 +1,27 @@
 ## metal ip assign
 
-Assigns an IP address to a given device
+Assigns an IP address to a specified device.
 
 ### Synopsis
 
-Example:
-
-metal ip assign -d [device-id] -a [ip-address]
-
-	
+Assigns an IP address and subnet to a specified device. Returns an assignment ID.
 
 ```
-metal ip assign [flags]
+metal ip assign -a <IP_address> -d <device_UUID> [flags]
+```
+
+### Examples
+
+```
+  # Assigns an IP address to a server:
+  metal ip assign -d 060d1626-2481-475a-9789-c6f4bb927303  -a 198.51.100.3/31
 ```
 
 ### Options
 
 ```
-  -a, --address string     IP address
-  -d, --device-id string   UUID of the device
+  -a, --address string     IP address and CIDR you would like to assign.
+  -d, --device-id string   The UUID of the device.
   -h, --help               help for assign
 ```
 
@@ -38,5 +41,5 @@ metal ip assign [flags]
 
 ### SEE ALSO
 
-* [metal ip](metal_ip.md)	 - IP operations
+* [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 

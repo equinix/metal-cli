@@ -1,10 +1,10 @@
 ## metal facilities
 
-Facility operations
+Facility operations. For more information on Equinix Metal facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/. 
 
 ### Synopsis
 
-Facility operations: get
+Facility operations: get.
 
 ### Options
 
@@ -29,5 +29,5 @@ Facility operations: get
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal facilities get](metal_facilities_get.md)	 - Retrieves a list of available facilities.
+* [metal facilities get](metal_facilities_get.md)	 - Retrieves a list of facilities.
 

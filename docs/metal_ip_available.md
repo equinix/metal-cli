@@ -1,25 +1,28 @@
 ## metal ip available
 
-Retrieves a list of IP resevations for a single project.
+Lists available IP addresses from a reservation.
 
 ### Synopsis
 
-Example:
-
-metal ip available --reservation-id [reservation_id] --cidr [size_of_subnet]
-
-  
+Lists available IP addresses in a specified reservation for the desired subnet size.
 
 ```
-metal ip available [flags]
+metal ip available -r <reservation_UUID> -c <size_of_subnet> [flags]
+```
+
+### Examples
+
+```
+  # Lists available IP addresses in a reservation for a /31 subnet:
+  metal ip available --reservation-id da1bb048-ea6e-4911-8ab9-b95635ca127a --cidr 31
 ```
 
 ### Options
 
 ```
-  -c, --cidr int                Size of subnet
+  -c, --cidr int                The size of the desired subnet in bits.
   -h, --help                    help for available
-  -r, --reservation-id string   UUID of the reservation
+  -r, --reservation-id string   The UUID of the IP address reservation.
 ```
 
 ### Options inherited from parent commands
@@ -38,5 +41,5 @@ metal ip available [flags]
 
 ### SEE ALSO
 
-* [metal ip](metal_ip.md)	 - IP operations
+* [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 

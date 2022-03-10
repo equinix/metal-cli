@@ -1,13 +1,20 @@
 ## metal docs
 
-Generate command documentation
+Generate command markdown documentation.
 
 ### Synopsis
 
-To generate documentation in the ./docs directory: docs ./docs
+Generates command markdown documentation in the specified directory. Each command gets a markdown file.
 
 ```
-metal docs [DESTINATION]
+metal docs <destination>
+```
+
+### Examples
+
+```
+  # Generate documentation in the ./docs directory:
+  metal docs ./docs
 ```
 
 ### Options

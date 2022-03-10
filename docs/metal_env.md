@@ -1,37 +1,36 @@
 ## metal env
 
-Generate environment variables
+Prints or generates environment variables.
 
 ### Synopsis
 
-Currently emitted variables:
-	- METAL_AUTH_TOKEN
-	- METAL_PROJECT_ID
-
-	To load environment variables:
-
-	Bash, Zsh:
-
-	$ source <(metal env)
-
-	Bash (3.2.x):
-
-	$ eval "$(metal env)"
-
-	Fish:
-
-	$ metal env | source
-	
+Prints or generates environment variables. Currently emitted variables: METAL_AUTH_TOKEN, METAL_PROJECT_ID, METAL_CONFIG. Use the --project-id flag to set the METAL_PROJECT_ID variable.
 
 ```
-metal env
+metal env [-p <project_id>]
+```
+
+### Examples
+
+```
+  # Print the current environment variables:
+  metal env
+  
+  # Load environment variables in Bash, Zsh:
+  source <(metal env)
+  
+  # Load environment variables in Bash 3.2.x:
+  eval "$(metal env)"
+  
+  # Load environment variables in Fish:
+  metal env | source
 ```
 
 ### Options
 
 ```
   -h, --help                help for env
-  -p, --project-id string   Project ID (METAL_PROJECT_ID)
+  -p, --project-id string   A project UUID to set as an environment variable.
 ```
 
 ### Options inherited from parent commands
