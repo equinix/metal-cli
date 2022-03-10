@@ -45,13 +45,17 @@ func (c *Client) Delete() *cobra.Command {
 
 	// deleteOrganizationCmd represents the deleteOrganization command
 	var deleteOrganizationCmd = &cobra.Command{
-		Use:   "delete",
-		Short: "Deletes an organization",
-		Long: `Example:
-	
-metal organization delete -i [organization_UUID]
+		Use:   `delete -i <organization_UUID>`,
+		Short: "Deletes an organization.",
+		Long:  "Deletes an organization. You can not delete an organization that contains projects or has outstanding charges. Only organization owners can delete an organization.",
+		Example: `  # Deletes an organization, with confirmation: 
+  metal organization delete -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8
+  >
+  ✔ Are you sure you want to delete organization 3bd5bf07-6094-48ad-bd03-d94e8712fdc8: y
+  
+  # Deletes an organization, skipping confirmation:
+  metal organization delete -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 -f`,
 
-	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			if !force {
@@ -70,8 +74,8 @@ metal organization delete -i [organization_UUID]
 		},
 	}
 
-	deleteOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "UUID of the organization")
+	deleteOrganizationCmd.Flags().StringVarP(&organizationID, "organization-id", "i", "", "The UUID of the organization.")
 	_ = deleteOrganizationCmd.MarkFlagRequired("organization-id")
-	deleteOrganizationCmd.Flags().BoolVarP(&force, "force", "f", false, "Force removal of the organization")
+	deleteOrganizationCmd.Flags().BoolVarP(&force, "force", "f", false, "Skips confirmation for the removal of the organization.")
 	return deleteOrganizationCmd
 }

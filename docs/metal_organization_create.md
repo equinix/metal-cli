@@ -1,28 +1,34 @@
 ## metal organization create
 
-Creates an organization
+Creates an organization.
 
 ### Synopsis
 
-Example:
-
-metal organization create -n [name]
-
-	
+Creates a new organization with the current user as the organization's owner. 
 
 ```
-metal organization create [flags]
+metal organization create -n <name> [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>] [flags]
+```
+
+### Examples
+
+```
+  # Creates a new organization named "it-backend-infra": 
+  metal organization create -n it-backend-infra
+  
+  # Creates a new organization with name, website, and twitter:
+  metal organization create -n test-org -w www.metal.equinix.com -t https://twitter.com/equinixmetal 
 ```
 
 ### Options
 
 ```
-  -d, --description string   Description of the organization
+  -d, --description string   Description of the organization.
   -h, --help                 help for create
-  -l, --logo string          Logo URL]
-  -n, --name string          Name of the organization
-  -t, --twitter string       Twitter URL of the organization
-  -w, --website string       Website URL of the organization
+  -l, --logo string          A Logo image URL.]
+  -n, --name string          Name of the organization.
+  -t, --twitter string       Twitter URL of the organization.
+  -w, --website string       Website URL of the organization.
 ```
 
 ### Options inherited from parent commands
@@ -41,5 +47,5 @@ metal organization create [flags]
 
 ### SEE ALSO
 
-* [metal organization](metal_organization.md)	 - Organization operations
+* [metal organization](metal_organization.md)	 - Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.
 

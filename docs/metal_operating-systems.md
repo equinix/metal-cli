@@ -1,10 +1,10 @@
 ## metal operating-systems
 
-Operating system operations
+Operating system operations. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.
 
 ### Synopsis
 
-Operating system operations: get
+Operating system operations: get.
 
 ### Options
 
@@ -29,5 +29,5 @@ Operating system operations: get
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal operating-systems get](metal_operating-systems_get.md)	 - Retrieves a list of available operating systems.
+* [metal operating-systems get](metal_operating-systems_get.md)	 - Retrieves a list of operating systems.
 

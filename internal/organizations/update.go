@@ -30,13 +30,12 @@ func (c *Client) Update() *cobra.Command {
 	var organizationID, name, description, twitter, logo, website string
 	// createOrganizationCmd represents the createOrganization command
 	var updateOrganizationCmd = &cobra.Command{
-		Use:   "update",
-		Short: "Updates an organization",
-		Long: `Example:
+		Use:   `update -i <organization_UUID> [-n <name>] [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>]`,
+		Short: "Updates the specified organization.",
+		Long:  "Updates the specified organization. You can update the name, website, Twitter, or logo.",
+		Example: `  # Updates the name of an organization:
+  metal organization update -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 --name test-cluster02`,
 
-metal organization update --id [organization_UUID] --name [new_name]
-
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := &packngo.OrganizationUpdateRequest{}
@@ -71,12 +70,12 @@ metal organization update --id [organization_UUID] --name [new_name]
 		},
 	}
 
-	updateOrganizationCmd.Flags().StringVarP(&organizationID, "id", "i", "", "Organization ID")
-	updateOrganizationCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the organization")
-	updateOrganizationCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the organization")
-	updateOrganizationCmd.Flags().StringVarP(&website, "website", "w", "", "Website of the organization")
-	updateOrganizationCmd.Flags().StringVarP(&twitter, "twitter", "t", "", "Twitter URL of the organization")
-	updateOrganizationCmd.Flags().StringVarP(&logo, "logo", "l", "", "Logo URL of the organization")
+	updateOrganizationCmd.Flags().StringVarP(&organizationID, "id", "i", "", "An organization UUID.")
+	updateOrganizationCmd.Flags().StringVarP(&name, "name", "n", "", "New name for the organization.")
+	updateOrganizationCmd.Flags().StringVarP(&description, "description", "d", "", "User-friendly description of the organization.")
+	updateOrganizationCmd.Flags().StringVarP(&website, "website", "w", "", "A website URL for the organization.")
+	updateOrganizationCmd.Flags().StringVarP(&twitter, "twitter", "t", "", "A Twitter URL of the organization.")
+	updateOrganizationCmd.Flags().StringVarP(&logo, "logo", "l", "", "A logo image URL for the organization.")
 
 	_ = updateOrganizationCmd.MarkFlagRequired("id")
 	return updateOrganizationCmd

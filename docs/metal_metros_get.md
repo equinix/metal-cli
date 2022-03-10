@@ -1,17 +1,20 @@
 ## metal metros get
 
-Retrieves a list of available metros.
+Retrieves a list of metros.
 
 ### Synopsis
 
-Example:
-	
-metal metros get
-	
-	
+Retrieves a list of metros available to the current user.
 
 ```
 metal metros get [flags]
+```
+
+### Examples
+
+```
+  # Lists metros available to the current user:	
+  metal metros get
 ```
 
 ### Options
@@ -36,5 +39,5 @@ metal metros get [flags]
 
 ### SEE ALSO
 
-* [metal metros](metal_metros.md)	 - Metro operations
+* [metal metros](metal_metros.md)	 - Metro operations. For more information on Equinix Metal metros and availability, visit https://metal.equinix.com/developers/docs/locations/metros/.
 

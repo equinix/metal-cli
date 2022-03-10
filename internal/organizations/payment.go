@@ -29,14 +29,13 @@ func (c *Client) PaymentMethods() *cobra.Command {
 	var organizationID string
 	// paymentMethodsCmd represents the paymentMethods command
 	var paymentMethodsCmd = &cobra.Command{
-		Use:     "payment-methods",
+		Use:     `payment-methods -i <organization_UUID>`,
 		Aliases: []string{"payment-method"},
-		Short:   "Retrieves a list of payment methods for the organization",
-		Long: `Example:
+		Short:   "Retrieves a list of payment methods.",
+		Long:    "Retrieves a list of payment methods for the specified organization if the current user is a member with the proper role.",
+		Example: `  # Lists the payment methods for an organization:
+  metal organization payment-methods --id 3bd5bf07-6094-48ad-bd03-d94e8712fdc8`,
 
-metal organization payment-methods --id [organization_UUID]
-
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			paymentMethods, _, err := c.Service.ListPaymentMethods(organizationID)
@@ -55,7 +54,7 @@ metal organization payment-methods --id [organization_UUID]
 		},
 	}
 
-	paymentMethodsCmd.Flags().StringVarP(&organizationID, "id", "i", "", "UUID of the organization")
+	paymentMethodsCmd.Flags().StringVarP(&organizationID, "id", "i", "", "The UUID of the organization.")
 	_ = paymentMethodsCmd.MarkFlagRequired("id")
 	return paymentMethodsCmd
 }
