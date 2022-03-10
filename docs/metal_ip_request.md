@@ -1,29 +1,32 @@
 ## metal ip request
 
-Request an IP block
+Request a block of IP addresses.
 
 ### Synopsis
 
-Example:
-
-metal ip request --quantity [quantity] --facility [facility_code] --type [address_type]
-
-	
+Requests either a block of public IPv4 addresses or global IPv4 addresses for your project in a specific facility.
 
 ```
-metal ip request [flags]
+metal ip request -p <project_id> -t <ip_address_type> -q <quantity> -f <facility_code> [-f <flags>] [-c <comments>] [flags]
+```
+
+### Examples
+
+```
+  # Requests a block of 4 public IPv4 addresses in DA11: 
+  metal ip request -p $METAL_PROJECT_ID -t public_ipv4 -q 4 -f da11
 ```
 
 ### Options
 
 ```
-  -c, --comments string     General comments
-  -f, --facility string     Code of the facility
+  -c, --comments string     General comments or description.
+  -f, --facility string     Code of the facility.
   -h, --help                help for request
-  -p, --project-id string   Project ID (METAL_PROJECT_ID)
-  -q, --quantity int        Number of IP addresses to reserve
-      --tags strings        Tags to add, comma-separated for multiple, or repeat multiple times
-  -t, --type string         Address type public_ipv4 or global_ipv6
+  -p, --project-id string   The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
+  -q, --quantity int        Number of IP addresses to reserve.
+      --tags strings        Tag or Tags to add to the reservation, in a comma-separated list.
+  -t, --type string         The type of IP Address, either public_ipv4 or global_ipv4.
 ```
 
 ### Options inherited from parent commands
@@ -42,5 +45,5 @@ metal ip request [flags]
 
 ### SEE ALSO
 
-* [metal ip](metal_ip.md)	 - IP operations
+* [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 

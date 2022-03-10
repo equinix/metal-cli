@@ -1,10 +1,10 @@
 ## metal hardware-reservation
 
-Hardware reservation operations
+Hardware reservation operations. Information on reserving hardware on Equinix Metal is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
 
 ### Synopsis
 
-Hardware reservation operations: get, move
+Hardware reservation operations: get, move.
 
 ### Options
 
@@ -29,6 +29,6 @@ Hardware reservation operations: get, move
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal hardware-reservation get](metal_hardware-reservation_get.md)	 - Retrieves all hardware reservations of a project or a single hardware reservation
-* [metal hardware-reservation move](metal_hardware-reservation_move.md)	 - Move hardware reservation to another project
+* [metal hardware-reservation get](metal_hardware-reservation_get.md)	 - Lists a Project's hardware reservations or the details of a specified hardware reservation.
+* [metal hardware-reservation move](metal_hardware-reservation_move.md)	 - Moves a hardware reservation.
 

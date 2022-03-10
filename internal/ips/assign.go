@@ -36,13 +36,12 @@ func (c *Client) Assign() *cobra.Command {
 
 	// assignIpCmd represents the assignIp command
 	var assignIPCmd = &cobra.Command{
-		Use:   "assign",
-		Short: "Assigns an IP address to a given device",
-		Long: `Example:
+		Use:   `assign -a <IP_address> -d <device_UUID>`,
+		Short: "Assigns an IP address to a specified device.",
+		Long:  "Assigns an IP address and subnet to a specified device. Returns an assignment ID.",
+		Example: `  # Assigns an IP address to a server:
+  metal ip assign -d 060d1626-2481-475a-9789-c6f4bb927303  -a 198.51.100.3/31`,
 
-metal ip assign -d [device-id] -a [ip-address]
-
-	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			assignment, _, err := c.DeviceService.Assign(deviceID, &packngo.AddressStruct{Address: address})
@@ -59,8 +58,8 @@ metal ip assign -d [device-id] -a [ip-address]
 		},
 	}
 
-	assignIPCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "UUID of the device")
-	assignIPCmd.Flags().StringVarP(&address, "address", "a", "", "IP address")
+	assignIPCmd.Flags().StringVarP(&deviceID, "device-id", "d", "", "The UUID of the device.")
+	assignIPCmd.Flags().StringVarP(&address, "address", "a", "", "IP address and CIDR you would like to assign.")
 
 	_ = assignIPCmd.MarkFlagRequired("device-id")
 	_ = assignIPCmd.MarkFlagRequired("address")

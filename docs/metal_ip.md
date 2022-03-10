@@ -1,10 +1,10 @@
 ## metal ip
 
-IP operations
+IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 
 ### Synopsis
 
-IP address, reservations and assignment operations: assign, unassign, remove, available, request and get 
+IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get.
 
 ### Options
 
@@ -29,10 +29,10 @@ IP address, reservations and assignment operations: assign, unassign, remove, av
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal ip assign](metal_ip_assign.md)	 - Assigns an IP address to a given device
-* [metal ip available](metal_ip_available.md)	 - Retrieves a list of IP resevations for a single project.
-* [metal ip get](metal_ip_get.md)	 - Retrieves information about IP addresses, IP reservations and IP assignments
-* [metal ip remove](metal_ip_remove.md)	 - Command to remove IP reservation.
-* [metal ip request](metal_ip_request.md)	 - Request an IP block
-* [metal ip unassign](metal_ip_unassign.md)	 - Unassigns an IP address.
+* [metal ip assign](metal_ip_assign.md)	 - Assigns an IP address to a specified device.
+* [metal ip available](metal_ip_available.md)	 - Lists available IP addresses from a reservation.
+* [metal ip get](metal_ip_get.md)	 - Retrieves information about IP addresses, IP address reservations, and IP address assignments.
+* [metal ip remove](metal_ip_remove.md)	 - Removes an IP address reservation from a project.
+* [metal ip request](metal_ip_request.md)	 - Request a block of IP addresses.
+* [metal ip unassign](metal_ip_unassign.md)	 - Unassigns an IP address assignment.
 

@@ -31,13 +31,12 @@ func (c *Client) Remove() *cobra.Command {
 	var reservationID string
 	// removeIPCmd represents the removeIp command
 	var removeIPCmd = &cobra.Command{
-		Use:   "remove",
-		Short: "Command to remove IP reservation.",
-		Long: `Example:	
+		Use:   `remove -i <reservation_UUID>`,
+		Short: "Removes an IP address reservation from a project.",
+		Long:  "Removes an IP address reservation from a project. Any subnets and IP addresses in the reservation will no longer be able to be used by your devices.",
+		Example: `  # Removes an IP address reservation:
+  metal ip remove --id a9dfc9d5-ba1a-4d11-8cfc-6e30b9630876`,
 
-metal ip remove --id [reservation-UUID]
-
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			_, err := c.ProjectService.Remove(reservationID)
