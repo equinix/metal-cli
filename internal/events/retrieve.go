@@ -33,30 +33,25 @@ func (c *Client) Retrieve() *cobra.Command {
 	var eventID, deviceID, projectID, organizationID string
 
 	retrieveEventCmd := &cobra.Command{
-		Use:     "get",
+		Use:     `get [-p <project_id>] | [-d <device_id>] | [-i <event_id>] | [-O <organization_id>]`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves one or more events for organizations, projects, or devices.",
-		Long: `Example:
-Retrieve all events:
-metal event get
+		Short:   "Retrieves events for the current user, an organization, a project, a device, or the the details of a specific event.",
+		Long:    "Retrieves events for the current user, an organization, a project, a device, or the details of a specific event. The current user's events includes all events in all projects and devices that the user has access to. When using --json or --yaml flags, the --include=relationships flag is implied.",
+		Example: `  # Retrieve all events of a current user:
+  metal event get
 
-Retrieve a specific event:
-metal event get -i [event_UUID]
+  # Retrieve the details of a specific event:
+  metal event get -i [event_UUID]
 
-Retrieve all events of an organization:
-metal event get -o [organization_UUID]
+  # Retrieve all the events of an organization:
+  metal event get -o [organization_UUID]
 
-Retrieve all events of a project:
-metal event get -p [project_UUID]
+  # Retrieve all events of a project:
+  metal event get -p [project_UUID]
 
-Retrieve all events of a device:
-metal event get -d [device_UUID]
+  # Retrieve all events of a device:
+  metal event get -d [device_UUID]`,
 
-Retrieve all events of a current user:
-metal event get
-
-When using "--json" or "--yaml", "--include=relationships" is implied.
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			var events []packngo.Event
@@ -73,7 +68,7 @@ When using "--json" or "--yaml", "--include=relationships" is implied.
 			listOpt := c.Servicer.ListOptions(inc, nil)
 
 			if deviceID != "" && projectID != "" && organizationID != "" && eventID != "" {
-				return fmt.Errorf("The id, project-id, device-id, and organization-id parameters are mutually exclusive")
+				return fmt.Errorf("id, project-id, device-id, and organization-id parameters are mutually exclusive")
 			} else if deviceID != "" {
 				events, _, err = c.DeviceService.ListEvents(deviceID, listOpt)
 				if err != nil {
