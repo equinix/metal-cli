@@ -28,9 +28,12 @@ import (
 
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:                   "docs [DESTINATION]",
-		Short:                 "Generate command documentation",
-		Long:                  "To generate documentation in the ./docs directory: docs ./docs",
+		Use:   `docs <destination>`,
+		Short: "Generate command markdown documentation.",
+		Long:  "Generates command markdown documentation in the specified directory. Each command gets a markdown file.",
+		Example: `  # Generate documentation in the ./docs directory:
+  metal docs ./docs`,
+
 		DisableFlagsInUseLine: true,
 		Args:                  cobra.ExactValidArgs(1),
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
