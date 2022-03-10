@@ -29,14 +29,13 @@ import (
 
 func (c *Client) Retrieve() *cobra.Command {
 	return &cobra.Command{
-		Use:     "get",
+		Use:     `get`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves a list of available facilities.",
-		Long: `Example:
-	
-metal facilities get
-	
-	`,
+		Short:   "Retrieves a list of facilities.",
+		Long:    "Retrieves a list of facilities available to the current user.",
+		Example: `  # Lists facilities for current user:
+  metal facilities get`,
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			facilities, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
