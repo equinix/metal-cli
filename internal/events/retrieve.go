@@ -35,7 +35,7 @@ func (c *Client) Retrieve() *cobra.Command {
 	retrieveEventCmd := &cobra.Command{
 		Use:     `get [-p <project_id>] | [-d <device_id>] | [-i <event_id>] | [-O <organization_id>]`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves events for the current user, an organization, a project, a device, or the the details of a specific event.",
+		Short:   "Retrieves events for the current user, an organization, a project, a device, or the details of a specific event.",
 		Long:    "Retrieves events for the current user, an organization, a project, a device, or the details of a specific event. The current user's events includes all events in all projects and devices that the user has access to. When using --json or --yaml flags, the --include=relationships flag is implied.",
 		Example: `  # Retrieve all events of a current user:
   metal event get

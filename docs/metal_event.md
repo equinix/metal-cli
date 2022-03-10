@@ -29,5 +29,5 @@ Events operations: get.
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal event get](metal_event_get.md)	 - Retrieves events for the current user, an organization, a project, a device, or the the details of a specific event.
+* [metal event get](metal_event_get.md)	 - Retrieves events for the current user, an organization, a project, a device, or the details of a specific event.
 
