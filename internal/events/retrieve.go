@@ -41,16 +41,16 @@ func (c *Client) Retrieve() *cobra.Command {
   metal event get
 
   # Retrieve the details of a specific event:
-  metal event get -i [event_UUID]
+  metal event get -i e9a969b3-8911-4667-9d99-57cd3dd4ef6f
 
   # Retrieve all the events of an organization:
-  metal event get -o [organization_UUID]
+  metal event get -o c079178c-9557-48f2-9ce7-cfb927b81928
 
   # Retrieve all events of a project:
-  metal event get -p [project_UUID]
+  metal event get -p 1867ee8f-6a11-470a-9505-952d6a324040
 
   # Retrieve all events of a device:
-  metal event get -d [device_UUID]`,
+  metal event get -d ca614540-fbd4-4dbb-9689-457c6ccc8353`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
