@@ -34,7 +34,7 @@ type Client struct {
 
 func (c *Client) NewCommand() *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:     "facilities",
+		Use:     `facilities`,
 		Aliases: []string{"facility"},
 		Short:   "Facility operations. For more information on Equinix Metal facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/. ",
 		Long:    "Facility operations: get.",
