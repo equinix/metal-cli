@@ -1,33 +1,32 @@
 ## metal event get
 
-Retrieves one or more events for organizations, projects, or devices.
+Retrieves events for the current user, an organization, a project, a device, or the the details of a specific event.
 
 ### Synopsis
 
-Example:
-Retrieve all events:
-metal event get
-
-Retrieve a specific event:
-metal event get -i [event_UUID]
-
-Retrieve all events of an organization:
-metal event get -o [organization_UUID]
-
-Retrieve all events of a project:
-metal event get -p [project_UUID]
-
-Retrieve all events of a device:
-metal event get -d [device_UUID]
-
-Retrieve all events of a current user:
-metal event get
-
-When using "--json" or "--yaml", "--include=relationships" is implied.
-
+Retrieves events for the current user, an organization, a project, a device, or the details of a specific event. The current user's events includes all events in all projects and devices that the user has access to. When using --json or --yaml flags, the --include=relationships flag is implied.
 
 ```
-metal event get [flags]
+metal event get [-p <project_id>] | [-d <device_id>] | [-i <event_id>] | [-O <organization_id>] [flags]
+```
+
+### Examples
+
+```
+  # Retrieve all events of a current user:
+  metal event get
+
+  # Retrieve the details of a specific event:
+  metal event get -i e9a969b3-8911-4667-9d99-57cd3dd4ef6f
+
+  # Retrieve all the events of an organization:
+  metal event get -o c079178c-9557-48f2-9ce7-cfb927b81928
+
+  # Retrieve all events of a project:
+  metal event get -p 1867ee8f-6a11-470a-9505-952d6a324040
+
+  # Retrieve all events of a device:
+  metal event get -d ca614540-fbd4-4dbb-9689-457c6ccc8353
 ```
 
 ### Options
@@ -56,5 +55,5 @@ metal event get [flags]
 
 ### SEE ALSO
 
-* [metal event](metal_event.md)	 - Events operations
+* [metal event](metal_event.md)	 - Events operations for organizations, projects, devices, and the current user.
 
