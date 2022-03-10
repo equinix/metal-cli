@@ -49,26 +49,21 @@ func (c *Client) NewCommand() *cobra.Command {
 	//v := c.tokener.Config()
 	//projectId := v.GetString("project-id")
 	envCmd := &cobra.Command{
-		Use:   "env",
-		Short: "Generate environment variables",
-		Long: fmt.Sprintf(`Currently emitted variables:
-	- %s
-	- METAL_PROJECT_ID
+		Use:   `env [-p <project_id>]`,
+		Short: "Prints or generates environment variables.",
+		Long:  "Prints or generates environment variables. Currently emitted variables: METAL_AUTH_TOKEN, METAL_PROJECT_ID, METAL_CONFIG. Use the --project-id flag to set the METAL_PROJECT_ID variable.",
+		Example: `  # Print the current environment variables:
+  metal env
+  
+  # Load environment variables in Bash, Zsh:
+  source <(metal env)
+  
+  # Load environment variables in Bash 3.2.x:
+  eval "$(metal env)"
+  
+  # Load environment variables in Fish:
+  metal env | source`,
 
-	To load environment variables:
-
-	Bash, Zsh:
-
-	$ source <(metal env)
-
-	Bash (3.2.x):
-
-	$ eval "$(metal env)"
-
-	Fish:
-
-	$ metal env | source
-	`, c.apiTokenEnvVar),
 		DisableFlagsInUseLine: true,
 		Run: func(cmd *cobra.Command, args []string) {
 			projectID, _ := cmd.Flags().GetString("project-id")
@@ -82,7 +77,7 @@ func (c *Client) NewCommand() *cobra.Command {
 	}
 
 	// 	envCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
-	envCmd.Flags().StringP("project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
+	envCmd.Flags().StringP("project-id", "p", "", "A project UUID to set as an environment variable.")
 
 	return envCmd
 
