@@ -31,13 +31,12 @@ func (c *Client) Reboot() *cobra.Command {
 	var deviceID string
 
 	var rebootDeviceCmd = &cobra.Command{
-		Use:   "reboot",
-		Short: "Reboots a device",
-		Long: `Example:
+		Use:   `reboot -i <device_id>`,
+		Short: "Reboots a device.",
+		Long:  "Reboots the specified device.",
+		Example: `  # Reboots the specified device:
+  metal device reboot --id 26a9da5f-a0db-41f6-8467-827e144e59a7`,
 
-metal device reboot --id [device_UUID]
-
-	  `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			_, err := c.Service.Reboot(deviceID)
@@ -50,7 +49,7 @@ metal device reboot --id [device_UUID]
 		},
 	}
 
-	rebootDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "--id or -i [device_UUID]")
+	rebootDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "The device UUID.")
 
 	_ = rebootDeviceCmd.MarkFlagRequired("id")
 	return rebootDeviceCmd
