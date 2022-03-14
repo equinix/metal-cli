@@ -30,13 +30,12 @@ import (
 func (c *Client) Stop() *cobra.Command {
 	var deviceID string
 	var stopDeviceCmd = &cobra.Command{
-		Use:   "stop",
-		Short: "Stops a device",
-		Long: `Example:
+		Use:   `stop -i <device_id>`,
+		Short: "Stops a device.",
+		Long:  "Stops or powers off a device that is currently started or powered on.",
+		Example: `  # Stops the specified device:
+  metal device stop --id [device_UUID]`,
 
-  metal device stop --id [device_UUID]
-  
-  `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			_, err := c.Service.PowerOff(deviceID)
@@ -50,7 +49,7 @@ func (c *Client) Stop() *cobra.Command {
 		},
 	}
 
-	stopDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
+	stopDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "The UUID of the device.")
 	_ = stopDeviceCmd.MarkFlagRequired("id")
 	return stopDeviceCmd
 }
