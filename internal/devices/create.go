@@ -56,7 +56,7 @@ func (c *Client) Create() *cobra.Command {
 	)
 
 	var createDeviceCmd = &cobra.Command{
-		Use:   `create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <hostname> -O <operating_system> [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-t <tags>] [-r <hardware_reservation_id>] [-I <ipxe_script_url>] [--always-pxe <boolean>] [--spot-instance <boolean>] [--spot-price-max <max_price>]`,
+		Use:   `create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <hostname> -O <operating_system> [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-t <tags>] [-r <hardware_reservation_id>] [-I <ipxe_script_url>] [--always-pxe] [--spot-instance] [--spot-price-max=<max_price>]`,
 		Short: "Creates a device.",
 		Long:  "Creates a device in the specified project. A plan, hostname, operating system, and either metro or facility is required.",
 		Example: `  # Provisions a c3.small.x86 in the Dallas metro running Ubuntu 20.04:
