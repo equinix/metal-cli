@@ -34,7 +34,7 @@ func NewCommand() *cobra.Command {
 	var completionCmd = &cobra.Command{
 		Use:   `completion [bash | zsh | fish | powershell]`,
 		Short: "Generates completion scripts.",
-		Long:  " ",
+		Long:  "Generates shell completion scripts for different shells.",
 		Example: `  # To load completions in Bash:
   source <(metal completion bash)
   
