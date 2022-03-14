@@ -43,13 +43,12 @@ func (c *Client) Update() *cobra.Command {
 
 	// updateDeviceCmd represents the updateDevice command
 	var updateDeviceCmd = &cobra.Command{
-		Use:   "update",
-		Short: "Updates a device",
-		Long: `Example:
+		Use:   `update -i <device_id> [-H <hostname>] [-d <description>] [--locked <boolean>] [-t <tags>] [-u <userdata>] [-c <customdata>] [-s <ipxe_script_url>] [--always-pxe <boolean>]`,
+		Short: "Updates a device.",
+		Long:  "Updates the hostname of a device. Updates or adds a description, tags, userdata, custom data, and iPXE settings for an already provisioned device. Can also lock or unlock future changes to the device.",
+		Example: `  # Updates the hostname of a device:
+  metal device update --id 30c15082-a06e-4c43-bfc3-252616b46eba --hostname renamed-staging04`,
 
-metal device update --id [device_UUID] --hostname [new_hostname]
-
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := &packngo.DeviceUpdateRequest{}
@@ -99,7 +98,7 @@ metal device update --id [device_UUID] --hostname [new_hostname]
 		},
 	}
 
-	updateDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
+	updateDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "The UUID of the device")
 	updateDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "Hostname")
 	updateDeviceCmd.Flags().StringVarP(&description, "description", "d", "", "Description for the device")
 	updateDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "User data")
