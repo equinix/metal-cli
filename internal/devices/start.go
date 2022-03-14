@@ -31,13 +31,12 @@ func (c *Client) Start() *cobra.Command {
 	var deviceID string
 	// startdeviceCmd represents the startdevice command
 	var startDeviceCmd = &cobra.Command{
-		Use:   "start",
-		Short: "Starts a device",
-		Long: `Example:
+		Use:   `start -i <device_id>`,
+		Short: "Starts a device.",
+		Long:  "Starts or powers on a device that is currently stopped or powered off.",
+		Example: `  # Starts the specified device:
+  metal device start --id 26a9da5f-a0db-41f6-8467-827e144e59a7`,
 
-metal device start --id [device_UUID]
-
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			_, err := c.Service.PowerOn(deviceID)
@@ -51,7 +50,7 @@ metal device start --id [device_UUID]
 		},
 	}
 
-	startDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
+	startDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "The UUID of the device.")
 	_ = startDeviceCmd.MarkFlagRequired("id")
 	return startDeviceCmd
 }
