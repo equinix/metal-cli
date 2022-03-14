@@ -1,32 +1,35 @@
 ## metal device update
 
-Updates a device
+Updates a device.
 
 ### Synopsis
 
-Example:
-
-metal device update --id [device_UUID] --hostname [new_hostname]
-
-
+Updates the hostname of a device. Updates or adds a description, tags, userdata, custom data, and iPXE settings for an already provisioned device. Can also lock or unlock future changes to the device.
 
 ```
-metal device update [flags]
+metal device update -i <device_id> [-H <hostname>] [-d <description>] [--locked <boolean>] [-t <tags>] [-u <userdata>] [-c <customdata>] [-s <ipxe_script_url>] [--always-pxe] [flags]
+```
+
+### Examples
+
+```
+  # Updates the hostname of a device:
+  metal device update --id 30c15082-a06e-4c43-bfc3-252616b46eba --hostname renamed-staging04
 ```
 
 ### Options
 
 ```
-  -a, --always-pxe               --alaways-pxe or -a
-  -c, --customdata string        Custom data
-  -d, --description string       Description for the device
+  -a, --always-pxe               Sets the device to always iPXE on reboot.
+  -c, --customdata string        Adds or updates custom data to be included with your device's metadata.
+  -d, --description string       Adds or updates the description for the device.
   -h, --help                     help for update
-  -H, --hostname string          Hostname
-  -i, --id string                UUID of the device
-  -s, --ipxe-script-url string   URL to the iPXE script
-  -l, --locked                   Lock device
-  -t, --tags strings             Tags for the device --tags="tag1,tag2"
-  -u, --userdata string          User data
+  -H, --hostname string          The new hostname of the device.
+  -i, --id string                The UUID of the device.
+  -s, --ipxe-script-url string   Add or update the URL of the iPXE script.
+  -l, --locked                   Locks or unlocks the device for future changes.
+  -t, --tags strings             Adds or updates the tags for the device --tags="tag1,tag2".
+  -u, --userdata string          Adds or updates the userdata for the device.
 ```
 
 ### Options inherited from parent commands
@@ -45,5 +48,5 @@ metal device update [flags]
 
 ### SEE ALSO
 
-* [metal device](metal_device.md)	 - Device operations
+* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
 

@@ -1,24 +1,27 @@
 ## metal device stop
 
-Stops a device
+Stops a device.
 
 ### Synopsis
 
-Example:
-
-  metal device stop --id [device_UUID]
-  
-  
+Stops or powers off a device that is currently started or powered on.
 
 ```
-metal device stop [flags]
+metal device stop -i <device_id> [flags]
+```
+
+### Examples
+
+```
+  # Stops the specified device:
+  metal device stop --id [device_UUID]
 ```
 
 ### Options
 
 ```
   -h, --help        help for stop
-  -i, --id string   UUID of the device
+  -i, --id string   The UUID of the device.
 ```
 
 ### Options inherited from parent commands
@@ -37,5 +40,5 @@ metal device stop [flags]
 
 ### SEE ALSO
 
-* [metal device](metal_device.md)	 - Device operations
+* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
 

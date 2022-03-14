@@ -1,25 +1,31 @@
 ## metal device get
 
-Retrieves device list or device details
+Retrieves device list or device details.
 
 ### Synopsis
 
-Example:
-	
-metal device get --id [device_UUID]
-
-	
+Retrieves a list of devices in the project, or the details of the specified device. Either a project ID or a device ID is required.
 
 ```
-metal device get [flags]
+metal device get [-p <project_id>] | [-i <device_id>] [flags]
+```
+
+### Examples
+
+```
+  # Gets the details of the specified device:
+  metal device get -i 52b60ca7-1ae2-4875-846b-4e4635223471
+  
+  # Gets a list of devices in the specified project:
+  metal device get -p 5ad070a5-62e8-4cfe-a0b9-3b79e59f1cfe
 ```
 
 ### Options
 
 ```
   -h, --help                help for get
-  -i, --id string           UUID of the device
-  -p, --project-id string   Project ID (METAL_PROJECT_ID)
+  -i, --id string           The UUID of a device.
+  -p, --project-id string   The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
 ```
 
 ### Options inherited from parent commands
@@ -38,5 +44,5 @@ metal device get [flags]
 
 ### SEE ALSO
 
-* [metal device](metal_device.md)	 - Device operations
+* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
 
