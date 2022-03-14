@@ -29,21 +29,22 @@ import (
 
 func (c *Client) Retrieve() *cobra.Command {
 	var retrieveDeviceCmd = &cobra.Command{
-		Use:     "get",
+		Use:     `get [-p <project_id>] | [-i <device_id>]`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves device list or device details",
+		Short:   "Retrieves device list or device details.",
+		Long:    "Retrieves a list of devices in the project, or the details of the specified device. Either a project ID or a device ID is required.",
+		Example: `  # Gets the details of the specified device:
+  metal device get -i 52b60ca7-1ae2-4875-846b-4e4635223471
+  
+  # Gets a list of devices in the specified project:
+  metal device get -p 5ad070a5-62e8-4cfe-a0b9-3b79e59f1cfe`,
 
-		Long: `Example:
-	
-metal device get --id [device_UUID]
-
-	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			deviceID, _ := cmd.Flags().GetString("id")
 			projectID, _ := cmd.Flags().GetString("project-id")
 
 			if deviceID == "" && projectID == "" {
-				return fmt.Errorf("Either id or project-id should be set.")
+				return fmt.Errorf("either id or project-id should be set")
 			}
 			cmd.SilenceUsage = true
 
@@ -75,8 +76,8 @@ metal device get --id [device_UUID]
 		},
 	}
 
-	retrieveDeviceCmd.Flags().StringP("project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
-	retrieveDeviceCmd.Flags().StringP("id", "i", "", "UUID of the device")
+	retrieveDeviceCmd.Flags().StringP("project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
+	retrieveDeviceCmd.Flags().StringP("id", "i", "", "The UUID of a device.")
 
 	return retrieveDeviceCmd
 }
