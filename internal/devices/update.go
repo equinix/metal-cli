@@ -98,15 +98,15 @@ func (c *Client) Update() *cobra.Command {
 		},
 	}
 
-	updateDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "The UUID of the device")
-	updateDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "Hostname")
-	updateDeviceCmd.Flags().StringVarP(&description, "description", "d", "", "Description for the device")
-	updateDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "User data")
-	updateDeviceCmd.Flags().BoolVarP(&locked, "locked", "l", false, "Lock device")
-	updateDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Tags for the device --tags="tag1,tag2"`)
-	updateDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, `--alaways-pxe or -a`)
-	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "URL to the iPXE script")
-	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Custom data")
+	updateDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "The UUID of the device.")
+	updateDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "The new hostname of the device.")
+	updateDeviceCmd.Flags().StringVarP(&description, "description", "d", "", "Adds or updates the description for the device.")
+	updateDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "Adds or updates the userdata for the device.")
+	updateDeviceCmd.Flags().BoolVarP(&locked, "locked", "l", false, "Locks or unlocks the device for future changes.")
+	updateDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Adds or updates the tags for the device --tags="tag1,tag2".`)
+	updateDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, "Sets the device to always iPXE on reboot.")
+	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "Add or update the URL of the iPXE script.")
+	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Adds or updates custom data to be included with your device's metadata.")
 
 	_ = updateDeviceCmd.MarkFlagRequired("id")
 	return updateDeviceCmd
