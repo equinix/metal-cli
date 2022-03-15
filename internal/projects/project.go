@@ -27,17 +27,19 @@ import (
 )
 
 type Client struct {
-	Servicer Servicer
-	Service  packngo.ProjectService
-	Out      outputs.Outputer
+	Servicer         Servicer
+	ProjectService   packngo.ProjectService
+	BGPConfigService packngo.BGPConfigService
+
+	Out outputs.Outputer
 }
 
 func (c *Client) NewCommand() *cobra.Command {
-	var cmd = &cobra.Command{
-		Use: `project`,
+	cmd := &cobra.Command{
+		Use:     `project`,
 		Aliases: []string{"projects"},
-		Short: "Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.",
-		Long: "Project operations: create, get, update, and delete.",
+		Short:   "Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.",
+		Long:    "Project operations: create, get, update, and delete.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
@@ -45,7 +47,8 @@ func (c *Client) NewCommand() *cobra.Command {
 					root.PersistentPreRun(cmd, args)
 				}
 			}
-			c.Service = c.Servicer.API(cmd).Projects
+			c.ProjectService = c.Servicer.API(cmd).Projects
+			c.BGPConfigService = c.Servicer.API(cmd).BGPConfig
 		},
 	}
 
@@ -54,6 +57,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		c.Create(),
 		c.Delete(),
 		c.Update(),
+		c.BGPEnable(),
 	)
 	return cmd
 }

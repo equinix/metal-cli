@@ -1,4 +1,4 @@
-// Copyright © 2018 Jasmin Gacic <jasmin@stackpointcloud.com>
+// Copyright © 2022 Equinix Metal Developers <support@equinixmetal.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,51 +21,57 @@
 package projects
 
 import (
+	"strconv"
+
 	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-func (c *Client) Update() *cobra.Command {
-	var projectID, name, paymentMethodID string
+func (c *Client) BGPEnable() *cobra.Command {
+	var (
+		projectID, useCase, md5, deploymentType string
+		asn                                     int
+	)
 	// updateProjectCmd represents the updateProject command
 	updateProjectCmd := &cobra.Command{
-		Use:   `update -i <project_UUID> [-n <name>] [-m <payment_method_UUID>]`,
-		Short: "Updates a project.",
-		Long:  "Updates the specified project with a new name, a new payment method, or both.",
-		Example: `  # Updates the specified project with a new name:
-  metal project update -i $METAL_PROJECT_ID -n new-prod-cluster05
-  
-  # Updates the specified project with a new payment method:
-  metal project update -i $METAL_PROJECT_ID -m e2fcdf91-b6dc-4d6a-97ad-b26a14b66839`,
+		Use:   "bgp-enable",
+		Short: "Enables BGP on a project",
+		Long: `Example:
 
+metal project bgp-enable --id [project_UUID] --asn [asn] --md5 [md5_secret] --use-case [use_case] --deployment-type [deployment_type]
+
+`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := &packngo.ProjectUpdateRequest{}
-			if name != "" {
-				req.Name = &name
+			req := packngo.CreateBGPConfigRequest{
+				UseCase:        useCase,
+				Asn:            asn,
+				DeploymentType: deploymentType,
+				Md5:            md5,
 			}
 
-			if paymentMethodID != "" {
-				req.PaymentMethodID = &paymentMethodID
-			}
-			p, _, err := c.ProjectService.Update(projectID, req)
+			p, err := c.BGPConfigService.Create(projectID, req)
 			if err != nil {
 				return errors.Wrap(err, "Could not update Project")
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{p.ID, p.Name, p.Created}
-			header := []string{"ID", "Name", "Created"}
+			data[0] = []string{projectID, useCase, strconv.Itoa(asn), deploymentType}
+			header := []string{"ID", "UseCase", "ASN", "DeploymentType"}
 			return c.Out.Output(p, header, &data)
 		},
 	}
 
-	updateProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
-	updateProjectCmd.Flags().StringVarP(&name, "name", "n", "", "The new name for the project.")
-	updateProjectCmd.Flags().StringVarP(&paymentMethodID, "payment-method-id", "m", "", "The UUID of the new payment method.")
+	updateProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
+	updateProjectCmd.Flags().StringVar(&useCase, "useCase", "", "Use case for BGP")
+	updateProjectCmd.Flags().IntVar(&asn, "asn", 65000, "Local ASN")
+	updateProjectCmd.Flags().StringVar(&deploymentType, "deploymentType", "", "Deployment type (local, global)")
+	updateProjectCmd.Flags().StringVar(&md5, "md5", "", "BGP Password")
 
 	_ = updateProjectCmd.MarkFlagRequired("id")
+	_ = updateProjectCmd.MarkFlagRequired("asn")
+	_ = updateProjectCmd.MarkFlagRequired("deployment_type")
 	return updateProjectCmd
 }

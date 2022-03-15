@@ -32,11 +32,11 @@ import (
 func (c *Client) Retrieve() *cobra.Command {
 	var projectID, projectName string
 	// retrieveProjectCmd represents the retriveProject command
-	var retrieveProjectCmd = &cobra.Command{
-		Use: `get [-i <project_UUID> | -n <project_name>]`,
+	retrieveProjectCmd := &cobra.Command{
+		Use:     `get [-i <project_UUID> | -n <project_name>]`,
 		Aliases: []string{"list"},
-		Short: "Retrieves all the current user's projects or the details of a specified project.",
-		Long: "Retrieves all the current user's projects or the details of a specified project. You can specify which project by UUID or name. When using `--json` or `--yaml` flags, the `--include=members` flag is implied.",
+		Short:   "Retrieves all the current user's projects or the details of a specified project.",
+		Long:    "Retrieves all the current user's projects or the details of a specified project. You can specify which project by UUID or name. When using `--json` or `--yaml` flags, the `--include=members` flag is implied.",
 		Example: `  # Retrieve all projects:
   metal project get
   
@@ -63,7 +63,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			listOpts := c.Servicer.ListOptions(inc, nil)
 
 			if projectID == "" {
-				projects, _, err := c.Service.List(listOpts)
+				projects, _, err := c.ProjectService.List(listOpts)
 				if err != nil {
 					return errors.Wrap(err, "Could not list Projects")
 				}
@@ -91,7 +91,7 @@ func (c *Client) Retrieve() *cobra.Command {
 				return c.Out.Output(projects, header, &data)
 			} else {
 				getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-				p, _, err := c.Service.Get(projectID, getOpts)
+				p, _, err := c.ProjectService.Get(projectID, getOpts)
 				if err != nil {
 					return errors.Wrap(err, "Could not get Project")
 				}

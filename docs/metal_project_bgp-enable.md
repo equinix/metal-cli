@@ -1,15 +1,28 @@
-## metal project
+## metal project bgp-enable
 
-Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
+Enables BGP on a project
 
 ### Synopsis
 
-Project operations: create, get, update, and delete.
+Example:
+
+metal project bgp-enable --id [project_UUID] --asn [asn] --md5 [md5_secret] --use-case [use_case] --deployment-type [deployment_type]
+
+
+
+```
+metal project bgp-enable [flags]
+```
 
 ### Options
 
 ```
-  -h, --help   help for project
+      --asn int                 Local ASN (default 65000)
+      --deploymentType string   Deployment type (local, global)
+  -h, --help                    help for bgp-enable
+  -i, --id string               Project ID (METAL_PROJECT_ID)
+      --md5 string              BGP Password
+      --useCase string          Use case for BGP
 ```
 
 ### Options inherited from parent commands
@@ -28,10 +41,5 @@ Project operations: create, get, update, and delete.
 
 ### SEE ALSO
 
-* [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal project bgp-enable](metal_project_bgp-enable.md)	 - Enables BGP on a project
-* [metal project create](metal_project_create.md)	 - Creates a project.
-* [metal project delete](metal_project_delete.md)	 - Deletes a project.
-* [metal project get](metal_project_get.md)	 - Retrieves all the current user's projects or the details of a specified project.
-* [metal project update](metal_project_update.md)	 - Updates a project.
+* [metal project](metal_project.md)	 - Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
 
