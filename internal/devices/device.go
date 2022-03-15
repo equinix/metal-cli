@@ -35,10 +35,10 @@ type Client struct {
 
 func (c *Client) NewCommand() *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:     "device",
+		Use:     `device`,
 		Aliases: []string{"server", "servers", "devices"},
-		Short:   "Device operations",
-		Long:    `Device operations: create, delete, update, start/stop, reboot and get.`,
+		Short:   "Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.",
+		Long:    "Device operations: create, get, update, delete, start, stop, and reboot.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {

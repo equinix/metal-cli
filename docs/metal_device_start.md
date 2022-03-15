@@ -1,24 +1,27 @@
 ## metal device start
 
-Starts a device
+Starts a device.
 
 ### Synopsis
 
-Example:
-
-metal device start --id [device_UUID]
-
-
+Starts or powers on a device that is currently stopped or powered off.
 
 ```
-metal device start [flags]
+metal device start -i <device_id> [flags]
+```
+
+### Examples
+
+```
+  # Starts the specified device:
+  metal device start --id 26a9da5f-a0db-41f6-8467-827e144e59a7
 ```
 
 ### Options
 
 ```
   -h, --help        help for start
-  -i, --id string   UUID of the device
+  -i, --id string   The UUID of the device.
 ```
 
 ### Options inherited from parent commands
@@ -37,5 +40,5 @@ metal device start [flags]
 
 ### SEE ALSO
 
-* [metal device](metal_device.md)	 - Device operations
+* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
 

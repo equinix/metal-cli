@@ -43,13 +43,12 @@ func (c *Client) Update() *cobra.Command {
 
 	// updateDeviceCmd represents the updateDevice command
 	var updateDeviceCmd = &cobra.Command{
-		Use:   "update",
-		Short: "Updates a device",
-		Long: `Example:
+		Use:   `update -i <device_id> [-H <hostname>] [-d <description>] [--locked <boolean>] [-t <tags>] [-u <userdata>] [-c <customdata>] [-s <ipxe_script_url>] [--always-pxe]`,
+		Short: "Updates a device.",
+		Long:  "Updates the hostname of a device. Updates or adds a description, tags, userdata, custom data, and iPXE settings for an already provisioned device. Can also lock or unlock future changes to the device.",
+		Example: `  # Updates the hostname of a device:
+  metal device update --id 30c15082-a06e-4c43-bfc3-252616b46eba --hostname renamed-staging04`,
 
-metal device update --id [device_UUID] --hostname [new_hostname]
-
-`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := &packngo.DeviceUpdateRequest{}
@@ -99,15 +98,15 @@ metal device update --id [device_UUID] --hostname [new_hostname]
 		},
 	}
 
-	updateDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "UUID of the device")
-	updateDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "Hostname")
-	updateDeviceCmd.Flags().StringVarP(&description, "description", "d", "", "Description for the device")
-	updateDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "User data")
-	updateDeviceCmd.Flags().BoolVarP(&locked, "locked", "l", false, "Lock device")
-	updateDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Tags for the device --tags="tag1,tag2"`)
-	updateDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, `--alaways-pxe or -a`)
-	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "URL to the iPXE script")
-	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Custom data")
+	updateDeviceCmd.Flags().StringVarP(&deviceID, "id", "i", "", "The UUID of the device.")
+	updateDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "The new hostname of the device.")
+	updateDeviceCmd.Flags().StringVarP(&description, "description", "d", "", "Adds or updates the description for the device.")
+	updateDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "Adds or updates the userdata for the device.")
+	updateDeviceCmd.Flags().BoolVarP(&locked, "locked", "l", false, "Locks or unlocks the device for future changes.")
+	updateDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Adds or updates the tags for the device --tags="tag1,tag2".`)
+	updateDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, "Sets the device to always iPXE on reboot.")
+	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "Add or update the URL of the iPXE script.")
+	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Adds or updates custom data to be included with your device's metadata.")
 
 	_ = updateDeviceCmd.MarkFlagRequired("id")
 	return updateDeviceCmd

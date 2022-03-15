@@ -1,24 +1,27 @@
 ## metal device reboot
 
-Reboots a device
+Reboots a device.
 
 ### Synopsis
 
-Example:
-
-metal device reboot --id [device_UUID]
-
-	  
+Reboots the specified device.
 
 ```
-metal device reboot [flags]
+metal device reboot -i <device_id> [flags]
+```
+
+### Examples
+
+```
+  # Reboots the specified device:
+  metal device reboot --id 26a9da5f-a0db-41f6-8467-827e144e59a7
 ```
 
 ### Options
 
 ```
   -h, --help        help for reboot
-  -i, --id string   --id or -i [device_UUID]
+  -i, --id string   The device UUID.
 ```
 
 ### Options inherited from parent commands
@@ -37,5 +40,5 @@ metal device reboot [flags]
 
 ### SEE ALSO
 
-* [metal device](metal_device.md)	 - Device operations
+* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
 

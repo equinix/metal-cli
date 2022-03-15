@@ -1,10 +1,10 @@
 ## metal device
 
-Device operations
+Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
 
 ### Synopsis
 
-Device operations: create, delete, update, start/stop, reboot and get.
+Device operations: create, get, update, delete, start, stop, and reboot.
 
 ### Options
 
@@ -29,11 +29,11 @@ Device operations: create, delete, update, start/stop, reboot and get.
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal device create](metal_device_create.md)	 - Creates a device
-* [metal device delete](metal_device_delete.md)	 - Deletes a device
-* [metal device get](metal_device_get.md)	 - Retrieves device list or device details
-* [metal device reboot](metal_device_reboot.md)	 - Reboots a device
-* [metal device start](metal_device_start.md)	 - Starts a device
-* [metal device stop](metal_device_stop.md)	 - Stops a device
-* [metal device update](metal_device_update.md)	 - Updates a device
+* [metal device create](metal_device_create.md)	 - Creates a device.
+* [metal device delete](metal_device_delete.md)	 - Deletes a device.
+* [metal device get](metal_device_get.md)	 - Retrieves device list or device details.
+* [metal device reboot](metal_device_reboot.md)	 - Reboots a device.
+* [metal device start](metal_device_start.md)	 - Starts a device.
+* [metal device stop](metal_device_stop.md)	 - Stops a device.
+* [metal device update](metal_device_update.md)	 - Updates a device.
 

@@ -1,25 +1,33 @@
 ## metal device delete
 
-Deletes a device
+Deletes a device.
 
 ### Synopsis
 
-Example:	
-
-  metal device delete -i [device_UUID]
-  
-	
+Deletes the specified device with a confirmation prompt. To skip the confirmation use --force.
 
 ```
-metal device delete [flags]
+metal device delete -i <device_id> [-f] [flags]
+```
+
+### Examples
+
+```
+  # Deletes the specified device:
+  metal device delete -i 7ec86e23-8dcf-48ed-bd9b-c25c20958277
+  >
+  ✔ Are you sure you want to delete device 7ec86e23-8dcf-48ed-bd9b-c25c20958277: y
+		
+  # Deletes a VLAN, skipping confirmation:
+  metal device delete -f -i 7ec86e23-8dcf-48ed-bd9b-c25c20958277
 ```
 
 ### Options
 
 ```
-  -f, --force       Force removal of the device
+  -f, --force       Skips confirmation for the device deletion.
   -h, --help        help for delete
-  -i, --id string   UUID of the device
+  -i, --id string   The UUID of the device.
 ```
 
 ### Options inherited from parent commands
@@ -38,5 +46,5 @@ metal device delete [flags]
 
 ### SEE ALSO
 
-* [metal device](metal_device.md)	 - Device operations
+* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
 

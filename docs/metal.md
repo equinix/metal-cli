@@ -25,8 +25,8 @@ Command line interface for Equinix Metal
 
 * [metal 2fa](metal_2fa.md)	 - Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.
 * [metal capacity](metal_capacity.md)	 - Capacities operations
-* [metal completion](metal_completion.md)	 - Generate completion script
-* [metal device](metal_device.md)	 - Device operations
+* [metal completion](metal_completion.md)	 - Generates completion scripts.
+* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
 * [metal docs](metal_docs.md)	 - Generate command markdown documentation.
 * [metal env](metal_env.md)	 - Prints or generates environment variables.
 * [metal event](metal_event.md)	 - Events operations for organizations, projects, devices, and the current user.
