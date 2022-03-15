@@ -1,28 +1,31 @@
 ## metal project bgp-enable
 
-Enables BGP on a project
+Enables BGP on a project.
 
 ### Synopsis
 
-Example:
-
-metal project bgp-enable --id [project_UUID] --asn [asn] --md5 [md5_secret] --use-case [use_case] --deployment-type [deployment_type]
-
-
+Enables BGP on a project.
 
 ```
-metal project bgp-enable [flags]
+metal project bgp-enable --id <project_UUID> --deployment-type <deployment_type> [--asn <asn>] [--md5 <md5_secret>] [--use-case <use_case>] [flags]
+```
+
+### Examples
+
+```
+  # Enable BGP on project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
+  metal project bgp-enable --id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 --deployment-type local --asn 65000
 ```
 
 ### Options
 
 ```
-      --asn int                 Local ASN (default 65000)
-      --deploymentType string   Deployment type (local, global)
-  -h, --help                    help for bgp-enable
-  -i, --id string               Project ID (METAL_PROJECT_ID)
-      --md5 string              BGP Password
-      --useCase string          Use case for BGP
+      --asn int                  Local ASN (default 65000)
+      --deployment-type string   Deployment type (local, global)
+  -h, --help                     help for bgp-enable
+  -i, --id string                Project ID (METAL_PROJECT_ID)
+      --md5 string               BGP Password
+      --use-case string          Use case for BGP
 ```
 
 ### Options inherited from parent commands

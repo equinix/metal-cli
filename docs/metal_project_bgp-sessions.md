@@ -1,15 +1,27 @@
-## metal project
+## metal project bgp-sessions
 
-Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
+Gets BGP Sessions for a project.
 
 ### Synopsis
 
-Project operations: create, get, update, and delete.
+Gets BGP Sessions for a project.
+
+```
+metal project bgp-sessions --id <project_UUID> [flags]
+```
+
+### Examples
+
+```
+  # Get BGP Sessions for project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
+  metal project bgp-sessions --id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
+```
 
 ### Options
 
 ```
-  -h, --help   help for project
+  -h, --help        help for bgp-sessions
+  -i, --id string   Project ID (METAL_PROJECT_ID)
 ```
 
 ### Options inherited from parent commands
@@ -28,12 +40,5 @@ Project operations: create, get, update, and delete.
 
 ### SEE ALSO
 
-* [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal project bgp-config](metal_project_bgp-config.md)	 - Gets BGP Config for a project.
-* [metal project bgp-enable](metal_project_bgp-enable.md)	 - Enables BGP on a project.
-* [metal project bgp-sessions](metal_project_bgp-sessions.md)	 - Gets BGP Sessions for a project.
-* [metal project create](metal_project_create.md)	 - Creates a project.
-* [metal project delete](metal_project_delete.md)	 - Deletes a project.
-* [metal project get](metal_project_get.md)	 - Retrieves all the current user's projects or the details of a specified project.
-* [metal project update](metal_project_update.md)	 - Updates a project.
+* [metal project](metal_project.md)	 - Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
 

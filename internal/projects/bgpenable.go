@@ -33,15 +33,13 @@ func (c *Client) BGPEnable() *cobra.Command {
 		projectID, useCase, md5, deploymentType string
 		asn                                     int
 	)
-	// updateProjectCmd represents the updateProject command
-	updateProjectCmd := &cobra.Command{
-		Use:   "bgp-enable",
-		Short: "Enables BGP on a project",
-		Long: `Example:
-
-metal project bgp-enable --id [project_UUID] --asn [asn] --md5 [md5_secret] --use-case [use_case] --deployment-type [deployment_type]
-
-`,
+	// bgpEnableProjectCmd represents the updateProject command
+	bgpEnableProjectCmd := &cobra.Command{
+		Use:   `bgp-enable --id <project_UUID> --deployment-type <deployment_type> [--asn <asn>] [--md5 <md5_secret>] [--use-case <use_case>]`,
+		Short: "Enables BGP on a project.",
+		Long:  `Enables BGP on a project.`,
+		Example: `  # Enable BGP on project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
+  metal project bgp-enable --id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 --deployment-type local --asn 65000`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := packngo.CreateBGPConfigRequest{
@@ -64,14 +62,14 @@ metal project bgp-enable --id [project_UUID] --asn [asn] --md5 [md5_secret] --us
 		},
 	}
 
-	updateProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
-	updateProjectCmd.Flags().StringVar(&useCase, "useCase", "", "Use case for BGP")
-	updateProjectCmd.Flags().IntVar(&asn, "asn", 65000, "Local ASN")
-	updateProjectCmd.Flags().StringVar(&deploymentType, "deploymentType", "", "Deployment type (local, global)")
-	updateProjectCmd.Flags().StringVar(&md5, "md5", "", "BGP Password")
+	bgpEnableProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
+	bgpEnableProjectCmd.Flags().StringVar(&useCase, "use-case", "", "Use case for BGP")
+	bgpEnableProjectCmd.Flags().IntVar(&asn, "asn", 65000, "Local ASN")
+	bgpEnableProjectCmd.Flags().StringVar(&deploymentType, "deployment-type", "", "Deployment type (local, global)")
+	bgpEnableProjectCmd.Flags().StringVar(&md5, "md5", "", "BGP Password")
 
-	_ = updateProjectCmd.MarkFlagRequired("id")
-	_ = updateProjectCmd.MarkFlagRequired("asn")
-	_ = updateProjectCmd.MarkFlagRequired("deployment_type")
-	return updateProjectCmd
+	_ = bgpEnableProjectCmd.MarkFlagRequired("id")
+	_ = bgpEnableProjectCmd.MarkFlagRequired("asn")
+	_ = bgpEnableProjectCmd.MarkFlagRequired("deployment-type")
+	return bgpEnableProjectCmd
 }

@@ -58,6 +58,8 @@ func (c *Client) NewCommand() *cobra.Command {
 		c.Delete(),
 		c.Update(),
 		c.BGPEnable(),
+		c.BGPConfig(),
+		c.BGPSessions(),
 	)
 	return cmd
 }
