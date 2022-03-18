@@ -27,7 +27,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -103,7 +102,7 @@ func allCmds(c *cobra.Command) []*cobra.Command {
 // GenMarkdownEMDocs is the the same as GenMarkdownEM, but
 // with custom filePrepender and linkHandler.
 func GenMarkdownEMDocs(cmd *cobra.Command, dir string) error {
-	basename := strings.Split(cmd.Root().Use, " ")[0] + ".md"
+	basename := "emdocs.md"
 	filename := filepath.Join(dir, basename)
 	f, err := os.Create(filename)
 	if err != nil {
