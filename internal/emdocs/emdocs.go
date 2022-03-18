@@ -36,7 +36,7 @@ func printOptions(buf *bytes.Buffer, cmd *cobra.Command, name string) error {
 	flags := cmd.NonInheritedFlags()
 	flags.SetOutput(buf)
 	if flags.HasAvailableFlags() {
-		buf.WriteString("### Options\n\n```sh\n")
+		buf.WriteString("**Flags**\n\n```sh\n")
 		flags.PrintDefaults()
 		buf.WriteString("```\n\n")
 	}
@@ -44,7 +44,7 @@ func printOptions(buf *bytes.Buffer, cmd *cobra.Command, name string) error {
 	parentFlags := cmd.InheritedFlags()
 	parentFlags.SetOutput(buf)
 	if parentFlags.HasAvailableFlags() {
-		buf.WriteString("### Options inherited from parent commands\n\n```sh\n")
+		buf.WriteString("**Flags inherited from parent commands**\n\n```sh\n")
 		parentFlags.PrintDefaults()
 		buf.WriteString("```\n\n")
 	}
@@ -59,20 +59,20 @@ func GenMarkdownEM(cmd *cobra.Command, w io.Writer) error {
 	buf := new(bytes.Buffer)
 	name := cmd.CommandPath()
 
-	buf.WriteString("## " + name + "\n\n")
+	buf.WriteString("### " + name + "\n\n")
 	buf.WriteString(cmd.Short + "\n\n")
 	if len(cmd.Long) > 0 {
-		buf.WriteString("### Description\n\n")
+		buf.WriteString("**Description**\n\n")
 		buf.WriteString(cmd.Long + "\n\n")
 	}
 
 	if cmd.Runnable() {
-		buf.WriteString(fmt.Sprintf("```\n%s\n```\n\n", cmd.UseLine()))
+		buf.WriteString(fmt.Sprintf("```sh\n%s\n```\n\n", cmd.UseLine()))
 	}
 
 	if len(cmd.Example) > 0 {
-		buf.WriteString("### Examples\n\n")
-		buf.WriteString(fmt.Sprintf("```\n%s\n```\n\n", cmd.Example))
+		buf.WriteString("**Examples**\n\n")
+		buf.WriteString(fmt.Sprintf("```sh\n%s\n```\n\n", cmd.Example))
 	}
 
 	if err := printOptions(buf, cmd, name); err != nil {
