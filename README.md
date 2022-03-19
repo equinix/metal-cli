@@ -16,6 +16,7 @@ This repository is [Maintained](https://github.com/packethost/standards/blob/mas
 * [Installation](#installation)
   * [Install binary from Source](#install-binary-from-source)
   * [Install binary from Release Download](#install-binary-from-release-download)
+  * [Install via Homebrew](#install-via-homebrew)
   * [Configuring your Path](#configuring-your-path)
   * [Shell Completion](#shell-completion)
 * [Authentication](#authentication)
@@ -54,6 +55,15 @@ You can find the installed executable/binary in either `$GOPATH/bin` or `$HOME/g
 
 Download the appropriate Equinix Metal CLI binaries for your platform to the desired location,`chmod` it and rename it to `metal`.
 
+
+### Install via Homebrew
+
+If you prefer installing via Homebrew, you can run the following:
+
+```bash
+brew tap equinix/homebrew-tap
+brew install metal-cli
+```
 ### Configuring your Path
 
 If the directory where your binaries were installed is not already in your `PATH` environment variable, then it will need to be added.
