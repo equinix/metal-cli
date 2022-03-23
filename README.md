@@ -42,7 +42,7 @@ The [Equinix Metal CLI binaries](https://github.com/equinix/metal-cli/releases) 
 
 ### Install binary from Source
 
-If you have `go` installed, you can build and install the latest version with:
+If you have `go` 1.16 or later installed, you can build and install the latest version with:
 
 ```sh
 go install github.com/equinix/metal-cli/cmd/metal@latest
