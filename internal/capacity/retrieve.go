@@ -32,10 +32,18 @@ func (c *Client) Retrieve() *cobra.Command {
 	)
 	// retrieveCapacitiesCmd represents the retrieveCapacity command
 	var retrieveCapacityCmd = &cobra.Command{
-		Use:     `get [[-m | -f] | [--metros metros,... | --facilities facilities,...]] [-P plans,...]`,
+		Use:     `get [-m | -f] | [--metros <list> | --facilities <list>] [-P <list>]`,
 		Aliases: []string{"list"},
-		Short:   "Returns a list of facilities or metros and plans with their current capacity, with filtering.",
-		Example: `metal capacity get -m sv,ny,da -P c3.large.arm,c3.medium.x86`,
+		Short:   "Returns capacity of metros or facilities, with optional filtering.",
+		Long:    "Returns the capacity of metros or facilities. Filters for metros, facilities, plans are available. Metro flags and facility flags are mutually exclusive. If no flags are included, returns capacity for all plans in all facilities.",
+		Example: `  # Returns the capacity of all plans in all facilities:
+  metal capacity get 
+
+  # Returns the capacity of the c3.small.x86 in all metros:
+  metal capacity get -m -P c3.small.x86
+
+  # Returns c3.large.arm and c3.medium.x86 capacity in the Silicon Valley, New York, and Dallas metros:
+  metal capacity get --metros sv,ny,da -P c3.large.arm,c3.medium.x86`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var err error
@@ -99,11 +107,11 @@ func (c *Client) Retrieve() *cobra.Command {
 	}
 
 	fs := retrieveCapacityCmd.Flags()
-	fs.BoolVarP(&checkFacility, "facility", "f", true, "Report all facilites")
-	fs.BoolVarP(&checkMetro, "metro", "m", false, "Report all metros")
-	fs.StringSliceVar(&metros, "metros", []string{}, "Codes of the metros (client side filtering)")
-	fs.StringSliceVar(&facilities, "facilities", []string{}, "Codes of the facilities (client side filtering)")
-	fs.StringSliceVarP(&plans, "plans", "P", []string{}, "Names of the plans")
+	fs.BoolVarP(&checkFacility, "facility", "f", true, "Return the capacity for all facilities. Can not be used with -m.")
+	fs.BoolVarP(&checkMetro, "metro", "m", false, "Return the capacity for all metros. Can not be used with -f.")
+	fs.StringSliceVar(&metros, "metros", []string{}, "A metro or list of metros for client-side filtering. Will only return the capacity for the specified metros. Can not be used with --facilities.")
+	fs.StringSliceVar(&facilities, "facilities", []string{}, "A facility or list of facilities for client-side filtering. Will only return the capacity for the specified facilities. Can not be used with --metros.")
+	fs.StringSliceVarP(&plans, "plans", "P", []string{}, "Return only the capacity for the specified plans.")
 	return retrieveCapacityCmd
 }
 

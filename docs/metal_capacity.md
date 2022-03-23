@@ -1,10 +1,10 @@
 ## metal capacity
 
-Capacities operations
+Capacity operations. For more information on capacity in metros, visit https://metal.equinix.com/developers/docs/locations/metros/. For more information on capacity in facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/.
 
 ### Synopsis
 
-Capacities operations: get, check
+Capacity operations: get, check
 
 ### Options
 
@@ -29,6 +29,6 @@ Capacities operations: get, check
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal capacity check](metal_capacity_check.md)	 - Validates if a deploy can be fulfilled with the given quantity in any of the given locations and plans
-* [metal capacity get](metal_capacity_get.md)	 - Returns a list of facilities or metros and plans with their current capacity, with filtering.
+* [metal capacity check](metal_capacity_check.md)	 - Validates if the number of the specified server plan is available in the specified metro or facility.
+* [metal capacity get](metal_capacity_get.md)	 - Returns capacity of metros or facilities, with optional filtering.
 

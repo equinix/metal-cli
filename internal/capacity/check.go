@@ -36,9 +36,15 @@ func (c *Client) Check() *cobra.Command {
 		quantity                  int
 	)
 	var checkCapacityCommand = &cobra.Command{
-		Short:   "Validates if a deploy can be fulfilled with the given quantity in any of the given locations and plans",
-		Use:     `check {-m [metros,...] | -f [facilities,...]} -P [plans,...] -q [quantity]`,
-		Example: `metal capacity check -m sv,ny,da -P c3.large.arm,c3.medium.x86 -q 10`,
+		Use:   `check (-m <metro> | -f <facility>) -P <plan> -q <quantity>`,
+		Short: "Validates if the number of the specified server plan is available in the specified metro or facility.",
+		Long:  "Validates if the number of the specified server plan is available in the specified metro or facility. Metro and facility are mutally exclusive. At least one metro (or facility), one plan, and quantity of 1 or more is required.",
+		Example: `  # Checks if 10 c3.medium.x86 servers are available in NY or Dallas:
+  metal capacity check -m ny,da -P c3.medium.x86 -q 10
+  
+  # Checks if Silicon Valley or Dallas has either 4 c3.medium.x86 or m3.large.x86
+  metal capacity check -m sv,da -P c3.medium.x86,m3.large.x86 -q 4`,
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var checker func(*packngo.CapacityInput) (*packngo.CapacityInput, *packngo.Response, error)
 			var locationField string
@@ -117,10 +123,10 @@ func (c *Client) Check() *cobra.Command {
 
 	fs := checkCapacityCommand.Flags()
 
-	fs.StringSliceVarP(&metros, "metros", "m", []string{}, "Codes of the metros")
-	fs.StringSliceVarP(&facilities, "facilities", "f", []string{}, "Codes of the facilities")
-	fs.StringSliceVarP(&plans, "plans", "P", []string{}, "Names of the plans")
-	fs.IntVarP(&quantity, "quantity", "q", 0, "Number of devices wanted")
+	fs.StringSliceVarP(&metros, "metros", "m", []string{}, "A metro or list of metros.")
+	fs.StringSliceVarP(&facilities, "facilities", "f", []string{}, "A facility or list of facilities.")
+	fs.StringSliceVarP(&plans, "plans", "P", []string{}, "A plan or list of plans.")
+	fs.IntVarP(&quantity, "quantity", "q", 0, "The number of devices wanted.")
 
 	fs.StringVar(&metro, "metro", "", "Code of the metro")
 	fs.StringVar(&facility, "facility", "", "Code of the facility")
