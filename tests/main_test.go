@@ -28,7 +28,7 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 	fmt.Println("build")
-	build := exec.Command("go", "build", "-o", binaryName)
+	build := exec.Command("go", "build", "-v", "-o", binaryName, "./cmd/metal")
 	err = build.Run()
 	if err != nil {
 		fmt.Printf("could not build binary for %s: %v", binaryName, err)
