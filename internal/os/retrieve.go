@@ -21,16 +21,18 @@
 package os
 
 import (
+	"sort"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Retrieve() *cobra.Command {
 	return &cobra.Command{
-		Use: `get`,
+		Use:     `get`,
 		Aliases: []string{"list"},
-		Short: "Retrieves a list of operating systems.",
-		Long: "Retrieves a list of operating systems available to the current user. Response includes the operating system's slug, distro, version, and name.", 
+		Short:   "Retrieves a list of operating systems.",
+		Long:    "Retrieves a list of operating systems available to the current user. Response includes the operating system's slug, distro, version, and name.",
 		Example: `  # Lists the operating systems available to the current user:
   metal operating-systems get`,
 
@@ -40,6 +42,10 @@ func (c *Client) Retrieve() *cobra.Command {
 			if err != nil {
 				return errors.Wrap(err, "Could not list OperatingSystems")
 			}
+
+			sort.Slice(oss, func(a, b int) bool {
+				return oss[a].Name < oss[b].Name
+			})
 
 			data := make([][]string, len(oss))
 
