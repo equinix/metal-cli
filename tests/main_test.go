@@ -1,14 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/packethost/packngo"
 )
@@ -53,32 +51,11 @@ func testToken() string {
 
 func TestCliArgs(t *testing.T) {
 	client, _ = packngo.NewClientWithBaseURL(consumerToken, testToken(), nil, apiURL)
-	projects, _, _ := client.Projects.List(nil)
-	projectID = projects[0].ID
+	//projects, _, _ := client.Projects.List(nil)
+	//projectID = projects[0].ID
 	tests := []Test{
 		{"no arguments", []string{}},
-		{"operating-systems get", []string{"operating-systems", "get", "-j"}},
-		{"plan get", []string{"plan", "get", "-j"}},
-		{"organization get", []string{"organization", "get", "-j"}},
-		{"project get", []string{"project", "get", "-j"}},
-		{
-			"create device",
-			[]string{
-				"device", "create",
-				"--hostname", "clitest",
-				"--plan", "baremetal_1",
-				"--facility", "ewr1",
-				"--operating-system", "centos_7",
-				"--project-id", projectID,
-				"-j",
-			},
-		},
-		{"devices get", []string{"device", "get", "project-id", projectID, "-j"}},
-		{"device update", []string{"device", "update", "hostname", "updatedfromcli", "-i"}},
-		{"device reboot", []string{"device", "reboot", "-i"}},
-		{"device stop", []string{"device", "stop", "-i"}},
-		{"device start", []string{"device", "start", "-i"}},
-		{"device delete", []string{"device", "delete", "-i"}},
+		{"version", []string{}},
 	}
 
 	for _, tt := range tests {
@@ -88,17 +65,6 @@ func TestCliArgs(t *testing.T) {
 			dir, err := os.Getwd()
 			if err != nil {
 				t.Fatal(err)
-			}
-
-			if tt.name == "device delete" && deviceID != "" {
-				tt.args = append(tt.args, deviceID, "-f")
-			}
-
-			if (tt.name == "device update" ||
-				tt.name == "device reboot" ||
-				tt.name == "device stop" ||
-				tt.name == "device start") && deviceID != "" {
-				tt.args = append(tt.args, deviceID)
 			}
 
 			cmd := exec.Command(path.Join(dir, binaryName), tt.args...)
@@ -111,35 +77,6 @@ func TestCliArgs(t *testing.T) {
 			actual := string(output)
 			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
-			}
-			if len(tt.args) > 0 {
-				if tt.args[0] == "project" {
-					project := &[]packngo.Project{}
-					err := json.Unmarshal([]byte(actual), project)
-					if err != nil {
-						t.Fatal(err)
-					}
-					projectID = (*project)[0].ID
-				} else if tt.args[0] == "device" && tt.args[1] == "create" {
-					device := &packngo.Device{}
-					// fmt.Println(actual)
-					err := json.Unmarshal([]byte(actual), device)
-					if err != nil {
-						t.Fatal(err)
-					}
-
-					deviceID = (*device).ID
-					for {
-						dev, _, err := client.Devices.Get(deviceID, nil)
-						if err != nil {
-							break
-						}
-						if dev.State == "active" {
-							break
-						}
-						time.Sleep(2 * time.Second)
-					}
-				}
 			}
 		})
 	}
