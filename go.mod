@@ -10,7 +10,7 @@ require (
 	github.com/lunixbochs/vtclean v0.0.0-20170504063817-d14193dfc626 // indirect
 	github.com/manifoldco/promptui v0.3.0
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/packethost/packngo v0.20.0
+	github.com/packethost/packngo v0.22.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/pflag v1.0.5
