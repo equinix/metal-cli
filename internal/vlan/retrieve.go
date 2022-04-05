@@ -32,14 +32,13 @@ func (c *Client) Retrieve() *cobra.Command {
 
 	// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
 	var retrieveVirtualNetworksCmd = &cobra.Command{
-		Use: `get -p <project_UUID>`,
+		Use:     `get -p <project_UUID>`,
 		Aliases: []string{"list"},
-		Short: "Lists virtual networks.",
-		Long: "Retrieves a list of all VLANs for the specified project.",
-		Example:  `
-  # Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
+		Short:   "Lists virtual networks.",
+		Long:    "Retrieves a list of all VLANs for the specified project.",
+		Example: `  # Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
   metal virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c`,
-		
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			vnets, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))

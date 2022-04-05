@@ -60,7 +60,7 @@ func GenMarkdownEM(cmd *cobra.Command, w io.Writer) error {
 	name := cmd.CommandPath()
 
 	buf.WriteString("### " + name + "\n\n")
-	buf.WriteString(cmd.Short + "\n\n")
+	//buf.WriteString(cmd.Short + "\n\n")
 	if len(cmd.Long) > 0 {
 		buf.WriteString("**Description**\n\n")
 		buf.WriteString(cmd.Long + "\n\n")
@@ -125,9 +125,12 @@ func GenMarkdownEMDocs(cmd *cobra.Command, dir string) error {
 
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:                   "emdocs [DESTINATION]",
-		Short:                 "Generate command documentation",
-		Long:                  "To generate documentation in the ./docs directory: emdocs ./docs",
+		Use:   `emdocs <destination>`,
+		Short: "Generates single-page reference documentation.",
+		Long:  "Generates single-page reference documentation with filename emdocs.md in the specified directory.",
+		Example: `  # Generate emdocs.md in the ./docs directory:
+  metal emdocs ./docs`,
+
 		DisableFlagsInUseLine: true,
 		Args:                  cobra.ExactValidArgs(1),
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
