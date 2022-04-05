@@ -1,13 +1,20 @@
 ## metal emdocs
 
-Generate command documentation
+Generates single-page reference documentation.
 
 ### Synopsis
 
-To generate documentation in the ./docs directory: emdocs ./docs
+Generates single-page reference documentation with filename emdocs.md in the specified directory.
 
 ```
-metal emdocs [DESTINATION]
+metal emdocs <destination>
+```
+
+### Examples
+
+```
+  # Generate emdocs.md in the ./docs directory:
+  metal emdocs ./docs
 ```
 
 ### Options

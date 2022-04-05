@@ -28,7 +28,7 @@ Two-factor Authentication operations: receive, enable, disable.
 
 **Description**
 
- Disables two-factor authentication. Requires the current OTP code from either SMS or application. If you no longer have access to your two-factor authentication device, please contact support.
+Disables two-factor authentication. Requires the current OTP code from either SMS or application. If you no longer have access to your two-factor authentication device, please contact support.
 
 ```sh
 metal 2fa disable (-a | -s) --code <OTP_code>  [flags]
@@ -182,7 +182,7 @@ Capacity operations: get, check
 
 **Description**
 
-Validates if the number of the specified server plan is available in the specified metro or facility. Metro and facility are mutally exclusive. At least one metro (or facility), one plan, and quantity of 1 or more is required.
+Validates if the number of the specified server plan is available in the specified metro or facility. Metro and facility are mutually exclusive. At least one metro (or facility), one plan, and quantity of 1 or more is required.
 
 ```sh
 metal capacity check (-m <metro> | -f <facility>) -P <plan> -q <quantity> [flags]
@@ -699,10 +699,17 @@ metal docs <destination>
 
 **Description**
 
-To generate documentation in the ./docs directory: emdocs ./docs
+Generates single-page reference documentation with filename emdocs.md in the specified directory.
 
 ```sh
-metal emdocs [DESTINATION]
+metal emdocs <destination>
+```
+
+**Examples**
+
+```sh
+  # Generate emdocs.md in the ./docs directory:
+  metal emdocs ./docs
 ```
 
 **Flags**
@@ -2345,7 +2352,6 @@ metal virtual-network get -p <project_UUID> [flags]
 **Examples**
 
 ```sh
-
   # Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
   metal virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
 ```
