@@ -36,7 +36,7 @@ func (c *Client) Retrieve() *cobra.Command {
 	)
 
 	// ipCmd represents the ip command
-	var retrieveIPCmd = &cobra.Command{
+	retrieveIPCmd := &cobra.Command{
 		Use:     `get -p <project_UUID> | -a <assignment_UUID> | -r <reservation_UUID>`,
 		Aliases: []string{"list"},
 		Short:   "Retrieves information about IP addresses, IP address reservations, and IP address assignments.",
@@ -79,9 +79,16 @@ func (c *Client) Retrieve() *cobra.Command {
 				}
 
 				data := make([][]string, 1)
-
-				data[0] = []string{ip.ID, ip.Address, ip.Facility.Code, strconv.FormatBool(ip.Public), ip.Created}
-				header := []string{"ID", "Address", "Facility", "Public", "Created"}
+				code := ""
+				metro := ""
+				if ip.Facility != nil {
+					code = ip.Facility.Code
+				}
+				if ip.Metro != nil {
+					metro = ip.Metro.Code
+				}
+				data[0] = []string{ip.ID, ip.Address, metro, code, strconv.FormatBool(ip.Public), ip.Created}
+				header := []string{"ID", "Address", "Metro", "Facility", "Public", "Created"}
 
 				return c.Out.Output(ip, header, &data)
 			}
@@ -95,12 +102,16 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			for i, ip := range ips {
 				code := ""
+				metro := ""
 				if ip.Facility != nil {
 					code = ip.Facility.Code
 				}
-				data[i] = []string{ip.ID, ip.Address, code, strconv.FormatBool(ip.Public), ip.Created}
+				if ip.Metro != nil {
+					metro = ip.Metro.Code
+				}
+				data[i] = []string{ip.ID, ip.Address, metro, code, strconv.FormatBool(ip.Public), ip.Created}
 			}
-			header := []string{"ID", "Address", "Facility", "Public", "Created"}
+			header := []string{"ID", "Address", "Metro", "Facility", "Public", "Created"}
 
 			return c.Out.Output(ips, header, &data)
 		},
