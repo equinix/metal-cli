@@ -50,7 +50,7 @@ func (c *Client) Request() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := &packngo.IPReservationRequest{
-				Type:     ttype,
+				Type:     packngo.IPReservationType(ttype),
 				Quantity: quantity,
 				Facility: &facility,
 				Metro:    &metro,
