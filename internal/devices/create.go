@@ -32,7 +32,6 @@ import (
 )
 
 func (c *Client) Create() *cobra.Command {
-
 	var (
 		projectID       string
 		metro           string
@@ -55,15 +54,15 @@ func (c *Client) Create() *cobra.Command {
 		terminationTime       string
 	)
 
-	var createDeviceCmd = &cobra.Command{
+	createDeviceCmd := &cobra.Command{
 		Use:   `create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <hostname> -O <operating_system> [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-t <tags>] [-r <hardware_reservation_id>] [-I <ipxe_script_url>] [--always-pxe] [--spot-instance] [--spot-price-max=<max_price>]`,
 		Short: "Creates a device.",
 		Long:  "Creates a device in the specified project. A plan, hostname, operating system, and either metro or facility is required.",
 		Example: `  # Provisions a c3.small.x86 in the Dallas metro running Ubuntu 20.04:
-  metal device create -p $METAL_PROJECT_ID -p c3.small.x86 -m da -H test-staging-2 -O ubuntu_20_04,
+  metal device create -p $METAL_PROJECT_ID -P c3.small.x86 -m da -H test-staging-2 -O ubuntu_20_04
 
   # Provisions a c3.medium.x86 in Silicon Valley, running Rocky Linux, from a hardware reservation:
-  metal device create -p $METAL_PROJECT_ID -p c3.medium.x86 -m sv -H test-rocky -O rocky_8 -r 47161704-1715-4b45-8549-fb3f4b2c32c7`,
+  metal device create -p $METAL_PROJECT_ID -P c3.medium.x86 -m sv -H test-rocky -O rocky_8 -r 47161704-1715-4b45-8549-fb3f4b2c32c7`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var endDt *packngo.Timestamp
