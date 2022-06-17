@@ -29,10 +29,10 @@ import (
 func (c *Client) Update() *cobra.Command {
 	var projectID, name, paymentMethodID string
 	// updateProjectCmd represents the updateProject command
-	var updateProjectCmd = &cobra.Command{
-		Use: `update -i <project_UUID> [-n <name>] [-m <payment_method_UUID>]`,
+	updateProjectCmd := &cobra.Command{
+		Use:   `update -i <project_UUID> [-n <name>] [-m <payment_method_UUID>]`,
 		Short: "Updates a project.",
-		Long: "Updates the specified project with a new name, a new payment method, or both.",
+		Long:  "Updates the specified project with a new name, a new payment method, or both.",
 		Example: `  # Updates the specified project with a new name:
   metal project update -i $METAL_PROJECT_ID -n new-prod-cluster05
   
@@ -49,7 +49,7 @@ func (c *Client) Update() *cobra.Command {
 			if paymentMethodID != "" {
 				req.PaymentMethodID = &paymentMethodID
 			}
-			p, _, err := c.Service.Update(projectID, req)
+			p, _, err := c.ProjectService.Update(projectID, req)
 			if err != nil {
 				return errors.Wrap(err, "Could not update Project")
 			}

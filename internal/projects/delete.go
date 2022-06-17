@@ -34,7 +34,7 @@ func (c *Client) Delete() *cobra.Command {
 		projectID string
 	)
 	deleteProject := func(id string) error {
-		_, err := c.Service.Delete(id)
+		_, err := c.ProjectService.Delete(id)
 		if err != nil {
 			return err
 		}
@@ -42,10 +42,10 @@ func (c *Client) Delete() *cobra.Command {
 		return nil
 	}
 	// deleteProjectCmd represents the deleteProject command
-	var deleteProjectCmd = &cobra.Command{
-		Use: `delete --id <project_UUID> [--force]`,
+	deleteProjectCmd := &cobra.Command{
+		Use:   `delete --id <project_UUID> [--force]`,
 		Short: "Deletes a project.",
-		Long: "Deletes the specified project with a confirmation prompt. To skip the confirmation use --force. You can't delete a project that has active resources. You have to deprovision all servers and other infrastructure from a project in order to delete it.",
+		Long:  "Deletes the specified project with a confirmation prompt. To skip the confirmation use --force. You can't delete a project that has active resources. You have to deprovision all servers and other infrastructure from a project in order to delete it.",
 		Example: `  # Deletes project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
   metal project delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
   >

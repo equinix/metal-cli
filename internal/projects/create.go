@@ -34,10 +34,10 @@ func (c *Client) Create() *cobra.Command {
 	)
 
 	// projectCreateCmd represents the projectCreate command
-	var createProjectCmd = &cobra.Command{
-		Use: `create -n <project_name> [-O <organization_UUID>] [-m <payment_method_UUID>]`,
+	createProjectCmd := &cobra.Command{
+		Use:   `create -n <project_name> [-O <organization_UUID>] [-m <payment_method_UUID>]`,
 		Short: "Creates a project.",
-		Long: "Creates a project with the specified name. If no organization is specified, the project is created in the current user's default organization. If no payment method is specified the organization's default payment method is used.",
+		Long:  "Creates a project with the specified name. If no organization is specified, the project is created in the current user's default organization. If no payment method is specified the organization's default payment method is used.",
 		Example: `  # Creates a new project named dev-cluster02: 
   metal project create --name dev-cluster02
   
@@ -58,7 +58,7 @@ func (c *Client) Create() *cobra.Command {
 				req.PaymentMethodID = paymentMethodID
 			}
 
-			p, _, err := c.Service.Create(&req)
+			p, _, err := c.ProjectService.Create(&req)
 			if err != nil {
 				return errors.Wrap(err, "Could not create Project")
 			}
