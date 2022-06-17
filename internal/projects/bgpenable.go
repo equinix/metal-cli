@@ -35,11 +35,11 @@ func (c *Client) BGPEnable() *cobra.Command {
 	)
 	// bgpEnableProjectCmd represents the updateProject command
 	bgpEnableProjectCmd := &cobra.Command{
-		Use:   `bgp-enable --id <project_UUID> --deployment-type <deployment_type> [--asn <asn>] [--md5 <md5_secret>] [--use-case <use_case>]`,
+		Use:   `bgp-enable --project-id <project_UUID> --deployment-type <deployment_type> [--asn <asn>] [--md5 <md5_secret>] [--use-case <use_case>]`,
 		Short: "Enables BGP on a project.",
 		Long:  `Enables BGP on a project.`,
 		Example: `  # Enable BGP on project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
-  metal project bgp-enable --id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 --deployment-type local --asn 65000`,
+  metal project bgp-enable --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 --deployment-type local --asn 65000`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := packngo.CreateBGPConfigRequest{
@@ -62,13 +62,13 @@ func (c *Client) BGPEnable() *cobra.Command {
 		},
 	}
 
-	bgpEnableProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
+	bgpEnableProjectCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 	bgpEnableProjectCmd.Flags().StringVar(&useCase, "use-case", "", "Use case for BGP")
 	bgpEnableProjectCmd.Flags().IntVar(&asn, "asn", 65000, "Local ASN")
 	bgpEnableProjectCmd.Flags().StringVar(&deploymentType, "deployment-type", "", "Deployment type (local, global)")
 	bgpEnableProjectCmd.Flags().StringVar(&md5, "md5", "", "BGP Password")
 
-	_ = bgpEnableProjectCmd.MarkFlagRequired("id")
+	_ = bgpEnableProjectCmd.MarkFlagRequired("project-id")
 	_ = bgpEnableProjectCmd.MarkFlagRequired("asn")
 	_ = bgpEnableProjectCmd.MarkFlagRequired("deployment-type")
 	return bgpEnableProjectCmd

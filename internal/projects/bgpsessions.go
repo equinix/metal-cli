@@ -34,11 +34,11 @@ func (c *Client) BGPSessions() *cobra.Command {
 
 	// bgpSessionsProjectCmd represents the updateProject command
 	bgpSessionsProjectCmd := &cobra.Command{
-		Use:   `bgp-sessions --id <project_UUID>`,
+		Use:   `bgp-sessions --project-id <project_UUID>`,
 		Short: "Gets BGP Sessions for a project.",
 		Long:  `Gets BGP Sessions for a project.`,
 		Example: `  # Get BGP Sessions for project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
-  metal project bgp-sessions --id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375`,
+  metal project bgp-sessions --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			listOpt := c.Servicer.ListOptions(nil, nil)
@@ -62,8 +62,8 @@ func (c *Client) BGPSessions() *cobra.Command {
 		},
 	}
 
-	bgpSessionsProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
+	bgpSessionsProjectCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 
-	_ = bgpSessionsProjectCmd.MarkFlagRequired("id")
+	_ = bgpSessionsProjectCmd.MarkFlagRequired("project-id")
 	return bgpSessionsProjectCmd
 }

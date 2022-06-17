@@ -7,21 +7,21 @@ Gets BGP Config for a project.
 Gets BGP Config for a project.
 
 ```
-metal project bgp-config --id <project_UUID> [flags]
+metal project bgp-config --project-id <project_UUID> [flags]
 ```
 
 ### Examples
 
 ```
   # Get BGP config for project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
-  metal project bgp-config --id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
+  metal project bgp-config --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
 ```
 
 ### Options
 
 ```
-  -h, --help        help for bgp-config
-  -i, --id string   Project ID (METAL_PROJECT_ID)
+  -h, --help                help for bgp-config
+  -p, --project-id string   Project ID (METAL_PROJECT_ID)
 ```
 
 ### Options inherited from parent commands

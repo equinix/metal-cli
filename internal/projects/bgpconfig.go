@@ -33,11 +33,11 @@ func (c *Client) BGPConfig() *cobra.Command {
 
 	// bgpConfigProjectCmd represents the updateProject command
 	bgpConfigProjectCmd := &cobra.Command{
-		Use:   `bgp-config --id <project_UUID>`,
+		Use:   `bgp-config --project-id <project_UUID>`,
 		Short: "Gets BGP Config for a project.",
 		Long:  `Gets BGP Config for a project.`,
 		Example: `  # Get BGP config for project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
-  metal project bgp-config --id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375`,
+  metal project bgp-config --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			listOpt := c.Servicer.ListOptions(nil, nil)
@@ -55,8 +55,8 @@ func (c *Client) BGPConfig() *cobra.Command {
 		},
 	}
 
-	bgpConfigProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "Project ID (METAL_PROJECT_ID)")
+	bgpConfigProjectCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
 
-	_ = bgpConfigProjectCmd.MarkFlagRequired("id")
+	_ = bgpConfigProjectCmd.MarkFlagRequired("project-id")
 	return bgpConfigProjectCmd
 }

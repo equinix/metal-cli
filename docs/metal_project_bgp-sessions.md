@@ -7,21 +7,21 @@ Gets BGP Sessions for a project.
 Gets BGP Sessions for a project.
 
 ```
-metal project bgp-sessions --id <project_UUID> [flags]
+metal project bgp-sessions --project-id <project_UUID> [flags]
 ```
 
 ### Examples
 
 ```
   # Get BGP Sessions for project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
-  metal project bgp-sessions --id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
+  metal project bgp-sessions --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
 ```
 
 ### Options
 
 ```
-  -h, --help        help for bgp-sessions
-  -i, --id string   Project ID (METAL_PROJECT_ID)
+  -h, --help                help for bgp-sessions
+  -p, --project-id string   Project ID (METAL_PROJECT_ID)
 ```
 
 ### Options inherited from parent commands
