@@ -33,7 +33,7 @@ func (c *Client) Retrieve() *cobra.Command {
 	// retrievePortCmd represents the retrievePort command
 	retrievePortCmd := &cobra.Command{
 		Use:     `get -i <port_UUID>`,
-		Aliases: []string{"list"},
+		Aliases: []string{},
 		Short:   "Retrieves the details of the specified port.",
 		Long:    "Retrieves the details of the specified port. Details of an port are only available to its members.",
 		Example: `  # Retrieves list of the current user's ports:
@@ -62,5 +62,7 @@ func (c *Client) Retrieve() *cobra.Command {
 	}
 
 	retrievePortCmd.Flags().StringVarP(&portID, "port-id", "i", "", "The UUID of a port.")
+	_ = retrievePortCmd.MarkFlagRequired("port-id")
+
 	return retrievePortCmd
 }

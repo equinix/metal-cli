@@ -93,5 +93,7 @@ func (c *Client) Vlans() *cobra.Command {
 	retrievePortCmd.Flags().StringSliceVarP(&assignments, "assign", "a", []string{}, "A VXLAN to assign to the port. May also be used to change a Native VLAN assignment to tagged (non-native).")
 	retrievePortCmd.Flags().StringSliceVarP(&unassignments, "unassign", "u", []string{}, "A VXLAN to unassign from a port.")
 
+	_ = retrievePortCmd.MarkFlagRequired("port-id")
+
 	return retrievePortCmd
 }
