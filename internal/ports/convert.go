@@ -37,7 +37,7 @@ func (c *Client) Convert() *cobra.Command {
 	// retrievePortCmd represents the retrievePort command
 	retrievePortCmd := &cobra.Command{
 		Use:     `convert -i <port_UUID> [--bonded] [--bulk] --layer2 [--force] [--public-ipv4] [--public-ipv6]`,
-		Aliases: []string{"list"},
+		Aliases: []string{},
 		Short:   "Converts a list of ports or the details of the specified port.",
 		Long:    "Converts a list of ports or the details of the specified port. Details of an port are only available to its members.",
 		Example: `  # Converts list of the current user's ports:
