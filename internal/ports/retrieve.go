@@ -36,10 +36,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		Aliases: []string{},
 		Short:   "Retrieves the details of the specified port.",
 		Long:    "Retrieves the details of the specified port. Details of an port are only available to its members.",
-		Example: `  # Retrieves list of the current user's ports:
-  metal port get
-
-  # Retrieves details of an port:
+		Example: `  # Retrieves details of an port:
   metal port get -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {

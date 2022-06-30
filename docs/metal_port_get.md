@@ -13,9 +13,6 @@ metal port get -i <port_UUID> [flags]
 ### Examples
 
 ```
-  # Retrieves list of the current user's ports:
-  metal port get
-
   # Retrieves details of an port:
   metal port get -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8
 ```
