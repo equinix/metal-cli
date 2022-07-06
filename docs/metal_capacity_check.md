@@ -4,7 +4,7 @@ Validates if the number of the specified server plan is available in the specifi
 
 ### Synopsis
 
-Validates if the number of the specified server plan is available in the specified metro or facility. Metro and facility are mutally exclusive. At least one metro (or facility), one plan, and quantity of 1 or more is required.
+Validates if the number of the specified server plan is available in the specified metro or facility. Metro and facility are mutually exclusive. At least one metro (or facility), one plan, and quantity of 1 or more is required.
 
 ```
 metal capacity check (-m <metro> | -f <facility>) -P <plan> -q <quantity> [flags]

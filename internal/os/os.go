@@ -33,11 +33,11 @@ type Client struct {
 }
 
 func (c *Client) NewCommand() *cobra.Command {
-	var cmd = &cobra.Command{
-		Use: `operating-systems`,
+	cmd := &cobra.Command{
+		Use:     `operating-systems`,
 		Aliases: []string{"os"},
-		Short: "Operating system operations. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.",
-		Long: "Operating system operations: get.",
+		Short:   "Operating system operations. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.",
+		Long:    "Operating system operations: get.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

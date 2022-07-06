@@ -27,13 +27,11 @@ func TestOrganizationOperations(t *testing.T) {
 		},
 	}
 	tests := []Test{
-
 		{"organization list", []string{"organization", "get"}},
 		{"organization get", []string{"organization", "get", "-i"}},
 		{"organization update", []string{"organization", "update", "-n", "updatednamefromCLI", "-i"}},
 	}
 	cleanUp := []Test{
-
 		{"organization delete", []string{"organization", "delete", "-i"}},
 	}
 

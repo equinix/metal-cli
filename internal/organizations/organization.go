@@ -33,7 +33,7 @@ type Client struct {
 }
 
 func (c *Client) NewCommand() *cobra.Command {
-	var cmd = &cobra.Command{
+	cmd := &cobra.Command{
 		Use:     `organization`,
 		Aliases: []string{"organizations", "org", "orgs"},
 		Short:   "Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.",

@@ -30,7 +30,7 @@ import (
 func (c *Client) Remove() *cobra.Command {
 	var reservationID string
 	// removeIPCmd represents the removeIp command
-	var removeIPCmd = &cobra.Command{
+	removeIPCmd := &cobra.Command{
 		Use:   `remove -i <reservation_UUID>`,
 		Short: "Removes an IP address reservation from a project.",
 		Long:  "Removes an IP address reservation from a project. Any subnets and IP addresses in the reservation will no longer be able to be used by your devices.",

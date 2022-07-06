@@ -37,7 +37,7 @@ type Client struct {
 }
 
 func (c *Client) NewCommand() *cobra.Command {
-	var cmd = &cobra.Command{
+	cmd := &cobra.Command{
 		Use:     `event`,
 		Aliases: []string{"events"},
 		Short:   "Events operations for organizations, projects, devices, and the current user.",

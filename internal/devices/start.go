@@ -30,7 +30,7 @@ import (
 func (c *Client) Start() *cobra.Command {
 	var deviceID string
 	// startdeviceCmd represents the startdevice command
-	var startDeviceCmd = &cobra.Command{
+	startDeviceCmd := &cobra.Command{
 		Use:   `start -i <device_id>`,
 		Short: "Starts a device.",
 		Long:  "Starts or powers on a device that is currently stopped or powered off.",
@@ -40,7 +40,6 @@ func (c *Client) Start() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			_, err := c.Service.PowerOn(deviceID)
-
 			if err != nil {
 				return errors.Wrap(err, "Could not start Device")
 			}

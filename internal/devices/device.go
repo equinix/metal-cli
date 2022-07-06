@@ -34,7 +34,7 @@ type Client struct {
 }
 
 func (c *Client) NewCommand() *cobra.Command {
-	var cmd = &cobra.Command{
+	cmd := &cobra.Command{
 		Use:     `device`,
 		Aliases: []string{"server", "servers", "devices"},
 		Short:   "Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.",

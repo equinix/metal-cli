@@ -42,10 +42,10 @@ func (c *Client) Delete() *cobra.Command {
 		return nil
 	}
 	// deleteSSHKeyCmd represents the deleteSSHKey command
-	var deleteSSHKeyCmd = &cobra.Command{
-		Use: `delete --id <SSH-key_UUID> [--force]`,
+	deleteSSHKeyCmd := &cobra.Command{
+		Use:   `delete --id <SSH-key_UUID> [--force]`,
 		Short: "Deletes an SSH key.",
-		Long: "Deletes an SSH key with a confirmation prompt. To skip the confirmation use --force. Does not remove the SSH key from existing servers.",
+		Long:  "Deletes an SSH key with a confirmation prompt. To skip the confirmation use --force. Does not remove the SSH key from existing servers.",
 		Example: `  # Deletes an SSH key, with confirmation:
   metal ssh-key delete -i 5cb96463-88fd-4d68-94ba-2c9505ff265e
   >

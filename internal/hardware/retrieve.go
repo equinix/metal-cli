@@ -30,7 +30,7 @@ import (
 )
 
 func (c *Client) Retrieve() *cobra.Command {
-	var retrieveHardwareReservationsCmd = &cobra.Command{
+	retrieveHardwareReservationsCmd := &cobra.Command{
 		Use:     `get [-p <project_id>] | [-i <hardware_reservation_id>]`,
 		Aliases: []string{"list"},
 		Short:   "Lists a Project's hardware reservations or the details of a specified hardware reservation.",

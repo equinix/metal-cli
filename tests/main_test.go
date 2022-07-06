@@ -38,9 +38,11 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-var projectID string
-var deviceID string
-var client *packngo.Client
+var (
+	projectID string
+	deviceID  string
+	client    *packngo.Client
+)
 
 type Test struct {
 	name string

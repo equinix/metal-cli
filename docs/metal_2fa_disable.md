@@ -4,7 +4,7 @@ Disables two-factor authentication.
 
 ### Synopsis
 
- Disables two-factor authentication. Requires the current OTP code from either SMS or application. If you no longer have access to your two-factor authentication device, please contact support.
+Disables two-factor authentication. Requires the current OTP code from either SMS or application. If you no longer have access to your two-factor authentication device, please contact support.
 
 ```
 metal 2fa disable (-a | -s) --code <OTP_code>  [flags]

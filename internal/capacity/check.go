@@ -35,10 +35,10 @@ func (c *Client) Check() *cobra.Command {
 		metro, facility, plan     string
 		quantity                  int
 	)
-	var checkCapacityCommand = &cobra.Command{
+	checkCapacityCommand := &cobra.Command{
 		Use:   `check (-m <metro> | -f <facility>) -P <plan> -q <quantity>`,
 		Short: "Validates if the number of the specified server plan is available in the specified metro or facility.",
-		Long:  "Validates if the number of the specified server plan is available in the specified metro or facility. Metro and facility are mutally exclusive. At least one metro (or facility), one plan, and quantity of 1 or more is required.",
+		Long:  "Validates if the number of the specified server plan is available in the specified metro or facility. Metro and facility are mutually exclusive. At least one metro (or facility), one plan, and quantity of 1 or more is required.",
 		Example: `  # Checks if 10 c3.medium.x86 servers are available in NY or Dallas:
   metal capacity check -m ny,da -P c3.medium.x86 -q 10
   
@@ -49,7 +49,7 @@ func (c *Client) Check() *cobra.Command {
 			var checker func(*packngo.CapacityInput) (*packngo.CapacityInput, *packngo.Response, error)
 			var locationField string
 			var locationer func(si packngo.ServerInfo) string
-			var req = &packngo.CapacityInput{
+			req := &packngo.CapacityInput{
 				Servers: []packngo.ServerInfo{},
 			}
 
@@ -80,7 +80,8 @@ func (c *Client) Check() *cobra.Command {
 						req.Servers = append(req.Servers, packngo.ServerInfo{
 							Facility: f,
 							Plan:     p,
-							Quantity: quantity},
+							Quantity: quantity,
+						},
 						)
 					}
 				}
@@ -95,7 +96,8 @@ func (c *Client) Check() *cobra.Command {
 						req.Servers = append(req.Servers, packngo.ServerInfo{
 							Metro:    m,
 							Plan:     p,
-							Quantity: quantity},
+							Quantity: quantity,
+						},
 						)
 					}
 				}

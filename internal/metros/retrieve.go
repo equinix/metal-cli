@@ -27,7 +27,7 @@ import (
 
 func (c *Client) Retrieve() *cobra.Command {
 	// metrosCmd represents the metros command
-	var retrieveMetrosCmd = &cobra.Command{
+	retrieveMetrosCmd := &cobra.Command{
 		Use:     "get",
 		Aliases: []string{"list"},
 		Short:   "Retrieves a list of metros.",

@@ -35,7 +35,7 @@ func (c *Client) Assign() *cobra.Command {
 	)
 
 	// assignIpCmd represents the assignIp command
-	var assignIPCmd = &cobra.Command{
+	assignIPCmd := &cobra.Command{
 		Use:   `assign -a <IP_address> -d <device_UUID>`,
 		Short: "Assigns an IP address to a specified device.",
 		Long:  "Assigns an IP address and subnet to a specified device. Returns an assignment ID.",

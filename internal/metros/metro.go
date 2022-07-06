@@ -33,7 +33,7 @@ type Client struct {
 }
 
 func (c *Client) NewCommand() *cobra.Command {
-	var cmd = &cobra.Command{
+	cmd := &cobra.Command{
 		Use:     `metros`,
 		Aliases: []string{"metro"},
 		Short:   "Metro operations. For more information on Equinix Metal metros and availability, visit https://metal.equinix.com/developers/docs/locations/metros/.",

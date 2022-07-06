@@ -1,27 +1,26 @@
-## metal virtual-network get
+## metal emdocs
 
-Lists virtual networks.
+Generates single-page reference documentation.
 
 ### Synopsis
 
-Retrieves a list of all VLANs for the specified project.
+Generates single-page reference documentation with filename emdocs.md in the specified directory.
 
 ```
-metal virtual-network get -p <project_UUID> [flags]
+metal emdocs <destination>
 ```
 
 ### Examples
 
 ```
-  # Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
-  metal virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
+  # Generate emdocs.md in the ./docs directory:
+  metal emdocs ./docs
 ```
 
 ### Options
 
 ```
-  -h, --help                help for get
-  -p, --project-id string   The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
+  -h, --help   help for emdocs
 ```
 
 ### Options inherited from parent commands
@@ -40,5 +39,5 @@ metal virtual-network get -p <project_UUID> [flags]
 
 ### SEE ALSO
 
-* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
+* [metal](metal.md)	 - Command line interface for Equinix Metal
 

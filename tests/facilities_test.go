@@ -33,7 +33,6 @@ func TestFacilitiesOperations(t *testing.T) {
 			if strings.Contains(strings.ToLower(actual), "error:") {
 				t.Fatal(actual)
 			}
-
 		})
 	}
 }

@@ -46,8 +46,8 @@ func NewClient(t Tokener, apiTokenEnvVar string) *Client {
 func (c *Client) NewCommand() *cobra.Command {
 	// envCmd represents a command that, when run, generates a
 	// set of environment variables, for use in shell environments
-	//v := c.tokener.Config()
-	//projectId := v.GetString("project-id")
+	// v := c.tokener.Config()
+	// projectId := v.GetString("project-id")
 	envCmd := &cobra.Command{
 		Use:   `env [-p <project_id>]`,
 		Short: "Prints or generates environment variables.",
@@ -72,7 +72,6 @@ func (c *Client) NewCommand() *cobra.Command {
 			fmt.Printf("%s=%s\n", c.apiTokenEnvVar, c.tokener.Token())
 			fmt.Printf("METAL_PROJECT_ID=%s\n", projectID)
 			fmt.Printf("METAL_CONFIG=%s\n", config)
-
 		},
 	}
 
@@ -80,5 +79,4 @@ func (c *Client) NewCommand() *cobra.Command {
 	envCmd.Flags().StringP("project-id", "p", "", "A project UUID to set as an environment variable.")
 
 	return envCmd
-
 }

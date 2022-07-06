@@ -27,16 +27,14 @@ import (
 )
 
 func (c *Client) Retrieve() *cobra.Command {
-	var (
-		userID string
-	)
+	var userID string
 
 	// retriveUserCmd represents the retriveUser command
 	retrieveUserCmd := &cobra.Command{
-		Use: `get [-i <user_UUID>]`,
+		Use:   `get [-i <user_UUID>]`,
 		Short: "Retrieves information about the current user or a specified user.",
-		Long: "Returns either information about the current user or information about a specified user. Specified user information is only available if that user shares a project with the current user.",
-		Example:`  # Retrieves the current user's information:
+		Long:  "Returns either information about the current user or information about a specified user. Specified user information is only available if that user shares a project with the current user.",
+		Example: `  # Retrieves the current user's information:
   metal user get
   
   # Returns information on user 3b0795ba-fd0b-4a9e-83a7-063e5e12409d:
