@@ -29,7 +29,7 @@ import (
 func (c *Client) Update() *cobra.Command {
 	var organizationID, name, description, twitter, logo, website string
 	// createOrganizationCmd represents the createOrganization command
-	var updateOrganizationCmd = &cobra.Command{
+	updateOrganizationCmd := &cobra.Command{
 		Use:   `update -i <organization_UUID> [-n <name>] [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>]`,
 		Short: "Updates the specified organization.",
 		Long:  "Updates the specified organization. You can update the name, website, Twitter, or logo.",

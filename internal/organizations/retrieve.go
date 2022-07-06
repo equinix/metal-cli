@@ -29,7 +29,7 @@ import (
 func (c *Client) Retrieve() *cobra.Command {
 	var organizationID string
 	// retrieveOrganizationCmd represents the retrieveOrganization command
-	var retrieveOrganizationCmd = &cobra.Command{
+	retrieveOrganizationCmd := &cobra.Command{
 		Use:     `get -i <organization_UUID>`,
 		Aliases: []string{"list"},
 		Short:   "Retrieves a list of organizations or the details of the specified organization.",

@@ -36,10 +36,10 @@ func (c *Client) Create() *cobra.Command {
 	)
 
 	// createOrganizationCmd represents the createOrganization command
-	var createOrganizationCmd = &cobra.Command{
-		Use: `create -n <name> [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>]`,
+	createOrganizationCmd := &cobra.Command{
+		Use:   `create -n <name> [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>]`,
 		Short: "Creates an organization.",
-		Long: "Creates a new organization with the current user as the organization's owner. ",
+		Long:  "Creates a new organization with the current user as the organization's owner. ",
 		Example: `  # Creates a new organization named "it-backend-infra": 
   metal organization create -n it-backend-infra
   

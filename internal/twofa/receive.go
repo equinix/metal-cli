@@ -28,11 +28,10 @@ import (
 )
 
 func (c *Client) Receive() *cobra.Command {
-
 	var app, sms bool
 
 	// receive2faCmd represents the receive2fa command
-	var receive2faCmd = &cobra.Command{
+	receive2faCmd := &cobra.Command{
 		Use:   `receive (-s | -a)`,
 		Short: "Generates a two-factor authentication token for use in enabling two-factor authentication on the current user's account.",
 		Long:  "Generates a two-factor authentication token for use in enabling two-factor authentication on the current user's account. In order to use SMS, a phone number must be associated with the account to receive the code. If you are using an app, a URI for the application is returned.",

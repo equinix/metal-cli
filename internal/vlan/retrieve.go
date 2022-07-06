@@ -31,7 +31,7 @@ func (c *Client) Retrieve() *cobra.Command {
 	var projectID string
 
 	// retrieveVirtualNetworksCmd represents the retrieveVirtualNetworks command
-	var retrieveVirtualNetworksCmd = &cobra.Command{
+	retrieveVirtualNetworksCmd := &cobra.Command{
 		Use:     `get -p <project_UUID>`,
 		Aliases: []string{"list"},
 		Short:   "Lists virtual networks.",

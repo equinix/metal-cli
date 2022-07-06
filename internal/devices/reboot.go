@@ -30,7 +30,7 @@ import (
 func (c *Client) Reboot() *cobra.Command {
 	var deviceID string
 
-	var rebootDeviceCmd = &cobra.Command{
+	rebootDeviceCmd := &cobra.Command{
 		Use:   `reboot -i <device_id>`,
 		Short: "Reboots a device.",
 		Long:  "Reboots the specified device.",

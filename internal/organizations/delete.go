@@ -44,7 +44,7 @@ func (c *Client) Delete() *cobra.Command {
 	}
 
 	// deleteOrganizationCmd represents the deleteOrganization command
-	var deleteOrganizationCmd = &cobra.Command{
+	deleteOrganizationCmd := &cobra.Command{
 		Use:   `delete -i <organization_UUID>`,
 		Short: "Deletes an organization.",
 		Long:  "Deletes an organization. You can not delete an organization that contains projects or has outstanding charges. Only organization owners can delete an organization.",

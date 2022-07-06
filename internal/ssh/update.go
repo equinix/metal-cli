@@ -29,10 +29,10 @@ import (
 func (c *Client) Update() *cobra.Command {
 	var sshKeyID string
 	// updateSSHKeyCmd represents the updateSSHKey command
-	var updateSSHKeyCmd = &cobra.Command{
-		Use: `update -i <SSH-key_UUID> [-k <public_key>] [-l <label>]`,
+	updateSSHKeyCmd := &cobra.Command{
+		Use:   `update -i <SSH-key_UUID> [-k <public_key>] [-l <label>]`,
 		Short: "Updates an SSH key.",
-		Long: "Updates an SSH key with either a new public key, a new label, or both.",
+		Long:  "Updates an SSH key with either a new public key, a new label, or both.",
 		Example: `  # Updates SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e with a new public key: 
   metal ssh-key update -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -k AAAAB3N...user@domain.com
   

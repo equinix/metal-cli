@@ -31,7 +31,7 @@ import (
 func NewCommand() *cobra.Command {
 	// completionCmd represents the completion command that, when run, generates a
 	// bash or zsh completion script for the CLI
-	var completionCmd = &cobra.Command{
+	completionCmd := &cobra.Command{
 		Use:   `completion [bash | zsh | fish | powershell]`,
 		Short: "Generates completion scripts.",
 		Long:  "Generates shell completion scripts for different shells.",

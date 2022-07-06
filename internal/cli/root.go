@@ -177,7 +177,7 @@ func (c *Client) Format() outputPkg.Format {
 
 func (c *Client) NewCommand() *cobra.Command {
 	// rootCmd represents the base command when called without any subcommands
-	var rootCmd = &cobra.Command{
+	rootCmd := &cobra.Command{
 		Use:               "metal",
 		Short:             "Command line interface for Equinix Metal",
 		Long:              `Command line interface for Equinix Metal`,
@@ -245,13 +245,12 @@ func (c *Client) ListOptions(defaultIncludes, defaultExcludes []string) *packngo
 
 // initConfig reads in config file and ENV variables if set.
 func (c *Client) Init(cmd *cobra.Command) {
-
-	//v := c.Config(cmd)
+	// v := c.Config(cmd)
 	c.Config(cmd)
-	//c.metalToken = v.GetString("token")
-	//envToken := v.GetString("auth_token")
+	// c.metalToken = v.GetString("token")
+	// envToken := v.GetString("auth_token")
 	// TODO: are we ok with this being configured by file too? yes?
-	//if envToken != "" {
+	// if envToken != "" {
 	//		c.metalToken = envToken
 	//	}
 }

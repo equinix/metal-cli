@@ -32,10 +32,10 @@ var (
 )
 
 func (c *Client) Create() *cobra.Command {
-	var createSSHKeyCmd = &cobra.Command{
-		Use: `create --key <public_key> --label <label>`,
+	createSSHKeyCmd := &cobra.Command{
+		Use:   `create --key <public_key> --label <label>`,
 		Short: "Adds an SSH key for the current user's account.",
-		Long: "Adds an SSH key for the current user's account. The key will then be added to the user's servers at provision time.",
+		Long:  "Adds an SSH key for the current user's account. The key will then be added to the user's servers at provision time.",
 		Example: ` # Adds a key labled "example-key" to the current user account.
   metal ssh-key create --key ssh-rsa AAAAB3N...user@domain.com --label example-key`,
 

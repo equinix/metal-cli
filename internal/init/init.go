@@ -55,8 +55,8 @@ type configFormat struct {
 func (c *Client) NewCommand() *cobra.Command {
 	// initCmd represents a command that, when run, generates a
 	// set of initironment variables, for use in shell initironments
-	//v := c.tokener.Config()
-	//projectId := v.GetString("project-id")
+	// v := c.tokener.Config()
+	// projectId := v.GetString("project-id")
 	initCmd := &cobra.Command{
 		Use:   `init`,
 		Short: "Create a configuration file.",
@@ -164,10 +164,10 @@ func formatConfig(userProj, userOrg, token string) ([]byte, error) {
 func writeConfig(config string, b []byte) error {
 	fmt.Fprintf(os.Stderr, "\nWriting %s\n", config)
 	dir := filepath.Dir(config)
-	if err := os.MkdirAll(dir, 0700); err != nil {
+	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return fmt.Errorf("could not make directory %q: %s", dir, err)
 	}
-	return ioutil.WriteFile(config, b, 0600)
+	return ioutil.WriteFile(config, b, 0o600)
 }
 
 type Servicer interface {

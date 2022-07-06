@@ -33,7 +33,7 @@ func (c *Client) Disable() *cobra.Command {
 		sms, app bool
 	)
 	// disable2faCmd represents the disable2fa command
-	var disable2faCmd = &cobra.Command{
+	disable2faCmd := &cobra.Command{
 		Use:   `disable (-a | -s) --code <OTP_code> `,
 		Short: "Disables two-factor authentication.",
 		Long:  "Disables two-factor authentication. Requires the current OTP code from either SMS or application. If you no longer have access to your two-factor authentication device, please contact support.",

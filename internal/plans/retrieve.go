@@ -27,10 +27,10 @@ import (
 
 func (c *Client) Retrieve() *cobra.Command {
 	return &cobra.Command{
-		Use: `get`,
+		Use:     `get`,
 		Aliases: []string{"list"},
-		Short: "Retrieves a list plans.",
-		Long: "Retrieves a list of plans available to the current user. Response includes plan UUID, slug, and name.",
+		Short:   "Retrieves a list plans.",
+		Long:    "Retrieves a list of plans available to the current user. Response includes plan UUID, slug, and name.",
 		Example: `  # Lists the plans available to the current user:
   metal plans get`,
 

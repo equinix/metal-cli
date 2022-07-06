@@ -28,7 +28,7 @@ import (
 func (c *Client) PaymentMethods() *cobra.Command {
 	var organizationID string
 	// paymentMethodsCmd represents the paymentMethods command
-	var paymentMethodsCmd = &cobra.Command{
+	paymentMethodsCmd := &cobra.Command{
 		Use:     `payment-methods -i <organization_UUID>`,
 		Aliases: []string{"payment-method"},
 		Short:   "Retrieves a list of payment methods.",

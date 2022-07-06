@@ -34,7 +34,7 @@ type Client struct {
 
 func (c *Client) NewCommand() *cobra.Command {
 	// capacityCmd represents the capacity command
-	var cmd = &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "capacity",
 		Short: "Capacity operations. For more information on capacity in metros, visit https://metal.equinix.com/developers/docs/locations/metros/. For more information on capacity in facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/.",
 		Long:  `Capacity operations: get, check`,

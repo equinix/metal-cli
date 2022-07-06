@@ -31,7 +31,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		metros, facilities, plans, locs []string
 	)
 	// retrieveCapacitiesCmd represents the retrieveCapacity command
-	var retrieveCapacityCmd = &cobra.Command{
+	retrieveCapacityCmd := &cobra.Command{
 		Use:     `get [-m | -f] | [--metros <list> | --facilities <list>] [-P <list>]`,
 		Aliases: []string{"list"},
 		Short:   "Returns capacity of metros or facilities, with optional filtering.",

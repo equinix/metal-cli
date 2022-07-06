@@ -30,11 +30,9 @@ func TestVirtualNetworkOperations(t *testing.T) {
 		},
 	}
 	tests := []Test{
-
 		{"virtual-network list", []string{"virtual-network", "get", "-p", projectID}},
 	}
 	cleanUp := []Test{
-
 		{"virtual-network delete", []string{"virtual-network", "delete", "-i"}},
 	}
 
