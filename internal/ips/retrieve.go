@@ -60,8 +60,9 @@ func (c *Client) Retrieve() *cobra.Command {
 			}
 
 			cmd.SilenceUsage = true
+			listOpts := c.Servicer.ListOptions(nil, nil)
 			if assignmentID != "" {
-				ip, _, err := c.ProjectService.Get(assignmentID, nil)
+				ip, _, err := c.ProjectService.Get(assignmentID, listOpts)
 				if err != nil {
 					return errors.Wrap(err, "Could not get Device IP address")
 				}
@@ -73,7 +74,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 				return c.Out.Output(ip, header, &data)
 			} else if reservationID != "" {
-				ip, _, err := c.ProjectService.Get(reservationID, nil)
+				ip, _, err := c.ProjectService.Get(reservationID, listOpts)
 				if err != nil {
 					return errors.Wrap(err, "Could not get Reservation IP address")
 				}
@@ -93,7 +94,7 @@ func (c *Client) Retrieve() *cobra.Command {
 				return c.Out.Output(ip, header, &data)
 			}
 
-			ips, _, err := c.ProjectService.List(projectID, nil)
+			ips, _, err := c.ProjectService.List(projectID, listOpts)
 			if err != nil {
 				return errors.Wrap(err, "Could not list Project IP addresses")
 			}
