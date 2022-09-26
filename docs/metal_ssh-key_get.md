@@ -7,7 +7,7 @@ Retrieves a list of SSH keys or a specified SSH key.
 Retrieves a list of SSH keys associated with the current user's account or the details of single SSH key.
 
 ```
-metal ssh-key get [-i <SSH-key_UUID>] [flags]
+metal ssh-key get [-i <SSH-key_UUID>] [-P] [-p <project_id>] [flags]
 ```
 
 ### Examples
@@ -18,13 +18,18 @@ metal ssh-key get [-i <SSH-key_UUID>] [flags]
   
   # Returns the details of SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e:
   metal ssh-key get --id 5cb96463-88fd-4d68-94ba-2c9505ff265e
+
+  # Retrieve all project SSH keys
+  metal ssh-key get --project-ssh-keys --project-id [project_UUID]
 ```
 
 ### Options
 
 ```
-  -h, --help        help for get
-  -i, --id string   The UUID of an SSH key.
+  -h, --help                help for get
+  -i, --id string           The UUID of an SSH key.
+  -p, --project-id string   List SSH Keys for the project identified by Project ID (ignored without -P)
+  -P, --project-ssh-keys    List SSH Keys for projects
 ```
 
 ### Options inherited from parent commands
