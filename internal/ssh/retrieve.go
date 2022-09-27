@@ -66,7 +66,6 @@ func (c *Client) Retrieve() *cobra.Command {
 					}
 				}
 				sshKeys, _, err := listFn()
-
 				if err != nil {
 					return errors.Wrap(err, "Could not list SSH Keys")
 				}

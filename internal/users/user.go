@@ -27,9 +27,10 @@ import (
 )
 
 type Client struct {
-	Servicer Servicer
-	Service  packngo.UserService
-	Out      outputs.Outputer
+	Servicer          Servicer
+	Service           packngo.UserService
+	InvitationService packngo.InvitationService
+	Out               outputs.Outputer
 }
 
 func (c *Client) NewCommand() *cobra.Command {
@@ -37,7 +38,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Use:     `user`,
 		Aliases: []string{"users"},
 		Short:   "User operations. For more information on user and account management, visit https://metal.equinix.com/developers/docs/accounts/users/ in the Equinix Metal documentation.",
-		Long:    "User operations: get.",
+		Long:    "User operations: get and add.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
@@ -46,11 +47,13 @@ func (c *Client) NewCommand() *cobra.Command {
 				}
 			}
 			c.Service = c.Servicer.API(cmd).Users
+			c.InvitationService = c.Servicer.API(cmd).Invitations
 		},
 	}
 
 	cmd.AddCommand(
 		c.Retrieve(),
+		c.Add(),
 	)
 	return cmd
 }

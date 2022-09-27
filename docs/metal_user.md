@@ -4,7 +4,7 @@ User operations. For more information on user and account management, visit http
 
 ### Synopsis
 
-User operations: get.
+User operations: get and add.
 
 ### Options
 
@@ -29,5 +29,6 @@ User operations: get.
 ### SEE ALSO
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
+* [metal user add](metal_user_add.md)	 - Adds a user to an organization or project
 * [metal user get](metal_user_get.md)	 - Retrieves information about the current user or a specified user.
 
