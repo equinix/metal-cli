@@ -24,7 +24,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -64,7 +63,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			if assignmentID != "" {
 				ip, _, err := c.ProjectService.Get(assignmentID, listOpts)
 				if err != nil {
-					return errors.Wrap(err, "Could not get Device IP address")
+					return fmt.Errorf("Could not get Device IP address: %w", err)
 				}
 
 				data := make([][]string, 1)
@@ -76,7 +75,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			} else if reservationID != "" {
 				ip, _, err := c.ProjectService.Get(reservationID, listOpts)
 				if err != nil {
-					return errors.Wrap(err, "Could not get Reservation IP address")
+					return fmt.Errorf("Could not get Reservation IP address: %w", err)
 				}
 
 				data := make([][]string, 1)
@@ -96,7 +95,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			ips, _, err := c.ProjectService.List(projectID, listOpts)
 			if err != nil {
-				return errors.Wrap(err, "Could not list Project IP addresses")
+				return fmt.Errorf("Could not list Project IP addresses: %w", err)
 			}
 
 			data := make([][]string, len(ips))

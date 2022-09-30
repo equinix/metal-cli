@@ -23,7 +23,6 @@ package devices
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -51,7 +50,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			if deviceID != "" {
 				device, _, err := c.Service.Get(deviceID, nil)
 				if err != nil {
-					return errors.Wrap(err, "Could not get Devices")
+					return fmt.Errorf("Could not get Devices: %w", err)
 				}
 				header := []string{"ID", "Hostname", "OS", "State", "Created"}
 
@@ -63,7 +62,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			devices, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))
 			if err != nil {
-				return errors.Wrap(err, "Could not list Devices")
+				return fmt.Errorf("Could not list Devices: %w", err)
 			}
 			data := make([][]string, len(devices))
 

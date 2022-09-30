@@ -24,7 +24,6 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -64,7 +63,10 @@ func (c *Client) Delete() *cobra.Command {
 					return nil
 				}
 			}
-			return errors.Wrap(deleteDevice(deviceID), "Could not delete Device")
+			if err := deleteDevice(deviceID); err != nil {
+				return fmt.Errorf("Could not delete Device: %w", err)
+			}
+			return nil
 		},
 	}
 

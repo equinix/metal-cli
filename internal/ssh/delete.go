@@ -24,7 +24,6 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -68,7 +67,10 @@ func (c *Client) Delete() *cobra.Command {
 				}
 			}
 
-			return errors.Wrap(deleteSSHKey(sshKeyID), "Could not delete SSH Key")
+			if err := deleteSSHKey(sshKeyID); err != nil {
+				return fmt.Errorf("Could not delete SSH Key: %w", err)
+			}
+			return nil
 		},
 	}
 

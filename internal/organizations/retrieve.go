@@ -21,8 +21,9 @@
 package organizations
 
 import (
+	"fmt"
+
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -46,7 +47,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			if organizationID == "" {
 				orgs, _, err := c.Service.List(listOpts)
 				if err != nil {
-					return errors.Wrap(err, "Could not list Organizations")
+					return fmt.Errorf("Could not list Organizations: %w", err)
 				}
 
 				data := make([][]string, len(orgs))
@@ -61,7 +62,7 @@ func (c *Client) Retrieve() *cobra.Command {
 				getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
 				org, _, err := c.Service.Get(organizationID, getOpts)
 				if err != nil {
-					return errors.Wrap(err, "Could not get Organization")
+					return fmt.Errorf("Could not get Organization: %w", err)
 				}
 
 				data := make([][]string, 1)

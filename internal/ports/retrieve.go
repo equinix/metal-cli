@@ -21,10 +21,10 @@
 package ports
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -46,7 +46,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
 			port, _, err := c.PortService.Get(portID, getOpts)
 			if err != nil {
-				return errors.Wrap(err, "Could not get Port")
+				return fmt.Errorf("Could not get Port: %w", err)
 			}
 
 			data := make([][]string, 1)

@@ -29,7 +29,6 @@ import (
 	"strings"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -73,7 +72,7 @@ func NewClient(consumerToken, apiURL, Version string) *Client {
 func (c *Client) apiConnect() error {
 	client, err := packngo.NewClientWithBaseURL(c.consumerToken, c.metalToken, nil, c.apiURL)
 	if err != nil {
-		return errors.Wrap(err, "Could not create Client")
+		return fmt.Errorf("Could not create Client: %w", err)
 	}
 	client.UserAgent = fmt.Sprintf("metal-cli/%s %s", c.Version, client.UserAgent)
 	c.apiClient = client

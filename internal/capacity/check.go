@@ -21,10 +21,11 @@
 package capacity
 
 import (
+	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -105,7 +106,7 @@ func (c *Client) Check() *cobra.Command {
 
 			availability, _, err := checker(req)
 			if err != nil {
-				return errors.Wrap(err, "Could not check capacity")
+				return fmt.Errorf("Could not check capacity: %w", err)
 			}
 
 			data := make([][]string, len(availability.Servers))

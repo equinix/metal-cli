@@ -23,7 +23,6 @@ package devices
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +39,7 @@ func (c *Client) Stop() *cobra.Command {
 			cmd.SilenceUsage = true
 			_, err := c.Service.PowerOff(deviceID)
 			if err != nil {
-				return errors.Wrap(err, "Could not stop Device")
+				return fmt.Errorf("Could not stop Device: %w", err)
 			}
 
 			fmt.Println("Device", deviceID, "successfully stopped.")

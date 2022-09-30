@@ -21,8 +21,9 @@
 package users
 
 import (
+	"fmt"
+
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -47,12 +48,12 @@ func (c *Client) Retrieve() *cobra.Command {
 			if userID == "" {
 				user, _, err = c.Service.Current()
 				if err != nil {
-					return errors.Wrap(err, "Could not get current User")
+					return fmt.Errorf("Could not get current User: %w", err)
 				}
 			} else {
 				user, _, err = c.Service.Get(userID, c.Servicer.ListOptions(nil, nil))
 				if err != nil {
-					return errors.Wrap(err, "Could not get Users")
+					return fmt.Errorf("Could not get Users: %w", err)
 				}
 			}
 

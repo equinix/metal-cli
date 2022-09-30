@@ -27,7 +27,6 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -61,7 +60,7 @@ func (c *Client) Convert() *cobra.Command {
 					false: c.PortService.Disbond,
 				}[bonded](portID, bulk)
 				if err != nil {
-					return errors.Wrap(err, "failed to change port bonding")
+					return fmt.Errorf("failed to change port bonding: %w", err)
 				}
 			}
 			addrs := []packngo.AddressRequest{{AddressFamily: 4, Public: false}}
@@ -97,7 +96,7 @@ func (c *Client) Convert() *cobra.Command {
 					false: convToL3,
 				}[layer2](portID)
 				if err != nil {
-					return errors.Wrap(err, "failed to change port network mode")
+					return fmt.Errorf("failed to change port network mode: %w", err)
 				}
 			}
 			listOpts := c.Servicer.ListOptions(nil, nil)
@@ -105,7 +104,7 @@ func (c *Client) Convert() *cobra.Command {
 			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
 			port, _, err := c.PortService.Get(portID, getOpts)
 			if err != nil {
-				return errors.Wrap(err, "Could not get Port")
+				return fmt.Errorf("Could not get Port: %w", err)
 			}
 
 			data := make([][]string, 1)

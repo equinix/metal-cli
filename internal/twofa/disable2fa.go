@@ -23,7 +23,6 @@ package twofa
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -52,12 +51,12 @@ func (c *Client) Disable() *cobra.Command {
 			if sms {
 				_, err := c.Service.DisableSms(token)
 				if err != nil {
-					return errors.Wrap(err, "Could not disable Two-Factor Authentication via SMS")
+					return fmt.Errorf("Could not disable Two-Factor Authentication via SMS: %w", err)
 				}
 			} else if app {
 				_, err := c.Service.DisableApp(token)
 				if err != nil {
-					return errors.Wrap(err, "Could not disable Two-Factor Authentication via App")
+					return fmt.Errorf("Could not disable Two-Factor Authentication via App: %w", err)
 				}
 			}
 			fmt.Println("Two factor authentication successfully disabled.")

@@ -21,8 +21,9 @@
 package ssh
 
 import (
+	"fmt"
+
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -51,7 +52,7 @@ func (c *Client) Update() *cobra.Command {
 			}
 			sshKey, _, err := c.Service.Update(sshKeyID, req)
 			if err != nil {
-				return errors.Wrap(err, "Could not update SSH Key")
+				return fmt.Errorf("Could not update SSH Key: %w", err)
 			}
 
 			data := make([][]string, 1)

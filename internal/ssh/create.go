@@ -21,8 +21,9 @@
 package ssh
 
 import (
+	"fmt"
+
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -48,7 +49,7 @@ func (c *Client) Create() *cobra.Command {
 
 			s, _, err := c.Service.Create(&req)
 			if err != nil {
-				return errors.Wrap(err, "Could not create SSHKey")
+				return fmt.Errorf("Could not create SSHKey: %w", err)
 			}
 
 			data := make([][]string, 1)

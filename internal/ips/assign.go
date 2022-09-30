@@ -21,10 +21,10 @@
 package ips
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -46,7 +46,7 @@ func (c *Client) Assign() *cobra.Command {
 			cmd.SilenceUsage = true
 			assignment, _, err := c.DeviceService.Assign(deviceID, &packngo.AddressStruct{Address: address})
 			if err != nil {
-				return errors.Wrap(err, "Could not assign Device IP address")
+				return fmt.Errorf("Could not assign Device IP address: %w", err)
 			}
 
 			data := make([][]string, 1)

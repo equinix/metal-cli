@@ -21,10 +21,10 @@
 package gateway
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -54,7 +54,7 @@ func (c *Client) Create() *cobra.Command {
 
 			n, _, err := c.Service.Create(projectID, req)
 			if err != nil {
-				return errors.Wrap(err, "Could not create Metal Gateway")
+				return fmt.Errorf("Could not create Metal Gateway: %w", err)
 			}
 
 			data := make([][]string, 1)

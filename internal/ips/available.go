@@ -21,8 +21,9 @@
 package ips
 
 import (
+	"fmt"
+
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +43,7 @@ func (c *Client) Available() *cobra.Command {
 			cmd.SilenceUsage = true
 			result, _, err := c.ProjectService.AvailableAddresses(reservationID, &packngo.AvailableRequest{CIDR: cidr})
 			if err != nil {
-				return errors.Wrap(err, "Could not get available IP addresses")
+				return fmt.Errorf("Could not get available IP addresses: %w", err)
 			}
 			data := make([][]string, len(result))
 			for i, r := range result {

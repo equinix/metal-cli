@@ -23,7 +23,6 @@ package ips
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +40,7 @@ func (c *Client) Remove() *cobra.Command {
 			cmd.SilenceUsage = true
 			_, err := c.ProjectService.Remove(reservationID)
 			if err != nil {
-				return errors.Wrap(err, "Could not remove IP address Reservation")
+				return fmt.Errorf("Could not remove IP address Reservation: %w", err)
 			}
 
 			fmt.Println("IP reservation removed successfully.")

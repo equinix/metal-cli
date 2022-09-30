@@ -21,7 +21,10 @@
 package capacity
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
+
+	"errors"
+
 	"github.com/spf13/cobra"
 )
 
@@ -77,7 +80,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			capacities, _, err := lister()
 			if err != nil {
-				return errors.Wrap(err, "Could not get Capacity")
+				return fmt.Errorf("Could not get Capacity: %w", err)
 			}
 
 			header := []string{locationField, "Plan", "Level"}

@@ -24,7 +24,6 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -69,8 +68,10 @@ func (c *Client) Delete() *cobra.Command {
 					return nil
 				}
 			}
-
-			return errors.Wrap(deleteOrganization(organizationID), "Could not delete Organization")
+			if err := deleteOrganization(organizationID); err != nil {
+				return fmt.Errorf("Could not delete Organization: %w", err)
+			}
+			return nil
 		},
 	}
 

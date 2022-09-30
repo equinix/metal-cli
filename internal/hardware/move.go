@@ -21,7 +21,8 @@
 package hardware
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +41,7 @@ func (c *Client) Move() *cobra.Command {
 			header := []string{"ID", "Facility", "Plan", "Created"}
 			r, _, err := c.Service.Move(hardwareReservationID, projectID)
 			if err != nil {
-				return errors.Wrap(err, "Could not move Hardware Reservation")
+				return fmt.Errorf("Could not move Hardware Reservation: %w", err)
 			}
 
 			data := make([][]string, 1)

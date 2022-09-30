@@ -10,19 +10,29 @@ This repository is [Maintained](https://github.com/packethost/standards/blob/mas
 
 ## Table of Contents
 
-* [Equinix Metal Command Line Interface](#metal-command-line-interface)
-* [Requirements](#requirements)
-* [Supported Platforms](#supported-platforms)
-* [Installation](#installation)
-  * [Install binary from Source](#install-binary-from-source)
-  * [Install binary from Release Download](#install-binary-from-release-download)
-  * [Install via Homebrew](#install-via-homebrew)
-  * [Configuring your Path](#configuring-your-path)
-  * [Shell Completion](#shell-completion)
-* [Authentication](#authentication)
-* [Reference](#reference)
-* [Example Syntax](#example-syntax)
-* [Support](#support)
+- [metal-cli](#metal-cli)
+  - [Table of Contents](#table-of-contents)
+  - [Equinix Metal Command Line Interface](#equinix-metal-command-line-interface)
+  - [Requirements](#requirements)
+  - [Supported Platforms](#supported-platforms)
+  - [Installation](#installation)
+    - [Install binary from Source](#install-binary-from-source)
+    - [Install binary from Release Download](#install-binary-from-release-download)
+    - [Install via Homebrew](#install-via-homebrew)
+    - [Configuring your Path](#configuring-your-path)
+  - [Linux](#linux)
+    - [Mac OS X](#mac-os-x)
+    - [Windows](#windows)
+    - [Shell Completion](#shell-completion)
+  - [Authentication](#authentication)
+  - [Includes and Excludes](#includes-and-excludes)
+  - [Reference](#reference)
+  - [Example Syntax](#example-syntax)
+    - [Create a device](#create-a-device)
+    - [Get a device](#get-a-device)
+    - [List projects](#list-projects)
+    - [Get a project](#get-a-project)
+  - [Support](#support)
 
 ## Equinix Metal Command Line Interface
 
@@ -32,8 +42,8 @@ The Equinix Metal CLI wraps the [Equinix Metal Go SDK](https://github.com/packet
 
 ## Requirements
 
-* Equinix Metal authentication token.
-* Equinix Metal CLI [binaries](https://github.com/equinix/metal-cli/releases).
+- Equinix Metal authentication token.
+- Equinix Metal CLI [binaries](https://github.com/equinix/metal-cli/releases).
 
 ## Supported Platforms
 
@@ -43,7 +53,7 @@ The [Equinix Metal CLI binaries](https://github.com/equinix/metal-cli/releases) 
 
 ### Install binary from Source
 
-If you have `go` 1.16 or later installed, you can build and install the latest version with:
+If you have `go` 1.19 or later installed, you can build and install the latest version with:
 
 ```sh
 go install github.com/equinix/metal-cli/cmd/metal@latest
@@ -55,7 +65,6 @@ You can find the installed executable/binary in either `$GOPATH/bin` or `$HOME/g
 
 Download the appropriate Equinix Metal CLI binaries for your platform to the desired location,`chmod` it and rename it to `metal`.
 
-
 ### Install via Homebrew
 
 If you prefer installing via Homebrew, you can run the following:
@@ -64,6 +73,7 @@ If you prefer installing via Homebrew, you can run the following:
 brew tap equinix/homebrew-tap
 brew install metal-cli
 ```
+
 ### Configuring your Path
 
 If the directory where your binaries were installed is not already in your `PATH` environment variable, then it will need to be added.
@@ -165,6 +175,7 @@ The path can be viewed by running:
 ```sh
 echo $env:Path
 ```
+
 </details>
 
 ### Shell Completion
@@ -255,5 +266,5 @@ Details on all available commands can be found by visiting the reference [pages]
 
 For help with this package:
 
-* Open up a GitHub issue [here](https://github.com/equinix/metal-cli/issues).
-* Contact the [Equinix Metal Community Slack](http://slack.equinixmetal.net) or on Freenode IRC in the #equinixmetal channel.
+- Open up a GitHub issue [here](https://github.com/equinix/metal-cli/issues).
+- Contact the [Equinix Metal Community Slack](http://slack.equinixmetal.net) or on Freenode IRC in the #equinixmetal channel.

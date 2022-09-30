@@ -24,7 +24,6 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -70,7 +69,10 @@ func (c *Client) Delete() *cobra.Command {
 					return nil
 				}
 			}
-			return errors.Wrap(deleteVnet(vnetID), "Could not delete Virtual Network")
+			if err := deleteVnet(vnetID); err != nil {
+				return fmt.Errorf("Could not delete Virtual Network: %w", err)
+			}
+			return nil
 		},
 	}
 

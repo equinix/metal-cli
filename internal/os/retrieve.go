@@ -21,9 +21,9 @@
 package os
 
 import (
+	"fmt"
 	"sort"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +40,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			cmd.SilenceUsage = true
 			oss, _, err := c.Service.List()
 			if err != nil {
-				return errors.Wrap(err, "Could not list OperatingSystems")
+				return fmt.Errorf("Could not list OperatingSystems: %w", err)
 			}
 
 			sort.Slice(oss, func(a, b int) bool {

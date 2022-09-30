@@ -21,8 +21,9 @@
 package projects
 
 import (
+	"fmt"
+
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -51,7 +52,7 @@ func (c *Client) Update() *cobra.Command {
 			}
 			p, _, err := c.ProjectService.Update(projectID, req)
 			if err != nil {
-				return errors.Wrap(err, "Could not update Project")
+				return fmt.Errorf("Could not update Project: %w", err)
 			}
 
 			data := make([][]string, 1)

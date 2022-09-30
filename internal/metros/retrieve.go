@@ -21,7 +21,8 @@
 package metros
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -39,7 +40,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			cmd.SilenceUsage = true
 			metros, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
 			if err != nil {
-				return errors.Wrap(err, "Could not list Metros")
+				return fmt.Errorf("Could not list Metros: %w", err)
 			}
 			data := make([][]string, len(metros))
 

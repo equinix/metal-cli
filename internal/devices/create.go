@@ -22,11 +22,10 @@ package devices
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -73,9 +72,9 @@ func (c *Client) Create() *cobra.Command {
 			cmd.SilenceUsage = true
 
 			if userdataFile != "" {
-				userdataRaw, readErr := ioutil.ReadFile(userdataFile)
+				userdataRaw, readErr := os.ReadFile(userdataFile)
 				if readErr != nil {
-					return errors.Wrap(readErr, "Could not read userdata-file")
+					return fmt.Errorf("Could not read userdata-file: %w", readErr)
 				}
 				userdata = string(userdataRaw)
 			}
@@ -83,7 +82,7 @@ func (c *Client) Create() *cobra.Command {
 			if terminationTime != "" {
 				parsedTime, err := time.Parse(time.RFC3339, terminationTime)
 				if err != nil {
-					return errors.Wrap(err, fmt.Sprintf("Could not parse time %q", terminationTime))
+					return fmt.Errorf("Could not parse time %q: %w", terminationTime, err)
 				}
 				endDt = &packngo.Timestamp{Time: parsedTime}
 			}
@@ -115,7 +114,7 @@ func (c *Client) Create() *cobra.Command {
 
 			device, _, err := c.Service.Create(request)
 			if err != nil {
-				return errors.Wrap(err, "Could not create Device")
+				return fmt.Errorf("Could not create Device: %w", err)
 			}
 
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}

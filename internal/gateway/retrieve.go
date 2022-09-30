@@ -21,9 +21,9 @@
 package gateway
 
 import (
+	"fmt"
 	"strconv"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -45,7 +45,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			listOpts := c.Servicer.ListOptions(nil, nil).Including("virtual_network", "ip_reservation")
 			gways, _, err := c.Service.List(projectID, listOpts)
 			if err != nil {
-				return errors.Wrap(err, "Could not list Project Metal Gateways")
+				return fmt.Errorf("Could not list Project Metal Gateways: %w", err)
 			}
 
 			data := make([][]string, len(gways))
