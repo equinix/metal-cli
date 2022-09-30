@@ -68,7 +68,7 @@ generate-docs: clean-docs
 	go run ./cmd/metal docs ./docs
 
 test:
-	go test ./tests
+	go test -v ./...
 
 
 ## --------------------------------------
