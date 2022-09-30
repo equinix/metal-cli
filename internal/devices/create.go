@@ -22,7 +22,7 @@ package devices
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/packethost/packngo"
@@ -73,7 +73,7 @@ func (c *Client) Create() *cobra.Command {
 			cmd.SilenceUsage = true
 
 			if userdataFile != "" {
-				userdataRaw, readErr := ioutil.ReadFile(userdataFile)
+				userdataRaw, readErr := os.ReadFile(userdataFile)
 				if readErr != nil {
 					return errors.Wrap(readErr, "Could not read userdata-file")
 				}

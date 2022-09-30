@@ -23,7 +23,6 @@ package init
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"syscall"
@@ -167,7 +166,7 @@ func writeConfig(config string, b []byte) error {
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return fmt.Errorf("could not make directory %q: %s", dir, err)
 	}
-	return ioutil.WriteFile(config, b, 0o600)
+	return os.WriteFile(config, b, 0o600)
 }
 
 type Servicer interface {

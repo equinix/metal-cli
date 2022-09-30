@@ -26,7 +26,7 @@ TOOLS_BIN_DIR := $(abspath $(TOOLS_DIR)/bin)
 
 
 # Binaries.
-GOLANGCI_LINT_VER := v1.43
+GOLANGCI_LINT_VER := v1.49
 GOLANGCI_LINT_BIN := golangci-lint
 GOLANGCI_LINT := $(TOOLS_BIN_DIR)/$(GOLANGCI_LINT_BIN)-$(GOLANGCI_LINT_VER)
 
@@ -77,3 +77,4 @@ test:
 
 $(GOLANGCI_LINT): ## Build golangci-lint from tools folder.
 	GOBIN=$(TOOLS_BIN_DIR) $(GO_INSTALL) github.com/golangci/golangci-lint/cmd/golangci-lint $(GOLANGCI_LINT_BIN) $(GOLANGCI_LINT_VER)
+golangci-lint: $(LINTER)
