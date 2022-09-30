@@ -25,11 +25,9 @@ builds:
     - arm
     - arm64
   goarm:
-    - 6
-    - 7
-  ignore:
-    - goos: windows
-      goarch: arm64
+    - "6"
+    - "7"
+
 archives:
 - format: binary
   name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
