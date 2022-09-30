@@ -21,9 +21,9 @@
 package vlan
 
 import (
+	"fmt"
 	"strconv"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -43,7 +43,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			cmd.SilenceUsage = true
 			vnets, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))
 			if err != nil {
-				return errors.Wrap(err, "Could not list Project Virtual Networks")
+				return fmt.Errorf("Could not list Project Virtual Networks: %w", err)
 			}
 
 			data := make([][]string, len(vnets.VirtualNetworks))

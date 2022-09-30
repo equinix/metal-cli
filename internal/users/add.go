@@ -21,11 +21,11 @@
 package users
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -54,7 +54,7 @@ func (c *Client) Add() *cobra.Command {
 			}
 			invitation, _, err := c.InvitationService.Create(organizationID, createRequest, getOpts)
 			if err != nil {
-				return errors.Wrap(err, "Could not add Users")
+				return fmt.Errorf("Could not add Users: %w", err)
 			}
 
 			data := make([][]string, 1)

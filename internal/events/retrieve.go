@@ -25,7 +25,6 @@ import (
 
 	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -72,22 +71,22 @@ func (c *Client) Retrieve() *cobra.Command {
 			} else if deviceID != "" {
 				events, _, err = c.DeviceService.ListEvents(deviceID, listOpt)
 				if err != nil {
-					return errors.Wrap(err, "Could not list Device Events")
+					return fmt.Errorf("Could not list Device Events: %w", err)
 				}
 			} else if projectID != "" {
 				events, _, err = c.ProjectService.ListEvents(projectID, listOpt)
 				if err != nil {
-					return errors.Wrap(err, "Could not list Project Events")
+					return fmt.Errorf("Could not list Project Events: %w", err)
 				}
 			} else if organizationID != "" {
 				events, _, err = c.OrganizationService.ListEvents(organizationID, listOpt)
 				if err != nil {
-					return errors.Wrap(err, "Could not list Organization Events")
+					return fmt.Errorf("Could not list Organization Events: %w", err)
 				}
 			} else if eventID != "" {
 				event, _, err := c.EventService.Get(eventID, listOpt)
 				if err != nil {
-					return errors.Wrap(err, "Could not get Event")
+					return fmt.Errorf("Could not get Event: %w", err)
 				}
 				data := make([][]string, 1)
 
@@ -96,7 +95,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			} else {
 				events, _, err = c.EventService.List(listOpt)
 				if err != nil {
-					return errors.Wrap(err, "Could not list Events")
+					return fmt.Errorf("Could not list Events: %w", err)
 				}
 			}
 

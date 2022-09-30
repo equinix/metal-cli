@@ -21,7 +21,8 @@
 package organizations
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +41,7 @@ func (c *Client) PaymentMethods() *cobra.Command {
 			cmd.SilenceUsage = true
 			paymentMethods, _, err := c.Service.ListPaymentMethods(organizationID)
 			if err != nil {
-				return errors.Wrap(err, "Could not list Payment Methods")
+				return fmt.Errorf("Could not list Payment Methods: %w", err)
 			}
 
 			data := make([][]string, len(paymentMethods))

@@ -21,10 +21,10 @@
 package vlan
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -58,7 +58,7 @@ func (c *Client) Create() *cobra.Command {
 
 			n, _, err := c.Service.Create(req)
 			if err != nil {
-				return errors.Wrap(err, "Could not create ProjectVirtualNetwork")
+				return fmt.Errorf("Could not create ProjectVirtualNetwork: %w", err)
 			}
 
 			data := make([][]string, 1)

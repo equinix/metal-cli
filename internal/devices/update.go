@@ -21,8 +21,9 @@
 package devices
 
 import (
+	"fmt"
+
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 
 	"github.com/spf13/cobra"
 )
@@ -86,7 +87,7 @@ func (c *Client) Update() *cobra.Command {
 
 			device, _, err := c.Service.Update(deviceID, req)
 			if err != nil {
-				return errors.Wrap(err, "Could not update Device")
+				return fmt.Errorf("Could not update Device: %w", err)
 			}
 
 			header := []string{"ID", "Hostname", "OS", "State"}

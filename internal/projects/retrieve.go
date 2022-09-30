@@ -25,7 +25,6 @@ import (
 
 	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -65,7 +64,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			if projectID == "" {
 				projects, _, err := c.ProjectService.List(listOpts)
 				if err != nil {
-					return errors.Wrap(err, "Could not list Projects")
+					return fmt.Errorf("Could not list Projects: %w", err)
 				}
 
 				var data [][]string
@@ -93,7 +92,7 @@ func (c *Client) Retrieve() *cobra.Command {
 				getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
 				p, _, err := c.ProjectService.Get(projectID, getOpts)
 				if err != nil {
-					return errors.Wrap(err, "Could not get Project")
+					return fmt.Errorf("Could not get Project: %w", err)
 				}
 
 				data := make([][]string, 1)

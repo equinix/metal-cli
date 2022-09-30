@@ -21,7 +21,8 @@
 package plans
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +39,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			cmd.SilenceUsage = true
 			plans, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
 			if err != nil {
-				return errors.Wrap(err, "Could not list Plans")
+				return fmt.Errorf("Could not list Plans: %w", err)
 			}
 
 			data := make([][]string, len(plans))

@@ -21,10 +21,10 @@
 package projects
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -51,7 +51,7 @@ func (c *Client) BGPEnable() *cobra.Command {
 
 			p, err := c.BGPConfigService.Create(projectID, req)
 			if err != nil {
-				return errors.Wrap(err, "Could not update Project")
+				return fmt.Errorf("Could not update Project: %w", err)
 			}
 
 			data := make([][]string, 1)

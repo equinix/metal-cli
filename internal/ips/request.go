@@ -21,10 +21,10 @@
 package ips
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -59,7 +59,7 @@ func (c *Client) Request() *cobra.Command {
 
 			reservation, _, err := c.ProjectService.Request(projectID, req)
 			if err != nil {
-				return errors.Wrap(err, "Could not request IP addresses")
+				return fmt.Errorf("Could not request IP addresses: %w", err)
 			}
 
 			data := make([][]string, 1)

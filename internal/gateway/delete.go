@@ -24,7 +24,6 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -70,7 +69,10 @@ func (c *Client) Delete() *cobra.Command {
 					return nil
 				}
 			}
-			return errors.Wrap(deleteGway(gwayID), "Could not delete Metal Gateway")
+			if err := deleteGway(gwayID); err != nil {
+				return fmt.Errorf("Could not delete Metal Gateway: %w", err)
+			}
+			return nil
 		},
 	}
 

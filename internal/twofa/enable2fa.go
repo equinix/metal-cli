@@ -23,7 +23,6 @@ package twofa
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -51,12 +50,12 @@ func (c *Client) Enable() *cobra.Command {
 			if sms {
 				_, err := c.Service.EnableSms(token)
 				if err != nil {
-					return errors.Wrap(err, "Could not enable Two-Factor Authentication")
+					return fmt.Errorf("Could not enable Two-Factor Authentication: %w", err)
 				}
 			} else if app {
 				_, err := c.Service.EnableApp(token)
 				if err != nil {
-					return errors.Wrap(err, "Could not enable Two-Factor Authentication")
+					return fmt.Errorf("Could not enable Two-Factor Authentication: %w", err)
 				}
 			}
 			fmt.Println("Two factor authentication successfully enabled.")

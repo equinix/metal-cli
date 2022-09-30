@@ -24,7 +24,6 @@ import (
 	"fmt"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -67,7 +66,7 @@ func (c *Client) Retrieve() *cobra.Command {
 				}
 				sshKeys, _, err := listFn()
 				if err != nil {
-					return errors.Wrap(err, "Could not list SSH Keys")
+					return fmt.Errorf("Could not list SSH Keys: %w", err)
 				}
 
 				data := make([][]string, len(sshKeys))
@@ -81,7 +80,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			} else {
 				sshKey, _, err := c.Service.Get(sshKeyID, nil)
 				if err != nil {
-					return errors.Wrap(err, "Could not get SSH Key")
+					return fmt.Errorf("Could not get SSH Key: %w", err)
 				}
 
 				data := make([][]string, 1)

@@ -21,11 +21,11 @@
 package projects
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -45,7 +45,7 @@ func (c *Client) BGPSessions() *cobra.Command {
 			getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
 			p, _, err := c.BGPConfigService.Get(projectID, getOpts)
 			if err != nil {
-				return errors.Wrap(err, "Could not get Project BGP Sessions")
+				return fmt.Errorf("Could not get Project BGP Sessions: %w", err)
 			}
 
 			data := make([][]string, len(p.Sessions))

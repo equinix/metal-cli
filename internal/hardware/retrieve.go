@@ -25,7 +25,6 @@ import (
 
 	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -66,7 +65,7 @@ func (c *Client) Retrieve() *cobra.Command {
 				getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
 				r, _, err := c.Service.Get(hardwareReservationID, getOpts)
 				if err != nil {
-					return errors.Wrap(err, "Could not get Hardware Reservation")
+					return fmt.Errorf("Could not get Hardware Reservation: %w", err)
 				}
 
 				data := make([][]string, 1)
@@ -78,7 +77,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			reservations, _, err := c.Service.List(projectID, listOpt)
 			if err != nil {
-				return errors.Wrap(err, "Could not list Hardware Reservations")
+				return fmt.Errorf("Could not list Hardware Reservations: %w", err)
 			}
 
 			data := make([][]string, len(reservations))

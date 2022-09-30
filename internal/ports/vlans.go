@@ -21,10 +21,11 @@
 package ports
 
 import (
+	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -72,7 +73,7 @@ func (c *Client) Vlans() *cobra.Command {
 			}
 			batch, _, err := c.VLANService.CreateBatch(portID, req, getOpts)
 			if err != nil {
-				return errors.Wrap(err, "Could not update port VLAN assignments")
+				return fmt.Errorf("Could not update port VLAN assignments: %w", err)
 			}
 
 			// TODO: should we return the batch?

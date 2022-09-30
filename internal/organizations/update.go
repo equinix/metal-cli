@@ -21,8 +21,9 @@
 package organizations
 
 import (
+	"fmt"
+
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -58,7 +59,7 @@ func (c *Client) Update() *cobra.Command {
 
 			org, _, err := c.Service.Update(organizationID, req)
 			if err != nil {
-				return errors.Wrap(err, "Could not update Organization")
+				return fmt.Errorf("Could not update Organization: %w", err)
 			}
 
 			data := make([][]string, 1)

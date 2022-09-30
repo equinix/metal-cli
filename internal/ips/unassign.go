@@ -23,7 +23,6 @@ package ips
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +40,7 @@ func (c *Client) Unassign() *cobra.Command {
 			cmd.SilenceUsage = true
 			_, err := c.DeviceService.Unassign(assignmentID)
 			if err != nil {
-				return errors.Wrap(err, "Could not unassign IP address")
+				return fmt.Errorf("Could not unassign IP address: %w", err)
 			}
 
 			fmt.Println("IP address unassigned successfully.")

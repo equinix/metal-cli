@@ -23,7 +23,6 @@ package devices
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +40,7 @@ func (c *Client) Reboot() *cobra.Command {
 			cmd.SilenceUsage = true
 			_, err := c.Service.Reboot(deviceID)
 			if err != nil {
-				return errors.Wrap(err, "Could not reboot Device")
+				return fmt.Errorf("Could not reboot Device: %w", err)
 			}
 
 			fmt.Println("Device", deviceID, "successfully rebooted.")

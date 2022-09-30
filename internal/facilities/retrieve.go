@@ -21,9 +21,9 @@
 package facilities
 
 import (
+	"fmt"
 	"strings"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +40,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			cmd.SilenceUsage = true
 			facilities, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
 			if err != nil {
-				return errors.Wrap(err, "Could not list Facilities")
+				return fmt.Errorf("Could not list Facilities: %w", err)
 			}
 			data := make([][]string, len(facilities))
 

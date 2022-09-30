@@ -23,7 +23,6 @@ package devices
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +40,7 @@ func (c *Client) Start() *cobra.Command {
 			cmd.SilenceUsage = true
 			_, err := c.Service.PowerOn(deviceID)
 			if err != nil {
-				return errors.Wrap(err, "Could not start Device")
+				return fmt.Errorf("Could not start Device: %w", err)
 			}
 
 			fmt.Println("Device", deviceID, "successfully started.")

@@ -21,8 +21,9 @@
 package projects
 
 import (
+	"fmt"
+
 	"github.com/packethost/packngo"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -60,7 +61,7 @@ func (c *Client) Create() *cobra.Command {
 
 			p, _, err := c.ProjectService.Create(&req)
 			if err != nil {
-				return errors.Wrap(err, "Could not create Project")
+				return fmt.Errorf("Could not create Project: %w", err)
 			}
 
 			data := make([][]string, 1)

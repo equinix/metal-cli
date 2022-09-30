@@ -23,7 +23,6 @@ package twofa
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -50,7 +49,7 @@ func (c *Client) Receive() *cobra.Command {
 			if sms {
 				_, err := c.Service.ReceiveSms()
 				if err != nil {
-					return errors.Wrap(err, "Could not issue token via SMS")
+					return fmt.Errorf("Could not issue token via SMS: %w", err)
 				}
 
 				fmt.Println("SMS token sent to your phone")
@@ -59,7 +58,7 @@ func (c *Client) Receive() *cobra.Command {
 
 			otpURI, _, err := c.Service.SeedApp()
 			if err != nil {
-				return errors.Wrap(err, "Could not get the OTP Seed URI")
+				return fmt.Errorf("Could not get the OTP Seed URI: %w", err)
 			}
 
 			data := make([][]string, 1)
