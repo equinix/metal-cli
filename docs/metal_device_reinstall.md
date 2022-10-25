@@ -1,15 +1,22 @@
-## metal device
+## metal device reinstall
 
-Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
+Reinstalls a device.
 
 ### Synopsis
 
-Device operations: create, get, update, delete, reinstall, start, stop, and reboot.
+Reinstalls the provided device. The ID of the device to reinstall is required.
+
+```
+metal device reinstall -d <device-id> [flags]
+```
 
 ### Options
 
 ```
-  -h, --help   help for device
+  -h, --help                      help for reinstall
+  -d, --id string                 ID of device to be reinstalled
+  -O, --operating-system string   Operating system name for the device
+      --preserve-data             Avoid wiping data on disks where the os is *not* to be installed into
 ```
 
 ### Options inherited from parent commands
@@ -28,13 +35,5 @@ Device operations: create, get, update, delete, reinstall, start, stop, and rebo
 
 ### SEE ALSO
 
-* [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal device create](metal_device_create.md)	 - Creates a device.
-* [metal device delete](metal_device_delete.md)	 - Deletes a device.
-* [metal device get](metal_device_get.md)	 - Retrieves device list or device details.
-* [metal device reboot](metal_device_reboot.md)	 - Reboots a device.
-* [metal device reinstall](metal_device_reinstall.md)	 - Reinstalls a device.
-* [metal device start](metal_device_start.md)	 - Starts a device.
-* [metal device stop](metal_device_stop.md)	 - Stops a device.
-* [metal device update](metal_device_update.md)	 - Updates a device.
+* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
 
