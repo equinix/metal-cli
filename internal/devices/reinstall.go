@@ -21,58 +21,45 @@
 package devices
 
 import (
-	"github.com/equinix/metal-cli/internal/outputs"
+	"fmt"
+
 	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
-type Client struct {
-	Servicer Servicer
-	Service  packngo.DeviceService
-	Out      outputs.Outputer
-}
+func (c *Client) Reinstall() *cobra.Command {
+	var (
+		id string
 
-func (c *Client) NewCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     `device`,
-		Aliases: []string{"server", "servers", "devices"},
-		Short:   "Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.",
-		Long:    "Device operations: create, get, update, delete, reinstall, start, stop, and reboot.",
+		operatingSystem string
+		preserveData    bool
+	)
 
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			if root := cmd.Root(); root != nil {
-				if root.PersistentPreRun != nil {
-					root.PersistentPreRun(cmd, args)
-				}
+	reinstallDeviceCmd := &cobra.Command{
+		Use:   `reinstall -d <device-id>`,
+		Short: "Reinstalls a device.",
+		Long:  "Reinstalls the provided device. The ID of the device to reinstall is required.",
+		RunE: func(cmd *cobra.Command, args []string) error {
+
+			request := packngo.DeviceReinstallFields{
+				OperatingSystem: "",
+				PreserveData:    preserveData,
+				DeprovisionFast: preserveData,
 			}
 
-			c.Service = c.Servicer.API(cmd).Devices
+			_, err := c.Service.Reinstall(id, &request)
+			if err != nil {
+				err = fmt.Errorf("Could not reinstall Device: %w", err)
+			}
+
+			return err
 		},
 	}
+	reinstallDeviceCmd.Flags().StringVarP(&id, "id", "d", "", "ID of device to be reinstalled")
+	_ = reinstallDeviceCmd.MarkFlagRequired("id")
 
-	cmd.AddCommand(
-		c.Retrieve(),
-		c.Create(),
-		c.Delete(),
-		c.Update(),
-		c.Reboot(),
-		c.Reinstall(),
-		c.Start(),
-		c.Stop(),
-	)
-	return cmd
-}
+	reinstallDeviceCmd.Flags().StringVarP(&operatingSystem, "operating-system", "O", "", "Operating system name for the device")
+	reinstallDeviceCmd.Flags().BoolVarP(&preserveData, "preserve-data", "", false, "Avoid wiping data on disks where the os is *not* to be installed into")
 
-type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
-	Config(cmd *cobra.Command) *viper.Viper
-}
-
-func NewClient(s Servicer, out outputs.Outputer) *Client {
-	return &Client{
-		Servicer: s,
-		Out:      out,
-	}
+	return reinstallDeviceCmd
 }
