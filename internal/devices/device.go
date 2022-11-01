@@ -37,8 +37,8 @@ func (c *Client) NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     `device`,
 		Aliases: []string{"server", "servers", "devices"},
-		Short:   "Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.",
-		Long:    "Device operations: create, get, update, delete, reinstall, start, stop, and reboot.",
+		Short:   "Device operations: create, get, update, delete, reinstall, start, stop, and reboot.",
+		Long:    "Device operations that control server provisioning, metadata, and basic operations.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
