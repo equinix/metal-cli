@@ -1,10 +1,10 @@
 ## metal device
 
-Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
+Device operations: create, get, update, delete, reinstall, start, stop, and reboot.
 
 ### Synopsis
 
-Device operations: create, get, update, delete, reinstall, start, stop, and reboot.
+Device operations that control server provisioning, metadata, and basic operations.
 
 ### Options
 

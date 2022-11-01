@@ -24,14 +24,14 @@ Command line interface for Equinix Metal
 ### SEE ALSO
 
 * [metal 2fa](metal_2fa.md)	 - Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.
-* [metal capacity](metal_capacity.md)	 - Capacity operations. For more information on capacity in metros, visit https://metal.equinix.com/developers/docs/locations/metros/. For more information on capacity in facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/.
+* [metal capacity](metal_capacity.md)	 - Capacity operations: get, check
 * [metal completion](metal_completion.md)	 - Generates completion scripts.
-* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
+* [metal device](metal_device.md)	 - Device operations: create, get, update, delete, reinstall, start, stop, and reboot.
 * [metal docs](metal_docs.md)	 - Generate command markdown documentation.
 * [metal emdocs](metal_emdocs.md)	 - Generates single-page reference documentation.
 * [metal env](metal_env.md)	 - Prints or generates environment variables.
-* [metal event](metal_event.md)	 - Events operations for organizations, projects, devices, and the current user.
-* [metal facilities](metal_facilities.md)	 - Facility operations. For more information on Equinix Metal facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/. 
+* [metal event](metal_event.md)	 - Events operations: get.
+* [metal facilities](metal_facilities.md)	 - Facility operations: get.
 * [metal gateway](metal_gateway.md)	 - Metal Gateways. For more information on Metal Gateways, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.
 * [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations. Information on reserving hardware on Equinix Metal is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
 * [metal init](metal_init.md)	 - Create a configuration file.

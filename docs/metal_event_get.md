@@ -55,5 +55,5 @@ metal event get [-p <project_id>] | [-d <device_id>] | [-i <event_id>] | [-O <or
 
 ### SEE ALSO
 
-* [metal event](metal_event.md)	 - Events operations for organizations, projects, devices, and the current user.
+* [metal event](metal_event.md)	 - Events operations: get.
 
