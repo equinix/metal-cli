@@ -38,8 +38,8 @@ func (c *Client) NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     `project`,
 		Aliases: []string{"projects"},
-		Short:   "Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.",
-		Long:    "Project operations: create, get, update, and delete.",
+		Short:   "Project operations: create, get, update, delete, and bgpenable, bgpconfig, bgpsessions.",
+		Long:    "Information and management for Projects and Project-level BGP. Documentation on Projects is on https://metal.equinix.com/developers/docs/accounts/projects/, and documentation on BGP is on https://metal.equinix.com/developers/docs/bgp/bgp-on-equinix-metal/.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
