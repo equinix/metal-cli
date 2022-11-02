@@ -37,8 +37,8 @@ func (c *Client) NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     `port`,
 		Aliases: []string{"ports"},
-		Short:   "Port operations. For more information on the different Equinix Metal ports and VLANs, visit https://metal.equinix.com/developers/docs/layer2-networking/overview/.",
-		Long:    "Port operations: get convert vlans.",
+		Short:   "Port operations: get, convert, vlans.",
+		Long:    "Information and operations for converting ports between networking modes and managing VLAN assignments to ports. For more information on the different modes, ports, and VLANs, visit https://metal.equinix.com/developers/docs/layer2-networking/overview/.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {
