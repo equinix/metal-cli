@@ -1,10 +1,10 @@
 ## metal metros
 
-Metro operations. For more information on Equinix Metal metros and availability, visit https://metal.equinix.com/developers/docs/locations/metros/.
+Metro operations: get.
 
 ### Synopsis
 
-Metro operations: get.
+Get information on Metro locations. For more information on https://metal.equinix.com/developers/docs/locations/metros/.
 
 ### Options
 

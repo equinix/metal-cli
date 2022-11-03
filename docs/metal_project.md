@@ -1,10 +1,10 @@
 ## metal project
 
-Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
+Project operations: create, get, update, delete, and bgpenable, bgpconfig, bgpsessions.
 
 ### Synopsis
 
-Project operations: create, get, update, and delete.
+Information and management for Projects and Project-level BGP. Documentation on Projects is on https://metal.equinix.com/developers/docs/accounts/projects/, and documentation on BGP is on https://metal.equinix.com/developers/docs/bgp/bgp-on-equinix-metal/.
 
 ### Options
 

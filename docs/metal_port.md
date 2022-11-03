@@ -1,10 +1,10 @@
 ## metal port
 
-Port operations. For more information on the different Equinix Metal ports and VLANs, visit https://metal.equinix.com/developers/docs/layer2-networking/overview/.
+Port operations: get, convert, vlans.
 
 ### Synopsis
 
-Port operations: get convert vlans.
+Information and operations for converting ports between networking modes and managing VLAN assignments to ports. For more information on the different modes, ports, and VLANs, visit https://metal.equinix.com/developers/docs/layer2-networking/overview/.
 
 ### Options
 

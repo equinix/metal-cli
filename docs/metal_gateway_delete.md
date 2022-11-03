@@ -46,5 +46,5 @@ metal gateway delete -i <metal_gateway_UUID> [-f] [flags]
 
 ### SEE ALSO
 
-* [metal gateway](metal_gateway.md)	 - Metal Gateways. For more information on Metal Gateways, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.
+* [metal gateway](metal_gateway.md)	 - Metal Gateway operations: create, delete, and retrieve.
 

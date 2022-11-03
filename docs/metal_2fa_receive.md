@@ -44,5 +44,5 @@ metal 2fa receive (-s | -a) [flags]
 
 ### SEE ALSO
 
-* [metal 2fa](metal_2fa.md)	 - Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.
+* [metal 2fa](metal_2fa.md)	 - Two-factor Authentication operations: receive, enable, disable.
 

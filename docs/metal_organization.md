@@ -1,10 +1,10 @@
 ## metal organization
 
-Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.
+Organization operations: create, get, update, payment-methods, and delete.
 
 ### Synopsis
 
-Organization operations: create, get, update, payment-methods, and delete.
+Information and management of Organization-level settings. Documentation on organizations is in https://metal.equinix.com/developers/docs/accounts/organizations/.
 
 ### Options
 

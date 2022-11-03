@@ -1,10 +1,10 @@
 ## metal user
 
-User operations. For more information on user and account management, visit https://metal.equinix.com/developers/docs/accounts/users/ in the Equinix Metal documentation.
+User operations: get and add.
 
 ### Synopsis
 
-User operations: get and add.
+Adding users or getting their details. For more information on user and account management, visit https://metal.equinix.com/developers/docs/accounts/users/ in the Equinix Metal documentation.
 
 ### Options
 

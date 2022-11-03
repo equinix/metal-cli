@@ -39,5 +39,5 @@ metal operating-systems get [flags]
 
 ### SEE ALSO
 
-* [metal operating-systems](metal_operating-systems.md)	 - Operating system operations. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.
+* [metal operating-systems](metal_operating-systems.md)	 - Operating system operations: get.
 

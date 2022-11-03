@@ -40,5 +40,5 @@ metal port get -i <port_UUID> [flags]
 
 ### SEE ALSO
 
-* [metal port](metal_port.md)	 - Port operations. For more information on the different Equinix Metal ports and VLANs, visit https://metal.equinix.com/developers/docs/layer2-networking/overview/.
+* [metal port](metal_port.md)	 - Port operations: get, convert, vlans.
 

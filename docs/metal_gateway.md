@@ -1,10 +1,10 @@
 ## metal gateway
 
-Metal Gateways. For more information on Metal Gateways, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.
+Metal Gateway operations: create, delete, and retrieve.
 
 ### Synopsis
 
-Metal Gateway operations: create, delete, and retrieve.
+A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For more information, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.
 
 ### Options
 
