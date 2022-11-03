@@ -2,7 +2,7 @@
 
 **Description**
 
-Two-factor Authentication operations: receive, enable, disable.
+Enable or disable two-factor authentication on your user account or receive an OTP token. More information is available at https://metal.equinix.com/developers/docs/accounts/users/#multi-factor-authentication.
 
 **Flags**
 
@@ -958,7 +958,7 @@ metal facilities get [flags]
 
 **Description**
 
-Metal Gateway operations: create, delete, and retrieve.
+A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For more information, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.
 
 **Flags**
 
@@ -1111,7 +1111,7 @@ metal gateway get -p <project_UUID> [flags]
 
 **Description**
 
-Hardware reservation operations: get, move.
+Information and operations on Hardware Reservations. Provisioning specific devices from a reservation can be performed with the `metal device` command. Documentation is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
 
 **Flags**
 
@@ -1258,7 +1258,7 @@ metal init
 
 **Description**
 
-IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get.
+IP address and subnet operations, including requesting IPv4 and IPv6 addresses, assigning and removing IPs to servers, and getting information about subnets and their usage. For more information is available on https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 
 **Flags**
 
@@ -1528,7 +1528,7 @@ metal ip unassign -i <assignment_UUID>  [flags]
 
 **Description**
 
-Metro operations: get.
+Get information on Metro locations. For more information on https://metal.equinix.com/developers/docs/locations/metros/.
 
 **Flags**
 
@@ -1591,7 +1591,7 @@ metal metros get [flags]
 
 **Description**
 
-Operating system operations: get.
+Information on available operating systems. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.
 
 **Flags**
 
@@ -1654,7 +1654,7 @@ metal operating-systems get [flags]
 
 **Description**
 
-Organization operations: create, get, update, payment-methods, and delete.
+Information and management of Organization-level settings. Documentation on organizations is in https://metal.equinix.com/developers/docs/accounts/organizations/.
 
 **Flags**
 
@@ -1891,7 +1891,7 @@ metal organization update -i <organization_UUID> [-n <name>] [-d <description>] 
 
 **Description**
 
-Plan operations: get.
+Information on server plans. For more information on the different Equinix Metal severs, visit https://metal.equinix.com/developers/docs/hardware/standard-servers/.
 
 **Flags**
 
@@ -1954,7 +1954,7 @@ metal plan get [flags]
 
 **Description**
 
-Port operations: get convert vlans.
+Information and operations for converting ports between networking modes and managing VLAN assignments to ports. For more information on the different modes, ports, and VLANs, visit https://metal.equinix.com/developers/docs/layer2-networking/overview/.
 
 **Flags**
 
@@ -2118,7 +2118,7 @@ metal port vlan -i <port_UUID> [--native <vlan>] [--unassign <vlan>]... [--assig
 
 **Description**
 
-Project operations: create, get, update, and delete.
+Information and management for Projects and Project-level BGP. Documentation on Projects is on https://metal.equinix.com/developers/docs/accounts/projects/, and documentation on BGP is on https://metal.equinix.com/developers/docs/bgp/bgp-on-equinix-metal/.
 
 **Flags**
 
@@ -2437,7 +2437,7 @@ metal project update -i <project_UUID> [-n <name>] [-m <payment_method_UUID>] [f
 
 **Description**
 
-SSH key operations: create, get, update, and delete.
+SSH key operations for managing SSH keys on user accounts and projects. Keys added to an account or project are added to servers at provision. Documentation is available on https://metal.equinix.com/developers/docs/accounts/ssh-keys/.
 
 **Flags**
 
@@ -2635,7 +2635,7 @@ metal ssh-key update -i <SSH-key_UUID> [-k <public_key>] [-l <label>] [flags]
 
 **Description**
 
-User operations: get and add.
+Adding users or getting their details. For more information on user and account management, visit https://metal.equinix.com/developers/docs/accounts/users/ in the Equinix Metal documentation.
 
 **Flags**
 
@@ -2744,7 +2744,7 @@ metal user get [-i <user_UUID>] [flags]
 
 **Description**
 
-Virtual network (VLAN) operations : create, get, delete.
+Managing Virtual Networks on a Project. VLAN assignments to a server's ports is available through the `ports` command. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
 
 **Flags**
 
