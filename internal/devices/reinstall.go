@@ -42,7 +42,7 @@ func (c *Client) Reinstall() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			request := packngo.DeviceReinstallFields{
-				OperatingSystem: "",
+				OperatingSystem: operatingSystem,
 				PreserveData:    preserveData,
 				DeprovisionFast: preserveData,
 			}
