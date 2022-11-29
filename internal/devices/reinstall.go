@@ -32,6 +32,7 @@ func (c *Client) Reinstall() *cobra.Command {
 		id string
 
 		operatingSystem string
+		deprovisionFast bool
 		preserveData    bool
 	)
 
@@ -44,7 +45,7 @@ func (c *Client) Reinstall() *cobra.Command {
 			request := packngo.DeviceReinstallFields{
 				OperatingSystem: operatingSystem,
 				PreserveData:    preserveData,
-				DeprovisionFast: preserveData,
+				DeprovisionFast: deprovisionFast,
 			}
 
 			_, err := c.Service.Reinstall(id, &request)
@@ -59,6 +60,7 @@ func (c *Client) Reinstall() *cobra.Command {
 	_ = reinstallDeviceCmd.MarkFlagRequired("id")
 
 	reinstallDeviceCmd.Flags().StringVarP(&operatingSystem, "operating-system", "O", "", "Operating system name for the device")
+	reinstallDeviceCmd.Flags().BoolVarP(&deprovisionFast, "deprovision-fast", "", false, "Avoid optional potentially slow clean up tasks")
 	reinstallDeviceCmd.Flags().BoolVarP(&preserveData, "preserve-data", "", false, "Avoid wiping data on disks where the os is *not* to be installed into")
 
 	return reinstallDeviceCmd
