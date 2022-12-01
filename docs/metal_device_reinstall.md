@@ -13,6 +13,7 @@ metal device reinstall -d <device-id> [flags]
 ### Options
 
 ```
+      --deprovision-fast          Avoid optional potentially slow clean up tasks
   -h, --help                      help for reinstall
   -d, --id string                 ID of device to be reinstalled
   -O, --operating-system string   Operating system name for the device
