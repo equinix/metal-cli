@@ -41,5 +41,5 @@ metal hardware-reservation move -i <hardware_reservation_id> -p <project_id> [fl
 
 ### SEE ALSO
 
-* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations. Information on reserving hardware on Equinix Metal is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
+* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations: get, move.
 

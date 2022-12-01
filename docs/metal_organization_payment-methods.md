@@ -40,5 +40,5 @@ metal organization payment-methods -i <organization_UUID> [flags]
 
 ### SEE ALSO
 
-* [metal organization](metal_organization.md)	 - Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.
+* [metal organization](metal_organization.md)	 - Organization operations: create, get, update, payment-methods, and delete.
 

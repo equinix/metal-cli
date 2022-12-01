@@ -36,8 +36,8 @@ func (c *Client) NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     `ssh-key`,
 		Aliases: []string{`ssh-keys`},
-		Short:   "SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.",
-		Long:    "SSH key operations: create, get, update, and delete.",
+		Short:   "SSH key operations: create, get, update, and delete.",
+		Long:    "SSH key operations for managing SSH keys on user accounts and projects. Keys added to an account or project are added to servers at provision. Documentation is available on https://metal.equinix.com/developers/docs/accounts/ssh-keys/.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {

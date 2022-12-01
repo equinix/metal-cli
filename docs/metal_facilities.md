@@ -1,10 +1,10 @@
 ## metal facilities
 
-Facility operations. For more information on Equinix Metal facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/. 
+Facility operations: get.
 
 ### Synopsis
 
-Facility operations: get.
+Information about specific facilities. Facility-level operations have mostly been replaced by Metros, but remains for backwards-compatibility. Documentation about facilities is available at https://metal.equinix.com/developers/docs/locations/facilities/.
 
 ### Options
 

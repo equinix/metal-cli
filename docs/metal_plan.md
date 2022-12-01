@@ -1,10 +1,10 @@
 ## metal plan
 
-Plan operations. For more information on the different Equinix Metal plans, visit https://metal.equinix.com/developers/docs/servers/server-specs/.
+Plan operations: get.
 
 ### Synopsis
 
-Plan operations: get.
+Information on server plans. For more information on the different Equinix Metal severs, visit https://metal.equinix.com/developers/docs/hardware/standard-servers/.
 
 ### Options
 

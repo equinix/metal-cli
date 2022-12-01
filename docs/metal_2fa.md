@@ -1,10 +1,10 @@
 ## metal 2fa
 
-Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.
+Two-factor Authentication operations: receive, enable, disable.
 
 ### Synopsis
 
-Two-factor Authentication operations: receive, enable, disable.
+Enable or disable two-factor authentication on your user account or receive an OTP token. More information is available at https://metal.equinix.com/developers/docs/accounts/users/#multi-factor-authentication.
 
 ### Options
 

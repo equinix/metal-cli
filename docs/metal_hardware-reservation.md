@@ -1,10 +1,10 @@
 ## metal hardware-reservation
 
-Hardware reservation operations. Information on reserving hardware on Equinix Metal is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
+Hardware reservation operations: get, move.
 
 ### Synopsis
 
-Hardware reservation operations: get, move.
+Information and operations on Hardware Reservations. Provisioning specific devices from a reservation can be performed with the `metal device` command. Documentation is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
 
 ### Options
 

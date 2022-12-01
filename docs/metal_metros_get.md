@@ -39,5 +39,5 @@ metal metros get [flags]
 
 ### SEE ALSO
 
-* [metal metros](metal_metros.md)	 - Metro operations. For more information on Equinix Metal metros and availability, visit https://metal.equinix.com/developers/docs/locations/metros/.
+* [metal metros](metal_metros.md)	 - Metro operations: get.
 

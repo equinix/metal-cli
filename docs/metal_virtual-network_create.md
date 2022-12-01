@@ -47,5 +47,5 @@ metal virtual-network create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> |
 
 ### SEE ALSO
 
-* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
+* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations : create, get, delete.
 

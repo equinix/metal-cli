@@ -44,5 +44,5 @@ metal user add --email <email> --roles <roles> [--organization-id <organization_
 
 ### SEE ALSO
 
-* [metal user](metal_user.md)	 - User operations. For more information on user and account management, visit https://metal.equinix.com/developers/docs/accounts/users/ in the Equinix Metal documentation.
+* [metal user](metal_user.md)	 - User operations: get and add.
 

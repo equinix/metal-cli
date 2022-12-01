@@ -1,10 +1,10 @@
 ## metal event
 
-Events operations for organizations, projects, devices, and the current user.
+Events operations: get.
 
 ### Synopsis
 
-Events operations: get.
+Events information for organizations, projects, devices, and the current user.
 
 ### Options
 

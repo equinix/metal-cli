@@ -50,5 +50,5 @@ metal capacity get [-m | -f] | [--metros <list> | --facilities <list>] [-P <list
 
 ### SEE ALSO
 
-* [metal capacity](metal_capacity.md)	 - Capacity operations. For more information on capacity in metros, visit https://metal.equinix.com/developers/docs/locations/metros/. For more information on capacity in facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/.
+* [metal capacity](metal_capacity.md)	 - Capacity operations: get, check
 

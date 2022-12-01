@@ -41,5 +41,5 @@ metal ip assign -a <IP_address> -d <device_UUID> [flags]
 
 ### SEE ALSO
 
-* [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
+* [metal ip](metal_ip.md)	 - IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get.
 

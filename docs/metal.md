@@ -23,26 +23,26 @@ Command line interface for Equinix Metal
 
 ### SEE ALSO
 
-* [metal 2fa](metal_2fa.md)	 - Two-factor Authentication operations. More information is available at https://metal.equinix.com/developers/docs/accounts/two-factor-authentication/.
-* [metal capacity](metal_capacity.md)	 - Capacity operations. For more information on capacity in metros, visit https://metal.equinix.com/developers/docs/locations/metros/. For more information on capacity in facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/.
+* [metal 2fa](metal_2fa.md)	 - Two-factor Authentication operations: receive, enable, disable.
+* [metal capacity](metal_capacity.md)	 - Capacity operations: get, check
 * [metal completion](metal_completion.md)	 - Generates completion scripts.
-* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
+* [metal device](metal_device.md)	 - Device operations: create, get, update, delete, reinstall, start, stop, and reboot.
 * [metal docs](metal_docs.md)	 - Generate command markdown documentation.
 * [metal emdocs](metal_emdocs.md)	 - Generates single-page reference documentation.
 * [metal env](metal_env.md)	 - Prints or generates environment variables.
-* [metal event](metal_event.md)	 - Events operations for organizations, projects, devices, and the current user.
-* [metal facilities](metal_facilities.md)	 - Facility operations. For more information on Equinix Metal facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/. 
-* [metal gateway](metal_gateway.md)	 - Metal Gateways. For more information on Metal Gateways, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.
-* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations. Information on reserving hardware on Equinix Metal is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
+* [metal event](metal_event.md)	 - Events operations: get.
+* [metal facilities](metal_facilities.md)	 - Facility operations: get.
+* [metal gateway](metal_gateway.md)	 - Metal Gateway operations: create, delete, and retrieve.
+* [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations: get, move.
 * [metal init](metal_init.md)	 - Create a configuration file.
-* [metal ip](metal_ip.md)	 - IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
-* [metal metros](metal_metros.md)	 - Metro operations. For more information on Equinix Metal metros and availability, visit https://metal.equinix.com/developers/docs/locations/metros/.
-* [metal operating-systems](metal_operating-systems.md)	 - Operating system operations. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.
-* [metal organization](metal_organization.md)	 - Organization operations. For more information on Equinix Metal organizations, visit https://metal.equinix.com/developers/docs/accounts/organizations/.
-* [metal plan](metal_plan.md)	 - Plan operations. For more information on the different Equinix Metal plans, visit https://metal.equinix.com/developers/docs/servers/server-specs/.
-* [metal port](metal_port.md)	 - Port operations. For more information on the different Equinix Metal ports and VLANs, visit https://metal.equinix.com/developers/docs/layer2-networking/overview/.
-* [metal project](metal_project.md)	 - Project operations. For more information on Equinix Metal Projects, visit https://metal.equinix.com/developers/docs/accounts/projects/.
-* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.
-* [metal user](metal_user.md)	 - User operations. For more information on user and account management, visit https://metal.equinix.com/developers/docs/accounts/users/ in the Equinix Metal documentation.
-* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
+* [metal ip](metal_ip.md)	 - IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get.
+* [metal metros](metal_metros.md)	 - Metro operations: get.
+* [metal operating-systems](metal_operating-systems.md)	 - Operating system operations: get.
+* [metal organization](metal_organization.md)	 - Organization operations: create, get, update, payment-methods, and delete.
+* [metal plan](metal_plan.md)	 - Plan operations: get.
+* [metal port](metal_port.md)	 - Port operations: get, convert, vlans.
+* [metal project](metal_project.md)	 - Project operations: create, get, update, delete, and bgpenable, bgpconfig, bgpsessions.
+* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations: create, get, update, and delete.
+* [metal user](metal_user.md)	 - User operations: get and add.
+* [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations : create, get, delete.
 

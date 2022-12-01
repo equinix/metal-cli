@@ -39,5 +39,5 @@ metal facilities get [flags]
 
 ### SEE ALSO
 
-* [metal facilities](metal_facilities.md)	 - Facility operations. For more information on Equinix Metal facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/. 
+* [metal facilities](metal_facilities.md)	 - Facility operations: get.
 

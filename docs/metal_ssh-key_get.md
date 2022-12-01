@@ -48,5 +48,5 @@ metal ssh-key get [-i <SSH-key_UUID>] [-P] [-p <project_id>] [flags]
 
 ### SEE ALSO
 
-* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations. For more information on SSH keys, visit https://metal.equinix.com/developers/docs/accounts/ssh-keys/ in the Equinix Metal documentation.
+* [metal ssh-key](metal_ssh-key.md)	 - SSH key operations: create, get, update, and delete.
 

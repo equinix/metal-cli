@@ -39,5 +39,5 @@ metal plan get [flags]
 
 ### SEE ALSO
 
-* [metal plan](metal_plan.md)	 - Plan operations. For more information on the different Equinix Metal plans, visit https://metal.equinix.com/developers/docs/servers/server-specs/.
+* [metal plan](metal_plan.md)	 - Plan operations: get.
 

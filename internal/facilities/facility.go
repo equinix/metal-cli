@@ -36,8 +36,8 @@ func (c *Client) NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     `facilities`,
 		Aliases: []string{"facility"},
-		Short:   "Facility operations. For more information on Equinix Metal facilities, visit https://metal.equinix.com/developers/docs/locations/facilities/. ",
-		Long:    "Facility operations: get.",
+		Short:   "Facility operations: get.",
+		Long:    "Information about specific facilities. Facility-level operations have mostly been replaced by Metros, but remains for backwards-compatibility. Documentation about facilities is available at https://metal.equinix.com/developers/docs/locations/facilities/.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

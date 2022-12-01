@@ -1,10 +1,10 @@
 ## metal ip
 
-IP address and subnet operations. For more information on IP addresses, subnets, and IP address reservations, visit https://metal.equinix.com/developers/docs/networking/ip-addresses/.
+IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get.
 
 ### Synopsis
 
-IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get.
+IP address and subnet operations, including requesting IPv4 and IPv6 addresses, assigning and removing IPs to servers, and getting information about subnets and their usage. For more information is available on https://metal.equinix.com/developers/docs/networking/ip-addresses/.
 
 ### Options
 

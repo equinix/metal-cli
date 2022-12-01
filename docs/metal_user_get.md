@@ -43,5 +43,5 @@ metal user get [-i <user_UUID>] [flags]
 
 ### SEE ALSO
 
-* [metal user](metal_user.md)	 - User operations. For more information on user and account management, visit https://metal.equinix.com/developers/docs/accounts/users/ in the Equinix Metal documentation.
+* [metal user](metal_user.md)	 - User operations: get and add.
 

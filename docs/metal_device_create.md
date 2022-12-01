@@ -60,5 +60,5 @@ metal device create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <h
 
 ### SEE ALSO
 
-* [metal device](metal_device.md)	 - Device operations. For more information on provisioning on Equinix Metal, visit https://metal.equinix.com/developers/docs/deploy/.
+* [metal device](metal_device.md)	 - Device operations: create, get, update, delete, reinstall, start, stop, and reboot.
 
