@@ -14,7 +14,7 @@ metal hardware-reservation move -i <hardware_reservation_id> -p <project_id> [fl
 
 ```
   # Moves a hardware reservation to the specified Project:
-  metal hardware_reservation move -i 8404b73c-d18f-4190-8c49-20bb17501f88 -p 278bca90-f6b2-4659-b1a4-1bdffa0d80b7
+  metal hardware-reservation move -i 8404b73c-d18f-4190-8c49-20bb17501f88 -p 278bca90-f6b2-4659-b1a4-1bdffa0d80b7
 ```
 
 ### Options
