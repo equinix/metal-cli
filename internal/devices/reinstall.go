@@ -37,9 +37,14 @@ func (c *Client) Reinstall() *cobra.Command {
 	)
 
 	reinstallDeviceCmd := &cobra.Command{
-		Use:   `reinstall -d <device-id>`,
+		Use:   `reinstall --id <device-id> [--operating-system <os_slug>] [--deprovision-fast] [--preserve-data]`,
 		Short: "Reinstalls a device.",
-		Long:  "Reinstalls the provided device. The ID of the device to reinstall is required.",
+		Long:  "Reinstalls the provided device with the current operating system or a new operating system with optional flags to preserve data or skip disk clean-up. The ID of the device to reinstall is required.",
+		Example: `  # Reinstalls a device with the current OS:
+  metal device reinstall -d 50382f72-02b7-4b40-ac8d-253713e1e174
+  
+  # Reinstalls a device with Ubuntu 22.04 while preserving the data on non-OS disks:
+  metal device reinstall -d 50382f72-02b7-4b40-ac8d-253713e1e174 -O ubuntu_22_04 --preserve-data`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			request := packngo.DeviceReinstallFields{
@@ -59,9 +64,9 @@ func (c *Client) Reinstall() *cobra.Command {
 	reinstallDeviceCmd.Flags().StringVarP(&id, "id", "d", "", "ID of device to be reinstalled")
 	_ = reinstallDeviceCmd.MarkFlagRequired("id")
 
-	reinstallDeviceCmd.Flags().StringVarP(&operatingSystem, "operating-system", "O", "", "Operating system name for the device")
-	reinstallDeviceCmd.Flags().BoolVarP(&deprovisionFast, "deprovision-fast", "", false, "Avoid optional potentially slow clean up tasks")
-	reinstallDeviceCmd.Flags().BoolVarP(&preserveData, "preserve-data", "", false, "Avoid wiping data on disks where the os is *not* to be installed into")
+	reinstallDeviceCmd.Flags().StringVarP(&operatingSystem, "operating-system", "O", "", "Operating system install on the device. If omitted the current OS will be reinstalled.")
+	reinstallDeviceCmd.Flags().BoolVarP(&deprovisionFast, "deprovision-fast", "", false, "Avoid optional potentially slow clean-up tasks.")
+	reinstallDeviceCmd.Flags().BoolVarP(&preserveData, "preserve-data", "", false, "Avoid wiping data on disks where the OS is *not* being installed.")
 
 	return reinstallDeviceCmd
 }
