@@ -37,10 +37,10 @@ func (c *Client) Create() *cobra.Command {
 		Use:   `create -p <project_UUID> --virtual-network <virtual_network_UUID> (--ip-reservation-id <ip_reservation_UUID> | --private-subnet-size <size>)`,
 		Short: "Creates a Metal Gateway.",
 		Long:  "Creates a Metal Gateway on the VLAN. Either an IP Reservation ID or a Private Subnet Size must be specified.",
-		Example: `  # Creates a Metal Gateway on the VLAN 77e6d57a-d7a4-4816-b451-cf9b043444e2 with a given IP Reservation ID:
+		Example: `  # Creates a Metal Gateway on the VLAN with a given IP Reservation ID:
   metal gateway create -p $METAL_PROJECT_ID -v 77e6d57a-d7a4-4816-b451-cf9b043444e2 -r 50052f72-02b7-4b40-ac9d-253713e1e178
 
-  # Creates a Metal Gateway on the VLAN 77e6d57a-d7a4-4816-b451-cf9b043444e2 with a Private 10.x.x.x/28 subnet:
+  # Creates a Metal Gateway on the VLAN with a Private 10.x.x.x/28 subnet:
   metal gateway create -p $METAL_PROJECT_ID --virtual-network 77e6d57a-d7a4-4816-b451-cf9b043444e2 --private-subnet-size 16`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
