@@ -35,10 +35,10 @@ func (c *Client) Retrieve() *cobra.Command {
 		Short:   "Lists a Project's hardware reservations or the details of a specified hardware reservation.",
 		Long:    "Lists a Project's hardware reservations or the details of a specified hardware reservation. When using --json or --yaml flags, the --include=project,facility,device flag is implied.",
 		Example: `  # Retrieve all hardware reservations of a project:
-  metal hardware_reservations get -p $METAL_PROJECT_ID
+  metal hardware-reservations get -p $METAL_PROJECT_ID
   
   # Retrieve the details of a specific hardware reservation:
-  metal hardware_reservations get -i 8404b73c-d18f-4190-8c49-20bb17501f88`,
+  metal hardware-reservations get -i 8404b73c-d18f-4190-8c49-20bb17501f88`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			projectID, _ := cmd.Flags().GetString("project-id")
