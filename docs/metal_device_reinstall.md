@@ -4,20 +4,30 @@ Reinstalls a device.
 
 ### Synopsis
 
-Reinstalls the provided device. The ID of the device to reinstall is required.
+Reinstalls the provided device with the current operating system or a new operating system with optional flags to preserve data or skip disk clean-up. The ID of the device to reinstall is required.
 
 ```
-metal device reinstall -d <device-id> [flags]
+metal device reinstall --id <device-id> [--operating-system <os_slug>] [--deprovision-fast] [--preserve-data] [flags]
+```
+
+### Examples
+
+```
+  # Reinstalls a device with the current OS:
+  metal device reinstall -d 50382f72-02b7-4b40-ac8d-253713e1e174
+  
+  # Reinstalls a device with Ubuntu 22.04 while preserving the data on non-OS disks:
+  metal device reinstall -d 50382f72-02b7-4b40-ac8d-253713e1e174 -O ubuntu_22_04 --preserve-data
 ```
 
 ### Options
 
 ```
-      --deprovision-fast          Avoid optional potentially slow clean up tasks
+      --deprovision-fast          Avoid optional potentially slow clean-up tasks.
   -h, --help                      help for reinstall
   -d, --id string                 ID of device to be reinstalled
-  -O, --operating-system string   Operating system name for the device
-      --preserve-data             Avoid wiping data on disks where the os is *not* to be installed into
+  -O, --operating-system string   Operating system install on the device. If omitted the current OS will be reinstalled.
+      --preserve-data             Avoid wiping data on disks where the OS is *not* being installed.
 ```
 
 ### Options inherited from parent commands
