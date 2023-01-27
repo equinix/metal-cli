@@ -4,7 +4,7 @@ Prints or generates environment variables.
 
 ### Synopsis
 
-Prints or generates environment variables. Currently emitted variables: METAL_AUTH_TOKEN, METAL_PROJECT_ID, METAL_CONFIG. Use the --project-id flag to set the METAL_PROJECT_ID variable.
+Prints or generates environment variables. Currently emitted variables: METAL_AUTH_TOKEN, METAL_ORGANIZATION_ID, METAL_PROJECT_ID, METAL_CONFIG. Use the --project-id flag to set the METAL_PROJECT_ID variable. Use the --organization-id flag to set the METAL_ORGANIZATION_ID variable.
 
 ```
 metal env [-p <project_id>]
@@ -29,8 +29,9 @@ metal env [-p <project_id>]
 ### Options
 
 ```
-  -h, --help                help for env
-  -p, --project-id string   A project UUID to set as an environment variable.
+  -h, --help                     help for env
+  -O, --organization-id string   A organization UUID to set as an environment variable.
+  -p, --project-id string        A project UUID to set as an environment variable.
 ```
 
 ### Options inherited from parent commands
