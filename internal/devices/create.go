@@ -39,6 +39,7 @@ func (c *Client) Create() *cobra.Command {
 		hostname        string
 		operatingSystem string
 		billingCycle    string
+		//IPAddress string
 
 		userdata              string
 		userdataFile          string
@@ -93,11 +94,12 @@ func (c *Client) Create() *cobra.Command {
 			}
 
 			request := &packngo.DeviceCreateRequest{
-				Hostname:              hostname,
-				Plan:                  plan,
-				Facility:              facilityArgs,
-				Metro:                 metro,
-				OS:                    operatingSystem,
+				Hostname: hostname,
+				Plan:     plan,
+				Facility: facilityArgs,
+				Metro:    metro,
+				OS:       operatingSystem,
+				//IPAddresses:           ipaddress,
 				BillingCycle:          billingCycle,
 				ProjectID:             projectID,
 				UserData:              userdata,
