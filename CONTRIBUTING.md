@@ -13,5 +13,8 @@ Available via [https://github.com/equinix/metal-cli/blob/master/.github/CODE_OF_
 ### How to Submit Change Requests
 Please submit change requests and / or features via [Issues](https://github.com/equinix/metal-cli/issues). There's no guarantee it'll be changed, but you never know until you try. We'll try to add comments as soon as possible, though.
 
+#### Pull Requests
+All command changes must be reflected in the documentation, this includes new commands and changes to options. The documentation is generated via `make generate-docs`.
+
 ### How to Report a Bug
 Bugs are problems in code, in the functionality of an application or in its UI design; you can submit them through [Issues](https://github.com/equinix/metal-cli/issues) as well.
