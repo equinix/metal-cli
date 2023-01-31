@@ -20,7 +20,7 @@ This repository is [Maintained](https://github.com/packethost/standards/blob/mas
     - [Install binary from Release Download](#install-binary-from-release-download)
     - [Install via Homebrew](#install-via-homebrew)
     - [Configuring your Path](#configuring-your-path)
-  - [Linux](#linux)
+    - [Linux](#linux)
     - [Mac OS X](#mac-os-x)
     - [Windows](#windows)
     - [Shell Completion](#shell-completion)
@@ -74,6 +74,14 @@ brew tap equinix/homebrew-tap
 brew install metal-cli
 ```
 
+### Install via FreeBSD ports
+
+The Equinix Metal CLI tools are available directly from FreeBSD ports:
+
+```bash
+sudo pkg install -r FreeBSD sysutils/equinix-metal-cli
+```
+
 ### Configuring your Path
 
 If the directory where your binaries were installed is not already in your `PATH` environment variable, then it will need to be added.
@@ -82,7 +90,7 @@ Choose the steps to follow for your platform to add directory to `PATH`.
 <details>
   <summary>Configure your path in Linux</summary>
 
-## Linux
+### Linux
 
 If you plan to run the Equinix Metal CLI in a shell on Linux and placed the binary in `/home/YOUR-USER-NAME/metal-cli/`, then type the following into your terminal:
 
