@@ -100,6 +100,8 @@ func (c *Client) NewCommand() *cobra.Command {
 		},
 	}
 
+	envCmd.PersistentFlags().StringP("output", "o", "sh", "Output format for environment variables (*sh, terraform, capp).")
+
 	envCmd.Flags().StringP("project-id", "p", "", "A project UUID to set as an environment variable.")
 
 	envCmd.Flags().StringP("organization-id", "O", "", "A organization UUID to set as an environment variable.")
