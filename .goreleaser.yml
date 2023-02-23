@@ -57,3 +57,17 @@ brews:
     tap:
       owner: equinix
       name: homebrew-tap
+
+dockers:
+  - image_templates:
+      - 'ghcr.io/{{ .Env.GITHUB_REPOSITORY }}:{{ .Tag }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
