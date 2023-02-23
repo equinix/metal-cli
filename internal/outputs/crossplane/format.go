@@ -10,7 +10,7 @@ import (
 const (
 	deviceFormat = `
 ---
-apiVersion: server.metal.equinix.com/v1alpha2
+apiVersion: devices.metal.equinix.jet.crossplane.io/v1alpha1
 kind: Device
 metadata:
   name: {{.Hostname}}
@@ -47,8 +47,9 @@ spec:
 func many(s string) string {
 	return `{{range .}}` + s + `{{end}}`
 }
+
 func Marshal(i interface{}) ([]byte, error) {
-	var f = ""
+	f := ""
 	switch i.(type) {
 	case *packngo.Device:
 		f = deviceFormat

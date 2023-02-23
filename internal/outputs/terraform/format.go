@@ -2,37 +2,43 @@ package terraform
 
 import (
 	"bytes"
+	_ "embed"
 	"html/template"
+	"path"
 
 	"github.com/packethost/packngo"
 )
 
-const deviceFormat = `
-# terraform import metal_device.{{.Hostname}} {{.ID}}
-resource "metal_device" "{{.Hostname}}" {
-  plan = "{{.Plan.Slug}}"
-  hostname = "{{.Hostname}}"
-  billing_cycle = "{{.BillingCycle}}"
-  metro = "{{.Metro.Code}}"
-  operating_system = "{{.OS.Slug}}"
-  project_id = "{{.Project.ID}}"
+var (
+	//go:embed device.tf.gotmpl
+	deviceFormat string
 
-  tags = {{.Tags}}
-}
-`
+	//go:embed project.tf.gotmpl
+	projectFormat string
+)
 
 func many(s string) string {
 	return `{{range .}}` + s + `{{end}}`
 }
+
 func Marshal(i interface{}) ([]byte, error) {
-	var f = ""
+	f := ""
 	switch i.(type) {
 	case *packngo.Device:
 		f = deviceFormat
 	case []packngo.Device:
 		f = many(deviceFormat)
+	case *packngo.Project:
+		f = projectFormat
+	case []packngo.Project:
+		f = many(projectFormat)
 	}
-	tmpl, err := template.New("terraform").Parse(f)
+
+	tmpl, err := template.New("terraform").Funcs(template.FuncMap{
+		"hrefToID": func(href string) string {
+			return path.Base(href)
+		},
+	}).Parse(f)
 	if err != nil {
 		return nil, err
 	}

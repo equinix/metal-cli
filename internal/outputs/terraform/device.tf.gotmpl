@@ -1,0 +1,11 @@
+# terraform import equinix_metal_device.{{.Hostname}} {{.ID}}
+resource "equinix_metal_device" "{{.Hostname}}" {
+  plan = "{{.Plan.Slug}}"
+  hostname = "{{.Hostname}}"
+  billing_cycle = "{{.BillingCycle}}"
+  metro = "{{.Metro.Code}}"
+  operating_system = "{{.OS.Slug}}"
+  project_id = "{{.Project.ID}}"
+
+  tags = {{.Tags}}
+}
