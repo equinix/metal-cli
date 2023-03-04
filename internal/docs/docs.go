@@ -35,7 +35,7 @@ func NewCommand() *cobra.Command {
   metal docs ./docs`,
 
 		DisableFlagsInUseLine: true,
-		Args:                  cobra.ExactValidArgs(1),
+		Args:                  cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			return nil
