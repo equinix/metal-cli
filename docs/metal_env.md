@@ -35,6 +35,7 @@ metal env [-p <project_id>]
       --export                   Export the environment variables.
   -h, --help                     help for env
   -O, --organization-id string   A organization UUID to set as an environment variable.
+  -o, --output string            Output format for environment variables (*sh, terraform, capp). (default "sh")
   -p, --project-id string        A project UUID to set as an environment variable.
 ```
 
@@ -45,7 +46,6 @@ metal env [-p <project_id>]
       --exclude strings      Comma separated Href references to collapse in results, may be dotted three levels deep
       --filter stringArray   Filter 'get' actions with name value pairs. Filter is not supported by all resources and is implemented as request query parameters.
       --include strings      Comma separated Href references to expand in results, may be dotted three levels deep
-  -o, --output string        Output format (*table, json, yaml). env output formats are (*sh, terraform, capp).
       --search string        Search keyword for use in 'get' actions. Search is not supported by all resources.
       --sort-by string       Sort fields for use in 'get' actions. Sort is not supported by all resources.
       --sort-dir string      Sort field direction for use in 'get' actions. Sort is not supported by all resources.
