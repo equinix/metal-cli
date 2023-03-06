@@ -55,7 +55,10 @@ func (c *Client) NewCommand() *cobra.Command {
 		Example: `  # Print the current environment variables:
   metal env
   
-  # Load environment variables in Bash, Zsh:
+  # Print the current environment variables in Terraform format:
+  metal env --output terraform
+  
+    # Load environment variables in Bash, Zsh:
   source <(metal env)
   
   # Load environment variables in Bash 3.2.x:
@@ -65,22 +68,73 @@ func (c *Client) NewCommand() *cobra.Command {
   metal env | source`,
 
 		DisableFlagsInUseLine: true,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
+			var formatter func(token, orgID, projID, conPath string) map[string]string
+
 			organizationID, _ := cmd.Flags().GetString("organization-id")
 			projectID, _ := cmd.Flags().GetString("project-id")
 			config, _ := cmd.Flags().GetString("config")
+			output, _ := cmd.Flags().GetString("output")
+			export, _ := cmd.Flags().GetBool("export")
+			prefix := ""
 
-			fmt.Printf("%s=%s\n", c.apiTokenEnvVar, c.tokener.Token())
-			fmt.Printf("METAL_ORGANIZATION_ID=%s\n", organizationID)
-			fmt.Printf("METAL_PROJECT_ID=%s\n", projectID)
-			fmt.Printf("METAL_CONFIG=%s\n", config)
+			switch output {
+			case "sh":
+				formatter = shellEnvWithClientToken(c)
+			case "terraform":
+				formatter = terraformEnv
+			case "capp":
+				formatter = cappEnv
+			default:
+				return fmt.Errorf("Unknown env output format %q", output)
+			}
+
+			if export {
+				prefix = "export "
+			}
+
+			for k, v := range formatter(c.tokener.Token(), organizationID, projectID, config) {
+				fmt.Printf("%s%s=%s\n", prefix, k, v)
+			}
+			return nil
 		},
 	}
 
-	// 	envCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "Project ID (METAL_PROJECT_ID)")
+	envCmd.PersistentFlags().StringP("output", "o", "sh", "Output format for environment variables (*sh, terraform, capp).")
+
 	envCmd.Flags().StringP("project-id", "p", "", "A project UUID to set as an environment variable.")
 
 	envCmd.Flags().StringP("organization-id", "O", "", "A organization UUID to set as an environment variable.")
 
+	envCmd.Flags().Bool("export", false, "Export the environment variables.")
+
 	return envCmd
+}
+
+func terraformEnv(token, orgID, projID, conPath string) map[string]string {
+	return map[string]string{
+		"TF_VAR_metal_auth_token":      token,
+		"TF_VAR_metal_organization_id": orgID,
+		"TF_VAR_metal_project_id":      projID,
+		"TF_VAR_metal_config":          conPath,
+	}
+}
+
+func cappEnv(token, orgID, projID, conPath string) map[string]string {
+	return map[string]string{
+		"PACKET_API_KEY":  token,
+		"ORGANIZATION_ID": orgID,
+		"PROJECT_ID":      projID,
+	}
+}
+
+func shellEnvWithClientToken(c *Client) func(token, orgID, projID, conPath string) map[string]string {
+	return func(token, orgID, projID, conPath string) map[string]string {
+		return map[string]string{
+			c.apiTokenEnvVar:        token,
+			"METAL_ORGANIZATION_ID": orgID,
+			"METAL_PROJECT_ID":      projID,
+			"METAL_CONFIG":          conPath,
+		}
+	}
 }
