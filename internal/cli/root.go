@@ -23,6 +23,7 @@ package cli
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path"
 	"runtime"
@@ -61,6 +62,19 @@ type Client struct {
 	viper         *viper.Viper
 }
 
+type headerTransport struct {
+	header http.Header
+}
+
+func (t *headerTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	for key, values := range t.header {
+		for _, value := range values {
+			r.Header.Add(key, value)
+		}
+	}
+	return http.DefaultTransport.RoundTrip(r)
+}
+
 func NewClient(consumerToken, apiURL, Version string) *Client {
 	return &Client{
 		consumerToken: consumerToken,
@@ -69,8 +83,8 @@ func NewClient(consumerToken, apiURL, Version string) *Client {
 	}
 }
 
-func (c *Client) apiConnect() error {
-	client, err := packngo.NewClientWithBaseURL(c.consumerToken, c.metalToken, nil, c.apiURL)
+func (c *Client) apiConnect(httpClient *http.Client) error {
+	client, err := packngo.NewClientWithBaseURL(c.consumerToken, c.metalToken, httpClient, c.apiURL)
 	if err != nil {
 		return fmt.Errorf("Could not create Client: %w", err)
 	}
@@ -114,7 +128,6 @@ func (c *Client) Config(cmd *cobra.Command) *viper.Viper {
 	if envToken != "" {
 		c.metalToken = envToken
 	}
-
 	return c.viper
 }
 
@@ -142,7 +155,13 @@ func (c *Client) API(cmd *cobra.Command) *packngo.Client {
 	}
 
 	if c.apiClient == nil {
-		err := c.apiConnect()
+		httpClient := &http.Client{
+			Transport: &headerTransport{
+				header: getAdditionalHeaders(cmd),
+			},
+		}
+
+		err := c.apiConnect(httpClient)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -188,6 +207,7 @@ func (c *Client) NewCommand() *cobra.Command {
 	}
 	rootCmd.PersistentFlags().String("token", "", "Metal API Token (METAL_AUTH_TOKEN)")
 	rootCmd.PersistentFlags().String("auth-token", "", "Metal API Token (Alias)")
+	rootCmd.PersistentFlags().StringSlice("http-header", nil, "Headers to add to requests (in format key=value)")
 	authtoken := rootCmd.PersistentFlags().Lookup("auth-token")
 	authtoken.Hidden = true
 	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", c.cfgFile, "Path to JSON or YAML configuration file")
@@ -264,6 +284,29 @@ func (c *Client) DefaultConfig(withExtension bool) string {
 		config = config + ".yaml"
 	}
 	return config
+}
+
+func getAdditionalHeaders(cmd *cobra.Command) http.Header {
+	header := make(http.Header)
+
+	v, err := cmd.Flags().GetStringSlice("http-header")
+	if err != nil {
+		return header
+	}
+
+	for _, headerStr := range v {
+		s := strings.SplitN(headerStr, "=", 2)
+		if len(s) != 2 {
+			// Ignore any malformed header strings.
+			continue
+		}
+
+		for _, value := range strings.Split(s[1], ",") {
+			header.Add(s[0], value)
+		}
+	}
+
+	return header
 }
 
 func userHomeDir() string {
