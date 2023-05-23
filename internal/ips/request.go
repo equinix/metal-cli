@@ -21,10 +21,11 @@
 package ips
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +34,6 @@ func (c *Client) Request() *cobra.Command {
 		ttype     string
 		quantity  int
 		comments  string
-		facility  string
 		metro     string
 		projectID string
 		tags      []string
@@ -41,30 +41,38 @@ func (c *Client) Request() *cobra.Command {
 
 	// requestIPCmd represents the requestIp command
 	requestIPCmd := &cobra.Command{
-		Use:   `request -p <project_id> -t <ip_address_type> -q <quantity> (-m <metro> | -f <facility>) [-f <flags>] [-c <comments>]`,
+		Use:   `request -p <project_id> -t <ip_address_type> -q <quantity> (-m <metro> ) [-f <flags>] [-c <comments>]`,
 		Short: "Request a block of IP addresses.",
-		Long:  "Requests either a block of public IPv4 addresses or global IPv4 addresses for your project in a specific metro or facility.",
+		Long:  "Requests either a block of public IPv4 addresses or global IPv4 addresses for your project in a specific metro.",
 		Example: `  # Requests a block of 4 public IPv4 addresses in Dallas:
   metal ip request -p $METAL_PROJECT_ID -t public_ipv4 -q 4 -m da`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := &packngo.IPReservationRequest{
-				Type:     packngo.IPReservationType(ttype),
-				Quantity: quantity,
-				Facility: &facility,
+
+			req := &metal.IPReservationRequestInput{
 				Metro:    &metro,
 				Tags:     tags,
+				Quantity: int32(quantity),
+				Type:     ttype,
 			}
 
-			reservation, _, err := c.ProjectService.Request(projectID, req)
+			requestIPReservationRequest := &metal.RequestIPReservationRequest{
+				IPReservationRequestInput: req,
+			}
+
+			reservation, _, err := c.ProjectService.RequestIPReservation(context.Background(), projectID).RequestIPReservationRequest(*requestIPReservationRequest).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not request IP addresses: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{reservation.ID, reservation.Address, strconv.FormatBool(reservation.Public), reservation.Created}
+			data[0] = []string{reservation.IPReservation.GetId(),
+				reservation.IPReservation.GetAddress(),
+				strconv.FormatBool(reservation.IPReservation.GetPublic()),
+				reservation.IPReservation.CreatedAt.String()}
+
 			header := []string{"ID", "Address", "Public", "Created"}
 
 			return c.Out.Output(reservation, header, &data)
@@ -73,7 +81,6 @@ func (c *Client) Request() *cobra.Command {
 
 	requestIPCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
 	requestIPCmd.Flags().StringVarP(&ttype, "type", "t", "", "The type of IP Address, either public_ipv4 or global_ipv4.")
-	requestIPCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility where the IP Reservation will be created")
 	requestIPCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro where the IP Reservation will be created")
 	requestIPCmd.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of IP addresses to reserve.")
 	requestIPCmd.Flags().StringSliceVar(&tags, "tags", nil, "Tag or Tags to add to the reservation, in a comma-separated list.")

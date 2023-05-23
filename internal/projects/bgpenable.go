@@ -21,10 +21,11 @@
 package projects
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -42,14 +43,11 @@ func (c *Client) BGPEnable() *cobra.Command {
   metal project bgp-enable --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 --deployment-type local --asn 65000`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := packngo.CreateBGPConfigRequest{
-				UseCase:        useCase,
-				Asn:            asn,
-				DeploymentType: deploymentType,
-				Md5:            md5,
-			}
+			req := metal.NewBgpConfigRequestInput(int32(asn), deploymentType)
+			req.UseCase = &useCase
+			req.Md5 = &md5
 
-			p, err := c.BGPConfigService.Create(projectID, req)
+			p, err := c.BGPConfigService.RequestBgpConfig(context.Background(), projectID).BgpConfigRequestInput(*req).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not update Project: %w", err)
 			}

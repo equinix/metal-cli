@@ -4,10 +4,10 @@ Request a block of IP addresses.
 
 ### Synopsis
 
-Requests either a block of public IPv4 addresses or global IPv4 addresses for your project in a specific metro or facility.
+Requests either a block of public IPv4 addresses or global IPv4 addresses for your project in a specific metro.
 
 ```
-metal ip request -p <project_id> -t <ip_address_type> -q <quantity> (-m <metro> | -f <facility>) [-f <flags>] [-c <comments>] [flags]
+metal ip request -p <project_id> -t <ip_address_type> -q <quantity> (-m <metro> ) [-f <flags>] [-c <comments>] [flags]
 ```
 
 ### Examples
@@ -21,7 +21,6 @@ metal ip request -p <project_id> -t <ip_address_type> -q <quantity> (-m <metro> 
 
 ```
   -c, --comments string     General comments or description.
-  -f, --facility string     Code of the facility where the IP Reservation will be created
   -h, --help                help for request
   -m, --metro string        Code of the metro where the IP Reservation will be created
   -p, --project-id string   The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.

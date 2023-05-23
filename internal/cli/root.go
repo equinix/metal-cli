@@ -29,7 +29,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -44,7 +44,7 @@ const (
 
 type Client struct {
 	// apiClient client
-	apiClient *packngo.Client
+	apiClient *metal.APIClient
 
 	includes      *[]string // nolint:unused
 	excludes      *[]string // nolint:unused
@@ -66,6 +66,11 @@ type headerTransport struct {
 	header http.Header
 }
 
+type RequestWithOptions interface {
+	Include([]string)
+	Exclude([]string)
+}
+
 func (t *headerTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	for key, values := range t.header {
 		for _, value := range values {
@@ -84,11 +89,11 @@ func NewClient(consumerToken, apiURL, Version string) *Client {
 }
 
 func (c *Client) apiConnect(httpClient *http.Client) error {
-	client, err := packngo.NewClientWithBaseURL(c.consumerToken, c.metalToken, httpClient, c.apiURL)
-	if err != nil {
-		return fmt.Errorf("Could not create Client: %w", err)
-	}
-	client.UserAgent = fmt.Sprintf("metal-cli/%s %s", c.Version, client.UserAgent)
+	configuration := metal.NewConfiguration()
+	configuration.Debug = true
+	configuration.AddDefaultHeader("X-Auth-Token", c.Token())
+	client := metal.NewAPIClient(configuration)
+
 	c.apiClient = client
 	return nil
 }
@@ -149,7 +154,7 @@ func bindFlags(cmd *cobra.Command, v *viper.Viper) {
 	})
 }
 
-func (c *Client) API(cmd *cobra.Command) *packngo.Client {
+func (c *Client) API(cmd *cobra.Command) *metal.APIClient {
 	if c.metalToken == "" {
 		log.Fatal("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a configuration file using 'metal init'.")
 	}
@@ -192,7 +197,11 @@ func (c *Client) Format() outputPkg.Format {
 	}
 	return format
 }
-
+func getMetalVersion() string {
+	metalUserAgent := metal.NewConfiguration().UserAgent
+	metalVersion := metalUserAgent[strings.Index(metalUserAgent, "/")+1:]
+	return metalVersion
+}
 func (c *Client) NewCommand() *cobra.Command {
 	// rootCmd represents the base command when called without any subcommands
 	rootCmd := &cobra.Command{
@@ -219,46 +228,19 @@ func (c *Client) NewCommand() *cobra.Command {
 	rootCmd.PersistentFlags().StringVar(&c.sortBy, "sort-by", "", "Sort fields for use in 'get' actions. Sort is not supported by all resources.")
 	rootCmd.PersistentFlags().StringVar(&c.sortDir, "sort-dir", "", "Sort field direction for use in 'get' actions. Sort is not supported by all resources.")
 
-	rootCmd.Version = c.Version
+	rootCmd.Version = getMetalVersion()
 	c.rootCmd = rootCmd
 	return c.rootCmd
 }
 
-// ListOptions creates a packngo.ListOptions using the includes and excludes persistent
-// flags. When not defined, the defaults given will be supplied.
-func (c *Client) ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions {
-	listOptions := &packngo.ListOptions{
-		Includes: defaultIncludes,
-		Excludes: defaultExcludes,
+func (c *Client) ListOptions(defaultIncludes, defaultExcludes []string) func(RequestWithOptions) {
+	// essentially the existing code, building `[]string` for
+	// `includes` and `excludes` rather than stashing it
+	// into the ListOptions variable.
+	return func(req RequestWithOptions) {
+		req.Include(defaultIncludes)
+		req.Exclude(defaultExcludes)
 	}
-	if c.rootCmd.Flags().Changed("include") {
-		listOptions.Includes = *c.includes
-	}
-	if c.rootCmd.Flags().Changed("exclude") {
-		listOptions.Excludes = *c.excludes
-	}
-	if c.rootCmd.Flags().Changed("filter") {
-		for _, kv := range *c.filters {
-			var k, v string
-			tokens := strings.SplitN(kv, "=", 2)
-			k = strings.TrimSpace(tokens[0])
-			if len(tokens) != 1 {
-				v = strings.TrimSpace(tokens[1])
-			}
-			listOptions = listOptions.Filter(k, v)
-		}
-	}
-	if c.rootCmd.Flags().Changed("search") {
-		listOptions.Search = c.search
-	}
-	if c.rootCmd.Flags().Changed("sort-by") {
-		listOptions.SortBy = c.sortBy
-	}
-	if c.rootCmd.Flags().Changed("sort-dir") {
-		listOptions.SortDirection = packngo.ListSortDirection(c.sortDir)
-	}
-
-	return listOptions
 }
 
 // initConfig reads in config file and ENV variables if set.

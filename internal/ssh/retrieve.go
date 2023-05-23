@@ -21,9 +21,11 @@
 package ssh
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -51,8 +53,8 @@ func (c *Client) Retrieve() *cobra.Command {
 			cmd.SilenceUsage = true
 			if sshKeyID == "" {
 				projectID, _ := cmd.LocalFlags().GetString("project-id")
-				listFn := func() ([]packngo.SSHKey, *packngo.Response, error) {
-					return c.Service.List()
+				listFn := func() (*metal.SSHKeyList, *http.Response, error) {
+					return c.Service.FindSSHKeys(context.Background()).SearchString(sshKeyID).Execute()
 				}
 
 				if projKeys {
@@ -60,8 +62,8 @@ func (c *Client) Retrieve() *cobra.Command {
 						return fmt.Errorf("Project (--project-id) is required with --project-keys")
 					}
 
-					listFn = func() ([]packngo.SSHKey, *packngo.Response, error) {
-						return c.Service.ProjectList(projectID)
+					listFn = func() (*metal.SSHKeyList, *http.Response, error) {
+						return c.Service.FindProjectSSHKeys(context.Background(), projectID).Execute()
 					}
 				}
 				sshKeys, _, err := listFn()
@@ -69,23 +71,23 @@ func (c *Client) Retrieve() *cobra.Command {
 					return fmt.Errorf("Could not list SSH Keys: %w", err)
 				}
 
-				data := make([][]string, len(sshKeys))
+				data := make([][]string, len(sshKeys.GetSshKeys()))
 
-				for i, s := range sshKeys {
-					data[i] = []string{s.ID, s.Label, s.Created}
+				for i, s := range sshKeys.GetSshKeys() {
+					data[i] = []string{s.GetId(), s.GetLabel(), s.GetCreatedAt().String()}
 				}
 				header := []string{"ID", "Label", "Created"}
 
 				return c.Out.Output(sshKeys, header, &data)
 			} else {
-				sshKey, _, err := c.Service.Get(sshKeyID, nil)
+				sshKey, _, err := c.Service.FindSSHKeyById(context.Background(), sshKeyID).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get SSH Key: %w", err)
 				}
 
 				data := make([][]string, 1)
 
-				data[0] = []string{sshKey.ID, sshKey.Label, sshKey.Created}
+				data[0] = []string{sshKey.GetId(), sshKey.GetLabel(), sshKey.GetCreatedAt().String()}
 				header := []string{"ID", "Label", "Created"}
 
 				return c.Out.Output(sshKey, header, &data)

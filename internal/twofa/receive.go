@@ -21,6 +21,7 @@
 package twofa
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -47,7 +48,7 @@ func (c *Client) Receive() *cobra.Command {
 
 			cmd.SilenceUsage = true
 			if sms {
-				_, err := c.Service.ReceiveSms()
+				_, err := c.Service.EnableTfaSms(context.Background()).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not issue token via SMS: %w", err)
 				}
@@ -56,16 +57,16 @@ func (c *Client) Receive() *cobra.Command {
 				return nil
 			}
 
-			otpURI, _, err := c.Service.SeedApp()
+			resp, err := c.Service.EnableTfaApp(context.Background()).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not get the OTP Seed URI: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{otpURI}
+			data[0] = []string{resp.Request.RequestURI}
 			header := []string{"OTP URI"}
-			return c.Out.Output(otpURI, header, &data)
+			return c.Out.Output(resp.Request.RequestURI, header, &data)
 		},
 	}
 

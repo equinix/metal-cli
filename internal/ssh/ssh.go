@@ -21,14 +21,14 @@
 package ssh
 
 import (
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
 type Client struct {
 	Servicer Servicer
-	Service  packngo.SSHKeyService
+	Service  metal.SSHKeysApiService
 	Out      outputs.Outputer
 }
 
@@ -45,7 +45,7 @@ func (c *Client) NewCommand() *cobra.Command {
 					root.PersistentPreRun(cmd, args)
 				}
 			}
-			c.Service = c.Servicer.API(cmd).SSHKeys
+			c.Service = *c.Servicer.API(cmd).SSHKeysApi
 		},
 	}
 
@@ -59,8 +59,8 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	API(*cobra.Command) *metal.APIClient
+	//ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {

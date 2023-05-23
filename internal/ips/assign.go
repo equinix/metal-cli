@@ -21,10 +21,11 @@
 package ips
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -44,14 +45,16 @@ func (c *Client) Assign() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			assignment, _, err := c.DeviceService.Assign(deviceID, &packngo.AddressStruct{Address: address})
+			IPAssignmentInput := metal.NewIPAssignmentInput(address)
+
+			assignment, _, err := c.DeviceService.CreateIPAssignment(context.Background(), deviceID).IPAssignmentInput(*IPAssignmentInput).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not assign Device IP address: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{assignment.ID, assignment.Address, strconv.FormatBool(assignment.Public), assignment.Created}
+			data[0] = []string{*assignment.Id, *assignment.Address, strconv.FormatBool(*assignment.Public), assignment.CreatedAt.String()}
 			header := []string{"ID", "Address", "Public", "Created"}
 
 			return c.Out.Output(assignment, header, &data)

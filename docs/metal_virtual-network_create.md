@@ -4,10 +4,10 @@ Creates a virtual network.
 
 ### Synopsis
 
-Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID otherwise it is auto-assigned. If you are creating a VLAN in a facility, the VXLAN ID is auto-assigned.
+Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID otherwise it is auto-assigned.
 
 ```
-metal virtual-network create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> | -f <facility_code>] [-d <description>] [flags]
+metal virtual-network create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> ] [-d <description>] [flags]
 ```
 
 ### Examples
@@ -15,16 +15,12 @@ metal virtual-network create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> |
 ```
   # Creates a VLAN with vxlan ID 1999 in the Dallas metro:
   metal virtual-network create -p $METAL_PROJECT_ID -m da --vxlan 1999
-
-  # Creates a VLAN in the sjc1 facility
-  metal virtual-network create -p $METAL_PROJECT_ID -f sjc1
 ```
 
 ### Options
 
 ```
   -d, --description string   A user-friendly description of the virtual network.
-  -f, --facility string      Code of the facility.
   -h, --help                 help for create
   -m, --metro string         Code of the metro.
   -p, --project-id string    The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.

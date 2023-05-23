@@ -21,9 +21,10 @@
 package ips
 
 import (
+	"context"
 	"fmt"
+	"strconv"
 
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -41,12 +42,14 @@ func (c *Client) Available() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			result, _, err := c.ProjectService.AvailableAddresses(reservationID, &packngo.AvailableRequest{CIDR: cidr})
+
+			Cidr := strconv.Itoa(cidr)
+			result, _, err := c.ProjectService.FindIPAvailabilities(context.Background(), reservationID).Cidr(Cidr).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not get available IP addresses: %w", err)
 			}
-			data := make([][]string, len(result))
-			for i, r := range result {
+			data := make([][]string, len(result.GetAvailable()))
+			for i, r := range result.GetAvailable() {
 				data[i] = []string{r}
 			}
 			header := []string{"Available IPs"}

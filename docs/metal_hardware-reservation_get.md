@@ -4,7 +4,7 @@ Lists a Project's hardware reservations or the details of a specified hardware r
 
 ### Synopsis
 
-Lists a Project's hardware reservations or the details of a specified hardware reservation. When using --json or --yaml flags, the --include=project,facility,device flag is implied.
+Lists a Project's hardware reservations or the details of a specified hardware reservation. When using --json or --yaml flags, the --include=project,device flag is implied.
 
 ```
 metal hardware-reservation get [-p <project_id>] | [-i <hardware_reservation_id>] [flags]

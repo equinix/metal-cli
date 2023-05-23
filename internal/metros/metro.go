@@ -21,14 +21,14 @@
 package metros
 
 import (
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
 type Client struct {
 	Servicer Servicer
-	Service  packngo.MetroService
+	Service  metal.MetrosApiService
 	Out      outputs.Outputer
 }
 
@@ -44,7 +44,7 @@ func (c *Client) NewCommand() *cobra.Command {
 					root.PersistentPreRun(cmd, args)
 				}
 			}
-			c.Service = c.Servicer.API(cmd).Metros
+			c.Service = *c.Servicer.API(cmd).MetrosApi
 		},
 	}
 
@@ -55,8 +55,8 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	API(*cobra.Command) *metal.APIClient
+	//ListOptions(defaultIncludes, defaultExcludes []string) *metal.O
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {

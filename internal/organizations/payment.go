@@ -21,6 +21,7 @@
 package organizations
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -39,15 +40,15 @@ func (c *Client) PaymentMethods() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			paymentMethods, _, err := c.Service.ListPaymentMethods(organizationID)
+			paymentMethods, _, err := c.Service.FindOrganizationPaymentMethods(context.Background(), organizationID).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not list Payment Methods: %w", err)
 			}
 
-			data := make([][]string, len(paymentMethods))
+			data := make([][]string, len(paymentMethods.GetPaymentMethods()))
 
-			for i, p := range paymentMethods {
-				data[i] = []string{p.ID, p.CardholderName, p.ExpMonth, p.ExpYear, p.Created}
+			for i, p := range paymentMethods.GetPaymentMethods() {
+				data[i] = []string{*p.Id, *p.CardholderName, *p.ExpirationMonth, *p.ExpirationYear, p.CreatedAt.String()}
 			}
 			header := []string{"ID", "Cardholder", "Exp. Month", "Exp. Year", "Created"}
 

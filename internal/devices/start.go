@@ -21,8 +21,10 @@
 package devices
 
 import (
+	"context"
 	"fmt"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +40,8 @@ func (c *Client) Start() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			_, err := c.Service.PowerOn(deviceID)
+			DeviceAction := metal.NewDeviceActionInput("power_on")
+			_, err := c.Service.PerformAction(context.Background(), deviceID).DeviceActionInput(*DeviceAction).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not start Device: %w", err)
 			}

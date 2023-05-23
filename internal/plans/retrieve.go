@@ -21,6 +21,7 @@
 package plans
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -37,15 +38,15 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			plans, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
+			plans, _, err := c.Service.FindPlans(context.Background()).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not list Plans: %w", err)
 			}
 
-			data := make([][]string, len(plans))
+			data := make([][]string, len(plans.GetPlans()))
 
-			for i, p := range plans {
-				data[i] = []string{p.ID, p.Slug, p.Name}
+			for i, p := range plans.GetPlans() {
+				data[i] = []string{p.GetId(), p.GetSlug(), p.GetName()}
 			}
 			header := []string{"ID", "Slug", "Name"}
 

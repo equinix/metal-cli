@@ -21,6 +21,7 @@
 package metros
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -38,14 +39,17 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			metros, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
+			resp, r, err := c.Service.FindMetros(context.Background()).Execute()
 			if err != nil {
-				return fmt.Errorf("Could not list Metros: %w", err)
+				fmt.Printf("Error when calling `MetrosApi.GetMetro``: %v\n", err)
+				fmt.Printf("Full HTTP response: %v\n", r)
 			}
+			metros := resp.GetMetros()
+
 			data := make([][]string, len(metros))
 
 			for i, metro := range metros {
-				data[i] = []string{metro.ID, metro.Name, metro.Code}
+				data[i] = []string{*metro.Id, *metro.Name, *metro.Code}
 			}
 			header := []string{"ID", "Name", "Code"}
 

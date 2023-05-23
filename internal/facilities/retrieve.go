@@ -21,6 +21,7 @@
 package facilities
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -37,19 +38,22 @@ func (c *Client) Retrieve() *cobra.Command {
   metal facilities get`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd.SilenceUsage = true
-			facilities, _, err := c.Service.List(c.Servicer.ListOptions(nil, nil))
+			cmd.SilenceUsage = false
+			resp, r, err := c.Service.FindFacilities(context.Background()).Execute()
 			if err != nil {
-				return fmt.Errorf("Could not list Facilities: %w", err)
+				fmt.Printf("Error when calling `FacilitiesApi.FindFacilities``: %v\n", err)
+				fmt.Printf("Full HTTP response: %v\n", r)
 			}
+
+			facilities := resp.GetFacilities()
 			data := make([][]string, len(facilities))
 
 			for i, facility := range facilities {
 				var metro string
 				if facility.Metro != nil {
-					metro = facility.Metro.Code
+					metro = *facility.GetMetro().Code
 				}
-				data[i] = []string{facility.Name, facility.Code, metro, strings.Join(facility.Features, ",")}
+				data[i] = []string{facility.GetName(), metro, strings.Join(facility.GetFeatures(), ",")}
 			}
 			header := []string{"Name", "Code", "Metro", "Features"}
 

@@ -21,10 +21,10 @@
 package projects
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -40,16 +40,16 @@ func (c *Client) BGPConfig() *cobra.Command {
   metal project bgp-config --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			listOpt := c.Servicer.ListOptions(nil, nil)
-			getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
-			p, _, err := c.BGPConfigService.Get(projectID, getOpts)
+			//listOpt := c.Servicer.ListOptions(nil, nil)
+			//getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
+			p, _, err := c.BGPConfigService.FindBgpConfigByProject(context.Background(), projectID).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not get Project BGP Config: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{projectID, p.Status, strconv.Itoa(p.Asn), p.DeploymentType, strconv.Itoa(p.MaxPrefix)}
+			data[0] = []string{projectID, p.GetStatus(), strconv.Itoa(int(p.GetAsn())), p.GetDeploymentType(), strconv.Itoa(int(p.GetMaxPrefix()))}
 			header := []string{"ID", "Status", "Sessions", "ASN", "DeploymentType", "MaxPrefix"}
 			return c.Out.Output(p, header, &data)
 		},

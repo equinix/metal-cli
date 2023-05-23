@@ -21,11 +21,12 @@
 package devices
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -34,7 +35,6 @@ func (c *Client) Create() *cobra.Command {
 	var (
 		projectID       string
 		metro           string
-		facility        string
 		plan            string
 		hostname        string
 		operatingSystem string
@@ -49,12 +49,12 @@ func (c *Client) Create() *cobra.Command {
 		alwaysPXE             bool
 		hardwareReservationID string
 		spotInstance          bool
-		spotPriceMax          float64
+		spotPriceMax          float32
 		terminationTime       string
 	)
 
 	createDeviceCmd := &cobra.Command{
-		Use:   `create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <hostname> -O <operating_system> [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-t <tags>] [-r <hardware_reservation_id>] [-I <ipxe_script_url>] [--always-pxe] [--spot-instance] [--spot-price-max=<max_price>]`,
+		Use:   `create -p <project_id> -m <metro>  -P <plan> -H <hostname> -O <operating_system> [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-t <tags>] [-r <hardware_reservation_id>] [-I <ipxe_script_url>] [--always-pxe] [--spot-instance] [--spot-price-max=<max_price>]`,
 		Short: "Creates a device.",
 		Long:  "Creates a device in the specified project. A plan, hostname, operating system, and either metro or facility is required.",
 		Example: `  # Provisions a c3.small.x86 in the Dallas metro running Ubuntu 20.04:
@@ -64,7 +64,6 @@ func (c *Client) Create() *cobra.Command {
   metal device create -p $METAL_PROJECT_ID -P c3.medium.x86 -m sv -H test-rocky -O rocky_8 -r 47161704-1715-4b45-8549-fb3f4b2c32c7`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var endDt *packngo.Timestamp
 
 			if userdata != "" && userdataFile != "" {
 				return fmt.Errorf("either userdata or userdata-file should be set")
@@ -79,47 +78,44 @@ func (c *Client) Create() *cobra.Command {
 				userdata = string(userdataRaw)
 			}
 
+			deviceCreateInMetroInput := metal.NewDeviceCreateInMetroInput(metro, operatingSystem, plan)
+
+			var endDt time.Time
 			if terminationTime != "" {
 				parsedTime, err := time.Parse(time.RFC3339, terminationTime)
 				if err != nil {
 					return fmt.Errorf("Could not parse time %q: %w", terminationTime, err)
 				}
-				endDt = &packngo.Timestamp{Time: parsedTime}
+				endDt = parsedTime
 			}
-
-			var facilityArgs []string
-			if facility != "" {
-				facilityArgs = append(facilityArgs, facility)
-			}
-
-			request := &packngo.DeviceCreateRequest{
-				Hostname:              hostname,
-				Plan:                  plan,
-				Facility:              facilityArgs,
+			deviceCreateInMetroInput = &metal.DeviceCreateInMetroInput{
 				Metro:                 metro,
-				OS:                    operatingSystem,
-				BillingCycle:          billingCycle,
-				ProjectID:             projectID,
-				UserData:              userdata,
-				CustomData:            customdata,
-				IPXEScriptURL:         ipxescripturl,
+				Plan:                  plan,
+				OperatingSystem:       operatingSystem,
+				Hostname:              &hostname,
+				BillingCycle:          &billingCycle,
+				Userdata:              &userdata,
+				IpxeScriptUrl:         &ipxescripturl,
 				Tags:                  tags,
-				PublicIPv4SubnetSize:  publicIPv4SubnetSize,
-				AlwaysPXE:             alwaysPXE,
-				HardwareReservationID: hardwareReservationID,
-				SpotInstance:          spotInstance,
-				SpotPriceMax:          spotPriceMax,
-				TerminationTime:       endDt,
+				AlwaysPxe:             &alwaysPXE,
+				HardwareReservationId: &hardwareReservationID,
+				SpotInstance:          &spotInstance,
+				SpotPriceMax:          &spotPriceMax,
+				TerminationTime:       &endDt,
 			}
 
-			device, _, err := c.Service.Create(request)
+			request := metal.CreateDeviceRequest{DeviceCreateInFacilityInput: nil, DeviceCreateInMetroInput: deviceCreateInMetroInput}
+
+			device, r, err := c.Service.CreateDevice(context.Background(), projectID).CreateDeviceRequest(request).Execute()
 			if err != nil {
-				return fmt.Errorf("Could not create Device: %w", err)
+				fmt.Printf("Error when calling `DevicesApi.CreateDevice``: %v\n", err)
+				fmt.Printf("Full HTTP response: %v\n", r)
 			}
 
-			header := []string{"ID", "Hostname", "OS", "State", "Created"}
+			header := []string{"ID", "Hostname", "State", "Created"}
 			data := make([][]string, 1)
-			data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
+
+			data[0] = []string{device.GetId(), device.GetHostname(), device.GetState(), device.GetCreatedAt().GoString()}
 
 			return c.Out.Output(device, header, &data)
 		},
@@ -127,7 +123,6 @@ func (c *Client) Create() *cobra.Command {
 	createDeviceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
 	_ = viper.BindPFlag("project-id", createDeviceCmd.Flags().Lookup("project-id"))
 
-	createDeviceCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility where the device will be created")
 	createDeviceCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro where the device will be created")
 	createDeviceCmd.Flags().StringVarP(&plan, "plan", "P", "", "Name of the plan")
 	createDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "Hostname")
@@ -147,7 +142,7 @@ func (c *Client) Create() *cobra.Command {
 	createDeviceCmd.Flags().StringVarP(&billingCycle, "billing-cycle", "b", "hourly", "Billing cycle")
 	createDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, "Sets whether the device always PXE boots on reboot.")
 	createDeviceCmd.Flags().BoolVarP(&spotInstance, "spot-instance", "s", false, "Provisions the device as a spot instance.")
-	createDeviceCmd.Flags().Float64VarP(&spotPriceMax, "spot-price-max", "", 0, `Sets the maximum spot market price for the device: --spot-price-max=1.2`)
+	createDeviceCmd.Flags().Float32VarP(&spotPriceMax, "spot-price-max", "", 0, `Sets the maximum spot market price for the device: --spot-price-max=1.2`)
 	createDeviceCmd.Flags().StringVarP(&terminationTime, "termination-time", "T", "", `Device termination time: --termination-time="15:04:05"`)
 
 	return createDeviceCmd

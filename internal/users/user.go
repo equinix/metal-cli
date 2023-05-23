@@ -21,15 +21,15 @@
 package users
 
 import (
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
 type Client struct {
 	Servicer          Servicer
-	Service           packngo.UserService
-	InvitationService packngo.InvitationService
+	Service           metal.UsersApiService
+	InvitationService metal.OrganizationsApiService
 	Out               outputs.Outputer
 }
 
@@ -46,8 +46,8 @@ func (c *Client) NewCommand() *cobra.Command {
 					root.PersistentPreRun(cmd, args)
 				}
 			}
-			c.Service = c.Servicer.API(cmd).Users
-			c.InvitationService = c.Servicer.API(cmd).Invitations
+			c.Service = *c.Servicer.API(cmd).UsersApi
+			c.InvitationService = *c.Servicer.API(cmd).OrganizationsApi
 		},
 	}
 
@@ -59,8 +59,8 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	API(*cobra.Command) *metal.APIClient
+	//ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {

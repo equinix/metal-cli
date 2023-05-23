@@ -21,10 +21,10 @@
 package hardware
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -54,7 +54,7 @@ func (c *Client) Retrieve() *cobra.Command {
 				inc = append(inc, "project", "facility", "device")
 			}
 
-			listOpt := c.Servicer.ListOptions(inc, nil)
+			//listOpt := c.Servicer.ListOptions(inc, nil)
 
 			if hardwareReservationID == "" && projectID == "" {
 				return fmt.Errorf("either id or project-id should be set")
@@ -62,28 +62,28 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			cmd.SilenceUsage = true
 			if hardwareReservationID != "" {
-				getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
-				r, _, err := c.Service.Get(hardwareReservationID, getOpts)
+				//getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
+				r, _, err := c.Service.FindHardwareReservationById(context.Background(), hardwareReservationID).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Hardware Reservation: %w", err)
 				}
 
 				data := make([][]string, 1)
 
-				data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+				data[0] = []string{*r.Id, *r.Facility.Code, *r.Plan.Name, r.CreatedAt.String()}
 
 				return c.Out.Output(r, header, &data)
 			}
 
-			reservations, _, err := c.Service.List(projectID, listOpt)
+			reservations, _, err := c.Service.FindProjectHardwareReservations(context.Background(), projectID).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not list Hardware Reservations: %w", err)
 			}
 
-			data := make([][]string, len(reservations))
+			data := make([][]string, len(reservations.GetHardwareReservations()))
 
-			for i, r := range reservations {
-				data[i] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+			for i, r := range reservations.GetHardwareReservations() {
+				data[i] = []string{*r.Id, *r.Facility.Code, *r.Plan.Name, r.CreatedAt.String()}
 			}
 
 			return c.Out.Output(reservations, header, &data)

@@ -23,6 +23,7 @@ package hardware
 import (
 	"fmt"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -39,14 +40,17 @@ func (c *Client) Move() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			header := []string{"ID", "Facility", "Plan", "Created"}
-			r, _, err := c.Service.Move(hardwareReservationID, projectID)
+			moveHardReserveRequest := metal.NewMoveHardwareReservationRequest()
+			moveHardReserveRequest.ProjectId = &projectID
+
+			r, _, err := c.Service.MoveHardwareReservation(cmd.Context(), hardwareReservationID).MoveHardwareReservationRequest(*moveHardReserveRequest).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not move Hardware Reservation: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+			data[0] = []string{*r.Id, *r.Facility.Code, *r.Plan.Name, r.CreatedAt.String()}
 
 			return c.Out.Output(r, header, &data)
 		},

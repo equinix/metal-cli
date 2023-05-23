@@ -1,19 +1,19 @@
 ## metal capacity get
 
-Returns capacity of metros or facilities, with optional filtering.
+Returns capacity of metros, with optional filtering.
 
 ### Synopsis
 
-Returns the capacity of metros or facilities. Filters for metros, facilities, plans are available. Metro flags and facility flags are mutually exclusive. If no flags are included, returns capacity for all plans in all facilities.
+Returns the capacity of metros. Filters for metros, plans are available. Metro flags are mutually exclusive. If no flags are included, returns capacity for all plans in all metros.
 
 ```
-metal capacity get [-m | -f] | [--metros <list> | --facilities <list>] [-P <list>] [flags]
+metal capacity get [-m | -f] | [--metros <list> ] [-P <list>] [flags]
 ```
 
 ### Examples
 
 ```
-  # Returns the capacity of all plans in all facilities:
+  # Returns the capacity of all plans in all metros:
   metal capacity get 
 
   # Returns the capacity of the c3.small.x86 in all metros:
@@ -26,11 +26,9 @@ metal capacity get [-m | -f] | [--metros <list> | --facilities <list>] [-P <list
 ### Options
 
 ```
-      --facilities strings   A facility or list of facilities for client-side filtering. Will only return the capacity for the specified facilities. Can not be used with --metros.
-  -f, --facility             Return the capacity for all facilities. Can not be used with -m. (default true)
   -h, --help                 help for get
   -m, --metro                Return the capacity for all metros. Can not be used with -f.
-      --metros strings       A metro or list of metros for client-side filtering. Will only return the capacity for the specified metros. Can not be used with --facilities.
+      --metros strings       A metro or list of metros for client-side filtering. Will only return the capacity for the specified metros.
   -P, --plans strings        Return only the capacity for the specified plans.
 ```
 

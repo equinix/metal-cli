@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/equinix/metal-cli/internal/capacity"
+	//"github.com/equinix/metal-cli/internal/capacity"
 	root "github.com/equinix/metal-cli/internal/cli"
 	"github.com/equinix/metal-cli/internal/completion"
 	"github.com/equinix/metal-cli/internal/devices"
@@ -16,6 +16,7 @@ import (
 	"github.com/equinix/metal-cli/internal/hardware"
 	initPkg "github.com/equinix/metal-cli/internal/init"
 	"github.com/equinix/metal-cli/internal/ips"
+
 	"github.com/equinix/metal-cli/internal/metros"
 	"github.com/equinix/metal-cli/internal/organizations"
 	"github.com/equinix/metal-cli/internal/os"
@@ -69,29 +70,30 @@ func NewCli() *Cli {
 
 func (cli *Cli) RegisterCommands(client *root.Client) {
 	cli.MainCmd.AddCommand(
-		docs.NewCommand(),
-		emdocs.NewCommand(),
-		completion.NewCommand(),
 
 		env.NewClient(client, apiTokenEnvVar).NewCommand(),
 		initPkg.NewClient(client).NewCommand(),
 
-		capacity.NewClient(client, cli.Outputer).NewCommand(),
+		docs.NewCommand(),
+		emdocs.NewCommand(),
+		completion.NewCommand(),
+
+		//capacity.NewClient(client, cli.Outputer).NewCommand(),
 		metros.NewClient(client, cli.Outputer).NewCommand(),
 		facilities.NewClient(client, cli.Outputer).NewCommand(),
+		devices.NewClient(client, cli.Outputer).NewCommand(),
+		events.NewClient(client, cli.Outputer).NewCommand(),
+		hardware.NewClient(client, cli.Outputer).NewCommand(),
+		gateway.NewClient(client, cli.Outputer).NewCommand(),
+		ips.NewClient(client, cli.Outputer).NewCommand(),
+		organizations.NewClient(client, cli.Outputer).NewCommand(),
 		os.NewClient(client, cli.Outputer).NewCommand(),
 		plans.NewClient(client, cli.Outputer).NewCommand(),
-		events.NewClient(client, cli.Outputer).NewCommand(),
-		users.NewClient(client, cli.Outputer).NewCommand(),
-		vlan.NewClient(client, cli.Outputer).NewCommand(),
-		hardware.NewClient(client, cli.Outputer).NewCommand(),
-		devices.NewClient(client, cli.Outputer).NewCommand(),
-		organizations.NewClient(client, cli.Outputer).NewCommand(),
+		ports.NewClient(client, cli.Outputer).NewCommand(),
 		projects.NewClient(client, cli.Outputer).NewCommand(),
-		ips.NewClient(client, cli.Outputer).NewCommand(),
 		ssh.NewClient(client, cli.Outputer).NewCommand(),
 		twofa.NewClient(client, cli.Outputer).NewCommand(),
-		gateway.NewClient(client, cli.Outputer).NewCommand(),
-		ports.NewClient(client, cli.Outputer).NewCommand(),
+		users.NewClient(client, cli.Outputer).NewCommand(),
+		vlan.NewClient(client, cli.Outputer).NewCommand(),
 	)
 }

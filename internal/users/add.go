@@ -21,11 +21,12 @@
 package users
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -46,20 +47,19 @@ func (c *Client) Add() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			getOpts := c.Servicer.ListOptions(nil, nil)
-			createRequest := &packngo.InvitationCreateRequest{
-				Invitee:     email,
-				Roles:       roles,
-				ProjectsIDs: projectsIDs,
-			}
-			invitation, _, err := c.InvitationService.Create(organizationID, createRequest, getOpts)
+
+			invitationInput := metal.NewInvitationInput(email)
+			invitationInput.SetRoles(roles)
+			invitationInput.SetProjectsIds(projectsIDs)
+
+			invitation, _, err := c.InvitationService.CreateOrganizationInvitation(context.Background(), organizationID).InvitationInput(*invitationInput).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not add Users: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{invitation.ID, invitation.Nonce, invitation.Invitee, invitation.Organization.Href, strconv.Itoa(len(invitation.Projects)), strings.Join(invitation.Roles, ", ")}
+			data[0] = []string{invitation.GetId(), invitation.GetNonce(), invitation.GetInvitee(), invitation.Organization.GetHref(), strconv.Itoa(len(invitation.GetProjects())), strings.Join(invitation.GetRoles(), ", ")}
 			header := []string{"ID", "Nonce", "Email", "Organization", "Projects", "Roles"}
 
 			return c.Out.Output(invitation, header, &data)

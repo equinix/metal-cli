@@ -22,12 +22,13 @@ THE SOFTWARE.
 package init
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
 	"syscall"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 	"sigs.k8s.io/yaml"
@@ -35,8 +36,8 @@ import (
 
 type Client struct {
 	Servicer       Servicer
-	UserService    packngo.UserService
-	ProjectService packngo.ProjectService
+	UserService    metal.UsersApiService
+	ProjectService metal.ProjectsApiService
 }
 
 func NewClient(s Servicer) *Client {
@@ -82,43 +83,36 @@ func (c *Client) NewCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			fmt.Println()
 			token := string(b)
-			c.Servicer.SetToken(token)
-			metalClient := c.Servicer.API(cmd)
-			c.UserService = metalClient.Users
-			c.ProjectService = metalClient.Projects
+			fmt.Println(token)
 
-			user, _, err := c.UserService.Current()
+			c.Servicer.SetToken(token)
+			fmt.Print("Set token is done\n")
+
+			metalClient := c.Servicer.API(cmd)
+			userRequest := metalClient.UsersApi.FindCurrentUser(context.Background())
+			user, _, err := metalClient.UsersApi.FindCurrentUserExecute(userRequest)
 			if err != nil {
+				fmt.Printf("GET : Failed to get current user")
 				return err
 			}
-			organization := user.DefaultOrganizationID
-			project := ""
-			if user.DefaultProjectID != nil {
-				project = *user.DefaultProjectID
-			}
+			organization := user.AdditionalProperties["default_organization_id"]
+
 			fmt.Printf("Organization ID [%s]: ", organization)
 
 			userOrg := ""
 			fmt.Scanln(&userOrg)
 			if userOrg == "" {
-				userOrg = organization
+				userOrg = fmt.Sprintf("value: %v", organization)
 			}
 
-			// Choose the first project in the preferred org
-			if project == "" {
-				project, err = getFirstProjectID(c.ProjectService, userOrg)
-				if err != nil {
-					return err
-				}
-			}
-			fmt.Printf("Project ID [%s]: ", project)
+			project := user.AdditionalProperties["default_project_id"]
+			fmt.Printf("Default Project ID [%s]: ", project)
 
 			userProj := ""
 			fmt.Scanln(&userProj)
 			if userProj == "" {
-				userProj = project
+				userProj = fmt.Sprintf("value: %v", organization)
 			}
 
 			b, err = formatConfig(userProj, userOrg, token)
@@ -130,24 +124,6 @@ func (c *Client) NewCommand() *cobra.Command {
 	}
 
 	return initCmd
-}
-
-func getFirstProjectID(s packngo.ProjectService, userOrg string) (string, error) {
-	listOpts := &packngo.ListOptions{}
-	listOpts.Including("organization")
-	listOpts.Excluding("devices", "members", "memberships", "invitations", "max_devices", "ssh_keys", "volumes", "backend_transfer_enabled", "updated_at", "customdata", "event_alert_configuration")
-
-	projects, _, err := s.List(listOpts)
-	if err != nil {
-		return "", err
-	}
-	for _, p := range projects {
-		if p.Organization.ID == userOrg {
-			return p.ID, nil
-		}
-	}
-
-	return "", nil // it's ok to have no projects and no default project
 }
 
 func formatConfig(userProj, userOrg, token string) ([]byte, error) {
@@ -170,8 +146,7 @@ func writeConfig(config string, b []byte) error {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	API(*cobra.Command) *metal.APIClient
 	SetToken(string)
 	DefaultConfig(bool) string
 }

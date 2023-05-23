@@ -21,11 +21,11 @@
 package projects
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
 
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -41,19 +41,19 @@ func (c *Client) BGPSessions() *cobra.Command {
   metal project bgp-sessions --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			listOpt := c.Servicer.ListOptions(nil, nil)
-			getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
-			p, _, err := c.BGPConfigService.Get(projectID, getOpts)
+			//listOpt := c.Servicer.ListOptions(nil, nil)
+			//getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
+			p, _, err := c.BGPConfigService.FindProjectBgpSessions(context.Background(), projectID).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not get Project BGP Sessions: %w", err)
 			}
 
-			data := make([][]string, len(p.Sessions))
-			for i, s := range p.Sessions {
+			data := make([][]string, len(p.GetBgpSessions()))
+			for i, s := range p.GetBgpSessions() {
 				data[i] = []string{
-					s.ID,
-					s.Status,
-					strings.Join(s.LearnedRoutes, ","),
+					s.GetId(),
+					s.GetStatus(),
+					strings.Join(s.GetLearnedRoutes(), ","),
 					strconv.FormatBool(s.DefaultRoute != nil && *s.DefaultRoute),
 				}
 			}

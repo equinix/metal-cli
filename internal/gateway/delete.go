@@ -21,6 +21,7 @@
 package gateway
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/manifoldco/promptui"
@@ -34,7 +35,7 @@ func (c *Client) Delete() *cobra.Command {
 	)
 
 	deleteGway := func(id string) error {
-		_, err := c.Service.Delete(id)
+		_, _, err := c.Service.DeleteMetalGateway(context.Background(), gwayID).Execute()
 		if err != nil {
 			return err
 		}

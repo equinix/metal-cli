@@ -21,9 +21,10 @@
 package devices
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -47,17 +48,35 @@ func (c *Client) Reinstall() *cobra.Command {
   metal device reinstall -d 50382f72-02b7-4b40-ac8d-253713e1e174 -O ubuntu_22_04 --preserve-data`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			request := packngo.DeviceReinstallFields{
-				OperatingSystem: operatingSystem,
-				PreserveData:    preserveData,
-				DeprovisionFast: deprovisionFast,
+			DeviceAction := metal.NewDeviceActionInput("reinstall")
+
+			if preserveData {
+				DeviceAction.PreserveData = &preserveData
+			}
+			if deprovisionFast {
+				DeviceAction.DeprovisionFast = &deprovisionFast
+			}
+			device, _, Err := c.Service.FindDeviceById(context.Background(), id).Execute()
+			if Err != nil {
+				fmt.Printf("Error when calling `DevicesApiService.FindDeviceByID``: %v\n", Err)
+				Err = fmt.Errorf("Could not reinstall Device: %w", Err)
+				return Err
 			}
 
-			_, err := c.Service.Reinstall(id, &request)
+			if operatingSystem == "" || operatingSystem == "null" {
+				fmt.Print("operatingSystem : ")
+				fmt.Print(operatingSystem)
+				fmt.Print("\n")
+				DeviceAction.SetOperatingSystem(device.OperatingSystem.GetSlug())
+			} else {
+				DeviceAction.OperatingSystem = &operatingSystem
+			}
+
+			_, err := c.Service.PerformAction(context.Background(), id).DeviceActionInput(*DeviceAction).Execute()
 			if err != nil {
+				fmt.Printf("Error when calling `DevicesApiService.PerformAction``: %v\n", err)
 				err = fmt.Errorf("Could not reinstall Device: %w", err)
 			}
-
 			return err
 		},
 	}

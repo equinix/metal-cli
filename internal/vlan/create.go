@@ -21,42 +21,44 @@
 package vlan
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Create() *cobra.Command {
 	var vxlan int
-	var projectID, metro, facility, description string
+	var projectID, metro, description string
 
 	// createVirtualNetworkCmd represents the createVirtualNetwork command
 	createVirtualNetworkCmd := &cobra.Command{
-		Use:   `create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> | -f <facility_code>] [-d <description>]`,
+		Use:   `create -p <project_UUID>  [-m <metro_code> -vxlan <vlan> ] [-d <description>]`,
 		Short: "Creates a virtual network.",
-		Long:  "Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID otherwise it is auto-assigned. If you are creating a VLAN in a facility, the VXLAN ID is auto-assigned.",
+		Long:  "Creates a VLAN in the specified project. If you are creating a VLAN in a metro, you can optionally specify the VXLAN ID otherwise it is auto-assigned.",
 		Example: `  # Creates a VLAN with vxlan ID 1999 in the Dallas metro:
-  metal virtual-network create -p $METAL_PROJECT_ID -m da --vxlan 1999
-
-  # Creates a VLAN in the sjc1 facility
-  metal virtual-network create -p $METAL_PROJECT_ID -f sjc1`,
+  metal virtual-network create -p $METAL_PROJECT_ID -m da --vxlan 1999`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-			req := &packngo.VirtualNetworkCreateRequest{
-				ProjectID: projectID,
-				Metro:     metro,
-				Facility:  facility,
-				VXLAN:     vxlan,
+			// req := &metal.ApiCreateVirtualNetworkRequest{
+			// 	ctx: context.Background(),
+			// 	ApiService: &metal.VLANsApiService{}
+			// }
+			virtualNetworkCreateInput := metal.NewVirtualNetworkCreateInput()
+			if metro != "" {
+				virtualNetworkCreateInput.SetMetro(metro)
 			}
+			virtualNetworkCreateInput.SetVxlan(int32(vxlan))
+
 			if description != "" {
-				req.Description = description
+				virtualNetworkCreateInput.Description = &description
 			}
 
-			n, _, err := c.Service.Create(req)
+			n, _, err := c.Service.CreateVirtualNetwork(context.Background(), projectID).VirtualNetworkCreateInput(*virtualNetworkCreateInput).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create ProjectVirtualNetwork: %w", err)
 			}
@@ -64,16 +66,15 @@ func (c *Client) Create() *cobra.Command {
 			data := make([][]string, 1)
 
 			// TODO(displague) metro is not in the response
-			data[0] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.MetroCode, n.FacilityCode, n.CreatedAt}
+			data[0] = []string{n.GetId(), n.GetDescription(), strconv.Itoa(int(n.GetVxlan())), n.GetMetroCode()}
 
-			header := []string{"ID", "Description", "VXLAN", "Metro", "Facility", "Created"}
+			header := []string{"ID", "Description", "VXLAN", "Metro"}
 
 			return c.Out.Output(n, header, &data)
 		},
 	}
 
 	createVirtualNetworkCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
-	createVirtualNetworkCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility.")
 	createVirtualNetworkCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro.")
 	createVirtualNetworkCmd.Flags().StringVarP(&description, "description", "d", "", "A user-friendly description of the virtual network.")
 	createVirtualNetworkCmd.Flags().IntVarP(&vxlan, "vxlan", "", 0, "Optional VXLAN ID. Must be between 2 and 3999 and can only be used with --metro.")

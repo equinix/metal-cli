@@ -21,12 +21,15 @@
 package ports
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
+	v1 "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/manifoldco/promptui"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -53,26 +56,32 @@ func (c *Client) Convert() *cobra.Command {
 		// TODO: can we add ip-reservation-id?
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-
-			if f := cmd.Flag("bonded"); f.Changed {
-				_, _, err := map[bool]func(string, bool) (*packngo.Port, *packngo.Response, error){
-					true:  c.PortService.Bond,
-					false: c.PortService.Disbond,
-				}[bonded](portID, bulk)
+			f := cmd.Flag("bonded")
+			if !f.Changed {
+				_, _, err := c.PortService.BondPort(context.Background(), portID).BulkEnable(bulk).Execute()
 				if err != nil {
 					return fmt.Errorf("failed to change port bonding: %w", err)
 				}
 			}
-			addrs := []packngo.AddressRequest{{AddressFamily: 4, Public: false}}
+
+			if f.Changed {
+				_, _, err := c.PortService.DisbondPort(context.Background(), portID).BulkDisable(bulk).Execute()
+				if err != nil {
+					return fmt.Errorf("failed to change port bonding: %w", err)
+				}
+			}
+			addrs := metal.NewIPAddressWithDefaults()
 
 			if f := cmd.Flag("public-ipv4"); f.Changed {
-				addrs = append(addrs, packngo.AddressRequest{AddressFamily: 4, Public: true})
+				addrs.SetAddressFamily(4)
+				addrs.SetPublic(true)
 			}
 			if f := cmd.Flag("public-ipv6"); f.Changed {
-				addrs = append(addrs, packngo.AddressRequest{AddressFamily: 6, Public: true})
+				addrs.SetAddressFamily(6)
+				addrs.SetPublic(true)
 			}
 
-			convToL2 := func(portID string) (*packngo.Port, *packngo.Response, error) {
+			convToL2 := func(portID string) (*metal.Port, *http.Response, error) {
 				if !force {
 					prompt := promptui.Prompt{
 						Label:     fmt.Sprintf("Are you sure you want to convert Port %s to Layer2 and remove assigned IP addresses: ", portID),
@@ -84,14 +93,15 @@ func (c *Client) Convert() *cobra.Command {
 						return nil, nil, nil
 					}
 				}
-				return c.PortService.ConvertToLayerTwo(portID)
+
+				return c.PortService.ConvertLayer2(context.Background(), portID).Execute()
 			}
-			convToL3 := func(portID string) (*packngo.Port, *packngo.Response, error) {
+			convToL3 := func(portID string) (*v1.Port, *http.Response, error) {
 				log.Printf("Converting port %s to layer-3 with addresses %v", portID, addrs)
-				return c.PortService.ConvertToLayerThree(portID, addrs)
+				return c.PortService.ConvertLayer3(context.Background(), portID).Execute()
 			}
 			if f := cmd.Flag("layer2"); f.Changed {
-				_, _, err := map[bool]func(string) (*packngo.Port, *packngo.Response, error){
+				_, _, err := map[bool]func(string) (*metal.Port, *http.Response, error){
 					true:  convToL2,
 					false: convToL3,
 				}[layer2](portID)
@@ -99,17 +109,17 @@ func (c *Client) Convert() *cobra.Command {
 					return fmt.Errorf("failed to change port network mode: %w", err)
 				}
 			}
-			listOpts := c.Servicer.ListOptions(nil, nil)
+			//listOpts := c.Servicer.ListOptions(nil, nil)
 
-			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-			port, _, err := c.PortService.Get(portID, getOpts)
+			//getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
+			port, _, err := c.PortService.FindPortById(context.Background(), portID).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not get Port: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{port.ID, port.Name, port.Type, port.NetworkType, port.Data.MAC, strconv.FormatBool(port.Data.Bonded)}
+			data[0] = []string{port.GetId(), port.GetName(), port.GetType(), port.GetNetworkType(), port.Data.GetMac(), strconv.FormatBool(port.Data.GetBonded())}
 			header := []string{"ID", "Name", "Type", "Network Type", "MAC", "Bonded"}
 
 			return c.Out.Output(port, header, &data)

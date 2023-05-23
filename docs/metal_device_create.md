@@ -4,10 +4,10 @@ Creates a device.
 
 ### Synopsis
 
-Creates a device in the specified project. A plan, hostname, operating system, and either metro or facility is required.
+Creates a device in the specified project. A plan, hostname, operating system, and metro is required.
 
 ```
-metal device create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <hostname> -O <operating_system> [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-t <tags>] [-r <hardware_reservation_id>] [-I <ipxe_script_url>] [--always-pxe] [--spot-instance] [--spot-price-max=<max_price>] [flags]
+metal device create -p <project_id> (-m <metro> ) -P <plan> -H <hostname> -O <operating_system> [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-t <tags>] [-r <hardware_reservation_id>] [-I <ipxe_script_url>] [--always-pxe] [--spot-instance] [--spot-price-max=<max_price>] [flags]
 ```
 
 ### Examples
@@ -26,7 +26,6 @@ metal device create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <h
   -a, --always-pxe                       Sets whether the device always PXE boots on reboot.
   -b, --billing-cycle string             Billing cycle (default "hourly")
   -c, --customdata string                Custom data to be included with your device's metadata.
-  -f, --facility string                  Code of the facility where the device will be created
   -r, --hardware-reservation-id string   The UUID of a hardware reservation, if you are provisioning a server from your reserved hardware.
   -h, --help                             help for create
   -H, --hostname string                  Hostname

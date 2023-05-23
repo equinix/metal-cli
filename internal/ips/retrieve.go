@@ -21,6 +21,7 @@
 package ips
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -59,59 +60,51 @@ func (c *Client) Retrieve() *cobra.Command {
 			}
 
 			cmd.SilenceUsage = true
-			listOpts := c.Servicer.ListOptions(nil, nil)
+			//listOpts := c.Servicer.ListOptions(nil, nil)
 			if assignmentID != "" {
-				ip, _, err := c.ProjectService.Get(assignmentID, listOpts)
+				ip, _, err := c.ProjectService.FindIPAddressById(context.Background(), assignmentID).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Device IP address: %w", err)
 				}
 
 				data := make([][]string, 1)
 
-				data[0] = []string{ip.ID, ip.Address, strconv.FormatBool(ip.Public), ip.Created}
+				data[0] = []string{*ip.IPAssignment.Id, *ip.IPAssignment.Address, strconv.FormatBool(*ip.IPReservation.Public), ip.IPAssignment.CreatedAt.String()}
 				header := []string{"ID", "Address", "Public", "Created"}
 
 				return c.Out.Output(ip, header, &data)
 			} else if reservationID != "" {
-				ip, _, err := c.ProjectService.Get(reservationID, listOpts)
+				ip, _, err := c.ProjectService.FindIPAddressById(context.Background(), reservationID).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Reservation IP address: %w", err)
 				}
 
 				data := make([][]string, 1)
-				code := ""
 				metro := ""
-				if ip.Facility != nil {
-					code = ip.Facility.Code
+				if ip.IPReservation.Metro != nil {
+					metro = *ip.IPReservation.Metro.Code
 				}
-				if ip.Metro != nil {
-					metro = ip.Metro.Code
-				}
-				data[0] = []string{ip.ID, ip.Address, metro, code, strconv.FormatBool(ip.Public), ip.Created}
-				header := []string{"ID", "Address", "Metro", "Facility", "Public", "Created"}
+				data[0] = []string{*ip.IPReservation.Id, *ip.IPReservation.Address, metro, strconv.FormatBool(*ip.IPReservation.Public), ip.IPReservation.CreatedAt.String()}
+				header := []string{"ID", "Address", "Metro", "Public", "Created"}
 
 				return c.Out.Output(ip, header, &data)
 			}
 
-			ips, _, err := c.ProjectService.List(projectID, listOpts)
+			ips, _, err := c.ProjectService.FindIPReservations(context.Background(), projectID).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not list Project IP addresses: %w", err)
 			}
 
-			data := make([][]string, len(ips))
+			data := make([][]string, len(ips.GetIpAddresses()))
 
-			for i, ip := range ips {
-				code := ""
+			for i, ip := range ips.GetIpAddresses() {
 				metro := ""
-				if ip.Facility != nil {
-					code = ip.Facility.Code
+				if ip.IPReservation.Metro != nil {
+					metro = *ip.IPReservation.Metro.Code
 				}
-				if ip.Metro != nil {
-					metro = ip.Metro.Code
-				}
-				data[i] = []string{ip.ID, ip.Address, metro, code, strconv.FormatBool(ip.Public), ip.Created}
+				data[i] = []string{*ip.IPReservation.Id, *ip.IPReservation.Address, metro, strconv.FormatBool(*ip.IPReservation.Public), ip.IPReservation.CreatedAt.String()}
 			}
-			header := []string{"ID", "Address", "Metro", "Facility", "Public", "Created"}
+			header := []string{"ID", "Address", "Metro", "Public", "Created"}
 
 			return c.Out.Output(ips, header, &data)
 		},

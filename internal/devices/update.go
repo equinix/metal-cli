@@ -21,9 +21,10 @@
 package devices
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 
 	"github.com/spf13/cobra"
 )
@@ -37,8 +38,8 @@ func (c *Client) Update() *cobra.Command {
 		tags          []string
 		alwaysPXE     bool
 		ipxescripturl string
-		customdata    string
-		deviceID      string
+		// customdata    string
+		deviceID string
 	)
 
 	// updateDeviceCmd represents the updateDevice command
@@ -51,48 +52,48 @@ func (c *Client) Update() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := &packngo.DeviceUpdateRequest{}
+
+			DeviceUpdate := metal.NewDeviceUpdateInput()
 
 			if hostname != "" {
-				req.Hostname = &hostname
+				DeviceUpdate.Hostname = &hostname
 			}
-
 			if description != "" {
-				req.Description = &description
+				DeviceUpdate.Description = &description
 			}
-
 			if userdata != "" {
-				req.UserData = &userdata
+				DeviceUpdate.Userdata = &userdata
 			}
 
 			if locked {
-				req.Locked = &locked
+				DeviceUpdate.Locked = &locked
 			}
 
 			if len(tags) > 0 {
-				req.Tags = &tags
+				DeviceUpdate.Tags = tags
 			}
 
 			if alwaysPXE {
-				req.AlwaysPXE = &alwaysPXE
+				DeviceUpdate.AlwaysPxe = &alwaysPXE
 			}
 
 			if ipxescripturl != "" {
-				req.IPXEScriptURL = &ipxescripturl
+				DeviceUpdate.IpxeScriptUrl = &ipxescripturl
 			}
 
-			if customdata != "" {
-				req.CustomData = &customdata
-			}
+			// if customdata != "" {
+			// 	DeviceUpdate.Customdata = customdata
+			// }
 
-			device, _, err := c.Service.Update(deviceID, req)
+			device, r, err := c.Service.UpdateDevice(context.Background(), deviceID).DeviceUpdateInput(*DeviceUpdate).Execute()
 			if err != nil {
-				return fmt.Errorf("Could not update Device: %w", err)
+				fmt.Printf("Error when calling `DevicesApi.UpdateDevice``: %v\n", err)
+				fmt.Printf("Full HTTP response: %v\n", r)
 			}
 
 			header := []string{"ID", "Hostname", "OS", "State"}
 			data := make([][]string, 1)
-			data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State}
+			data[0] = []string{*device.Id, *device.Hostname, *device.OperatingSystem.Name, *device.State}
 
 			return c.Out.Output(device, header, &data)
 		},
@@ -106,7 +107,7 @@ func (c *Client) Update() *cobra.Command {
 	updateDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Adds or updates the tags for the device --tags="tag1,tag2".`)
 	updateDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, "Sets the device to always iPXE on reboot.")
 	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "Add or update the URL of the iPXE script.")
-	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Adds or updates custom data to be included with your device's metadata.")
+	// updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Adds or updates custom data to be included with your device's metadata.")
 
 	_ = updateDeviceCmd.MarkFlagRequired("id")
 	return updateDeviceCmd

@@ -21,6 +21,7 @@
 package organizations
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/manifoldco/promptui"
@@ -33,7 +34,7 @@ func (c *Client) Delete() *cobra.Command {
 		force          bool
 	)
 	deleteOrganization := func(id string) error {
-		_, err := c.Service.Delete(id)
+		_, err := c.Service.DeleteOrganization(context.Background(), id).Execute()
 		if err != nil {
 			return err
 		}

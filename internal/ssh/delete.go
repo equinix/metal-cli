@@ -21,6 +21,7 @@
 package ssh
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/manifoldco/promptui"
@@ -33,7 +34,7 @@ func (c *Client) Delete() *cobra.Command {
 		force    bool
 	)
 	deleteSSHKey := func(id string) error {
-		_, err := c.Service.Delete(id)
+		_, err := c.Service.DeleteSSHKey(context.Background(), sshKeyID).Execute()
 		if err != nil {
 			return err
 		}

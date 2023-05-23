@@ -21,6 +21,7 @@
 package devices
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -46,28 +47,32 @@ func (c *Client) Retrieve() *cobra.Command {
 				return fmt.Errorf("either id or project-id should be set")
 			}
 			cmd.SilenceUsage = true
-
+			include := []string{"Inner_example"} // []string | Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects. (optional)
+			exclude := []string{"Inner_example"} // []string | Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects. (optional)
 			if deviceID != "" {
-				device, _, err := c.Service.Get(deviceID, nil)
+
+				device, r, err := c.Service.FindDeviceById(context.Background(), deviceID).Include(include).Exclude(exclude).Execute()
 				if err != nil {
-					return fmt.Errorf("Could not get Devices: %w", err)
+					fmt.Printf("Error when calling `DevicesApi.FindDeviceById``: %v\n", err)
+					fmt.Printf("Full HTTP response: %v\n", r)
 				}
 				header := []string{"ID", "Hostname", "OS", "State", "Created"}
 
 				data := make([][]string, 1)
-				data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
+				data[0] = []string{device.GetId(), device.GetHostname(), *device.GetOperatingSystem().Name, device.GetState(), device.GetCreatedAt().String()}
 
 				return c.Out.Output(device, header, &data)
 			}
-
-			devices, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))
+			devices, r, err := c.Service.FindProjectDevices(context.Background(), projectID).Execute()
 			if err != nil {
-				return fmt.Errorf("Could not list Devices: %w", err)
+				fmt.Printf("Error when calling `DevicesApi.FindDeviceById``: %v\n", err)
+				fmt.Printf("Full HTTP response: %v\n", r)
 			}
-			data := make([][]string, len(devices))
 
-			for i, dc := range devices {
-				data[i] = []string{dc.ID, dc.Hostname, dc.OS.Name, dc.State, dc.Created}
+			data := make([][]string, len(devices.GetDevices()))
+
+			for i, dc := range devices.GetDevices() {
+				data[i] = []string{dc.GetId(), dc.GetHostname(), *dc.GetOperatingSystem().Name, dc.GetState(), dc.GetCreatedAt().String()}
 			}
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}
 

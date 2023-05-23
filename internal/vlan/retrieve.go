@@ -41,7 +41,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			vnets, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))
+			vnets, _, err := c.Service.FindVirtualNetworks(cmd.Context(), projectID).Execute() //.List(projectID, c.Servicer.ListOptions(nil, nil))
 			if err != nil {
 				return fmt.Errorf("Could not list Project Virtual Networks: %w", err)
 			}
@@ -49,9 +49,9 @@ func (c *Client) Retrieve() *cobra.Command {
 			data := make([][]string, len(vnets.VirtualNetworks))
 
 			for i, n := range vnets.VirtualNetworks {
-				data[i] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.FacilityCode, n.CreatedAt}
+				data[i] = []string{n.GetId(), n.GetDescription(), strconv.Itoa(int(n.GetVxlan()))}
 			}
-			header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
+			header := []string{"ID", "Description", "VXLAN"}
 
 			return c.Out.Output(vnets, header, &data)
 		},

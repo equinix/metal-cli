@@ -21,6 +21,7 @@
 package projects
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/manifoldco/promptui"
@@ -33,7 +34,7 @@ func (c *Client) Delete() *cobra.Command {
 		projectID string
 	)
 	deleteProject := func(id string) error {
-		_, err := c.ProjectService.Delete(id)
+		_, err := c.ProjectService.DeleteProject(context.Background(), id).Execute()
 		if err != nil {
 			return err
 		}

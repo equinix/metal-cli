@@ -21,9 +21,10 @@
 package users
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -44,14 +45,14 @@ func (c *Client) Retrieve() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			var err error
-			var user *packngo.User
+			var user *metal.User
 			if userID == "" {
-				user, _, err = c.Service.Current()
+				user, _, err = c.Service.FindCurrentUser(context.Background()).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get current User: %w", err)
 				}
 			} else {
-				user, _, err = c.Service.Get(userID, c.Servicer.ListOptions(nil, nil))
+				user, _, err = c.Service.FindUserById(context.Background(), userID).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Users: %w", err)
 				}
@@ -59,7 +60,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			data := make([][]string, 1)
 
-			data[0] = []string{user.ID, user.FullName, user.Email, user.Created}
+			data[0] = []string{user.GetId(), user.GetFullName(), user.GetEmail(), user.GetCreatedAt().String()}
 			header := []string{"ID", "Full Name", "Email", "Created"}
 
 			return c.Out.Output(user, header, &data)

@@ -1,13 +1,13 @@
 ## metal capacity check
 
-Validates if the number of the specified server plan is available in the specified metro or facility.
+Validates if the number of the specified server plan is available in the specified metro.
 
 ### Synopsis
 
-Validates if the number of the specified server plan is available in the specified metro or facility. Metro and facility are mutually exclusive. At least one metro (or facility), one plan, and quantity of 1 or more is required.
+Validates if the number of the specified server plan is available in the specified metro. At least one metro and one plan, and quantity of 1 or more is required.
 
 ```
-metal capacity check (-m <metro> | -f <facility>) -P <plan> -q <quantity> [flags]
+metal capacity check (-m <metro> ) -P <plan> -q <quantity> [flags]
 ```
 
 ### Examples
@@ -23,7 +23,6 @@ metal capacity check (-m <metro> | -f <facility>) -P <plan> -q <quantity> [flags
 ### Options
 
 ```
-  -f, --facilities strings   A facility or list of facilities.
   -h, --help                 help for check
   -m, --metros strings       A metro or list of metros.
   -P, --plans strings        A plan or list of plans.

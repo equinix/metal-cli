@@ -21,9 +21,9 @@
 package organizations
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -43,34 +43,35 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			listOpts := c.Servicer.ListOptions(nil, nil)
-			if organizationID == "" {
-				orgs, _, err := c.Service.List(listOpts)
-				if err != nil {
-					return fmt.Errorf("Could not list Organizations: %w", err)
-				}
+			//listOpts := c.Servicer.ListOptions(nil, nil)
+			if organizationID != "" {
+				//getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
 
-				data := make([][]string, len(orgs))
-
-				for i, p := range orgs {
-					data[i] = []string{p.ID, p.Name, p.Created}
-				}
-				header := []string{"ID", "Name", "Created"}
-
-				return c.Out.Output(orgs, header, &data)
-			} else {
-				getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-				org, _, err := c.Service.Get(organizationID, getOpts)
+				org, _, err := c.Service.FindOrganizationById(context.Background(), organizationID).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Organization: %w", err)
 				}
 
 				data := make([][]string, 1)
 
-				data[0] = []string{org.ID, org.Name, org.Created}
+				data[0] = []string{org.GetId(), org.GetName(), org.GetCreatedAt().GoString()}
 				header := []string{"ID", "Name", "Created"}
 
 				return c.Out.Output(org, header, &data)
+			} else {
+				orgs, _, err := c.Service.FindOrganizations(context.Background()).Execute()
+				if err != nil {
+					return fmt.Errorf("Could not list Organizations: %w", err)
+				}
+
+				data := make([][]string, len(orgs.GetOrganizations()))
+
+				for i, p := range orgs.GetOrganizations() {
+					data[i] = []string{p.GetId(), p.GetId(), p.GetCreatedAt().GoString()}
+				}
+				header := []string{"ID", "Name", "Created"}
+
+				return c.Out.Output(orgs, header, &data)
 			}
 		},
 	}

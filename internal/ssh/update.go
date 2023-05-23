@@ -21,9 +21,10 @@
 package ssh
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -42,22 +43,22 @@ func (c *Client) Update() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := &packngo.SSHKeyUpdateRequest{}
+			req := metal.NewSSHKeyInput()
 			if key != "" {
-				req.Key = &key
+				req.SetKey(key)
 			}
 
 			if label != "" {
-				req.Label = &label
+				req.SetLabel(label)
 			}
-			sshKey, _, err := c.Service.Update(sshKeyID, req)
+			sshKey, _, err := c.Service.UpdateSSHKey(context.Background(), sshKeyID).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not update SSH Key: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{sshKey.ID, sshKey.Label, sshKey.Created}
+			data[0] = []string{sshKey.GetId(), sshKey.GetLabel(), sshKey.GetCreatedAt().String()}
 			header := []string{"ID", "Label", "Created"}
 
 			return c.Out.Output(sshKey, header, &data)

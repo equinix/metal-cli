@@ -21,10 +21,10 @@
 package projects
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -59,25 +59,25 @@ func (c *Client) Retrieve() *cobra.Command {
 				inc = append(inc, "members")
 			}
 
-			listOpts := c.Servicer.ListOptions(inc, nil)
+			//listOpts := c.Servicer.ListOptions(inc, nil)
 
 			if projectID == "" {
-				projects, _, err := c.ProjectService.List(listOpts)
+				projects, _, err := c.ProjectService.FindProjects(context.Background()).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not list Projects: %w", err)
 				}
 
 				var data [][]string
 				if projectName == "" {
-					data = make([][]string, len(projects))
-					for i, p := range projects {
-						data[i] = []string{p.ID, p.Name, p.Created}
+					data = make([][]string, len(projects.GetProjects()))
+					for i, p := range projects.GetProjects() {
+						data[i] = []string{p.GetId(), p.GetName(), p.GetCreatedAt().String()}
 					}
 				} else {
 					data = make([][]string, 0)
-					for _, p := range projects {
-						if p.Name == projectName {
-							data = append(data, []string{p.ID, p.Name, p.Created})
+					for _, p := range projects.GetProjects() {
+						if p.GetName() == projectName {
+							data = append(data, []string{p.GetId(), p.GetName(), p.GetCreatedAt().String()})
 							break
 						}
 					}
@@ -89,15 +89,15 @@ func (c *Client) Retrieve() *cobra.Command {
 				header := []string{"ID", "Name", "Created"}
 				return c.Out.Output(projects, header, &data)
 			} else {
-				getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-				p, _, err := c.ProjectService.Get(projectID, getOpts)
+				//getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
+				p, _, err := c.ProjectService.FindProjectById(context.Background(), projectID).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Project: %w", err)
 				}
 
 				data := make([][]string, 1)
 
-				data[0] = []string{p.ID, p.Name, p.Created}
+				data[0] = []string{p.GetId(), p.GetName(), p.GetCreatedAt().String()}
 				header := []string{"ID", "Name", "Created"}
 				return c.Out.Output(p, header, &data)
 			}
