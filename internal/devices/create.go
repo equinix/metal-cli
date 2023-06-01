@@ -78,8 +78,6 @@ func (c *Client) Create() *cobra.Command {
 				userdata = string(userdataRaw)
 			}
 
-			deviceCreateInMetroInput := metal.NewDeviceCreateInMetroInput(metro, operatingSystem, plan)
-
 			var endDt time.Time
 			if terminationTime != "" {
 				parsedTime, err := time.Parse(time.RFC3339, terminationTime)
@@ -88,7 +86,7 @@ func (c *Client) Create() *cobra.Command {
 				}
 				endDt = parsedTime
 			}
-			deviceCreateInMetroInput = &metal.DeviceCreateInMetroInput{
+			deviceCreateInMetroInput := &metal.DeviceCreateInMetroInput{
 				Metro:                 metro,
 				Plan:                  plan,
 				OperatingSystem:       operatingSystem,

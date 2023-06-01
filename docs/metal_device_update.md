@@ -21,7 +21,6 @@ metal device update -i <device_id> [-H <hostname>] [-d <description>] [--locked 
 
 ```
   -a, --always-pxe               Sets the device to always iPXE on reboot.
-  -c, --customdata string        Adds or updates custom data to be included with your device's metadata.
   -d, --description string       Adds or updates the description for the device.
   -h, --help                     help for update
   -H, --hostname string          The new hostname of the device.

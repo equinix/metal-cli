@@ -33,7 +33,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		Use:     `get [-p <project_id>] | [-i <hardware_reservation_id>]`,
 		Aliases: []string{"list"},
 		Short:   "Lists a Project's hardware reservations or the details of a specified hardware reservation.",
-		Long:    "Lists a Project's hardware reservations or the details of a specified hardware reservation. When using --json or --yaml flags, the --include=project,facility,device flag is implied.",
+		Long:    "Lists a Project's hardware reservations or the details of a specified hardware reservation. When using --json or --yaml flags, the --include=project,device flag is implied.",
 		Example: `  # Retrieve all hardware reservations of a project:
   metal hardware-reservations get -p $METAL_PROJECT_ID
   

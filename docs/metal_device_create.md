@@ -4,10 +4,10 @@ Creates a device.
 
 ### Synopsis
 
-Creates a device in the specified project. A plan, hostname, operating system, and metro is required.
+Creates a device in the specified project. A plan, hostname, operating system, and either metro or facility is required.
 
 ```
-metal device create -p <project_id> (-m <metro> ) -P <plan> -H <hostname> -O <operating_system> [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-t <tags>] [-r <hardware_reservation_id>] [-I <ipxe_script_url>] [--always-pxe] [--spot-instance] [--spot-price-max=<max_price>] [flags]
+metal device create -p <project_id> -m <metro>  -P <plan> -H <hostname> -O <operating_system> [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-t <tags>] [-r <hardware_reservation_id>] [-I <ipxe_script_url>] [--always-pxe] [--spot-instance] [--spot-price-max=<max_price>] [flags]
 ```
 
 ### Examples
@@ -36,7 +36,7 @@ metal device create -p <project_id> (-m <metro> ) -P <plan> -H <hostname> -O <op
   -p, --project-id string                The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
   -S, --public-ipv4-subnet-size int      Size of the public IPv4 subnet.
   -s, --spot-instance                    Provisions the device as a spot instance.
-      --spot-price-max float             Sets the maximum spot market price for the device: --spot-price-max=1.2
+      --spot-price-max float32           Sets the maximum spot market price for the device: --spot-price-max=1.2
   -t, --tags strings                     Tag or list of tags for the device: --tags="tag1,tag2".
   -T, --termination-time string          Device termination time: --termination-time="15:04:05"
   -u, --userdata string                  Userdata for device initialization. Can not be used with --userdata-file.

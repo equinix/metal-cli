@@ -25,7 +25,6 @@ Command line interface for Equinix Metal
 ### SEE ALSO
 
 * [metal 2fa](metal_2fa.md)	 - Two-factor Authentication operations: receive, enable, disable.
-* [metal capacity](metal_capacity.md)	 - Capacity operations: get, check
 * [metal completion](metal_completion.md)	 - Generates completion scripts.
 * [metal device](metal_device.md)	 - Device operations: create, get, update, delete, reinstall, start, stop, and reboot.
 * [metal docs](metal_docs.md)	 - Generate command markdown documentation.
