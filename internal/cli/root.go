@@ -90,7 +90,7 @@ func NewClient(consumerToken, apiURL, Version string) *Client {
 
 func (c *Client) apiConnect(httpClient *http.Client) error {
 	configuration := metal.NewConfiguration()
-	configuration.Debug = true
+	configuration.Debug = false
 	configuration.AddDefaultHeader("X-Auth-Token", c.Token())
 	client := metal.NewAPIClient(configuration)
 

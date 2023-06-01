@@ -24,7 +24,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/spf13/cobra"
 )
 
@@ -46,13 +45,13 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			header := []string{"ID", "Facility", "Plan", "Created"}
 
-			inc := []string{}
+			// inc := []string{}
 
 			// only fetch extra details when rendered
-			switch c.Servicer.Format() {
-			case outputs.FormatJSON, outputs.FormatYAML:
-				inc = append(inc, "project", "facility", "device")
-			}
+			// switch c.Servicer.Format() {
+			// case outputs.FormatJSON, outputs.FormatYAML:
+			// 	inc = append(inc, "project", "facility", "device")
+			// }
 
 			//listOpt := c.Servicer.ListOptions(inc, nil)
 

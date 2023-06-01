@@ -43,11 +43,14 @@ func (c *Client) Create() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := metal.NewSSHKeyCreateInput()
-			req.SetLabel(label)
-			req.SetKey(key)
-
-			s, _, err := c.Service.CreateSSHKey(context.Background()).SSHKeyCreateInput(*req).Execute()
+			// sSHKeyCreateInput := metal.NewSSHKeyCreateInput()
+			// sSHKeyCreateInput.SetLabel(label)
+			// sSHKeyCreateInput.SetKey(key)
+			sSHKeyCreateInput := &metal.SSHKeyCreateInput{
+				Key:   &key,
+				Label: &label,
+			}
+			s, _, err := c.Service.CreateSSHKey(context.Background()).SSHKeyCreateInput(*sSHKeyCreateInput).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create SSHKey: %w", err)
 			}

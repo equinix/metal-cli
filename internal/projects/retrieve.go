@@ -24,7 +24,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/spf13/cobra"
 )
 
@@ -51,13 +50,13 @@ func (c *Client) Retrieve() *cobra.Command {
 				return fmt.Errorf("Must specify only one of project-id and project name")
 			}
 
-			inc := []string{}
+			// inc := []string{}
 
 			// only fetch extra details when rendered
-			switch c.Servicer.Format() {
-			case outputs.FormatJSON, outputs.FormatYAML:
-				inc = append(inc, "members")
-			}
+			// switch c.Servicer.Format() {
+			// case outputs.FormatJSON, outputs.FormatYAML:
+			// 	inc = append(inc, "members")
+			// }
 
 			//listOpts := c.Servicer.ListOptions(inc, nil)
 

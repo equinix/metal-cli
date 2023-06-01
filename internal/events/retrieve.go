@@ -25,7 +25,6 @@ import (
 	"fmt"
 
 	metal "github.com/equinix-labs/metal-go/metal/v1"
-	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/spf13/cobra"
 )
 
@@ -57,17 +56,17 @@ func (c *Client) Retrieve() *cobra.Command {
 			var events *metal.EventList
 			var err error
 			header := []string{"ID", "Body", "Type", "Created"}
-			inc := []string{}
+			// inc := []string{}
 			include := []string{"Inner_example"}
 			exclude := []string{"Inner_example"}
 			page := int32(56)
 			perPage := int32(56)
 
 			// only fetch extra details when rendered
-			switch c.Servicer.Format() {
-			case outputs.FormatJSON, outputs.FormatYAML:
-				inc = append(inc, "relationship")
-			}
+			// switch c.Servicer.Format() {
+			// case outputs.FormatJSON, outputs.FormatYAML:
+			// 	inc = append(inc, "relationship")
+			// }
 
 			//listOpt := c.Servicer.ListOptions(inc, nil)
 
