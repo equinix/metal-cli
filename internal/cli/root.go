@@ -29,6 +29,7 @@ import (
 	"runtime"
 	"strings"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -40,11 +41,13 @@ import (
 const (
 	envPrefix                  = "METAL"
 	configFileWithoutExtension = "metal"
+	debugVar                   = "PACKNGO_DEBUG"
 )
 
 type Client struct {
 	// apiClient client
-	apiClient *packngo.Client
+	apiClient      *packngo.Client
+	metalApiClient *metal.APIClient
 
 	includes      *[]string // nolint:unused
 	excludes      *[]string // nolint:unused
@@ -83,13 +86,30 @@ func NewClient(consumerToken, apiURL, Version string) *Client {
 	}
 }
 
+// This function provides backwards compatibility for the packngo
+// debug environment variable while allowing us to introduce a new
+// debug variable in the future that is not tied to packngo
+func checkEnvForDebug() bool {
+	return os.Getenv(debugVar) != ""
+}
+
 func (c *Client) apiConnect(httpClient *http.Client) error {
 	client, err := packngo.NewClientWithBaseURL(c.consumerToken, c.metalToken, httpClient, c.apiURL)
 	if err != nil {
-		return fmt.Errorf("Could not create Client: %w", err)
+		return fmt.Errorf("could not create client: %w", err)
 	}
 	client.UserAgent = fmt.Sprintf("metal-cli/%s %s", c.Version, client.UserAgent)
 	c.apiClient = client
+	return nil
+}
+
+func (c *Client) metalApiConnect(httpClient *http.Client) error {
+	configuration := metal.NewConfiguration()
+	configuration.Debug = checkEnvForDebug()
+	configuration.AddDefaultHeader("X-Auth-Token", c.Token())
+	configuration.UserAgent = fmt.Sprintf("metal-cli/%s %s", c.Version, configuration.UserAgent)
+	metalgoClient := metal.NewAPIClient(configuration)
+	c.metalApiClient = metalgoClient
 	return nil
 }
 
@@ -167,6 +187,26 @@ func (c *Client) API(cmd *cobra.Command) *packngo.Client {
 		}
 	}
 	return c.apiClient
+}
+
+func (c *Client) MetalAPI(cmd *cobra.Command) *metal.APIClient {
+	if c.metalToken == "" {
+		log.Fatal("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a configuration file using 'metal init'.")
+	}
+
+	if c.metalApiClient == nil {
+		httpClient := &http.Client{
+			Transport: &headerTransport{
+				header: getAdditionalHeaders(cmd),
+			},
+		}
+
+		err := c.metalApiConnect(httpClient)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return c.metalApiClient
 }
 
 func (c *Client) Token() string {

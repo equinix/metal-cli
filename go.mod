@@ -3,6 +3,7 @@ module github.com/equinix/metal-cli
 go 1.19
 
 require (
+	github.com/equinix-labs/metal-go v0.7.1
 	github.com/manifoldco/promptui v0.9.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/packethost/packngo v0.29.0
