@@ -259,7 +259,7 @@ func (c *Client) NewCommand() *cobra.Command {
 	rootCmd.PersistentFlags().StringVar(&c.sortBy, "sort-by", "", "Sort fields for use in 'get' actions. Sort is not supported by all resources.")
 	rootCmd.PersistentFlags().StringVar(&c.sortDir, "sort-dir", "", "Sort field direction for use in 'get' actions. Sort is not supported by all resources.")
 
-	rootCmd.Version = getMetalVersion()
+	rootCmd.Version = c.Version
 	c.rootCmd = rootCmd
 	return c.rootCmd
 }

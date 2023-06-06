@@ -96,7 +96,6 @@ func (c *Client) NewCommand() *cobra.Command {
 			}
 			organization := user.AdditionalProperties["default_organization_id"]
 			project := fmt.Sprintf("%v", user.AdditionalProperties["default_project_id"])
-
 			fmt.Printf("Organization ID [%s]: ", organization)
 
 			defaultOrganizationId := fmt.Sprintf("%v", organization)
@@ -122,7 +121,7 @@ func (c *Client) NewCommand() *cobra.Command {
 			userProj := ""
 			fmt.Scanln(&userProj)
 			if userProj == "" {
-				userProj = fmt.Sprintf("value: %v", organization)
+				userProj = project
 			}
 
 			b, err = formatConfig(userProj, userOrg, token)
