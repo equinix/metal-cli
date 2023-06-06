@@ -29,6 +29,7 @@ import (
 	"syscall"
 
 	metal "github.com/equinix-labs/metal-go/metal/v1"
+	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 	"sigs.k8s.io/yaml"
@@ -135,29 +136,10 @@ func (c *Client) NewCommand() *cobra.Command {
 	return initCmd
 }
 
-func getAllProjects(s metal.ProjectsApiService) ([]metal.Project, error) {
-	var projects []metal.Project
-
+func getFirstProjectID(s metal.ProjectsApiService, userOrg string) (string, error) {
 	include := []string{"organization"} // []string | Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects. (optional)
 	exclude := []string{"devices", "members", "memberships", "invitations", "ssh_keys", "volumes", "backend_transfer_enabled", "updated_at", "customdata", "event_alert_configuration"}
-	page := int32(1)     // int32 | Page to return (optional) (default to 1)
-	perPage := int32(56) // int32 | Items returned per page (optional) (default to 10)
-	for {
-		projectPage, _, err := s.FindProjects(context.Background()).Include(include).Exclude(exclude).Page(page).PerPage(perPage).Execute()
-		if err != nil {
-			return nil, err
-		}
-		projects = append(projects, projectPage.GetProjects()...)
-		if projectPage.Meta.GetLastPage() > projectPage.Meta.GetCurrentPage() {
-			page = page + 1
-			continue
-		}
-		return projects, nil
-	}
-}
-
-func getFirstProjectID(s metal.ProjectsApiService, userOrg string) (string, error) {
-	projects, err := getAllProjects(s)
+	projects, err := pager.GetAllProjects(s, include, exclude)
 	if err != nil {
 		return "", err
 	}
