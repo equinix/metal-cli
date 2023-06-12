@@ -22,12 +22,13 @@ THE SOFTWARE.
 package init
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
 	"syscall"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 	"sigs.k8s.io/yaml"
@@ -35,8 +36,8 @@ import (
 
 type Client struct {
 	Servicer       Servicer
-	UserService    packngo.UserService
-	ProjectService packngo.ProjectService
+	UserService    metal.UsersApiService
+	ProjectService metal.ProjectsApiService
 }
 
 func NewClient(s Servicer) *Client {
@@ -85,25 +86,26 @@ func (c *Client) NewCommand() *cobra.Command {
 			fmt.Println()
 			token := string(b)
 			c.Servicer.SetToken(token)
-			metalClient := c.Servicer.API(cmd)
-			c.UserService = metalClient.Users
-			c.ProjectService = metalClient.Projects
+			metalGoClient := c.Servicer.MetalAPI(cmd)
+			c.UserService = *metalGoClient.UsersApi
+			c.ProjectService = *metalGoClient.ProjectsApi
 
-			user, _, err := c.UserService.Current()
+			user, _, err := c.UserService.FindCurrentUser(context.Background()).Execute()
 			if err != nil {
 				return err
 			}
-			organization := user.DefaultOrganizationID
-			project := ""
-			if user.DefaultProjectID != nil {
-				project = *user.DefaultProjectID
-			}
+			organization := user.AdditionalProperties["default_organization_id"]
+			project := fmt.Sprintf("%v", user.AdditionalProperties["default_project_id"])
 			fmt.Printf("Organization ID [%s]: ", organization)
+
+			defaultOrganizationId := fmt.Sprintf("%v", organization)
 
 			userOrg := ""
 			fmt.Scanln(&userOrg)
 			if userOrg == "" {
-				userOrg = organization
+				if defaultOrganizationId != "" {
+					userOrg = defaultOrganizationId
+				}
 			}
 
 			// Choose the first project in the preferred org
@@ -113,6 +115,7 @@ func (c *Client) NewCommand() *cobra.Command {
 					return err
 				}
 			}
+
 			fmt.Printf("Project ID [%s]: ", project)
 
 			userProj := ""
@@ -132,18 +135,38 @@ func (c *Client) NewCommand() *cobra.Command {
 	return initCmd
 }
 
-func getFirstProjectID(s packngo.ProjectService, userOrg string) (string, error) {
-	listOpts := &packngo.ListOptions{}
-	listOpts.Including("organization")
-	listOpts.Excluding("devices", "members", "memberships", "invitations", "max_devices", "ssh_keys", "volumes", "backend_transfer_enabled", "updated_at", "customdata", "event_alert_configuration")
+func getAllProjects(s metal.ProjectsApiService) ([]metal.Project, error) {
+	var projects []metal.Project
 
-	projects, _, err := s.List(listOpts)
+	include := []string{"organization"} // []string | Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects. (optional)
+	exclude := []string{"devices", "members", "memberships", "invitations", "ssh_keys", "volumes", "backend_transfer_enabled", "updated_at", "customdata", "event_alert_configuration"}
+	page := int32(1)     // int32 | Page to return (optional) (default to 1)
+	perPage := int32(56) // int32 | Items returned per page (optional) (default to 10)
+	for {
+		projectPage, _, err := s.FindProjects(context.Background()).Include(include).Exclude(exclude).Page(page).PerPage(perPage).Execute()
+		if err != nil {
+			return nil, err
+		}
+		projects = append(projects, projectPage.GetProjects()...)
+		if projectPage.Meta.GetLastPage() > projectPage.Meta.GetCurrentPage() {
+			page = page + 1
+			continue
+		}
+		return projects, nil
+	}
+}
+
+func getFirstProjectID(s metal.ProjectsApiService, userOrg string) (string, error) {
+	projects, err := getAllProjects(s)
 	if err != nil {
 		return "", err
 	}
+
 	for _, p := range projects {
-		if p.Organization.ID == userOrg {
-			return p.ID, nil
+		organization := p.AdditionalProperties["organization"].(map[string]interface{})
+		organization_id := fmt.Sprintf("%v", organization["id"])
+		if organization_id == userOrg {
+			return p.GetId(), nil
 		}
 	}
 
@@ -170,8 +193,7 @@ func writeConfig(config string, b []byte) error {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	MetalAPI(*cobra.Command) *metal.APIClient
 	SetToken(string)
 	DefaultConfig(bool) string
 }
