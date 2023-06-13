@@ -21,11 +21,12 @@
 package devices
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -64,7 +65,6 @@ func (c *Client) Create() *cobra.Command {
   metal device create -p $METAL_PROJECT_ID -P c3.medium.x86 -m sv -H test-rocky -O rocky_8 -r 47161704-1715-4b45-8549-fb3f4b2c32c7`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var endDt *packngo.Timestamp
 
 			if userdata != "" && userdataFile != "" {
 				return fmt.Errorf("either userdata or userdata-file should be set")
@@ -78,48 +78,66 @@ func (c *Client) Create() *cobra.Command {
 				}
 				userdata = string(userdataRaw)
 			}
+			var endDt time.Time
 
 			if terminationTime != "" {
 				parsedTime, err := time.Parse(time.RFC3339, terminationTime)
 				if err != nil {
 					return fmt.Errorf("Could not parse time %q: %w", terminationTime, err)
 				}
-				endDt = &packngo.Timestamp{Time: parsedTime}
+				endDt = parsedTime
 			}
 
 			var facilityArgs []string
+			var request metal.CreateDeviceRequest
+			spm := float32(spotPriceMax)
+
 			if facility != "" {
 				facilityArgs = append(facilityArgs, facility)
+
+				deviceCreateInFacilityInput := &metal.DeviceCreateInFacilityInput{
+					Plan:                  plan,
+					OperatingSystem:       operatingSystem,
+					Hostname:              &hostname,
+					BillingCycle:          &billingCycle,
+					Userdata:              &userdata,
+					IpxeScriptUrl:         &ipxescripturl,
+					AlwaysPxe:             &alwaysPXE,
+					HardwareReservationId: &hardwareReservationID,
+					SpotInstance:          &spotInstance,
+					SpotPriceMax:          &spm,
+					TerminationTime:       &endDt,
+					Facility:              facilityArgs,
+				}
+				request = metal.CreateDeviceRequest{DeviceCreateInFacilityInput: deviceCreateInFacilityInput, DeviceCreateInMetroInput: nil}
 			}
 
-			request := &packngo.DeviceCreateRequest{
-				Hostname:              hostname,
-				Plan:                  plan,
-				Facility:              facilityArgs,
-				Metro:                 metro,
-				OS:                    operatingSystem,
-				BillingCycle:          billingCycle,
-				ProjectID:             projectID,
-				UserData:              userdata,
-				CustomData:            customdata,
-				IPXEScriptURL:         ipxescripturl,
-				Tags:                  tags,
-				PublicIPv4SubnetSize:  publicIPv4SubnetSize,
-				AlwaysPXE:             alwaysPXE,
-				HardwareReservationID: hardwareReservationID,
-				SpotInstance:          spotInstance,
-				SpotPriceMax:          spotPriceMax,
-				TerminationTime:       endDt,
+			if metro != "" {
+				deviceCreateInMetroInput := &metal.DeviceCreateInMetroInput{
+					Metro:                 metro,
+					Plan:                  plan,
+					OperatingSystem:       operatingSystem,
+					Hostname:              &hostname,
+					BillingCycle:          &billingCycle,
+					Userdata:              &userdata,
+					IpxeScriptUrl:         &ipxescripturl,
+					AlwaysPxe:             &alwaysPXE,
+					HardwareReservationId: &hardwareReservationID,
+					SpotInstance:          &spotInstance,
+					SpotPriceMax:          &spm,
+					TerminationTime:       &endDt,
+				}
+				request = metal.CreateDeviceRequest{DeviceCreateInFacilityInput: nil, DeviceCreateInMetroInput: deviceCreateInMetroInput}
 			}
 
-			device, _, err := c.Service.Create(request)
+			device, _, err := c.Service.CreateDevice(context.Background(), projectID).CreateDeviceRequest(request).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil)).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create Device: %w", err)
 			}
 
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}
 			data := make([][]string, 1)
-			data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
+			data[0] = []string{device.GetId(), device.GetHostname(), *device.GetOperatingSystem().Name, device.GetState(), device.GetCreatedAt().String()}
 
 			return c.Out.Output(device, header, &data)
 		},

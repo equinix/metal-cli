@@ -24,3 +24,22 @@ func GetAllProjects(s metal.ProjectsApiService, include []string, exclude []stri
 		return projects, nil
 	}
 }
+
+func GetProjectDevices(s metal.ApiFindProjectDevicesRequest) ([]metal.Device, error) {
+	var devices []metal.Device
+
+	page := int32(1)     // int32 | Page to return (optional) (default to 1)
+	perPage := int32(20) // int32 | Items returned per page (optional) (default to 10)
+	for {
+		devicePage, _, err := s.Page(page).PerPage(perPage).Execute()
+		if err != nil {
+			return nil, err
+		}
+		devices = append(devices, devicePage.Devices...)
+		if devicePage.Meta.GetLastPage() > devicePage.Meta.GetCurrentPage() {
+			page = page + 1
+			continue
+		}
+		return devices, nil
+	}
+}

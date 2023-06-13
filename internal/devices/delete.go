@@ -21,6 +21,7 @@
 package devices
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/manifoldco/promptui"
@@ -31,7 +32,7 @@ func (c *Client) Delete() *cobra.Command {
 	var deviceID string
 	var force bool
 	deleteDevice := func(id string) error {
-		_, err := c.Service.Delete(id, force)
+		_, err := c.Service.DeleteDevice(context.Background(), id).ForceDelete(force).Execute()
 		if err != nil {
 			return err
 		}

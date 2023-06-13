@@ -21,15 +21,15 @@
 package devices
 
 import (
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 type Client struct {
 	Servicer Servicer
-	Service  packngo.DeviceService
+	Service  metal.DevicesApiService
 	Out      outputs.Outputer
 }
 
@@ -47,7 +47,7 @@ func (c *Client) NewCommand() *cobra.Command {
 				}
 			}
 
-			c.Service = c.Servicer.API(cmd).Devices
+			c.Service = *c.Servicer.MetalAPI(cmd).DevicesApi
 		},
 	}
 
@@ -65,9 +65,11 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	MetalAPI(*cobra.Command) *metal.APIClient
 	Config(cmd *cobra.Command) *viper.Viper
+	Filters() map[string]string
+	Includes(defaultIncludes []string) (incl []string)
+	Excludes(defaultExcludes []string) (excl []string)
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {
