@@ -21,11 +21,11 @@
 package devices
 
 import (
+	"context"
 	"fmt"
 	"os"
-	"time"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -64,62 +64,63 @@ func (c *Client) Create() *cobra.Command {
   metal device create -p $METAL_PROJECT_ID -P c3.medium.x86 -m sv -H test-rocky -O rocky_8 -r 47161704-1715-4b45-8549-fb3f4b2c32c7`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var endDt *packngo.Timestamp
-
 			if userdata != "" && userdataFile != "" {
 				return fmt.Errorf("either userdata or userdata-file should be set")
 			}
 			cmd.SilenceUsage = true
-
 			if userdataFile != "" {
 				userdataRaw, readErr := os.ReadFile(userdataFile)
 				if readErr != nil {
-					return fmt.Errorf("Could not read userdata-file: %w", readErr)
+					return fmt.Errorf("could not read userdata-file: %w", readErr)
 				}
 				userdata = string(userdataRaw)
 			}
+			// var endDt time.Time
 
-			if terminationTime != "" {
-				parsedTime, err := time.Parse(time.RFC3339, terminationTime)
-				if err != nil {
-					return fmt.Errorf("Could not parse time %q: %w", terminationTime, err)
-				}
-				endDt = &packngo.Timestamp{Time: parsedTime}
-			}
-
+			// if terminationTime != "" {
+			// 	parsedTime, err := time.Parse(time.RFC3339, terminationTime)
+			// 	if err != nil {
+			// 		return fmt.Errorf("could not parse time %q: %w", terminationTime, err)
+			// 	}
+			// 	endDt = parsedTime
+			// }
 			var facilityArgs []string
+
+			// var deviceCreateInFacilityInput *metal.DeviceCreateInFacilityInput
+			var request metal.ApiCreateDeviceRequest
 			if facility != "" {
 				facilityArgs = append(facilityArgs, facility)
-			}
 
-			request := &packngo.DeviceCreateRequest{
-				Hostname:              hostname,
-				Plan:                  plan,
-				Facility:              facilityArgs,
-				Metro:                 metro,
-				OS:                    operatingSystem,
-				BillingCycle:          billingCycle,
-				ProjectID:             projectID,
-				UserData:              userdata,
-				CustomData:            customdata,
-				IPXEScriptURL:         ipxescripturl,
-				Tags:                  tags,
-				PublicIPv4SubnetSize:  publicIPv4SubnetSize,
-				AlwaysPXE:             alwaysPXE,
-				HardwareReservationID: hardwareReservationID,
-				SpotInstance:          spotInstance,
-				SpotPriceMax:          spotPriceMax,
-				TerminationTime:       endDt,
+				facilityDeviceRequest := metal.CreateDeviceRequest{
+					DeviceCreateInFacilityInput: &metal.DeviceCreateInFacilityInput{
+						Facility:        facilityArgs,
+						Plan:            plan,
+						OperatingSystem: operatingSystem,
+						Hostname:        &hostname,
+					},
+				}
+				request = c.Service.CreateDevice(context.Background(), projectID).CreateDeviceRequest(facilityDeviceRequest).Include(nil).Exclude(nil)
 			}
+			if metro != "" {
 
-			device, _, err := c.Service.Create(request)
+				metroDeviceRequest := metal.CreateDeviceRequest{
+					DeviceCreateInMetroInput: &metal.DeviceCreateInMetroInput{
+						Metro:           metro,
+						Plan:            plan,
+						OperatingSystem: operatingSystem,
+						Hostname:        &hostname,
+					},
+				}
+
+				request = c.Service.CreateDevice(context.Background(), projectID).CreateDeviceRequest(metroDeviceRequest).Include(nil).Exclude(nil)
+			}
+			device, _, err := request.Execute()
 			if err != nil {
-				return fmt.Errorf("Could not create Device: %w", err)
+				return fmt.Errorf("could not create Device: %w", err)
 			}
-
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}
 			data := make([][]string, 1)
-			data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
+			data[0] = []string{device.GetId(), device.GetHostname(), *device.GetOperatingSystem().Name, device.GetState(), device.GetCreatedAt().String()}
 
 			return c.Out.Output(device, header, &data)
 		},

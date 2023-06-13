@@ -21,8 +21,11 @@
 package devices
 
 import (
+	"context"
 	"fmt"
+	"strconv"
 
+	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 )
 
@@ -48,26 +51,52 @@ func (c *Client) Retrieve() *cobra.Command {
 			cmd.SilenceUsage = true
 
 			if deviceID != "" {
-				device, _, err := c.Service.Get(deviceID, nil)
+				device, _, err := c.Service.FindDeviceById(context.Background(), deviceID).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil)).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Devices: %w", err)
 				}
 				header := []string{"ID", "Hostname", "OS", "State", "Created"}
 
 				data := make([][]string, 1)
-				data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State, device.Created}
+				data[0] = []string{device.GetId(), device.GetHostname(), device.OperatingSystem.GetName(), device.GetState(), device.GetCreatedAt().String()}
 
 				return c.Out.Output(device, header, &data)
 			}
 
-			devices, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))
+			request := c.Service.FindProjectDevices(context.Background(), projectID).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil))
+			filters := c.Servicer.Filters()
+			if filters["type"] != "" {
+				request = request.Type_(filters["type"])
+			}
+
+			if filters["facility"] != "" {
+				request = request.Facility(filters["facility"])
+			}
+
+			if filters["hostname"] != "" {
+				request = request.Hostname(filters["hostname"])
+			}
+
+			if filters["reserved"] != "" {
+				value := filters["reserved"]
+				reserve, rerr := strconv.ParseBool(value)
+				if rerr != nil {
+					request = request.Reserved(reserve)
+				}
+			}
+
+			if filters["tag"] != "" {
+				request = request.Tag(filters["tag"])
+			}
+
+			devices, err := pager.GetProjectDevices(request)
 			if err != nil {
 				return fmt.Errorf("Could not list Devices: %w", err)
 			}
 			data := make([][]string, len(devices))
 
 			for i, dc := range devices {
-				data[i] = []string{dc.ID, dc.Hostname, dc.OS.Name, dc.State, dc.Created}
+				data[i] = []string{dc.GetId(), dc.GetHostname(), dc.OperatingSystem.GetName(), dc.GetState(), dc.GetCreatedAt().String()}
 			}
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}
 

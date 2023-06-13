@@ -21,9 +21,11 @@
 package devices
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 
 	"github.com/spf13/cobra"
 )
@@ -51,48 +53,53 @@ func (c *Client) Update() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := &packngo.DeviceUpdateRequest{}
+			deviceUpdate := metal.NewDeviceUpdateInput()
 
 			if hostname != "" {
-				req.Hostname = &hostname
+				deviceUpdate.Hostname = &hostname
 			}
 
 			if description != "" {
-				req.Description = &description
+				deviceUpdate.Description = &description
 			}
 
 			if userdata != "" {
-				req.UserData = &userdata
+				deviceUpdate.Userdata = &userdata
 			}
 
 			if locked {
-				req.Locked = &locked
+				deviceUpdate.Locked = &locked
 			}
 
 			if len(tags) > 0 {
-				req.Tags = &tags
+				deviceUpdate.Tags = tags
 			}
 
 			if alwaysPXE {
-				req.AlwaysPXE = &alwaysPXE
+				deviceUpdate.AlwaysPxe = &alwaysPXE
 			}
 
 			if ipxescripturl != "" {
-				req.IPXEScriptURL = &ipxescripturl
+				deviceUpdate.IpxeScriptUrl = &ipxescripturl
 			}
 
 			if customdata != "" {
-				req.CustomData = &customdata
-			}
+				var customdataIntr map[string]interface{}
+				err := json.Unmarshal([]byte(customdata), &customdataIntr)
+				if err != nil {
+					panic(err)
+				}
 
-			device, _, err := c.Service.Update(deviceID, req)
+				deviceUpdate.Customdata = customdataIntr
+			}
+			device, _, err := c.Service.UpdateDevice(context.Background(), deviceID).DeviceUpdateInput(*deviceUpdate).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not update Device: %w", err)
 			}
 
 			header := []string{"ID", "Hostname", "OS", "State"}
 			data := make([][]string, 1)
-			data[0] = []string{device.ID, device.Hostname, device.OS.Name, device.State}
+			data[0] = []string{device.GetId(), device.GetHostname(), device.OperatingSystem.GetName(), device.GetState()}
 
 			return c.Out.Output(device, header, &data)
 		},

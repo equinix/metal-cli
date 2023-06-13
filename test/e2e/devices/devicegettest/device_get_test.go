@@ -1,4 +1,4 @@
-package sshtest
+package devicestest
 
 import (
 	"io"
@@ -7,13 +7,15 @@ import (
 	"testing"
 
 	root "github.com/equinix/metal-cli/internal/cli"
+	"github.com/equinix/metal-cli/internal/devices"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
-	"github.com/equinix/metal-cli/internal/ssh"
+	"github.com/equinix/metal-cli/test/helper"
 	"github.com/spf13/cobra"
 )
 
-func TestCli_SshKey(t *testing.T) {
-	subCommand := "ssh-key"
+func TestCli_Devices_get(t *testing.T) {
+	var projectId, deviceId string
+	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
 	Version := "metal"
@@ -29,15 +31,17 @@ func TestCli_SshKey(t *testing.T) {
 		cmdFunc func(*testing.T, *cobra.Command)
 	}{
 		{
-			name: "get",
+			name: "get_by_device_id",
 			fields: fields{
-				MainCmd:  ssh.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
+				MainCmd:  devices.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
 				Outputer: outputPkg.Outputer(&outputPkg.Standard{}),
 			},
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				root.SetArgs([]string{subCommand, "get"})
+				projectId = helper.Create_test_project("get-by-device-id-pro")
+				deviceId = helper.Create_test_device(projectId, "get-by-device-id-dev")
+				root.SetArgs([]string{subCommand, "get", "-i", deviceId})
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
@@ -47,14 +51,19 @@ func TestCli_SshKey(t *testing.T) {
 				w.Close()
 				out, _ := io.ReadAll(r)
 				os.Stdout = rescueStdout
-				if !strings.Contains(string(out[:]), "ID") &&
-					!strings.Contains(string(out[:]), "LABEL") &&
-					!strings.Contains(string(out[:]), "CREATED") {
-					t.Error("expected output should include ID, LABEL, CREATED")
+				if !strings.Contains(string(out[:]), deviceId) {
+					t.Error("expected output should include " + deviceId)
+				}
+				if len(projectId) != 0 && len(deviceId) != 0 {
+					if helper.Is_Device_state_active(deviceId) {
+						helper.Clean_test_device(deviceId)
+						helper.Clean_test_project(projectId)
+					}
 				}
 			},
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			rootCmd := rootClient.NewCommand()

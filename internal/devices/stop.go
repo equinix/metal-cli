@@ -21,8 +21,10 @@
 package devices
 
 import (
+	"context"
 	"fmt"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +39,8 @@ func (c *Client) Stop() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			_, err := c.Service.PowerOff(deviceID)
+			DeviceAction := metal.NewDeviceActionInput("power_off")
+			_, err := c.Service.PerformAction(context.Background(), deviceID).DeviceActionInput(*DeviceAction).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not stop Device: %w", err)
 			}
