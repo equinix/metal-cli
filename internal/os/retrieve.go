@@ -21,6 +21,7 @@
 package os
 
 import (
+	"context"
 	"fmt"
 	"sort"
 
@@ -38,19 +39,20 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			oss, _, err := c.Service.List()
+			ossList, _, err := c.Service.FindOperatingSystems(context.Background()).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not list OperatingSystems: %w", err)
 			}
+			oss := ossList.GetOperatingSystems()
 
-			sort.Slice(oss, func(a, b int) bool {
-				return oss[a].Name < oss[b].Name
+			sort.Slice(oss, func(i, j int) bool {
+				return *oss[i].Name < *oss[j].Name
 			})
 
 			data := make([][]string, len(oss))
 
 			for i, os := range oss {
-				data[i] = []string{os.Name, os.Slug, os.Distro, os.Version}
+				data[i] = []string{os.GetName(), os.GetSlug(), os.GetDistro(), os.GetVersion()}
 			}
 			header := []string{"Name", "Slug", "Distro", "Version"}
 

@@ -21,14 +21,14 @@
 package plans
 
 import (
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
 type Client struct {
 	Servicer Servicer
-	Service  packngo.PlanService
+	Service  metal.PlansApiService
 	Out      outputs.Outputer
 }
 
@@ -44,7 +44,7 @@ func (c *Client) NewCommand() *cobra.Command {
 					root.PersistentPreRun(cmd, args)
 				}
 			}
-			c.Service = c.Servicer.API(cmd).Plans
+			c.Service = *c.Servicer.MetalAPI(cmd).PlansApi
 		},
 	}
 
@@ -55,8 +55,7 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	MetalAPI(*cobra.Command) *metal.APIClient
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {
