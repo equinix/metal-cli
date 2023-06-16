@@ -38,7 +38,6 @@ func TestCli_OperatingSystem(t *testing.T) {
 			},
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
-				t.Helper()
 				root := c.Root()
 				out := &bytes.Buffer{}
 				root.SetArgs([]string{subCommand, "get"})

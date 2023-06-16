@@ -21,10 +21,12 @@
 package capacity
 
 import (
+	"context"
 	"fmt"
 
 	"errors"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -51,20 +53,24 @@ func (c *Client) Retrieve() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var err error
 			var locationField string
-			lister := c.Service.List // Default to facilities
+			var capacitiesList *metal.CapacityList
+			capacitiesList, _, err = c.Service.FindCapacityForFacility(context.Background()).Execute() // Default to facilities
+			if err != nil {
+				return fmt.Errorf("could not get Capacity: %w", err)
+			}
 
 			fs := cmd.Flags()
 			if fs.Changed("metros") && fs.Changed("facilities") {
-				return errors.New("Either facilities or metros, but not both, can be set")
+				return errors.New("either facilities or metros, but not both, can be set")
 			}
 			if fs.Changed("facility") && fs.Changed("metro") {
-				return errors.New("Either --facility (-f) or --metro (-m), but not both, can be set")
+				return errors.New("either --facility (-f) or --metro (-m), but not both, can be set")
 			}
 			if fs.Changed("facility") && fs.Changed("metros") || fs.Changed("facilities") && fs.Changed("metro") {
-				return errors.New("Cannot specify both facility and metro filtering")
+				return errors.New("cannot specify both facility and metro filtering")
 			}
 			if fs.Changed("metro") && fs.Changed("metros") || fs.Changed("facility") && fs.Changed("facilities") {
-				return errors.New("Cannot use both --metro (-m) and --metros or --facility (-f) and --facilities")
+				return errors.New("cannot use both --metro (-m) and --metros or --facility (-f) and --facilities")
 			}
 
 			cmd.SilenceUsage = true
@@ -72,23 +78,23 @@ func (c *Client) Retrieve() *cobra.Command {
 			if len(facilities) > 0 {
 				locationField = "Facility"
 				locs = append(locs, facilities...)
+
 			} else if len(metros) > 0 || checkMetro {
-				lister = c.Service.ListMetros
+				capacitiesList, _, err = c.Service.FindCapacityForMetro(context.Background()).Execute()
+				if err != nil {
+					return fmt.Errorf("could not get Capacity: %w", err)
+				}
 				locationField = "Metro"
 				locs = append(locs, metros...)
-			}
 
-			capacities, _, err := lister()
-			if err != nil {
-				return fmt.Errorf("Could not get Capacity: %w", err)
 			}
 
 			header := []string{locationField, "Plan", "Level"}
 			data := [][]string{}
+			capacities := capacitiesList.GetCapacity()
 
 			filtered := map[string]map[string]map[string]string{}
-
-			for locCode, capacity := range *capacities {
+			for locCode, capacity := range capacities {
 				if len(locs) > 0 && !contains(locs, locCode) {
 					continue
 				}
@@ -96,15 +102,14 @@ func (c *Client) Retrieve() *cobra.Command {
 					if len(plans) > 0 && !contains(plans, plan) {
 						continue
 					}
-					loc := []string{locCode, plan, bm.Level}
+					loc := []string{locCode, plan, bm.GetLevel()}
 					data = append(data, loc)
 					if len(filtered[locCode]) == 0 {
 						filtered[locCode] = map[string]map[string]string{}
 					}
-					filtered[locCode][plan] = map[string]string{"levels": bm.Level}
+					filtered[locCode][plan] = map[string]string{"levels": bm.GetLevel()}
 				}
 			}
-
 			return c.Out.Output(filtered, header, &data)
 		},
 	}
