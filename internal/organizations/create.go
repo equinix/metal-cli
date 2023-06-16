@@ -21,9 +21,10 @@
 package organizations
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -49,30 +50,34 @@ func (c *Client) Create() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := &packngo.OrganizationCreateRequest{
-				Name: name,
-			}
+
+			req := metal.NewOrganizationInput()
+			req.Name = &name
 
 			if description != "" {
-				req.Description = description
+				req.Description = &description
 			}
 
 			if twitter != "" {
-				req.Twitter = twitter
+				req.Twitter = &twitter
+			}
+
+			if website != "" {
+				req.Website = &website
 			}
 
 			if logo != "" {
-				req.Logo = logo
+				req.Logo = &logo
 			}
 
-			org, _, err := c.Service.Create(req)
+			org, _, err := c.Service.CreateOrganization(context.Background()).OrganizationInput(*req).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil)).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create Organization: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{org.ID, org.Name, org.Created}
+			data[0] = []string{org.GetId(), org.GetName(), org.GetCreatedAt().String()}
 			header := []string{"ID", "Name", "Created"}
 
 			return c.Out.Output(org, header, &data)

@@ -21,9 +21,10 @@
 package organizations
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/packethost/packngo"
+	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 )
 
@@ -43,9 +44,12 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			listOpts := c.Servicer.ListOptions(nil, nil)
+			include := []string{"Inner_example"}
+			exclude := []string{"Inner_example"}
+			withoutProjects := "withoutProjects_example"
+
 			if organizationID == "" {
-				orgs, _, err := c.Service.List(listOpts)
+				orgs, err := pager.GetAllOrganizations(c.Service, include, exclude, withoutProjects)
 				if err != nil {
 					return fmt.Errorf("Could not list Organizations: %w", err)
 				}
@@ -53,21 +57,20 @@ func (c *Client) Retrieve() *cobra.Command {
 				data := make([][]string, len(orgs))
 
 				for i, p := range orgs {
-					data[i] = []string{p.ID, p.Name, p.Created}
+					data[i] = []string{p.GetId(), p.GetName(), p.CreatedAt.String()}
 				}
 				header := []string{"ID", "Name", "Created"}
 
 				return c.Out.Output(orgs, header, &data)
 			} else {
-				getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-				org, _, err := c.Service.Get(organizationID, getOpts)
+				org, _, err := c.Service.FindOrganizationById(context.Background(), organizationID).Include(include).Exclude(exclude).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Organization: %w", err)
 				}
 
 				data := make([][]string, 1)
 
-				data[0] = []string{org.ID, org.Name, org.Created}
+				data[0] = []string{org.GetId(), org.GetName(), org.GetCreatedAt().String()}
 				header := []string{"ID", "Name", "Created"}
 
 				return c.Out.Output(org, header, &data)
