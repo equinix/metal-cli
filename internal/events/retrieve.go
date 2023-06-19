@@ -21,10 +21,12 @@
 package events
 
 import (
+	"context"
 	"fmt"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
+	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 )
 
@@ -53,10 +55,11 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			var events []packngo.Event
+			var events []metal.Event
 			var err error
 			header := []string{"ID", "Body", "Type", "Created"}
 			inc := []string{}
+			exc := []string{}
 
 			// only fetch extra details when rendered
 			switch c.Servicer.Format() {
@@ -64,36 +67,35 @@ func (c *Client) Retrieve() *cobra.Command {
 				inc = append(inc, "relationship")
 			}
 
-			listOpt := c.Servicer.ListOptions(inc, nil)
-
 			if deviceID != "" && projectID != "" && organizationID != "" && eventID != "" {
 				return fmt.Errorf("id, project-id, device-id, and organization-id parameters are mutually exclusive")
 			} else if deviceID != "" {
-				events, _, err = c.DeviceService.ListEvents(deviceID, listOpt)
+				events, err = pager.GetDeviceEvents(c.EventService, deviceID, inc, exc)
 				if err != nil {
 					return fmt.Errorf("Could not list Device Events: %w", err)
 				}
 			} else if projectID != "" {
-				events, _, err = c.ProjectService.ListEvents(projectID, listOpt)
+				events, err = pager.GetProjectEvents(c.EventService, projectID, inc, exc)
 				if err != nil {
 					return fmt.Errorf("Could not list Project Events: %w", err)
 				}
 			} else if organizationID != "" {
-				events, _, err = c.OrganizationService.ListEvents(organizationID, listOpt)
+				events, err = pager.GetOrganizationEvents(c.EventService, organizationID, inc, exc)
 				if err != nil {
 					return fmt.Errorf("Could not list Organization Events: %w", err)
 				}
 			} else if eventID != "" {
-				event, _, err := c.EventService.Get(eventID, listOpt)
+				event, _, err := c.EventService.FindEventById(context.Background(), eventID).Include(inc).Exclude(exc).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Event: %w", err)
 				}
+
 				data := make([][]string, 1)
 
-				data[0] = []string{event.ID, event.Body, event.Type, event.CreatedAt.String()}
+				data[0] = []string{event.GetId(), event.GetBody(), event.GetType(), event.GetCreatedAt().String()}
 				return c.Out.Output(event, header, &data)
 			} else {
-				events, _, err = c.EventService.List(listOpt)
+				events, err = pager.GetAllEvents(c.EventService, inc, exc)
 				if err != nil {
 					return fmt.Errorf("Could not list Events: %w", err)
 				}
@@ -102,7 +104,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			data := make([][]string, len(events))
 
 			for i, event := range events {
-				data[i] = []string{event.ID, event.Body, event.Type, event.CreatedAt.String()}
+				data[i] = []string{event.GetId(), event.GetBody(), event.GetType(), event.GetCreatedAt().String()}
 			}
 
 			return c.Out.Output(events, header, &data)

@@ -21,17 +21,17 @@
 package events
 
 import (
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
 type Client struct {
 	Servicer            Servicer
-	EventService        packngo.EventService
-	DeviceService       packngo.DeviceService
-	ProjectService      packngo.ProjectService
-	OrganizationService packngo.OrganizationService
+	EventService        metal.EventsApiService
+	DeviceService       metal.DevicesApiService
+	ProjectService      metal.ProjectsApiService
+	OrganizationService metal.OrganizationsApiService
 
 	Out outputs.Outputer
 }
@@ -48,10 +48,10 @@ func (c *Client) NewCommand() *cobra.Command {
 					root.PersistentPreRun(cmd, args)
 				}
 			}
-			c.EventService = c.Servicer.API(cmd).Events
-			c.DeviceService = c.Servicer.API(cmd).Devices
-			c.ProjectService = c.Servicer.API(cmd).Projects
-			c.OrganizationService = c.Servicer.API(cmd).Organizations
+			c.EventService = *c.Servicer.MetalAPI(cmd).EventsApi
+			c.DeviceService = *c.Servicer.MetalAPI(cmd).DevicesApi
+			c.ProjectService = *c.Servicer.MetalAPI(cmd).ProjectsApi
+			c.OrganizationService = *c.Servicer.MetalAPI(cmd).OrganizationsApi
 		},
 	}
 
@@ -62,8 +62,7 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	MetalAPI(*cobra.Command) *metal.APIClient
 	Format() outputs.Format
 }
 
