@@ -21,6 +21,7 @@
 package projects
 
 import (
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
 	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
@@ -28,7 +29,7 @@ import (
 
 type Client struct {
 	Servicer         Servicer
-	ProjectService   packngo.ProjectService
+	ProjectService   metal.ProjectsApiService
 	BGPConfigService packngo.BGPConfigService
 
 	Out outputs.Outputer
@@ -47,7 +48,7 @@ func (c *Client) NewCommand() *cobra.Command {
 					root.PersistentPreRun(cmd, args)
 				}
 			}
-			c.ProjectService = c.Servicer.API(cmd).Projects
+			c.ProjectService = *c.Servicer.MetalAPI(cmd).ProjectsApi
 			c.BGPConfigService = c.Servicer.API(cmd).BGPConfig
 		},
 	}
@@ -65,6 +66,7 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
+	MetalAPI(*cobra.Command) *metal.APIClient
 	API(*cobra.Command) *packngo.Client
 	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 	Format() outputs.Format

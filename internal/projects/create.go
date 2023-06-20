@@ -21,9 +21,10 @@
 package projects
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -47,26 +48,24 @@ func (c *Client) Create() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := packngo.ProjectCreateRequest{
-				Name: name,
-			}
+			req := metal.NewProjectCreateFromRootInput(name)
 
 			if organizationID != "" {
-				req.OrganizationID = organizationID
+				req.OrganizationId = &organizationID
 			}
 
 			if paymentMethodID != "" {
-				req.PaymentMethodID = paymentMethodID
+				req.PaymentMethodId = &paymentMethodID
 			}
 
-			p, _, err := c.ProjectService.Create(&req)
+			p, _, err := c.ProjectService.CreateProject(context.Background()).ProjectCreateFromRootInput(*req).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create Project: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{p.ID, p.Name, p.Created}
+			data[0] = []string{p.GetId(), p.GetName(), p.GetCreatedAt().String()}
 			header := []string{"ID", "Name", "Created"}
 			return c.Out.Output(p, header, &data)
 		},
