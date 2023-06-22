@@ -21,10 +21,10 @@
 package ports
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -41,17 +41,17 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			listOpts := c.Servicer.ListOptions(nil, nil)
+			inc := []string{}
+			exc := []string{}
 
-			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-			port, _, err := c.PortService.Get(portID, getOpts)
+			port, _, err := c.PortService.FindPortById(context.Background(), portID).Include(inc).Exclude(exc).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not get Port: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{port.ID, port.Name, port.Type, port.NetworkType, port.Data.MAC, strconv.FormatBool(port.Data.Bonded)}
+			data[0] = []string{port.GetId(), port.GetName(), port.GetType(), port.GetNetworkType(), port.Data.GetMac(), strconv.FormatBool(port.Data.GetBonded())}
 			header := []string{"ID", "Name", "Type", "Network Type", "MAC", "Bonded"}
 
 			return c.Out.Output(port, header, &data)

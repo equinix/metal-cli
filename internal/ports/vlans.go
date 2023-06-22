@@ -21,11 +21,12 @@
 package ports
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -50,28 +51,35 @@ func (c *Client) Vlans() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			listOpts := c.Servicer.ListOptions([]string{"port"}, nil)
+			// inc := []string{"port"}
+			// exc := []string{}
 
-			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-			req := &packngo.VLANAssignmentBatchCreateRequest{}
+			req := metal.NewPortVlanAssignmentBatchCreateInput()
+
 			f := false
 			t := true
 			for _, vlan := range assignments {
-				assignment := packngo.VLANAssignmentCreateRequest{VLAN: vlan, State: packngo.VLANAssignmentAssigned, Native: &f}
-				req.VLANAssignments = append(req.VLANAssignments, assignment)
+				CreateInputVlanAssignmentsInne := []metal.PortVlanAssignmentBatchCreateInputVlanAssignmentsInner{}
+				CreateInputVlanAssignmentsInne[0].SetVlan(vlan)
+				CreateInputVlanAssignmentsInne[0].SetNative(f)
+				req.SetVlanAssignments(CreateInputVlanAssignmentsInne)
 			}
 			for _, vlan := range unassignments {
-				assignment := packngo.VLANAssignmentCreateRequest{VLAN: vlan, State: packngo.VLANAssignmentUnassigned}
-				req.VLANAssignments = append(req.VLANAssignments, assignment)
+				CreateInputVlanAssignmentsInne := []metal.PortVlanAssignmentBatchCreateInputVlanAssignmentsInner{}
+				CreateInputVlanAssignmentsInne[0].SetVlan(vlan)
+				req.SetVlanAssignments(CreateInputVlanAssignmentsInne)
 			}
 			if native != "" {
-				assignment := packngo.VLANAssignmentCreateRequest{VLAN: native, State: packngo.VLANAssignmentAssigned, Native: &t}
-				req.VLANAssignments = append(req.VLANAssignments, assignment)
+				CreateInputVlanAssignmentsInner := []metal.PortVlanAssignmentBatchCreateInputVlanAssignmentsInner{}
+				CreateInputVlanAssignmentsInner[0].SetVlan(native)
+				CreateInputVlanAssignmentsInner[0].SetNative(t)
+				req.SetVlanAssignments(CreateInputVlanAssignmentsInner)
 			}
-			if len(req.VLANAssignments) == 0 {
+
+			if len(req.GetVlanAssignments()) == 0 {
 				return errors.New("no VLAN assignments specified")
 			}
-			batch, _, err := c.VLANService.CreateBatch(portID, req, getOpts)
+			batch, _, err := c.PortService.CreatePortVlanAssignmentBatch(context.Background(), portID).PortVlanAssignmentBatchCreateInput(*req).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not update port VLAN assignments: %w", err)
 			}
@@ -81,7 +89,7 @@ func (c *Client) Vlans() *cobra.Command {
 
 			data := make([][]string, 1)
 
-			data[0] = []string{port.ID, port.Name, port.Type, port.NetworkType, port.Data.MAC, strconv.FormatBool(port.Data.Bonded)}
+			data[0] = []string{port.GetId(), port.GetName(), port.GetType(), port.GetNetworkType(), port.Data.GetMac(), strconv.FormatBool(port.Data.GetBonded())}
 			header := []string{"ID", "Name", "Type", "Network Type", "MAC", "Bonded"}
 
 			return c.Out.Output(port, header, &data)
