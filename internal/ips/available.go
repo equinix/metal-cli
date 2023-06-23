@@ -21,9 +21,11 @@
 package ips
 
 import (
+	"context"
 	"fmt"
+	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -41,10 +43,12 @@ func (c *Client) Available() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			result, _, err := c.ProjectService.AvailableAddresses(reservationID, &packngo.AvailableRequest{CIDR: cidr})
+			Cidr := metal.FindIPAvailabilitiesCidrParameter(strconv.Itoa(cidr))
+			resultList, _, err := c.IPService.FindIPAvailabilities(context.Background(), reservationID).Cidr(Cidr).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not get available IP addresses: %w", err)
 			}
+			result := resultList.GetAvailable()
 			data := make([][]string, len(result))
 			for i, r := range result {
 				data[i] = []string{r}

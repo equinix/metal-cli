@@ -123,7 +123,7 @@ func (c *Client) Check() *cobra.Command {
 					data[i] = []string{
 						s.GetMetro(),
 						s.GetPlan(),
-						s.GetQuantity(),
+						string(s.GetQuantity()),
 						strconv.FormatBool(s.GetAvailable()),
 					}
 				}

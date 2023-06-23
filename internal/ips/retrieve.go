@@ -21,9 +21,12 @@
 package ips
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
+	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 )
 
@@ -59,21 +62,24 @@ func (c *Client) Retrieve() *cobra.Command {
 			}
 
 			cmd.SilenceUsage = true
-			listOpts := c.Servicer.ListOptions(nil, nil)
+			inc := []string{}
+			exc := []string{}
+			types := []metal.FindIPReservationsTypesParameterInner{}
+
 			if assignmentID != "" {
-				ip, _, err := c.ProjectService.Get(assignmentID, listOpts)
+				ip, _, err := c.IPService.FindIPAddressById(context.Background(), assignmentID).Include(inc).Exclude(exc).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Device IP address: %w", err)
 				}
 
 				data := make([][]string, 1)
 
-				data[0] = []string{ip.ID, ip.Address, strconv.FormatBool(ip.Public), ip.Created}
+				data[0] = []string{ip.IPAssignment.GetId(), ip.IPAssignment.GetAddress(), strconv.FormatBool(ip.IPAssignment.GetPublic()), ip.IPAssignment.CreatedAt.String()}
 				header := []string{"ID", "Address", "Public", "Created"}
 
 				return c.Out.Output(ip, header, &data)
 			} else if reservationID != "" {
-				ip, _, err := c.ProjectService.Get(reservationID, listOpts)
+				ip, _, err := c.IPService.FindIPAddressById(context.Background(), reservationID).Include(inc).Exclude(exc).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get Reservation IP address: %w", err)
 				}
@@ -81,35 +87,37 @@ func (c *Client) Retrieve() *cobra.Command {
 				data := make([][]string, 1)
 				code := ""
 				metro := ""
-				if ip.Facility != nil {
-					code = ip.Facility.Code
+				if ip.IPReservation.Facility != nil {
+					code = ip.IPReservation.Facility.GetCode()
 				}
-				if ip.Metro != nil {
-					metro = ip.Metro.Code
+
+				if ip.IPReservation.Metro != nil {
+					metro = ip.IPReservation.Metro.GetCode()
 				}
-				data[0] = []string{ip.ID, ip.Address, metro, code, strconv.FormatBool(ip.Public), ip.Created}
+
+				data[0] = []string{ip.IPReservation.GetId(), ip.IPReservation.GetAddress(), metro, code, strconv.FormatBool(ip.IPReservation.GetPublic()), ip.IPReservation.CreatedAt.String()}
 				header := []string{"ID", "Address", "Metro", "Facility", "Public", "Created"}
 
 				return c.Out.Output(ip, header, &data)
 			}
 
-			ips, _, err := c.ProjectService.List(projectID, listOpts)
+			ips, err := pager.GetAllIPReservations(c.IPService, projectID, inc, exc, types)
 			if err != nil {
 				return fmt.Errorf("Could not list Project IP addresses: %w", err)
 			}
-
+			// ips := ipsList.GetIpAddresses()
 			data := make([][]string, len(ips))
 
 			for i, ip := range ips {
 				code := ""
 				metro := ""
-				if ip.Facility != nil {
-					code = ip.Facility.Code
+				if ip.IPReservation.Facility != nil {
+					code = ip.IPReservation.Facility.GetCode()
 				}
-				if ip.Metro != nil {
-					metro = ip.Metro.Code
+				if ip.IPReservation.Metro != nil {
+					metro = ip.IPReservation.Metro.GetCode()
 				}
-				data[i] = []string{ip.ID, ip.Address, metro, code, strconv.FormatBool(ip.Public), ip.Created}
+				data[i] = []string{ip.IPReservation.GetId(), ip.IPReservation.GetAddress(), metro, code, strconv.FormatBool(ip.IPReservation.GetPublic()), ip.IPReservation.CreatedAt.String()}
 			}
 			header := []string{"ID", "Address", "Metro", "Facility", "Public", "Created"}
 
