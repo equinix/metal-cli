@@ -95,18 +95,14 @@ func (c *Client) NewCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			organization := user.AdditionalProperties["default_organization_id"]
-			project := fmt.Sprintf("%v", user.AdditionalProperties["default_project_id"])
+			organization := user.GetDefaultOrganizationId()
+			project := user.GetDefaultProjectId()
 			fmt.Printf("Organization ID [%s]: ", organization)
-
-			defaultOrganizationId := fmt.Sprintf("%v", organization)
 
 			userOrg := ""
 			fmt.Scanln(&userOrg)
 			if userOrg == "" {
-				if defaultOrganizationId != "" {
-					userOrg = defaultOrganizationId
-				}
+				userOrg = organization
 			}
 
 			// Choose the first project in the preferred org
@@ -145,9 +141,7 @@ func getFirstProjectID(s metal.ProjectsApiService, userOrg string) (string, erro
 	}
 
 	for _, p := range projects {
-		organization := p.AdditionalProperties["organization"].(map[string]interface{})
-		organization_id := fmt.Sprintf("%v", organization["id"])
-		if organization_id == userOrg {
+		if p.Organization.GetId() == userOrg {
 			return p.GetId(), nil
 		}
 	}
