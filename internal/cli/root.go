@@ -264,6 +264,77 @@ func (c *Client) NewCommand() *cobra.Command {
 	return c.rootCmd
 }
 
+func (c *Client) Includes(defaultIncludes []string) (incl []string) {
+	var inc []string
+
+	inc = defaultIncludes
+
+	if c.rootCmd.Flags().Changed("include") {
+		inc = *c.includes
+	}
+
+	return inc
+}
+
+func (c *Client) Excludes(defaultExcludes []string) (excl []string) {
+	var exc []string
+
+	exc = defaultExcludes
+
+	if c.rootCmd.Flags().Changed("exclude") {
+		exc = *c.excludes
+	}
+
+	return exc
+}
+
+func (c *Client) Search() (sea string) {
+	var search string
+
+	if c.rootCmd.Flags().Changed("search") {
+		search = c.search
+	}
+
+	return search
+}
+
+func (c *Client) SortBy() (sBy string) {
+
+	var sortBy string
+
+	if c.rootCmd.Flags().Changed("sort-by") {
+		sortBy = c.sortBy
+	}
+
+	return sortBy
+}
+
+func (c *Client) SortDirection() (sDir string) {
+	var sortDir string
+
+	if c.rootCmd.Flags().Changed("sort-dir") {
+		sortDir = c.sortDir
+	}
+
+	return sortDir
+}
+
+func (c *Client) Filters() map[string]string {
+	mapFilt := make(map[string]string)
+	if c.rootCmd.Flags().Changed("filter") {
+		for _, kv := range *c.filters {
+			var k, v string
+			tokens := strings.SplitN(kv, "=", 2)
+			k = strings.TrimSpace(tokens[0])
+			if len(tokens) != 1 {
+				v = strings.TrimSpace(tokens[1])
+			}
+			mapFilt[k] = v
+		}
+	}
+	return mapFilt
+}
+
 // ListOptions creates a packngo.ListOptions using the includes and excludes persistent
 // flags. When not defined, the defaults given will be supplied.
 func (c *Client) ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions {
