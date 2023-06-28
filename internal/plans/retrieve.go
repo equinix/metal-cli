@@ -38,10 +38,23 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			plansList, _, err := c.Service.FindPlans(context.Background()).Execute()
+
+			request := c.Service.FindPlans(context.Background()).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil))
+			filters := c.Servicer.Filters()
+
+			if filters["type"] != "" {
+				request = request.Type_(filters["type"])
+			}
+
+			if filters["slug"] != "" {
+				request = request.Slug(filters["slug"])
+			}
+
+			plansList, _, err := request.Execute()
 			if err != nil {
 				return fmt.Errorf("could not list plans: %w", err)
 			}
+
 			plans := plansList.GetPlans()
 			data := make([][]string, len(plans))
 

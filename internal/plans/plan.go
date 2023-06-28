@@ -56,6 +56,9 @@ func (c *Client) NewCommand() *cobra.Command {
 
 type Servicer interface {
 	MetalAPI(*cobra.Command) *metal.APIClient
+	Filters() map[string]string
+	Includes(defaultIncludes []string) (incl []string)
+	Excludes(defaultExcludes []string) (excl []string)
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {
