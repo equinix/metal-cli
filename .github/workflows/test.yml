@@ -16,5 +16,9 @@ jobs:
       run: go mod download
     - name: Build
       run: go build -v ./...
-    - name: TF tests
+    - name: Unit tests
+      run: go test -v -short -cover -parallel 4 ./...
+    - name: End-to-end tests
       run: go test -v -cover -parallel 4 ./...
+      env:
+        METAL_AUTH_TOKEN: ${{ secrets.METAL_AUTH_TOKEN }}
