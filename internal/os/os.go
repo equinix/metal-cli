@@ -23,7 +23,6 @@ package os
 import (
 	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -57,7 +56,6 @@ func (c *Client) NewCommand() *cobra.Command {
 
 type Servicer interface {
 	MetalAPI(*cobra.Command) *metal.APIClient
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {
