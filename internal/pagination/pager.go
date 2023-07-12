@@ -25,14 +25,14 @@ func GetAllProjects(s metal.ProjectsApiService, include []string, exclude []stri
 	}
 }
 
-func GetDeviceEvents(s metal.EventsApiService, deviceId string, include []string, exclude []string) ([]metal.Event, error) {
+func GetDeviceEvents(s metal.ApiFindDeviceEventsRequest) ([]metal.Event, error) {
 	var events []metal.Event
 
 	page := int32(1)     // int32 | Page to return (optional) (default to 1)
 	perPage := int32(20) // int32 | Items returned per page (optional) (default to 10)
 
 	for {
-		eventsPage, _, err := s.FindDeviceEvents(context.Background(), deviceId).Include(include).Exclude(exclude).Page(page).PerPage(perPage).Execute()
+		eventsPage, _, err := s.Page(page).PerPage(perPage).Execute()
 		if err != nil {
 			return nil, err
 		}
@@ -46,14 +46,14 @@ func GetDeviceEvents(s metal.EventsApiService, deviceId string, include []string
 	}
 }
 
-func GetProjectEvents(s metal.EventsApiService, projectId string, include []string, exclude []string) ([]metal.Event, error) {
+func GetProjectEvents(s metal.ApiFindProjectEventsRequest) ([]metal.Event, error) {
 	var events []metal.Event
 
 	page := int32(1)     // int32 | Page to return (optional) (default to 1)
 	perPage := int32(20) // int32 | Items returned per page (optional) (default to 10)
 
 	for {
-		eventsPage, _, err := s.FindProjectEvents(context.Background(), projectId).Include(include).Exclude(exclude).Page(page).PerPage(perPage).Execute()
+		eventsPage, _, err := s.Page(page).PerPage(perPage).Execute()
 		if err != nil {
 			return nil, err
 		}
@@ -67,14 +67,14 @@ func GetProjectEvents(s metal.EventsApiService, projectId string, include []stri
 	}
 }
 
-func GetOrganizationEvents(s metal.EventsApiService, orgId string, include []string, exclude []string) ([]metal.Event, error) {
+func GetOrganizationEvents(s metal.ApiFindOrganizationEventsRequest) ([]metal.Event, error) {
 	var events []metal.Event
 
 	page := int32(1)     // int32 | Page to return (optional) (default to 1)
 	perPage := int32(20) // int32 | Items returned per page (optional) (default to 10)
 
 	for {
-		eventsPage, _, err := s.FindOrganizationEvents(context.Background(), orgId).Include(include).Exclude(exclude).Page(page).PerPage(perPage).Execute()
+		eventsPage, _, err := s.Page(page).PerPage(perPage).Execute()
 		if err != nil {
 			return nil, err
 		}
@@ -88,14 +88,13 @@ func GetOrganizationEvents(s metal.EventsApiService, orgId string, include []str
 	}
 }
 
-func GetAllEvents(s metal.EventsApiService, include []string, exclude []string) ([]metal.Event, error) {
+func GetAllEvents(s metal.ApiFindEventsRequest) ([]metal.Event, error) {
 	var events []metal.Event
 
 	page := int32(1)     // int32 | Page to return (optional) (default to 1)
 	perPage := int32(20) // int32 | Items returned per page (optional) (default to 10)
-
 	for {
-		eventsPage, _, err := s.FindEvents(context.Background()).Include(include).Exclude(exclude).Page(page).PerPage(perPage).Execute()
+		eventsPage, _, err := s.Page(page).PerPage(perPage).Execute()
 		if err != nil {
 			return nil, err
 		}
