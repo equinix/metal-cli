@@ -1,0 +1,45 @@
+name: End-to-end Tests
+# This workflow determines whether a PR comes from an external fork
+# (which requires approval from us) or from a branch on this repository
+# (which means it was made by us and can run immediately).  Once a PR
+# is approved, the PR code gains access to secrets referenced in this
+# workflow.
+# Any changes to this job, even from internal contributors, require
+# heavy scrutiny.
+
+on:
+  pull_request_target:
+  workflow_dispatch:
+
+permissions:
+  pull-request: read
+  contents: read
+
+jobs:
+  authorize:
+    environment:
+      ${{ github.event_name == 'pull_request_target' &&
+      github.event.pull_request.head.repo.full_name != github.repository &&
+      'external' || 'internal' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: true
+
+  test:
+    needs: authorize
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4.0.0
+      with:
+        go-version: '1.19'
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v3
+      with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+    - name: Get dependencies
+      run: go mod download
+    - name: Run end-to-end tests
+      run: go test -v -cover -parallel 4 ./...
+      env:
+        METAL_AUTH_TOKEN: ${{ secrets.METAL_AUTH_TOKEN }}
