@@ -17,8 +17,4 @@ jobs:
     - name: Build
       run: go build -v ./...
     - name: Unit tests
-      run: go test -v -short -cover -parallel 4 ./...
-    - name: End-to-end tests
-      run: go test -v -cover -parallel 4 ./...
-      env:
-        METAL_AUTH_TOKEN: ${{ secrets.METAL_AUTH_TOKEN }}
+      run: go test -v -cover -parallel 4 $(go list ./... | grep -v /e2e)

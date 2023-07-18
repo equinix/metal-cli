@@ -1,10 +1,11 @@
-package os
+package e2e
 
 import (
 	"bytes"
 	"testing"
 
 	root "github.com/equinix/metal-cli/internal/cli"
+	"github.com/equinix/metal-cli/internal/os"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
@@ -32,7 +33,7 @@ func TestCli_OperatingSystem(t *testing.T) {
 		{
 			name: "get",
 			fields: fields{
-				MainCmd:  NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
+				MainCmd:  os.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
 				Outputer: outputPkg.Outputer(&outputPkg.Standard{}),
 			},
 			want: &cobra.Command{},
