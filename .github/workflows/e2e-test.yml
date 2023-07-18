@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  pull-request: read
+  pull-requests: read
   contents: read
 
 jobs:
