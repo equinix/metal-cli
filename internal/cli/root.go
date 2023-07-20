@@ -137,8 +137,9 @@ func (c *Client) Config(cmd *cobra.Command) *viper.Viper {
 
 		v.SetEnvPrefix(envPrefix)
 		c.viper = v
-		bindFlags(cmd, v)
 	}
+
+	bindFlags(cmd, c.viper)
 
 	flagToken := cmd.Flag("token").Value.String()
 	envToken := cmd.Flag("auth-token").Value.String()
