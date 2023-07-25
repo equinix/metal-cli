@@ -21,11 +21,12 @@
 package capacity
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -47,16 +48,16 @@ func (c *Client) Check() *cobra.Command {
   metal capacity check -m sv,da -P c3.medium.x86,m3.large.x86 -q 4`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var checker func(*packngo.CapacityInput) (*packngo.CapacityInput, *packngo.Response, error)
 			var locationField string
-			var locationer func(si packngo.ServerInfo) string
-			req := &packngo.CapacityInput{
-				Servers: []packngo.ServerInfo{},
-			}
+			var returnOut error
+			quantityStr := strconv.Itoa(quantity)
+			var serverListInput []metal.ServerInfo
+			req := *metal.NewCapacityInput()
 
 			if metro != "" {
 				metros = append(metros, metro)
 			}
+
 			if facility != "" {
 				facilities = append(facilities, facility)
 			}
@@ -71,56 +72,65 @@ func (c *Client) Check() *cobra.Command {
 			}
 
 			if len(facilities) > 0 {
-				checker = c.Service.Check
-				locationField = "Facility"
-				locationer = func(si packngo.ServerInfo) string {
-					return si.Facility
-				}
 				for _, f := range facilities {
 					for _, p := range plans {
-						req.Servers = append(req.Servers, packngo.ServerInfo{
-							Facility: f,
-							Plan:     p,
-							Quantity: quantity,
-						},
-						)
+						var serverInfoInput metal.ServerInfo
+						serverInfoInput.SetFacility(f)
+						serverInfoInput.SetPlan(p)
+						serverInfoInput.SetQuantity(quantityStr)
+						serverListInput = append(serverListInput, serverInfoInput)
 					}
 				}
-			} else if len(metros) > 0 {
-				checker = c.Service.CheckMetros
-				locationField = "Metro"
-				locationer = func(si packngo.ServerInfo) string {
-					return si.Metro
+				req.SetServers(serverListInput)
+				facilityList, _, err := c.Service.CheckCapacityForFacility(context.Background()).CapacityInput(req).Execute()
+				if err != nil {
+					return fmt.Errorf("could not check facility: %w", err)
 				}
+				locationField = "Facility"
+				ServerList := facilityList.GetServers()
+
+				data := make([][]string, len(ServerList))
+				for i, s := range ServerList {
+					data[i] = []string{
+						s.GetFacility(),
+						s.GetPlan(),
+						s.GetQuantity(),
+						strconv.FormatBool(s.GetAvailable()),
+					}
+				}
+				header := []string{locationField, "Plan", "Quantity", "Availability"}
+				returnOut = c.Out.Output(ServerList, header, &data)
+			} else if len(metros) > 0 {
 				for _, m := range metros {
 					for _, p := range plans {
-						req.Servers = append(req.Servers, packngo.ServerInfo{
-							Metro:    m,
-							Plan:     p,
-							Quantity: quantity,
-						},
-						)
+						var serverInfoInput metal.ServerInfo
+						serverInfoInput.SetMetro(m)
+						serverInfoInput.SetPlan(p)
+						serverInfoInput.SetQuantity(quantityStr)
+						serverListInput = append(serverListInput, serverInfoInput)
 					}
 				}
-			}
-
-			availability, _, err := checker(req)
-			if err != nil {
-				return fmt.Errorf("Could not check capacity: %w", err)
-			}
-
-			data := make([][]string, len(availability.Servers))
-			for i, s := range availability.Servers {
-				data[i] = []string{
-					locationer(s),
-					s.Plan,
-					strconv.Itoa(s.Quantity),
-					strconv.FormatBool(s.Available),
+				req.SetServers(serverListInput)
+				metroList, _, err := c.Service.CheckCapacityForMetro(context.Background()).CapacityInput(req).Execute()
+				if err != nil {
+					return fmt.Errorf("could not check capacity: %w", err)
 				}
-			}
 
-			header := []string{locationField, "Plan", "Quantity", "Availability"}
-			return c.Out.Output(availability, header, &data)
+				locationField = "Metro"
+				ServerList := metroList.GetServers()
+				data := make([][]string, len(ServerList))
+				for i, s := range ServerList {
+					data[i] = []string{
+						s.GetMetro(),
+						s.GetPlan(),
+						s.GetQuantity(),
+						strconv.FormatBool(s.GetAvailable()),
+					}
+				}
+				header := []string{locationField, "Plan", "Quantity", "Availability"}
+				returnOut = c.Out.Output(ServerList, header, &data)
+			}
+			return returnOut
 		},
 	}
 
