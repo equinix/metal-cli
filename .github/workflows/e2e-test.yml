@@ -9,6 +9,10 @@ name: End-to-end Tests
 
 on:
   pull_request_target:
+    paths:
+    - '**.go'
+    - 'go.mod'
+    - 'go.sum'
   workflow_dispatch:
 
 permissions:
