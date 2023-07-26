@@ -21,10 +21,11 @@
 package gateway
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -46,13 +47,15 @@ func (c *Client) Create() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-			req := &packngo.MetalGatewayCreateRequest{
-				VirtualNetworkID:      vnID,
-				IPReservationID:       reservationID,
-				PrivateIPv4SubnetSize: netSize,
+			nSize := int32(netSize)
+			gatewayRequestInput := &metal.MetalGatewayCreateInput{
+				VirtualNetworkId:      vnID,
+				IpReservationId:       &reservationID,
+				PrivateIpv4SubnetSize: &nSize,
 			}
 
-			n, _, err := c.Service.Create(projectID, req)
+			gatewayRequest := metal.CreateMetalGatewayRequest{MetalGatewayCreateInput: gatewayRequestInput}
+			n, _, err := c.Service.CreateMetalGateway(context.Background(), projectID).CreateMetalGatewayRequest(gatewayRequest).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create Metal Gateway: %w", err)
 			}
@@ -60,11 +63,11 @@ func (c *Client) Create() *cobra.Command {
 			data := make([][]string, 1)
 			address := ""
 
-			if n.IPReservation != nil {
-				address = n.IPReservation.Address + "/" + strconv.Itoa(n.IPReservation.CIDR)
+			if n.MetalGateway.IpReservation != nil {
+				address = n.MetalGateway.IpReservation.GetAddress() + "/" + strconv.Itoa(int(n.MetalGateway.IpReservation.GetCidr()))
 			}
 
-			data[0] = []string{n.ID, n.VirtualNetwork.MetroCode, strconv.Itoa(n.VirtualNetwork.VXLAN), address, string(n.State), n.CreatedAt}
+			data[0] = []string{n.MetalGateway.GetId(), n.MetalGateway.VirtualNetwork.GetMetroCode(), strconv.Itoa(int(n.MetalGateway.VirtualNetwork.GetVxlan())), address, string(n.MetalGateway.GetState()), n.MetalGateway.CreatedAt.String()}
 
 			header := []string{"ID", "Metro", "VXLAN", "Addresses", "State", "Created"}
 

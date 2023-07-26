@@ -21,6 +21,7 @@
 package gateway
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -42,22 +43,23 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			listOpts := c.Servicer.ListOptions(nil, nil).Including("virtual_network", "ip_reservation")
-			gways, _, err := c.Service.List(projectID, listOpts)
+			inc := []string{"virtual_network", "ip_reservation"}
+			exc := []string{}
+			gwaysList, err := c.Service.FindMetalGatewaysByProject(context.Background(), projectID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(exc)).ExecuteWithPagination()
 			if err != nil {
 				return fmt.Errorf("Could not list Project Metal Gateways: %w", err)
 			}
-
+			gways := gwaysList.GetMetalGateways()
 			data := make([][]string, len(gways))
 
 			for i, n := range gways {
 				address := ""
 
-				if n.IPReservation != nil {
-					address = n.IPReservation.Address + "/" + strconv.Itoa(n.IPReservation.CIDR)
+				if n.MetalGateway.IpReservation != nil {
+					address = n.MetalGateway.IpReservation.GetAddress() + "/" + strconv.Itoa(int(n.MetalGateway.IpReservation.GetCidr()))
 				}
 
-				data[i] = []string{n.ID, n.VirtualNetwork.MetroCode, strconv.Itoa(n.VirtualNetwork.VXLAN), address, string(n.State), n.CreatedAt}
+				data[i] = []string{n.MetalGateway.GetId(), n.MetalGateway.VirtualNetwork.GetMetroCode(), strconv.Itoa(int(n.MetalGateway.VirtualNetwork.GetVxlan())), address, string(n.MetalGateway.GetState()), n.MetalGateway.CreatedAt.String()}
 			}
 			header := []string{"ID", "Metro", "VXLAN", "Addresses", "State", "Created"}
 
