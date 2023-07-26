@@ -1,20 +1,18 @@
 package e2e
 
 import (
-	"bytes"
+	"io"
+	"os"
+	"strings"
 	"testing"
 
 	root "github.com/equinix/metal-cli/internal/cli"
-	"github.com/equinix/metal-cli/internal/os"
+	metalos "github.com/equinix/metal-cli/internal/os"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
 	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCli_OperatingSystem(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test in short mode.")
-	}
 	subCommand := "operating-systems"
 	consumerToken := ""
 	apiURL := ""
@@ -33,17 +31,30 @@ func TestCli_OperatingSystem(t *testing.T) {
 		{
 			name: "get",
 			fields: fields{
-				MainCmd:  os.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
+				MainCmd:  metalos.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
 				Outputer: outputPkg.Outputer(&outputPkg.Standard{}),
 			},
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				out := &bytes.Buffer{}
 				root.SetArgs([]string{subCommand, "get"})
-				root.SetOutput(out)
-				err := root.Execute()
-				assert.NoError(t, err)
+				rescueStdout := os.Stdout
+				r, w, _ := os.Pipe()
+				os.Stdout = w
+				if err := root.Execute(); err != nil {
+					t.Error(err)
+				}
+				w.Close()
+				out, _ := io.ReadAll(r)
+				os.Stdout = rescueStdout
+				if !strings.Contains(string(out[:]), "RedHat Enterprise Linux 7") &&
+					!strings.Contains(string(out[:]), "RancherOS") &&
+					!strings.Contains(string(out[:]), "VMware ESXi 8.0") &&
+					!strings.Contains(string(out[:]), "Windows 2022 Standard") &&
+					!strings.Contains(string(out[:]), "Debian 10") &&
+					!strings.Contains(string(out[:]), "Dell Appliance") {
+					t.Error("expected output should include RedHat Enterprise Linux 7, RancherOS, VMware ESXi 8.0, Windows 2022 Standard, Debian 10, Dell Appliance")
+				}
 			},
 		},
 	}
