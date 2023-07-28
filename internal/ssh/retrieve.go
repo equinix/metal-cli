@@ -21,9 +21,11 @@
 package ssh
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -51,8 +53,13 @@ func (c *Client) Retrieve() *cobra.Command {
 			cmd.SilenceUsage = true
 			if sshKeyID == "" {
 				projectID, _ := cmd.LocalFlags().GetString("project-id")
-				listFn := func() ([]packngo.SSHKey, *packngo.Response, error) {
-					return c.Service.List()
+				listFn := func() (*metal.SSHKeyList, *http.Response, error) {
+					request := c.Service.FindSSHKeys(context.Background()).Include(nil).Exclude(nil)
+					filters := c.Servicer.Filters()
+					if filters["search"] != "" {
+						request = request.Search(filters["search"])
+					}
+					return request.Execute()
 				}
 
 				if projKeys {
@@ -60,35 +67,34 @@ func (c *Client) Retrieve() *cobra.Command {
 						return fmt.Errorf("Project (--project-id) is required with --project-keys")
 					}
 
-					listFn = func() ([]packngo.SSHKey, *packngo.Response, error) {
-						return c.Service.ProjectList(projectID)
+					listFn = func() (*metal.SSHKeyList, *http.Response, error) {
+						return c.Service.FindProjectSSHKeys(context.Background(), projectID).Execute()
 					}
 				}
-				sshKeys, _, err := listFn()
+				sshKeysList, _, err := listFn()
 				if err != nil {
 					return fmt.Errorf("Could not list SSH Keys: %w", err)
 				}
-
+				sshKeys := sshKeysList.GetSshKeys()
 				data := make([][]string, len(sshKeys))
 
 				for i, s := range sshKeys {
-					data[i] = []string{s.ID, s.Label, s.Created}
+					data[i] = []string{s.GetId(), s.GetLabel(), s.GetCreatedAt().String()}
 				}
 				header := []string{"ID", "Label", "Created"}
 
-				return c.Out.Output(sshKeys, header, &data)
+				return c.Out.Output(sshKeysList, header, &data)
 			} else {
-				sshKey, _, err := c.Service.Get(sshKeyID, nil)
+				sshKeyId, _, err := c.Service.FindSSHKeyById(context.Background(), sshKeyID).Include(nil).Exclude(nil).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get SSH Key: %w", err)
 				}
-
 				data := make([][]string, 1)
 
-				data[0] = []string{sshKey.ID, sshKey.Label, sshKey.Created}
+				data[0] = []string{sshKeyId.GetId(), sshKeyId.GetLabel(), sshKeyId.GetCreatedAt().String()}
 				header := []string{"ID", "Label", "Created"}
 
-				return c.Out.Output(sshKey, header, &data)
+				return c.Out.Output(sshKeyId, header, &data)
 			}
 		},
 	}

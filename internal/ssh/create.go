@@ -21,9 +21,10 @@
 package ssh
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -42,19 +43,19 @@ func (c *Client) Create() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := packngo.SSHKeyCreateRequest{
-				Label: label,
-				Key:   key,
+			sSHKeyCreateInput := &metal.SSHKeyCreateInput{
+				Key:   &key,
+				Label: &label,
 			}
 
-			s, _, err := c.Service.Create(&req)
+			s, _, err := c.Service.CreateSSHKey(context.Background()).SSHKeyCreateInput(*sSHKeyCreateInput).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create SSHKey: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{s.ID, s.Label, s.Created}
+			data[0] = []string{s.GetId(), s.GetLabel(), s.GetCreatedAt().String()}
 			header := []string{"ID", "Label", "Created"}
 			return c.Out.Output(s, header, &data)
 		},
