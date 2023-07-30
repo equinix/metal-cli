@@ -275,4 +275,4 @@ Details on all available commands can be found by visiting the reference [pages]
 For help with this package:
 
 - Open up a GitHub issue [here](https://github.com/equinix/metal-cli/issues).
-- Contact the [Equinix Metal Community Slack](http://slack.equinixmetal.net) or on Freenode IRC in the #equinixmetal channel.
+- Contact the [Equinix Metal Community Slack](http://slack.equinixmetal.com).
