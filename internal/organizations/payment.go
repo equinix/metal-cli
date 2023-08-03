@@ -41,7 +41,7 @@ func (c *Client) PaymentMethods() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-			paymentMethodsList, _, err := c.Service.FindOrganizationPaymentMethods(context.Background(), organizationID).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil)).Execute()
+			paymentMethodsList, _, err := c.Service.FindOrganizationPaymentMethods(context.Background(), organizationID).Include(nil).Execute()
 			if err != nil {
 				return fmt.Errorf("could not list Payment Methods: %w", err)
 			}
