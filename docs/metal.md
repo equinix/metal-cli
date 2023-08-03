@@ -36,6 +36,7 @@ Command line interface for Equinix Metal
 * [metal gateway](metal_gateway.md)	 - Metal Gateway operations: create, delete, and retrieve.
 * [metal hardware-reservation](metal_hardware-reservation.md)	 - Hardware reservation operations: get, move.
 * [metal init](metal_init.md)	 - Create a configuration file.
+* [metal interconnections](metal_interconnections.md)	 - interconnections operations: create, get, update, delete
 * [metal ip](metal_ip.md)	 - IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get.
 * [metal metros](metal_metros.md)	 - Metro operations: get.
 * [metal operating-systems](metal_operating-systems.md)	 - Operating system operations: get.
