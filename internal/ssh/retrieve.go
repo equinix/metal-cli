@@ -54,7 +54,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			if sshKeyID == "" {
 				projectID, _ := cmd.LocalFlags().GetString("project-id")
 				listFn := func() (*metal.SSHKeyList, *http.Response, error) {
-					request := c.Service.FindSSHKeys(context.Background()).Include(nil).Exclude(nil)
+					request := c.Service.FindSSHKeys(context.Background()).Include(nil)
 					filters := c.Servicer.Filters()
 					if filters["search"] != "" {
 						request = request.Search(filters["search"])
@@ -85,7 +85,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 				return c.Out.Output(sshKeysList, header, &data)
 			} else {
-				sshKeyId, _, err := c.Service.FindSSHKeyById(context.Background(), sshKeyID).Include(nil).Exclude(nil).Execute()
+				sshKeyId, _, err := c.Service.FindSSHKeyById(context.Background(), sshKeyID).Include(nil).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not get SSH Key: %w", err)
 				}
