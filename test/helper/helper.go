@@ -128,7 +128,7 @@ func CreateTestIps(projectId string, quantity int, ipType string) (string, error
 
 	ipsresp, _, err := TestApiClient.IPAddressesApi.RequestIPReservation(context.Background(), projectId).RequestIPReservationRequest(*requestIPReservationRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.CreateVirtualNetwork``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `IPAddressesApi.FindIPReservations``: %v\n", err)
 		return "", err
 	}
 	return ipsresp.IPReservation.GetId(), nil
@@ -139,6 +139,31 @@ func CleanTestIps(ipsId string) error {
 	_, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), ipsId).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `IPAddressesApi.DeleteIPAddress``: %v\n", err)
+		return err
+	}
+	return nil
+}
+
+func CreateTestVlan(projectId string, Id int, desc string) (string, error) {
+	TestApiClient := TestClient()
+	virtualNetworkCreateInput := *openapiclient.NewVirtualNetworkCreateInput()
+	virtualNetworkCreateInput.SetDescription(desc)
+	virtualNetworkCreateInput.SetMetro("da")
+	virtualNetworkCreateInput.SetVxlan(int32(Id))
+
+	vlanresp, _, err := TestApiClient.VLANsApi.CreateVirtualNetwork(context.Background(), projectId).VirtualNetworkCreateInput(virtualNetworkCreateInput).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.CreateVirtualNetwork``: %v\n", err)
+		return "", err
+	}
+	return vlanresp.GetId(), nil
+}
+
+func CleanTestVlan(vlanId string) error {
+	TestApiClient := TestClient()
+	_, _, err := TestApiClient.VLANsApi.DeleteVirtualNetwork(context.Background(), vlanId).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.DeleteVirtualNetwork``: %v\n", err)
 		return err
 	}
 	return nil

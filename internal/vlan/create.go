@@ -21,10 +21,11 @@
 package vlan
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -45,28 +46,30 @@ func (c *Client) Create() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-
-			req := &packngo.VirtualNetworkCreateRequest{
-				ProjectID: projectID,
-				Metro:     metro,
-				Facility:  facility,
-				VXLAN:     vxlan,
+			virtualNetworkCreateInput := metal.NewVirtualNetworkCreateInput()
+			if metro != "" {
+				virtualNetworkCreateInput.SetMetro(metro)
 			}
+			if facility != "" {
+				virtualNetworkCreateInput.SetFacility(facility)
+			}
+			virtualNetworkCreateInput.SetVxlan(int32(vxlan))
+
 			if description != "" {
-				req.Description = description
+				virtualNetworkCreateInput.Description = &description
 			}
 
-			n, _, err := c.Service.Create(req)
+			n, _, err := c.Service.CreateVirtualNetwork(context.Background(), projectID).VirtualNetworkCreateInput(*virtualNetworkCreateInput).Execute()
 			if err != nil {
-				return fmt.Errorf("Could not create ProjectVirtualNetwork: %w", err)
+				return fmt.Errorf("could not create ProjectVirtualNetwork: %w", err)
 			}
 
 			data := make([][]string, 1)
 
 			// TODO(displague) metro is not in the response
-			data[0] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.MetroCode, n.FacilityCode, n.CreatedAt}
+			data[0] = []string{n.GetId(), n.GetDescription(), strconv.Itoa(int(n.GetVxlan())), n.GetMetroCode(), n.CreatedAt.String()}
 
-			header := []string{"ID", "Description", "VXLAN", "Metro", "Facility", "Created"}
+			header := []string{"ID", "Description", "VXLAN", "Metro", "Created"}
 
 			return c.Out.Output(n, header, &data)
 		},
