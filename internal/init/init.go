@@ -25,6 +25,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"syscall"
 
@@ -90,38 +91,53 @@ func (c *Client) NewCommand() *cobra.Command {
 			c.UserService = *metalGoClient.UsersApi
 			c.ProjectService = *metalGoClient.ProjectsApi
 
-			include := []string{} // []string | Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects. (optional)
-			exclude := []string{"devices", "members", "memberships", "invitations", "ssh_keys", "volumes", "backend_transfer_enabled", "updated_at", "customdata", "event_alert_configuration",
-				"timezone", "features", "avatar_url", "avatar_thumb_url", "two_factor_auth", "mailing_address", "max_projects", "verification_stage", "emails", "phone_number", "restricted",
-				"full_name", "email", "social_accounts", "opt_in_updated_at", "opt_in", "first_name", "last_name", "last_login_at"}
-			user, _, err := c.UserService.FindCurrentUser(context.Background()).Include(include).Exclude(exclude).Execute()
+			var defaultOrgId, defaultProjectId string
+			project, isProjectToken, err := getDefaultProjectOK(c.ProjectService)
 			if err != nil {
 				return err
 			}
-			organization := user.GetDefaultOrganizationId()
-			project := user.GetDefaultProjectId()
-			fmt.Printf("Organization ID [%s]: ", organization)
+			if project != nil {
+				defaultProjectId = project.GetId()
+				defaultOrgId = project.Organization.GetId()
+			}
+
+			if !isProjectToken {
+				// API token provided is user token
+				include := []string{} // []string | Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects. (optional)
+				exclude := []string{"devices", "members", "memberships", "invitations", "ssh_keys", "volumes", "backend_transfer_enabled", "updated_at", "customdata", "event_alert_configuration",
+					"timezone", "features", "avatar_url", "avatar_thumb_url", "two_factor_auth", "mailing_address", "max_projects", "verification_stage", "emails", "phone_number", "restricted",
+					"full_name", "email", "social_accounts", "opt_in_updated_at", "opt_in", "first_name", "last_name", "last_login_at"}
+				user, _, err := c.UserService.FindCurrentUser(context.Background()).Include(include).Exclude(exclude).Execute()
+				if err != nil {
+					return err
+				}
+
+				defaultOrgId = user.GetDefaultOrganizationId()
+				defaultProjectId = user.GetDefaultProjectId()
+			}
+			fmt.Printf("Organization ID [%s]: ", defaultOrgId)
 
 			userOrg := ""
 			fmt.Scanln(&userOrg)
 			if userOrg == "" {
-				userOrg = organization
+				userOrg = defaultOrgId
 			}
 
 			// Choose the first project in the preferred org
-			if project == "" {
-				project, err = getFirstProjectID(c.ProjectService, userOrg)
+			// Donot try to get projects again when
+			if defaultProjectId == "" && !isProjectToken {
+				defaultProjectId, err = getFirstProjectID(c.ProjectService, userOrg)
 				if err != nil {
 					return err
 				}
 			}
 
-			fmt.Printf("Project ID [%s]: ", project)
+			fmt.Printf("Project ID [%s]: ", defaultProjectId)
 
 			userProj := ""
 			fmt.Scanln(&userProj)
 			if userProj == "" {
-				userProj = project
+				userProj = defaultProjectId
 			}
 
 			b, err = formatConfig(userProj, userOrg, token)
@@ -135,17 +151,46 @@ func (c *Client) NewCommand() *cobra.Command {
 	return initCmd
 }
 
+func getDefaultProjectOK(service metal.ProjectsApiService) (*metal.Project, bool, error) {
+	isProjectToken := false
+	projects, err := getAllProjects(service)
+	if err != nil {
+		return nil, isProjectToken, err
+	}
+
+	if len(projects) > 1 {
+		return nil, isProjectToken, nil
+	}
+
+	// Project API Token provided
+	isProjectToken = true
+	if len(projects) == 1 {
+		return &projects[0], isProjectToken, nil
+	}
+
+	fmt.Println("WARN: No available projects found with the provided API Token")
+	return nil, isProjectToken, nil
+}
+
+func getAllProjects(s metal.ProjectsApiService) ([]metal.Project, error) {
+	var projects []metal.Project
+	exclude := []string{"address", "backend_transfer_enabled", "created_at", "customdata", "description", "devices", "event_alert_configuration", "members", "memberships", "invitations", "ssh_keys", "tags", "transfers", "volumes", "updated_at"}
+	resp, err := s.FindProjects(context.Background()).Exclude(exclude).ExecuteWithPagination()
+	if err != nil {
+		return projects, err
+	}
+	return resp.Projects, err
+}
+
 func getFirstProjectID(s metal.ProjectsApiService, userOrg string) (string, error) {
-	include := []string{"organization"} // []string | Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects. (optional)
-	exclude := []string{"devices", "members", "memberships", "invitations", "ssh_keys", "volumes", "backend_transfer_enabled", "updated_at", "customdata", "event_alert_configuration"}
-	resp, err := s.FindProjects(context.Background()).Include(include).Exclude(exclude).ExecuteWithPagination()
+	projects, err := getAllProjects(s)
 	if err != nil {
 		return "", err
 	}
 
-	projects := resp.Projects
 	for _, p := range projects {
-		if p.Organization.GetId() == userOrg {
+		// Workaround to get the Organization id via the href rather than do the expensive call to load all organization details
+		if path.Base(p.Organization.AdditionalProperties["href"].(string)) == userOrg {
 			return p.GetId(), nil
 		}
 	}
