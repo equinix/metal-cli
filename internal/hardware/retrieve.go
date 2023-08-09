@@ -46,12 +46,14 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			header := []string{"ID", "Facility", "Metro", "Plan", "Created"}
 
-			inc := []string{"facility"}
+			inc := []string{}
 
 			// only fetch extra details when rendered
 			switch c.Servicer.Format() {
 			case outputs.FormatJSON, outputs.FormatYAML:
 				inc = append(inc, "project", "facility", "device")
+			default:
+				inc = []string{"facility.metro"}
 			}
 
 			listOpt := c.Servicer.ListOptions(inc, nil)
