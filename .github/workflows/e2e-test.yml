@@ -44,6 +44,6 @@ jobs:
     - name: Get dependencies
       run: go mod download
     - name: Run end-to-end tests
-      run: go test -v -cover -coverpkg=./... -parallel 4 ./test/e2e
+      run: go test -v -cover -coverpkg=./... -parallel 4 ./test/e2e/...
       env:
         METAL_AUTH_TOKEN: ${{ secrets.METAL_AUTH_TOKEN }}
