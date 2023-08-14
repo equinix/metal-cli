@@ -68,7 +68,7 @@ generate-docs: clean-docs
 	go run ./cmd/metal docs ./docs
 
 test:
-	go test -v ./...
+	go test -v ./... -timeout 1000s
 
 
 ## --------------------------------------

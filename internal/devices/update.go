@@ -42,7 +42,6 @@ func (c *Client) Update() *cobra.Command {
 		customdata    string
 		deviceID      string
 	)
-
 	// updateDeviceCmd represents the updateDevice command
 	updateDeviceCmd := &cobra.Command{
 		Use:   `update -i <device_id> [-H <hostname>] [-d <description>] [--locked <boolean>] [-t <tags>] [-u <userdata>] [-c <customdata>] [-s <ipxe_script_url>] [--always-pxe]`,
@@ -76,7 +75,7 @@ func (c *Client) Update() *cobra.Command {
 			}
 
 			if alwaysPXE {
-				deviceUpdate.AlwaysPxe = &alwaysPXE
+				deviceUpdate.SetAlwaysPxe(alwaysPXE)
 			}
 
 			if ipxescripturl != "" {
@@ -114,7 +113,7 @@ func (c *Client) Update() *cobra.Command {
 	updateDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, "Sets the device to always iPXE on reboot.")
 	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "Add or update the URL of the iPXE script.")
 	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Adds or updates custom data to be included with your device's metadata.")
-
 	_ = updateDeviceCmd.MarkFlagRequired("id")
+
 	return updateDeviceCmd
 }

@@ -1,9 +1,9 @@
-package devicecreatetest
+package devicestarttest
 
 import (
+	"fmt"
 	"io"
 	"os"
-	"regexp"
 	"strings"
 	"testing"
 
@@ -14,10 +14,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func TestCli_Devices_Create(t *testing.T) {
+func TestCli_Devices_Update(t *testing.T) {
 	var projectId, deviceId string
 	var err error
-	var resp bool
+	var status bool
 	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
@@ -34,7 +34,7 @@ func TestCli_Devices_Create(t *testing.T) {
 		cmdFunc func(*testing.T, *cobra.Command)
 	}{
 		{
-			name: "create_device",
+			name: "start_device",
 			fields: fields{
 				MainCmd:  devices.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
 				Outputer: outputPkg.Outputer(&outputPkg.Standard{}),
@@ -42,13 +42,33 @@ func TestCli_Devices_Create(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-create-pro")
+				projectId, err = helper.CreateTestProject("metal-cli-start-pro")
 				if err != nil {
 					t.Error(err)
 				}
-				if len(projectId) != 0 {
+				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-start-dev")
+				if err != nil {
+					t.Error(err)
+				}
+				status, err = helper.IsDeviceStateActive(deviceId)
+				if err != nil {
+					_, err := helper.IsDeviceStateActive(deviceId)
+					if err != nil {
+						t.Error(err)
+					} else {
+						err = helper.StopTestDevice(deviceId)
+						if err != nil {
+							t.Error(err)
+						}
+						status, err = helper.IsDeviceStateActive(deviceId)
+						if err == nil {
+							t.Error(err)
+						}
+					}
+				}
 
-					root.SetArgs([]string{subCommand, "create", "-p", projectId, "-P", "m3.small.x86", "-m", "da", "-O", "ubuntu_20_04", "-H", "metal-cli-create-dev"})
+				if len(projectId) != 0 && len(deviceId) != 0 && !status {
+					root.SetArgs([]string{subCommand, "start", "--id", deviceId})
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
@@ -58,33 +78,28 @@ func TestCli_Devices_Create(t *testing.T) {
 					w.Close()
 					out, _ := io.ReadAll(r)
 					os.Stdout = rescueStdout
-					if !strings.Contains(string(out[:]), "metal-cli-create-dev") &&
-						!strings.Contains(string(out[:]), "Ubuntu 20.04 LTS") &&
-						!strings.Contains(string(out[:]), "queued") {
-						t.Error("expected output should include metal-cli-create-dev, Ubuntu 20.04 LTS, and queued strings in the out string ")
-					}
-					name := "metal-cli-create-dev"
-					idNamePattern := `(?m)^\| ([a-zA-Z0-9-]+) +\| *` + name + ` *\|`
-
-					// Find the match of the ID and NAME pattern in the table string
-					match := regexp.MustCompile(idNamePattern).FindStringSubmatch(string(out[:]))
-
-					// Extract the ID from the match
-					if len(match) > 1 {
-						deviceId = strings.TrimSpace(match[1])
-						resp, err = helper.IsDeviceStateActive(deviceId)
-						if err != nil || resp {
-							if !resp {
-								resp, err = helper.IsDeviceStateActive(deviceId)
+					if !strings.Contains(string(out[:]), "Device "+deviceId+" successfully started.") {
+						t.Error("expected output should include" + "Device " + deviceId + " successfully started." + "in the out string ")
+					} else {
+						status, _ = helper.IsDeviceStateActive(deviceId)
+						if err != nil || status {
+							if !status {
+								_, err = helper.IsDeviceStateActive(deviceId)
+								if err != nil {
+									t.Error(err)
+								}
 							}
+							fmt.Print("Device is Active")
 							err = helper.CleanTestDevice(deviceId)
 							if err != nil {
 								t.Error(err)
 							}
+							fmt.Print("Cleaned Test Device")
 							err = helper.CleanTestProject(projectId)
 							if err != nil {
 								t.Error(err)
 							}
+							fmt.Print("Cleaned Test Project")
 						}
 					}
 				}

@@ -24,7 +24,7 @@ metal device create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <h
 
 ```
   -a, --always-pxe                       Sets whether the device always PXE boots on reboot.
-  -b, --billing-cycle string             Billing cycle (default "hourly")
+  -b, --billing-cycle string             Billing cycle  (default "hourly")
   -c, --customdata string                Custom data to be included with your device's metadata.
   -f, --facility string                  Code of the facility where the device will be created
   -r, --hardware-reservation-id string   The UUID of a hardware reservation, if you are provisioning a server from your reserved hardware.
@@ -39,7 +39,7 @@ metal device create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <h
   -s, --spot-instance                    Provisions the device as a spot instance.
       --spot-price-max float             Sets the maximum spot market price for the device: --spot-price-max=1.2
   -t, --tags strings                     Tag or list of tags for the device: --tags="tag1,tag2".
-  -T, --termination-time string          Device termination time: --termination-time="15:04:05"
+  -T, --termination-time string          Device termination time: --termination-time="2023-08-24T15:04:05Z"
   -u, --userdata string                  Userdata for device initialization. Can not be used with --userdata-file.
       --userdata-file string             Path to a userdata file for device initialization. Can not be used with --userdata.
 ```

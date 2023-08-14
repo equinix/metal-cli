@@ -1,4 +1,4 @@
-package devicestest
+package devicestoptest
 
 import (
 	"io"
@@ -13,10 +13,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func TestCli_Devices_Get(t *testing.T) {
+func TestCli_Devices_Update(t *testing.T) {
 	var projectId, deviceId string
 	var err error
-	var resp bool
 	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
@@ -33,7 +32,7 @@ func TestCli_Devices_Get(t *testing.T) {
 		cmdFunc func(*testing.T, *cobra.Command)
 	}{
 		{
-			name: "get_by_device_id",
+			name: "stop_device",
 			fields: fields{
 				MainCmd:  devices.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
 				Outputer: outputPkg.Outputer(&outputPkg.Standard{}),
@@ -41,30 +40,32 @@ func TestCli_Devices_Get(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-get-pro")
+				projectId, err = helper.CreateTestProject("metal-cli-stop-pro")
 				if err != nil {
 					t.Error(err)
 				}
-				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-get-dev")
+				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-stop-dev")
 				if err != nil {
 					t.Error(err)
 				}
-				root.SetArgs([]string{subCommand, "get", "-i", deviceId})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				if err := root.Execute(); err != nil {
+				status, err := helper.IsDeviceStateActive(deviceId)
+				if err != nil {
 					t.Error(err)
 				}
-				w.Close()
-				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
-				if !strings.Contains(string(out[:]), deviceId) {
-					t.Error("expected output should include " + deviceId)
-				}
-				if len(projectId) != 0 && len(deviceId) != 0 {
-					resp, err = helper.IsDeviceStateActive(deviceId)
-					if err == nil && resp == true {
+				if len(projectId) != 0 && len(deviceId) != 0 && status {
+					root.SetArgs([]string{subCommand, "stop", "--id", deviceId})
+					rescueStdout := os.Stdout
+					r, w, _ := os.Pipe()
+					os.Stdout = w
+					if err := root.Execute(); err != nil {
+						t.Error(err)
+					}
+					w.Close()
+					out, _ := io.ReadAll(r)
+					os.Stdout = rescueStdout
+					if !strings.Contains(string(out[:]), "Device "+deviceId+" successfully stopped.") {
+						t.Error("expected output should include" + "Device " + deviceId + " successfully stopped." + "in the out string ")
+					} else {
 						err = helper.CleanTestDevice(deviceId)
 						if err != nil {
 							t.Error(err)
@@ -73,8 +74,6 @@ func TestCli_Devices_Get(t *testing.T) {
 						if err != nil {
 							t.Error(err)
 						}
-					} else {
-						t.Error(err)
 					}
 				}
 			},

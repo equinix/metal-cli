@@ -1,4 +1,4 @@
-package devicecreatetest
+package devicecreateflagstest
 
 import (
 	"io"
@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func TestCli_Devices_Create(t *testing.T) {
+func TestCli_Devices_Create_Flags(t *testing.T) {
 	var projectId, deviceId string
 	var err error
 	var resp bool
@@ -42,13 +42,13 @@ func TestCli_Devices_Create(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-create-pro")
+				projectId, err = helper.CreateTestProject("metal-cli-create-flags-pro")
 				if err != nil {
 					t.Error(err)
 				}
 				if len(projectId) != 0 {
 
-					root.SetArgs([]string{subCommand, "create", "-p", projectId, "-P", "m3.small.x86", "-m", "da", "-O", "ubuntu_20_04", "-H", "metal-cli-create-dev"})
+					root.SetArgs([]string{subCommand, "create", "-p", projectId, "-P", "m3.small.x86", "-m", "da", "-H", "metal-cli-create-flags-dev", "--operating-system", "custom_ipxe", "--always-pxe=true", "--ipxe-script-url", "https://boot.netboot.xyz/"})
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
@@ -58,12 +58,12 @@ func TestCli_Devices_Create(t *testing.T) {
 					w.Close()
 					out, _ := io.ReadAll(r)
 					os.Stdout = rescueStdout
-					if !strings.Contains(string(out[:]), "metal-cli-create-dev") &&
+					if !strings.Contains(string(out[:]), "metal-cli-create-flags-dev") &&
 						!strings.Contains(string(out[:]), "Ubuntu 20.04 LTS") &&
 						!strings.Contains(string(out[:]), "queued") {
-						t.Error("expected output should include metal-cli-create-dev, Ubuntu 20.04 LTS, and queued strings in the out string ")
+						t.Error("expected output should include metal-cli-create-flags-dev, Ubuntu 20.04 LTS, and queued strings in the out string ")
 					}
-					name := "metal-cli-create-dev"
+					name := "metal-cli-create-flags-dev"
 					idNamePattern := `(?m)^\| ([a-zA-Z0-9-]+) +\| *` + name + ` *\|`
 
 					// Find the match of the ID and NAME pattern in the table string
@@ -73,10 +73,7 @@ func TestCli_Devices_Create(t *testing.T) {
 					if len(match) > 1 {
 						deviceId = strings.TrimSpace(match[1])
 						resp, err = helper.IsDeviceStateActive(deviceId)
-						if err != nil || resp {
-							if !resp {
-								resp, err = helper.IsDeviceStateActive(deviceId)
-							}
+						if err == nil && resp == true {
 							err = helper.CleanTestDevice(deviceId)
 							if err != nil {
 								t.Error(err)
@@ -85,6 +82,8 @@ func TestCli_Devices_Create(t *testing.T) {
 							if err != nil {
 								t.Error(err)
 							}
+						} else {
+							t.Error(err)
 						}
 					}
 				}
