@@ -44,7 +44,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			projectID, _ := cmd.Flags().GetString("project-id")
 			hardwareReservationID, _ := cmd.Flags().GetString("id")
 
-			header := []string{"ID", "Facility", "Plan", "Created"}
+			header := []string{"ID", "Facility", "Metro", "Plan", "Created"}
 
 			inc := []string{}
 
@@ -52,6 +52,8 @@ func (c *Client) Retrieve() *cobra.Command {
 			switch c.Servicer.Format() {
 			case outputs.FormatJSON, outputs.FormatYAML:
 				inc = append(inc, "project", "facility", "device")
+			default:
+				inc = []string{"facility.metro"}
 			}
 
 			listOpt := c.Servicer.ListOptions(inc, nil)
@@ -69,8 +71,12 @@ func (c *Client) Retrieve() *cobra.Command {
 				}
 
 				data := make([][]string, 1)
+				metro := ""
+				if r.Facility.Metro != nil {
+					metro = r.Facility.Metro.Code
+				}
 
-				data[0] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+				data[0] = []string{r.ID, r.Facility.Code, metro, r.Plan.Name, r.CreatedAt.String()}
 
 				return c.Out.Output(r, header, &data)
 			}
@@ -83,7 +89,11 @@ func (c *Client) Retrieve() *cobra.Command {
 			data := make([][]string, len(reservations))
 
 			for i, r := range reservations {
-				data[i] = []string{r.ID, r.Facility.Code, r.Plan.Name, r.CreatedAt.String()}
+				metro := ""
+				if r.Facility.Metro != nil {
+					metro = r.Facility.Metro.Code
+				}
+				data[i] = []string{r.ID, r.Facility.Code, metro, r.Plan.Name, r.CreatedAt.String()}
 			}
 
 			return c.Out.Output(reservations, header, &data)
