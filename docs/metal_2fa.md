@@ -32,5 +32,4 @@ Enable or disable two-factor authentication on your user account or receive an O
 * [metal](metal.md)	 - Command line interface for Equinix Metal
 * [metal 2fa disable](metal_2fa_disable.md)	 - Disables two-factor authentication.
 * [metal 2fa enable](metal_2fa_enable.md)	 - Enables two factor authentication.
-* [metal 2fa receive](metal_2fa_receive.md)	 - Generates a two-factor authentication token for use in enabling two-factor authentication on the current user's account.
 
