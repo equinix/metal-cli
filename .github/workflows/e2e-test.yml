@@ -26,12 +26,16 @@ jobs:
       github.event.pull_request.head.repo.full_name != github.repository &&
       'external' || 'internal' }}
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.event_name == 'pull_request_target' && format('e2e-authorize-pr-{0}', github.event.pull_request.number) || 'e2e-authorize' }}
+      cancel-in-progress: true
     steps:
       - run: true
 
   e2e-test:
     needs: authorize
     runs-on: ubuntu-latest
+    concurrency: 'e2e-test'
     steps:
     - name: Set up Go
       uses: actions/setup-go@v4
