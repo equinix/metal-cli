@@ -1,4 +1,4 @@
-package e2e
+package sshtest
 
 import (
 	"io"
