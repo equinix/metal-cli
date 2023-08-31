@@ -59,7 +59,6 @@ func (c *Client) Retrieve() *cobra.Command {
 			var err error
 			header := []string{"ID", "Body", "Type", "Created"}
 			inc := []string{}
-			exc := []string{}
 
 			// only fetch extra details when rendered
 			switch c.Servicer.Format() {
@@ -70,24 +69,28 @@ func (c *Client) Retrieve() *cobra.Command {
 			if deviceID != "" && projectID != "" && organizationID != "" && eventID != "" {
 				return fmt.Errorf("id, project-id, device-id, and organization-id parameters are mutually exclusive")
 			} else if deviceID != "" {
-				events, err = pager.GetDeviceEvents(c.EventService, deviceID, inc, exc)
+				deviceRequest := c.EventService.FindDeviceEvents(context.Background(), deviceID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(nil))
+				events, err = pager.GetDeviceEvents(deviceRequest)
 				if err != nil {
-					return fmt.Errorf("Could not list Device Events: %w", err)
+					return fmt.Errorf("could not list Device Events: %w", err)
 				}
 			} else if projectID != "" {
-				events, err = pager.GetProjectEvents(c.EventService, projectID, inc, exc)
+				projRequest := c.EventService.FindProjectEvents(context.Background(), projectID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(nil))
+				events, err = pager.GetProjectEvents(projRequest)
 				if err != nil {
-					return fmt.Errorf("Could not list Project Events: %w", err)
+					return fmt.Errorf("could not list Project Events: %w", err)
 				}
 			} else if organizationID != "" {
-				events, err = pager.GetOrganizationEvents(c.EventService, organizationID, inc, exc)
+
+				orgRequest := c.EventService.FindOrganizationEvents(context.Background(), organizationID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(nil))
+				events, err = pager.GetOrganizationEvents(orgRequest)
 				if err != nil {
-					return fmt.Errorf("Could not list Organization Events: %w", err)
+					return fmt.Errorf("could not list Organization Events: %w", err)
 				}
 			} else if eventID != "" {
-				event, _, err := c.EventService.FindEventById(context.Background(), eventID).Include(inc).Exclude(exc).Execute()
+				event, _, err := c.EventService.FindEventById(context.Background(), eventID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(nil)).Execute()
 				if err != nil {
-					return fmt.Errorf("Could not get Event: %w", err)
+					return fmt.Errorf("could not get Event: %w", err)
 				}
 
 				data := make([][]string, 1)
@@ -95,9 +98,10 @@ func (c *Client) Retrieve() *cobra.Command {
 				data[0] = []string{event.GetId(), event.GetBody(), event.GetType(), event.GetCreatedAt().String()}
 				return c.Out.Output(event, header, &data)
 			} else {
-				events, err = pager.GetAllEvents(c.EventService, inc, exc)
+				request := c.EventService.FindEvents(context.Background()).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(nil))
+				events, err = pager.GetAllEvents(request)
 				if err != nil {
-					return fmt.Errorf("Could not list Events: %w", err)
+					return fmt.Errorf("could not list Events: %w", err)
 				}
 			}
 
