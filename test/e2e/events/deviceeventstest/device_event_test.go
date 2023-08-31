@@ -41,7 +41,6 @@ func TestCli_Events_Get(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-
 				projectId, err = helper.CreateTestProject("metal-cli-events-pro")
 				if err != nil {
 					t.Error(err)
@@ -50,9 +49,9 @@ func TestCli_Events_Get(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
-				status, err = helper.IsDeviceStateActive(deviceId)
+				status, err = helper.IsDeviceStateActive(deviceId, "active")
 				if err != nil {
-					status, err = helper.IsDeviceStateActive(deviceId)
+					status, err = helper.IsDeviceStateActive(deviceId, "active")
 					if err != nil || !status {
 						t.Error(err)
 					}

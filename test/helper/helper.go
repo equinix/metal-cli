@@ -51,7 +51,7 @@ func CreateTestDevice(projectId, name string) (string, error) {
 	return deviceResp.GetId(), nil
 }
 
-func IsDeviceStateActive(deviceId string) (bool, error) {
+func IsDeviceStateActive(deviceId string, state string) (bool, error) {
 	var err error
 	var resp *openapiclient.Device
 	TestApiClient := TestClient()
@@ -62,16 +62,16 @@ func IsDeviceStateActive(deviceId string) (bool, error) {
 		resp, _, err = TestApiClient.DevicesApi.FindDeviceById(context.Background(), deviceId).Execute()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.FindDeviceById``: %v\n", err)
-			return false, err
+			return false, fmt.Errorf("timed out waiting for device %v to become %v", deviceId, state)
 		}
-		if resp.GetState() == "active" {
+		if resp.GetState() == state {
 			return true, nil
 		}
 
 		// Sleep for the specified interval
 		time.Sleep(retryInterval)
 	}
-	return false, err
+	return false, fmt.Errorf("timed out waiting for device %v to become %v", deviceId, state)
 }
 
 func StopTestDevice(deviceId string) error {

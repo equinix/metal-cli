@@ -72,10 +72,10 @@ func TestCli_Devices_Create(t *testing.T) {
 					// Extract the ID from the match
 					if len(match) > 1 {
 						deviceId = strings.TrimSpace(match[1])
-						resp, err = helper.IsDeviceStateActive(deviceId)
+						resp, err = helper.IsDeviceStateActive(deviceId, "active")
 						if err != nil || resp {
 							if !resp {
-								resp, err = helper.IsDeviceStateActive(deviceId)
+								resp, err = helper.IsDeviceStateActive(deviceId, "active")
 							}
 							err = helper.CleanTestDevice(deviceId)
 							if err != nil {

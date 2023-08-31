@@ -48,7 +48,7 @@ func (c *Client) Create() *cobra.Command {
 		tags                  []string
 		ipxescripturl         string
 		publicIPv4SubnetSize  int
-		alwaysPXE             bool
+		alwaysPXE             string
 		hardwareReservationID string
 		spotInstance          bool
 		spotPriceMax          float64
@@ -114,8 +114,13 @@ func (c *Client) Create() *cobra.Command {
 				if billingCycle != "" {
 					facilityDeviceRequest.DeviceCreateInFacilityInput.SetBillingCycle(billingCycle)
 				}
-				if alwaysPXE {
-					facilityDeviceRequest.DeviceCreateInFacilityInput.SetAlwaysPxe(alwaysPXE)
+				if alwaysPXE != "" {
+					if alwaysPXE == "true" {
+						facilityDeviceRequest.DeviceCreateInFacilityInput.SetAlwaysPxe(true)
+					}
+					if alwaysPXE == "false" {
+						facilityDeviceRequest.DeviceCreateInFacilityInput.SetAlwaysPxe(false)
+					}
 				}
 
 				if ipxescripturl != "" {
@@ -154,8 +159,13 @@ func (c *Client) Create() *cobra.Command {
 					metroDeviceRequest.DeviceCreateInMetroInput.SetBillingCycle(billingCycle)
 				}
 
-				if alwaysPXE {
-					metroDeviceRequest.DeviceCreateInMetroInput.SetAlwaysPxe(alwaysPXE)
+				if alwaysPXE != "" {
+					if alwaysPXE == "true" {
+						metroDeviceRequest.DeviceCreateInMetroInput.SetAlwaysPxe(true)
+					}
+					if alwaysPXE == "false" {
+						metroDeviceRequest.DeviceCreateInMetroInput.SetAlwaysPxe(false)
+					}
 				}
 
 				if ipxescripturl != "" {
@@ -208,7 +218,7 @@ func (c *Client) Create() *cobra.Command {
 	createDeviceCmd.Flags().IntVarP(&publicIPv4SubnetSize, "public-ipv4-subnet-size", "S", 0, "Size of the public IPv4 subnet.")
 	createDeviceCmd.Flags().StringVarP(&hardwareReservationID, "hardware-reservation-id", "r", "", "The UUID of a hardware reservation, if you are provisioning a server from your reserved hardware.")
 	createDeviceCmd.Flags().StringVarP(&billingCycle, "billing-cycle", "b", "hourly", "Billing cycle ")
-	createDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, "Sets whether the device always PXE boots on reboot.")
+	createDeviceCmd.Flags().StringVarP(&alwaysPXE, "always-pxe", "a", "", "Sets whether the device always PXE boots on reboot.")
 	createDeviceCmd.Flags().BoolVarP(&spotInstance, "spot-instance", "s", false, "Provisions the device as a spot instance.")
 	createDeviceCmd.Flags().Float64VarP(&spotPriceMax, "spot-price-max", "", 0, `Sets the maximum spot market price for the device: --spot-price-max=1.2`)
 	createDeviceCmd.Flags().StringVarP(&terminationTime, "termination-time", "T", "", `Device termination time: --termination-time="2023-08-24T15:04:05Z"`)

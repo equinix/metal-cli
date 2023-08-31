@@ -46,9 +46,9 @@ func TestCli_Devices_Update(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
-				status, err = helper.IsDeviceStateActive(deviceId)
+				status, err = helper.IsDeviceStateActive(deviceId, "active")
 				if err != nil {
-					status, err = helper.IsDeviceStateActive(deviceId)
+					status, err = helper.IsDeviceStateActive(deviceId, "active")
 					if err != nil {
 						t.Error(err)
 					}
@@ -60,11 +60,11 @@ func TestCli_Devices_Update(t *testing.T) {
 					if err != nil {
 						t.Error(err)
 					} else {
-						status, err = helper.IsDeviceStateActive(deviceId)
+						status, err = helper.IsDeviceStateActive(deviceId, "active")
 						// The below case will excute in both Device Active and Non-active states.
 						if err != nil || status {
 							if !status {
-								_, err = helper.IsDeviceStateActive(deviceId)
+								_, err = helper.IsDeviceStateActive(deviceId, "active")
 								if err != nil {
 									t.Error(err)
 								}

@@ -37,7 +37,7 @@ func (c *Client) Update() *cobra.Command {
 		userdata      string
 		hostname      string
 		tags          []string
-		alwaysPXE     bool
+		alwaysPXE     string
 		ipxescripturl string
 		customdata    string
 		deviceID      string
@@ -74,8 +74,13 @@ func (c *Client) Update() *cobra.Command {
 				deviceUpdate.Tags = tags
 			}
 
-			if alwaysPXE {
-				deviceUpdate.SetAlwaysPxe(alwaysPXE)
+			if alwaysPXE != "" {
+				if alwaysPXE == "true" {
+					deviceUpdate.SetAlwaysPxe(true)
+				}
+				if alwaysPXE == "false" {
+					deviceUpdate.SetAlwaysPxe(false)
+				}
 			}
 
 			if ipxescripturl != "" {
@@ -93,7 +98,7 @@ func (c *Client) Update() *cobra.Command {
 			}
 			device, _, err := c.Service.UpdateDevice(context.Background(), deviceID).DeviceUpdateInput(*deviceUpdate).Execute()
 			if err != nil {
-				return fmt.Errorf("Could not update Device: %w", err)
+				return fmt.Errorf("could not update Device: %w", err)
 			}
 
 			header := []string{"ID", "Hostname", "OS", "State"}
@@ -110,7 +115,7 @@ func (c *Client) Update() *cobra.Command {
 	updateDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "Adds or updates the userdata for the device.")
 	updateDeviceCmd.Flags().BoolVarP(&locked, "locked", "l", false, "Locks or unlocks the device for future changes.")
 	updateDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Adds or updates the tags for the device --tags="tag1,tag2".`)
-	updateDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, "Sets the device to always iPXE on reboot.")
+	updateDeviceCmd.Flags().StringVarP(&alwaysPXE, "always-pxe", "a", "", "Sets the device to always iPXE on reboot.")
 	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "Add or update the URL of the iPXE script.")
 	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Adds or updates custom data to be included with your device's metadata.")
 	_ = updateDeviceCmd.MarkFlagRequired("id")

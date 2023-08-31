@@ -1,7 +1,6 @@
 package devicestarttest
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -46,28 +45,30 @@ func TestCli_Devices_Update(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
+
 				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-start-dev")
 				if err != nil {
 					t.Error(err)
 				}
-				status, err = helper.IsDeviceStateActive(deviceId)
+
+				status, err = helper.IsDeviceStateActive(deviceId, "active")
 				if err != nil {
-					_, err := helper.IsDeviceStateActive(deviceId)
+					status, err = helper.IsDeviceStateActive(deviceId, "active")
 					if err != nil {
 						t.Error(err)
-					} else {
-						err = helper.StopTestDevice(deviceId)
-						if err != nil {
-							t.Error(err)
-						}
-						status, err = helper.IsDeviceStateActive(deviceId)
-						if err == nil {
-							t.Error(err)
-						}
 					}
 				}
 
-				if len(projectId) != 0 && len(deviceId) != 0 && !status {
+				err = helper.StopTestDevice(deviceId)
+				if err != nil {
+					t.Error(err)
+				}
+
+				status, err = helper.IsDeviceStateActive(deviceId, "inactive")
+				if err != nil {
+					t.Error(err)
+				}
+				if len(projectId) != 0 && len(deviceId) != 0 && status {
 					root.SetArgs([]string{subCommand, "start", "--id", deviceId})
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
@@ -81,25 +82,25 @@ func TestCli_Devices_Update(t *testing.T) {
 					if !strings.Contains(string(out[:]), "Device "+deviceId+" successfully started.") {
 						t.Error("expected output should include" + "Device " + deviceId + " successfully started." + "in the out string ")
 					} else {
-						status, _ = helper.IsDeviceStateActive(deviceId)
+						status, _ = helper.IsDeviceStateActive(deviceId, "active")
 						if err != nil || status {
 							if !status {
-								_, err = helper.IsDeviceStateActive(deviceId)
+								_, err = helper.IsDeviceStateActive(deviceId, "active")
 								if err != nil {
 									t.Error(err)
 								}
 							}
-							fmt.Print("Device is Active")
+
 							err = helper.CleanTestDevice(deviceId)
 							if err != nil {
 								t.Error(err)
 							}
-							fmt.Print("Cleaned Test Device")
+
 							err = helper.CleanTestProject(projectId)
 							if err != nil {
 								t.Error(err)
 							}
-							fmt.Print("Cleaned Test Project")
+
 						}
 					}
 				}

@@ -63,7 +63,7 @@ func TestCli_Devices_Get(t *testing.T) {
 					t.Error("expected output should include " + deviceId)
 				}
 				if len(projectId) != 0 && len(deviceId) != 0 {
-					resp, err = helper.IsDeviceStateActive(deviceId)
+					resp, err = helper.IsDeviceStateActive(deviceId, "active")
 					if err == nil && resp == true {
 						err = helper.CleanTestDevice(deviceId)
 						if err != nil {

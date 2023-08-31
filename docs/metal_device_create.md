@@ -23,7 +23,7 @@ metal device create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <h
 ### Options
 
 ```
-  -a, --always-pxe                       Sets whether the device always PXE boots on reboot.
+  -a, --always-pxe string                Sets whether the device always PXE boots on reboot.
   -b, --billing-cycle string             Billing cycle  (default "hourly")
   -c, --customdata string                Custom data to be included with your device's metadata.
   -f, --facility string                  Code of the facility where the device will be created

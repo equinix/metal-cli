@@ -48,7 +48,7 @@ func TestCli_Devices_Update(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
-				status, err := helper.IsDeviceStateActive(deviceId)
+				status, err := helper.IsDeviceStateActive(deviceId, "active")
 				if err != nil {
 					t.Error(err)
 				}
