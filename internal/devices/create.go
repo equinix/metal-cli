@@ -97,6 +97,17 @@ func (c *Client) Create() *cobra.Command {
 			var facilityArgs []string
 
 			var request metal.ApiCreateDeviceRequest
+
+			var validBillingCycle *metal.DeviceCreateInputBillingCycle
+			var err error
+
+			if billingCycle != "" {
+				validBillingCycle, err = metal.NewDeviceCreateInputBillingCycleFromValue(billingCycle)
+				if err != nil {
+					return err
+				}
+			}
+
 			if facility != "" {
 				facilityArgs = append(facilityArgs, facility)
 
@@ -112,7 +123,7 @@ func (c *Client) Create() *cobra.Command {
 				}
 
 				if billingCycle != "" {
-					facilityDeviceRequest.DeviceCreateInFacilityInput.SetBillingCycle(billingCycle)
+					facilityDeviceRequest.DeviceCreateInFacilityInput.SetBillingCycle(*validBillingCycle)
 				}
 				if alwaysPXE {
 					facilityDeviceRequest.DeviceCreateInFacilityInput.SetAlwaysPxe(alwaysPXE)
@@ -151,7 +162,7 @@ func (c *Client) Create() *cobra.Command {
 					},
 				}
 				if billingCycle != "" {
-					metroDeviceRequest.DeviceCreateInMetroInput.SetBillingCycle(billingCycle)
+					metroDeviceRequest.DeviceCreateInMetroInput.SetBillingCycle(*validBillingCycle)
 				}
 
 				if alwaysPXE {
@@ -182,7 +193,7 @@ func (c *Client) Create() *cobra.Command {
 			}
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}
 			data := make([][]string, 1)
-			data[0] = []string{device.GetId(), device.GetHostname(), *device.GetOperatingSystem().Name, device.GetState(), device.GetCreatedAt().String()}
+			data[0] = []string{device.GetId(), device.GetHostname(), *device.GetOperatingSystem().Name, fmt.Sprintf("%v", device.GetState()), device.GetCreatedAt().String()}
 
 			return c.Out.Output(device, header, &data)
 		},

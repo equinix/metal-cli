@@ -48,7 +48,11 @@ func (c *Client) Add() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			invitationInput := metal.NewInvitationInput(email)
-			invitationInput.SetRoles(roles)
+			validRoles, err := validateRoles(roles)
+			if err != nil {
+				return err
+			}
+			invitationInput.SetRoles(validRoles)
 			invitationInput.SetProjectsIds(projectsIDs)
 
 			invitation, _, err := c.InvitationService.CreateOrganizationInvitation(context.Background(), organizationID).InvitationInput(*invitationInput).Include(c.Servicer.Includes(nil)).Execute()
@@ -58,7 +62,11 @@ func (c *Client) Add() *cobra.Command {
 
 			data := make([][]string, 1)
 
-			data[0] = []string{invitation.GetId(), invitation.GetNonce(), invitation.GetInvitee(), invitation.Organization.GetHref(), strconv.Itoa(len(invitation.GetProjects())), strings.Join(invitation.GetRoles(), ", ")}
+			var roles []string
+			for _, role := range invitation.GetRoles() {
+				roles = append(roles, fmt.Sprintf("%v", role))
+			}
+			data[0] = []string{invitation.GetId(), invitation.GetNonce(), invitation.GetInvitee(), invitation.Organization.GetHref(), strconv.Itoa(len(invitation.GetProjects())), strings.Join(roles, ", ")}
 			header := []string{"ID", "Nonce", "Email", "Organization", "Projects", "Roles"}
 
 			return c.Out.Output(invitation, header, &data)
@@ -73,4 +81,16 @@ func (c *Client) Add() *cobra.Command {
 	_ = addUserCmd.MarkFlagRequired("email")
 
 	return addUserCmd
+}
+
+func validateRoles(roles []string) ([]metal.InvitationRolesInner, error) {
+	validRoles := make([]metal.InvitationRolesInner, len(roles))
+	for _, role := range roles {
+		validRole, err := metal.NewInvitationRolesInnerFromValue(role)
+		if err != nil {
+			return nil, err
+		}
+		validRoles = append(validRoles, *validRole)
+	}
+	return validRoles, nil
 }
