@@ -44,12 +44,11 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			include := []string{"Inner_example"}
-			exclude := []string{"Inner_example"}
-			withoutProjects := "withoutProjects_example"
+			include := c.Servicer.Includes(nil)
+			exclude := c.Servicer.Excludes(nil)
 
 			if organizationID == "" {
-				orgs, err := pager.GetAllOrganizations(c.Service, include, exclude, withoutProjects)
+				orgs, err := pager.GetAllOrganizations(c.Service, include, exclude)
 				if err != nil {
 					return fmt.Errorf("Could not list Organizations: %w", err)
 				}

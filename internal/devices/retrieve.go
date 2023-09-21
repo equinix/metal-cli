@@ -58,7 +58,7 @@ func (c *Client) Retrieve() *cobra.Command {
 				header := []string{"ID", "Hostname", "OS", "State", "Created"}
 
 				data := make([][]string, 1)
-				data[0] = []string{device.GetId(), device.GetHostname(), device.OperatingSystem.GetName(), device.GetState(), device.GetCreatedAt().String()}
+				data[0] = []string{device.GetId(), device.GetHostname(), device.OperatingSystem.GetName(), fmt.Sprintf("%v", device.GetState()), device.GetCreatedAt().String()}
 
 				return c.Out.Output(device, header, &data)
 			}
@@ -96,7 +96,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			data := make([][]string, len(devices))
 
 			for i, dc := range devices {
-				data[i] = []string{dc.GetId(), dc.GetHostname(), dc.OperatingSystem.GetName(), dc.GetState(), dc.GetCreatedAt().String()}
+				data[i] = []string{dc.GetId(), dc.GetHostname(), dc.OperatingSystem.GetName(), fmt.Sprintf("%v", dc.GetState()), dc.GetCreatedAt().String()}
 			}
 			header := []string{"ID", "Hostname", "OS", "State", "Created"}
 

@@ -24,6 +24,7 @@ import (
 	"context"
 	"fmt"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -43,7 +44,11 @@ func (c *Client) Retrieve() *cobra.Command {
 			filters := c.Servicer.Filters()
 
 			if filters["type"] != "" {
-				request = request.Type_(filters["type"])
+				validType, err := metal.NewFindPlansTypeParameterFromValue(filters["type"])
+				if err != nil {
+					return err
+				}
+				request = request.Type_(*validType)
 			}
 
 			if filters["slug"] != "" {
