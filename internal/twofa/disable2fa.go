@@ -21,6 +21,7 @@
 package twofa
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -49,12 +50,12 @@ func (c *Client) Disable() *cobra.Command {
 
 			cmd.SilenceUsage = true
 			if sms {
-				_, err := c.Service.DisableSms(token)
+				_, err := c.TwoFAService.DisableTfaSms(context.Background()).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not disable Two-Factor Authentication via SMS: %w", err)
 				}
 			} else if app {
-				_, err := c.Service.DisableApp(token)
+				_, err := c.TwoFAService.DisableTfaApp(context.Background()).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not disable Two-Factor Authentication via App: %w", err)
 				}
