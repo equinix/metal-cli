@@ -16,7 +16,6 @@ func TestClient() *openapiclient.APIClient {
 	return apiClient
 }
 
-// func Create_test_project(name string) string {
 func CreateTestProject(name string) (string, error) {
 	TestApiClient := TestClient()
 
@@ -24,7 +23,7 @@ func CreateTestProject(name string) (string, error) {
 
 	projectResp, r, err := TestApiClient.ProjectsApi.CreateProject(context.Background()).ProjectCreateFromRootInput(projectCreateFromRootInput).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `ProjectsApi.CreateProject``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `ProjectsApi.CreateProject`: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		return "", err
 	}
@@ -37,32 +36,83 @@ func CreateTestDevice(projectId, name string) (string, error) {
 	hostname := name
 	metroDeviceRequest := openapiclient.CreateDeviceRequest{
 		DeviceCreateInMetroInput: &openapiclient.DeviceCreateInMetroInput{
-			Metro:           "da",
+			Metro:           "sv",
 			Plan:            "m3.small.x86",
 			OperatingSystem: "ubuntu_20_04",
 			Hostname:        &hostname,
 		},
 	}
-	deviceResp, _, err := TestApiClient.DevicesApi.CreateDevice(context.Background(), projectId).CreateDeviceRequest(metroDeviceRequest).Execute()
+	deviceResp, _, err := TestApiClient.DevicesApi.
+		CreateDevice(context.Background(), projectId).
+		CreateDeviceRequest(metroDeviceRequest).
+		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.CreateDevice``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.CreateDevice`: %v\n", err)
 		return "", err
 	}
 	return deviceResp.GetId(), nil
 }
 
-func IsDeviceStateActive(deviceId string) (bool, error) {
+func CreateTestVLAN(projectId string) (*openapiclient.VirtualNetwork, error) {
 	TestApiClient := TestClient()
+
+	metro := "sv"
+	vlanCreateInput := openapiclient.VirtualNetworkCreateInput{
+		Metro: &metro,
+	}
+	vlan, _, err := TestApiClient.VLANsApi.
+		CreateVirtualNetwork(context.Background(), projectId).
+		VirtualNetworkCreateInput(vlanCreateInput).
+		Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.CreateVirtualNetwork`: %v\n", err)
+		return nil, err
+	}
+	return vlan, nil
+}
+
+func GetDeviceById(deviceId string) (*openapiclient.Device, error) {
+	TestApiClient := TestClient()
+	includes := []string{"network_ports"}
+
+	device, _, err := TestApiClient.DevicesApi.
+		FindDeviceById(context.Background(), deviceId).
+		Include(includes).
+		Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.FindDeviceById`: %v\n", err)
+		return nil, err
+	}
+
+	return device, nil
+}
+
+func GetPortById(portId string) (*openapiclient.Port, error) {
+	TestApiClient := TestClient()
+	includes := []string{"virtual_network"}
+
+	port, _, err := TestApiClient.PortsApi.
+		FindPortById(context.Background(), portId).
+		Include(includes).
+		Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `PortsApi.FindPortById`: %v\n", err)
+		return nil, err
+	}
+
+	return port, nil
+}
+
+func IsDeviceStateActive(deviceId string) (bool, error) {
 	predefinedTime := 500 * time.Second // Adjust this as needed
 	retryInterval := 10 * time.Second   // Adjust this as needed
 	startTime := time.Now()
 	for time.Since(startTime) < predefinedTime {
-		resp, _, err := TestApiClient.DevicesApi.FindDeviceById(context.Background(), deviceId).Execute()
+		device, err := GetDeviceById(deviceId)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.FindDeviceById``: %v\n", err)
 			return false, err
 		}
-		if resp.GetState() == "active" {
+		if device.GetState() == "active" {
 			return true, nil
 		}
 
@@ -70,6 +120,38 @@ func IsDeviceStateActive(deviceId string) (bool, error) {
 		time.Sleep(retryInterval)
 	}
 	return false, fmt.Errorf("timed out waiting for device %v to become active", deviceId)
+}
+
+func WaitForAttachVlanToPort(portId string, attach bool) error {
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+
+	timeout := 300 * time.Second
+	ctx, cancelFunc := context.WithTimeout(context.Background(), timeout)
+	defer cancelFunc()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return fmt.Errorf("Timeout exceeded for vlan assignment with port ID: %s", portId)
+		case <-ticker.C:
+			port, err := GetPortById(portId)
+			if err != nil {
+				return err
+			}
+
+			vlans := port.GetVirtualNetworks()
+			if attach {
+				if len(vlans) != 0 {
+					return nil
+				}
+			} else {
+				if len(vlans) == 0 {
+					return nil
+				}
+			}
+		}
+	}
 }
 
 func StopTestDevice(deviceId string) error {
@@ -89,7 +171,10 @@ func CleanTestDevice(deviceId string) error {
 	forceDelete := true // bool | Force the deletion of the device, by detaching any storage volume still active. (optional)
 
 	TestApiClient := TestClient()
-	_, err := TestApiClient.DevicesApi.DeleteDevice(context.Background(), deviceId).ForceDelete(forceDelete).Execute()
+	_, err := TestApiClient.DevicesApi.
+		DeleteDevice(context.Background(), deviceId).
+		ForceDelete(forceDelete).
+		Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.DeleteDevice``: %v\n", err)
 		return err
@@ -99,7 +184,9 @@ func CleanTestDevice(deviceId string) error {
 
 func CleanTestProject(projectId string) error {
 	TestApiClient := TestClient()
-	r, err := TestApiClient.ProjectsApi.DeleteProject(context.Background(), projectId).Execute()
+	r, err := TestApiClient.ProjectsApi.
+		DeleteProject(context.Background(), projectId).
+		Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `ProjectsApi.DeleteProject``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -166,5 +253,30 @@ func CleanTestVlan(vlanId string) error {
 		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.DeleteVirtualNetwork``: %v\n", err)
 		return err
 	}
+
+	return nil
+}
+func UnAssignPortVlan(portId, vlanId string) error {
+	testClient := TestClient()
+	_, _, err := testClient.PortsApi.
+		UnassignPort(context.Background(), portId).
+		PortAssignInput(openapiclient.PortAssignInput{Vnid: &vlanId}).
+		Execute()
+	return err
+}
+
+func CleanupProjectAndDevice(deviceId, projectId string) error {
+	resp, err := IsDeviceStateActive(deviceId)
+	if err == nil && resp {
+		err = CleanTestDevice(deviceId)
+		if err != nil {
+			return err
+		}
+		err = CleanTestProject(projectId)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }

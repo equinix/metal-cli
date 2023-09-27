@@ -21,11 +21,12 @@
 package ports
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -50,38 +51,45 @@ func (c *Client) Vlans() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			listOpts := c.Servicer.ListOptions([]string{"port"}, nil)
+			req := metal.NewPortVlanAssignmentBatchCreateInput()
 
-			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-			req := &packngo.VLANAssignmentBatchCreateRequest{}
-			f := false
-			t := true
 			for _, vlan := range assignments {
-				assignment := packngo.VLANAssignmentCreateRequest{VLAN: vlan, State: packngo.VLANAssignmentAssigned, Native: &f}
-				req.VLANAssignments = append(req.VLANAssignments, assignment)
+				CreateInputVlanAssignmentsInner := metal.PortVlanAssignmentBatchCreateInputVlanAssignmentsInner{}
+				CreateInputVlanAssignmentsInner.SetVlan(vlan)
+				CreateInputVlanAssignmentsInner.SetState(metal.PORTVLANASSIGNMENTBATCHVLANASSIGNMENTSINNERSTATE_ASSIGNED)
+				req.SetVlanAssignments(append(req.GetVlanAssignments(), CreateInputVlanAssignmentsInner))
 			}
 			for _, vlan := range unassignments {
-				assignment := packngo.VLANAssignmentCreateRequest{VLAN: vlan, State: packngo.VLANAssignmentUnassigned}
-				req.VLANAssignments = append(req.VLANAssignments, assignment)
+				CreateInputVlanAssignmentsInner := metal.PortVlanAssignmentBatchCreateInputVlanAssignmentsInner{}
+				CreateInputVlanAssignmentsInner.SetVlan(vlan)
+				CreateInputVlanAssignmentsInner.SetState(metal.PORTVLANASSIGNMENTBATCHVLANASSIGNMENTSINNERSTATE_UNASSIGNED)
+				req.SetVlanAssignments(append(req.GetVlanAssignments(), CreateInputVlanAssignmentsInner))
 			}
 			if native != "" {
-				assignment := packngo.VLANAssignmentCreateRequest{VLAN: native, State: packngo.VLANAssignmentAssigned, Native: &t}
-				req.VLANAssignments = append(req.VLANAssignments, assignment)
+				CreateInputVlanAssignmentsInner := metal.PortVlanAssignmentBatchCreateInputVlanAssignmentsInner{}
+				CreateInputVlanAssignmentsInner.SetVlan(native)
+				CreateInputVlanAssignmentsInner.SetState(metal.PORTVLANASSIGNMENTBATCHVLANASSIGNMENTSINNERSTATE_ASSIGNED)
+				CreateInputVlanAssignmentsInner.SetNative(true)
+				req.SetVlanAssignments(append(req.GetVlanAssignments(), CreateInputVlanAssignmentsInner))
 			}
-			if len(req.VLANAssignments) == 0 {
+
+			if len(req.GetVlanAssignments()) == 0 {
 				return errors.New("no VLAN assignments specified")
 			}
-			batch, _, err := c.VLANService.CreateBatch(portID, req, getOpts)
+			batch, _, err := c.PortService.CreatePortVlanAssignmentBatch(context.Background(), portID).
+				PortVlanAssignmentBatchCreateInput(*req).
+				Include(c.Servicer.Includes([]string{"port"})).
+				Execute()
 			if err != nil {
 				return fmt.Errorf("Could not update port VLAN assignments: %w", err)
 			}
 
 			// TODO: should we return the batch?
-			port := batch.Port
+			port := batch.GetPort()
 
 			data := make([][]string, 1)
 
-			data[0] = []string{port.ID, port.Name, port.Type, port.NetworkType, port.Data.MAC, strconv.FormatBool(port.Data.Bonded)}
+			data[0] = []string{port.GetId(), port.GetName(), string(port.GetType()), string(port.GetNetworkType()), port.Data.GetMac(), strconv.FormatBool(port.Data.GetBonded())}
 			header := []string{"ID", "Name", "Type", "Network Type", "MAC", "Bonded"}
 
 			return c.Out.Output(port, header, &data)
