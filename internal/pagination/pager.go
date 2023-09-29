@@ -145,3 +145,23 @@ func GetProjectDevices(s metal.ApiFindProjectDevicesRequest) ([]metal.Device, er
 		return devices, nil
 	}
 }
+
+func GetAllIPReservations(s metal.IPAddressesApiService, projectId string, inc []string, exc []string, types []metal.FindIPReservationsTypesParameterInner) ([]metal.IPReservationListIpAddressesInner, error) {
+	var ipReservations []metal.IPReservationListIpAddressesInner
+	page := int32(1)     // int32 | Page to return (optional) (default to 1)
+	perPage := int32(20) // int32 | Items returned per page (optional) (default to 10)
+
+	for {
+		ipReservationsPage, _, err := s.FindIPReservations(context.Background(), projectId).Types(types).Include(inc).Exclude(exc).PerPage(perPage).Execute()
+		if err != nil {
+			return nil, err
+		}
+
+		ipReservations = append(ipReservations, ipReservationsPage.GetIpAddresses()...)
+		if ipReservationsPage.Meta.GetLastPage() > ipReservationsPage.Meta.GetCurrentPage() {
+			page = page + 1
+			continue
+		}
+		return ipReservations, nil
+	}
+}

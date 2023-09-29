@@ -21,16 +21,16 @@
 package ips
 
 import (
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
 type Client struct {
-	Servicer       Servicer
-	ProjectService packngo.ProjectIPService
-	DeviceService  packngo.DeviceIPService
-	Out            outputs.Outputer
+	Servicer      Servicer
+	IPService     metal.IPAddressesApiService
+	DeviceService metal.DevicesApiService
+	Out           outputs.Outputer
 }
 
 func (c *Client) NewCommand() *cobra.Command {
@@ -46,8 +46,8 @@ func (c *Client) NewCommand() *cobra.Command {
 					root.PersistentPreRun(cmd, args)
 				}
 			}
-			c.ProjectService = c.Servicer.API(cmd).ProjectIPs
-			c.DeviceService = c.Servicer.API(cmd).DeviceIPs
+			c.IPService = *c.Servicer.MetalAPI(cmd).IPAddressesApi
+			c.DeviceService = *c.Servicer.MetalAPI(cmd).DevicesApi
 		},
 	}
 
@@ -63,8 +63,7 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	MetalAPI(*cobra.Command) *metal.APIClient
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {
