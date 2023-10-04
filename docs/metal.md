@@ -47,4 +47,5 @@ Command line interface for Equinix Metal
 * [metal ssh-key](metal_ssh-key.md)	 - SSH key operations: create, get, update, and delete.
 * [metal user](metal_user.md)	 - User operations: get and add.
 * [metal virtual-network](metal_virtual-network.md)	 - Virtual network (VLAN) operations : create, get, delete.
+* [metal vrf](metal_vrf.md)	 - VRF operations : create, get, delete
 
