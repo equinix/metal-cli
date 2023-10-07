@@ -17,6 +17,7 @@ import (
 	initPkg "github.com/equinix/metal-cli/internal/init"
 	"github.com/equinix/metal-cli/internal/interconnections"
 	"github.com/equinix/metal-cli/internal/ips"
+	"github.com/equinix/metal-cli/internal/loadbalancers"
 	"github.com/equinix/metal-cli/internal/metros"
 	"github.com/equinix/metal-cli/internal/organizations"
 	"github.com/equinix/metal-cli/internal/os"
@@ -99,5 +100,6 @@ func (cli *Cli) RegisterCommands(client *root.Client) {
 		interconnections.NewClient(client, cli.Outputer).NewCommand(),
 		vrf.NewClient(client, cli.Outputer).NewCommand(),
 		virtualcircuit.NewClient(client, cli.Outputer).NewCommand(),
+		loadbalancers.NewClient(client, cli.Outputer).NewCommand(),
 	)
 }
