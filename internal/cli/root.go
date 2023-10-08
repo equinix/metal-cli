@@ -21,6 +21,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -34,6 +35,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"golang.org/x/oauth2"
 
 	v1 "github.com/equinix/metal-cli/internal/loadbalancers/api/v1"
 	"github.com/equinix/metal-cli/internal/loadbalancers/infrastructure"
@@ -123,16 +125,32 @@ func (c *Client) metalApiConnect(httpClient *http.Client) error {
 	return nil
 }
 
-func (c *Client) lbaasApiConnect(httpClient *http.Client) error {
+func (c *Client) lbaasApiConnect(header http.Header) error {
+	ctx := context.Background()
+	config := oauth2.Config{
+		Endpoint: oauth2.Endpoint{
+			TokenURL: "https://iam.metalctrl.io/token",
+		},
+	}
+	ts := infrastructure.NewTokenExchanger(c.Token(), nil)
+	token, err := ts.Token()
+	if err != nil {
+		return err
+	}
+	client := &http.Client{
+		Transport: &headerTransport{
+			header: header,
+		},
+	}
+	ctx = context.WithValue(ctx, oauth2.HTTPClient, client)
+	client = config.Client(ctx, token)
+
 	configuration := v1.NewConfiguration()
 	configuration.Debug = checkEnvForDebug()
-	token := infrastructure.NewTokenExchanger(c.Token(), httpClient)
-	token.Token()
-	configuration.AddDefaultHeader("X-Auth-Token", c.Token())
-	configuration.HTTPClient = httpClient
+	configuration.HTTPClient = client
 	configuration.UserAgent = fmt.Sprintf(uaFormat, c.Version, configuration.UserAgent)
-	client := v1.NewAPIClient(configuration)
-	c.lbaasApiClient = client
+
+	c.lbaasApiClient = v1.NewAPIClient(configuration)
 	return nil
 }
 
@@ -243,13 +261,7 @@ func (c *Client) LoadbalancerAPI(cmd *cobra.Command) *v1.APIClient {
 	}
 
 	if c.lbaasApiClient == nil {
-		httpClient := &http.Client{
-			Transport: &headerTransport{
-				header: getAdditionalHeaders(cmd),
-			},
-		}
-
-		err := c.lbaasApiConnect(httpClient)
+		err := c.lbaasApiConnect(getAdditionalHeaders(cmd))
 		if err != nil {
 			log.Fatal(err)
 		}

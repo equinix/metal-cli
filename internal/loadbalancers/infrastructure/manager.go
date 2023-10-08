@@ -8,7 +8,7 @@ import (
 	lbaas "github.com/equinix/metal-cli/internal/loadbalancers/api/v1"
 )
 
-const ProviderID = ""
+const ProviderID = "loadpvd-gOB_-byp5ebFo7A3LHv2B"
 
 var LBMetros = map[string]string{
 	"da": "lctnloc--uxs0GLeAELHKV8GxO_AI",

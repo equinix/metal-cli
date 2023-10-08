@@ -58,7 +58,14 @@ func (c *Client) Create() *cobra.Command {
 			}
 
 			req := c.projectService.CreateLoadBalancer(context.Background(), projectID)
-			req.LoadBalancerCreate(*lbaas.NewLoadBalancerCreate(name, locationId, portIds, providerId))
+			// opts := lbaas.NewLoadBalancerCreate(name, locationId, portIds, providerId)
+			opts := &lbaas.LoadBalancerCreate{
+				Name:       name,
+				LocationId: locationId,
+				PortIds:    portIds,
+				ProviderId: providerId,
+			}
+			req = req.LoadBalancerCreate(*opts)
 			lb, _, err := req.Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create LoadBalancer: %w", err)
@@ -76,11 +83,9 @@ func (c *Client) Create() *cobra.Command {
 	createLoadBalancerCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
 	createLoadBalancerCmd.Flags().StringVarP(&locationId, "location", "l", "", "The location's ID.")
 	createLoadBalancerCmd.Flags().StringVarP(&providerId, "provider", "r", ProviderID, "The provider ID.")
-	createLoadBalancerCmd.Flags().StringSliceVarP(&portIds, "port", "o", []string{}, "The port's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PORT_ID environment variable.")
+	createLoadBalancerCmd.Flags().StringSliceVar(&portIds, "port", []string{}, "The port's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PORT_ID environment variable.")
 
 	// TODO(displague) Not sure if this is needed
-	_ = createLoadBalancerCmd.MarkFlagRequired("port")
-	_ = createLoadBalancerCmd.MarkFlagRequired("provider")
 	_ = createLoadBalancerCmd.MarkFlagRequired("location")
 	_ = createLoadBalancerCmd.MarkFlagRequired("project-id")
 	_ = createLoadBalancerCmd.MarkFlagRequired("name")

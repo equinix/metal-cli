@@ -15,14 +15,19 @@ type TokenExchanger struct {
 	client      *http.Client
 }
 
+var _ oauth2.TokenSource = (*TokenExchanger)(nil)
+
 func NewTokenExchanger(metalAPIKey string, client *http.Client) *TokenExchanger {
+	if client == nil {
+		client = http.DefaultClient
+	}
 	return &TokenExchanger{
 		metalAPIKey: metalAPIKey,
 		client:      client,
 	}
 }
 
-func (m *TokenExchanger) Token() (*oauth2.Token, error) {
+func (m TokenExchanger) Token() (*oauth2.Token, error) {
 	tokenExchangeURL := "https://iam.metalctrl.io/api-keys/exchange"
 	tokenExchangeRequest, err := http.NewRequest("POST", tokenExchangeURL, nil)
 	if err != nil {
