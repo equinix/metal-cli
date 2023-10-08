@@ -53,12 +53,10 @@ func (m TokenExchanger) Token() (*oauth2.Token, error) {
 	token := oauth2.Token{}
 	err = json.Unmarshal(body, &token)
 	if err != nil {
-		fmt.Println(len(body))
-		fmt.Println(token)
-		fmt.Println(err)
 		return nil, err
 	}
 
+	// TODO: expires_in does not appear to be returned. Only access_token
 	expiresIn := token.Extra("expires_in")
 	if expiresIn != nil {
 		expiresInSeconds := expiresIn.(int)
