@@ -52,8 +52,6 @@ func CreateTestDevice(projectId, name string) (string, error) {
 }
 
 func IsDeviceStateActive(deviceId string, state string) (bool, error) {
-	var err error
-	var resp *openapiclient.Device
 	TestApiClient := TestClient()
 	predefinedTime := 500 * time.Second // Adjust this as needed
 	retryInterval := 10 * time.Second   // Adjust this as needed
