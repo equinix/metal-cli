@@ -21,14 +21,14 @@
 package vlan
 
 import (
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
 type Client struct {
 	Servicer Servicer
-	Service  packngo.ProjectVirtualNetworkService
+	Service  metal.VLANsApiService
 	Out      outputs.Outputer
 }
 
@@ -45,7 +45,7 @@ func (c *Client) NewCommand() *cobra.Command {
 					root.PersistentPreRun(cmd, args)
 				}
 			}
-			c.Service = c.Servicer.API(cmd).ProjectVirtualNetworks
+			c.Service = *c.Servicer.MetalAPI(cmd).VLANsApi
 		},
 	}
 
@@ -58,8 +58,10 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	MetalAPI(*cobra.Command) *metal.APIClient
+	Filters() map[string]string
+	Includes(defaultIncludes []string) (incl []string)
+	Excludes(defaultExcludes []string) (excl []string)
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {

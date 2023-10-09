@@ -21,6 +21,7 @@
 package vlan
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/manifoldco/promptui"
@@ -34,7 +35,7 @@ func (c *Client) Delete() *cobra.Command {
 	)
 
 	deleteVnet := func(id string) error {
-		_, err := c.Service.Delete(id)
+		_, _, err := c.Service.DeleteVirtualNetwork(context.Background(), vnetID).Execute()
 		if err != nil {
 			return err
 		}
@@ -70,7 +71,7 @@ func (c *Client) Delete() *cobra.Command {
 				}
 			}
 			if err := deleteVnet(vnetID); err != nil {
-				return fmt.Errorf("Could not delete Virtual Network: %w", err)
+				return fmt.Errorf("could not delete Virtual Network: %w", err)
 			}
 			return nil
 		},
