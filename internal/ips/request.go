@@ -21,10 +21,11 @@
 package ips
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -49,22 +50,30 @@ func (c *Client) Request() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			req := &packngo.IPReservationRequest{
-				Type:     packngo.IPReservationType(ttype),
-				Quantity: quantity,
-				Facility: &facility,
+
+			req := &metal.IPReservationRequestInput{
 				Metro:    &metro,
 				Tags:     tags,
+				Quantity: int32(quantity),
+				Type:     ttype,
+				Facility: &facility,
 			}
 
-			reservation, _, err := c.ProjectService.Request(projectID, req)
+			requestIPReservationRequest := &metal.RequestIPReservationRequest{
+				IPReservationRequestInput: req,
+			}
+
+			reservation, _, err := c.IPService.RequestIPReservation(context.Background(), projectID).RequestIPReservationRequest(*requestIPReservationRequest).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not request IP addresses: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{reservation.ID, reservation.Address, strconv.FormatBool(reservation.Public), reservation.Created}
+			data[0] = []string{reservation.IPReservation.GetId(),
+				reservation.IPReservation.GetAddress(),
+				strconv.FormatBool(reservation.IPReservation.GetPublic()),
+				reservation.IPReservation.CreatedAt.String()}
 			header := []string{"ID", "Address", "Public", "Created"}
 
 			return c.Out.Output(reservation, header, &data)

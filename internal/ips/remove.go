@@ -21,6 +21,7 @@
 package ips
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -38,7 +39,7 @@ func (c *Client) Remove() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			_, err := c.ProjectService.Remove(reservationID)
+			_, err := c.IPService.DeleteIPAddress(context.Background(), reservationID).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not remove IP address Reservation: %w", err)
 			}

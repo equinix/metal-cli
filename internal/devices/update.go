@@ -103,7 +103,7 @@ func (c *Client) Update() *cobra.Command {
 
 			header := []string{"ID", "Hostname", "OS", "State"}
 			data := make([][]string, 1)
-			data[0] = []string{device.GetId(), device.GetHostname(), device.OperatingSystem.GetName(), device.GetState()}
+			data[0] = []string{device.GetId(), device.GetHostname(), device.OperatingSystem.GetName(), fmt.Sprintf("%v", device.GetState())}
 
 			return c.Out.Output(device, header, &data)
 		},

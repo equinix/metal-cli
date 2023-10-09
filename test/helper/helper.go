@@ -59,7 +59,7 @@ func IsDeviceStateActive(deviceId string, state string) (bool, error) {
 	retryInterval := 10 * time.Second   // Adjust this as needed
 	startTime := time.Now()
 	for time.Since(startTime) < predefinedTime {
-		resp, _, err = TestApiClient.DevicesApi.FindDeviceById(context.Background(), deviceId).Execute()
+		resp, _, err := TestApiClient.DevicesApi.FindDeviceById(context.Background(), deviceId).Execute()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.FindDeviceById``: %v\n", err)
 			return false, fmt.Errorf("timed out waiting for device %v to become %v", deviceId, state)
@@ -105,6 +105,42 @@ func CleanTestProject(projectId string) error {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `ProjectsApi.DeleteProject``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+		return err
+	}
+	return nil
+}
+
+func CreateTestIps(projectId string, quantity int, ipType string) (string, error) {
+	TestApiClient := TestClient()
+	metro := "da"
+	var tags []string
+	var facility string
+
+	req := &openapiclient.IPReservationRequestInput{
+		Metro:    &metro,
+		Tags:     tags,
+		Quantity: int32(quantity),
+		Type:     ipType,
+		Facility: &facility,
+	}
+
+	requestIPReservationRequest := &openapiclient.RequestIPReservationRequest{
+		IPReservationRequestInput: req,
+	}
+
+	ipsresp, _, err := TestApiClient.IPAddressesApi.RequestIPReservation(context.Background(), projectId).RequestIPReservationRequest(*requestIPReservationRequest).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.CreateVirtualNetwork``: %v\n", err)
+		return "", err
+	}
+	return ipsresp.IPReservation.GetId(), nil
+}
+
+func CleanTestIps(ipsId string) error {
+	TestApiClient := TestClient()
+	_, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), ipsId).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `IPAddressesApi.DeleteIPAddress``: %v\n", err)
 		return err
 	}
 	return nil
