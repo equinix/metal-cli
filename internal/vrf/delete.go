@@ -1,4 +1,4 @@
-package main // or your appropriate package name
+package vrf
 
 import (
 	"fmt"
