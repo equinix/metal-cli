@@ -18,6 +18,9 @@ metal device get [-p <project_id>] | [-i <device_id>] [flags]
   
   # Gets a list of devices in the specified project:
   metal device get -p 5ad070a5-62e8-4cfe-a0b9-3b79e59f1cfe
+
+  # Get a list of devices with the hostname foo and a default project configured:
+  metal device get --filter hostname=foo
 ```
 
 ### Options
