@@ -1,6 +1,7 @@
 package ports
 
 import (
+	"context"
 	"io"
 	"os"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 	"github.com/equinix/metal-cli/internal/ports"
 	"github.com/equinix/metal-cli/test/helper"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -22,26 +24,35 @@ func TestPorts_VLANs(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	portList := setupProjectAndDevice(t, &projectId, &deviceId)
-	port := &portList[2]
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	port := &device.GetNetworkPorts()[2]
+	if port == nil {
+		t.Error("bond0 Port not found on device")
+		return
+	}
+
+	if err := convertToLayer2(port.GetId()); err != nil {
+		t.Error(err)
+		return
+	}
+
 	vlan, err := helper.CreateTestVLAN(projectId)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	defer func() {
 		if err := helper.UnAssignPortVlan(port.GetId(), vlan.GetId()); err != nil {
 			t.Error(err)
-			return
+		}
+		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
+			t.Error(err)
 		}
 		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
 			t.Error(err)
 		}
 	}()
-	if port == nil {
-		t.Error("bond0 Port not found on device")
-		return
-	}
 
 	tests := []struct {
 		name    string
@@ -57,7 +68,7 @@ func TestPorts_VLANs(t *testing.T) {
 				root := c.Root()
 
 				vxLanStr := strconv.Itoa(int(vlan.GetVxlan()))
-				// should be hybrid-bonded
+				// should be layer2-bonded
 				root.SetArgs([]string{subCommand, "vlan", "-i", port.GetId(), "-a", vxLanStr})
 
 				rescueStdout := os.Stdout
@@ -76,7 +87,7 @@ func TestPorts_VLANs(t *testing.T) {
 					return
 				}
 
-				assertPortCmdOutput(t, port, string(out[:]), "hybrid-bonded", true)
+				assertPortCmdOutput(t, port, string(out[:]), "layer2-bonded", true)
 			},
 		},
 	}
@@ -88,4 +99,13 @@ func TestPorts_VLANs(t *testing.T) {
 			tt.cmdFunc(t, tt.cmd)
 		})
 	}
+}
+
+func convertToLayer2(portId string) error {
+	apiClient := helper.TestClient()
+
+	_, _, err := apiClient.PortsApi.ConvertLayer2(context.Background(), portId).
+		PortAssignInput(*metal.NewPortAssignInput()).
+		Execute()
+	return err
 }

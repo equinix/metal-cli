@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"testing"
 	"time"
 
 	openapiclient "github.com/equinix-labs/metal-go/metal/v1"
@@ -231,7 +232,7 @@ func CleanTestIps(ipsId string) error {
 	return nil
 }
 
-func CreateTestVlan(projectId string, Id int, desc string) (string, error) {
+func CreateTestVlanWithVxLan(projectId string, Id int, desc string) (string, error) {
 	TestApiClient := TestClient()
 	virtualNetworkCreateInput := *openapiclient.NewVirtualNetworkCreateInput()
 	virtualNetworkCreateInput.SetDescription(desc)
@@ -256,6 +257,7 @@ func CleanTestVlan(vlanId string) error {
 
 	return nil
 }
+
 func UnAssignPortVlan(portId, vlanId string) error {
 	testClient := TestClient()
 	_, _, err := testClient.PortsApi.
@@ -279,4 +281,38 @@ func CleanupProjectAndDevice(deviceId, projectId string) error {
 	}
 
 	return nil
+}
+
+//nolint:staticcheck
+func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapiclient.Device {
+	projId, err := CreateTestProject("metal-cli-test-project")
+	if err != nil {
+		t.Error(err)
+	}
+	*projectId = projId
+
+	devId, err := CreateTestDevice(*projectId, "metal-cli-test-device")
+	if err != nil {
+		t.Error(err)
+	}
+	*deviceId = devId
+
+	active, err := IsDeviceStateActive(*deviceId)
+	if err != nil {
+		t.Error(err)
+	}
+	if !active {
+		t.Errorf("Timeout while waiting for device: %s to be active", *deviceId)
+	}
+
+	device, err := GetDeviceById(*deviceId)
+	if err != nil {
+		t.Error(err)
+		return nil
+	}
+	if len(device.NetworkPorts) < 3 {
+		t.Errorf("All 3 ports doesnot exist for the created device: %s", device.GetId())
+	}
+
+	return device
 }

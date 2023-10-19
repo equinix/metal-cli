@@ -22,8 +22,8 @@ func TestPorts_Retrieve(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	portList := setupProjectAndDevice(t, &projectId, &deviceId)
-	port := &portList[2]
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	port := &device.GetNetworkPorts()[2]
 	defer func() {
 		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
 			t.Error(err)

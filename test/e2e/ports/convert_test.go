@@ -7,14 +7,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/equinix/metal-cli/internal/ports"
-
-	metal "github.com/equinix-labs/metal-go/metal/v1"
-
 	root "github.com/equinix/metal-cli/internal/cli"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
+	"github.com/equinix/metal-cli/internal/ports"
 	"github.com/equinix/metal-cli/test/helper"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -26,8 +24,8 @@ func TestPorts_Convert(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	portList := setupProjectAndDevice(t, &projectId, &deviceId)
-	port := &portList[2]
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	port := &device.GetNetworkPorts()[2]
 	defer func() {
 		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
 			t.Error(err)
@@ -121,40 +119,6 @@ func TestPorts_Convert(t *testing.T) {
 			tt.cmdFunc(t, tt.cmd)
 		})
 	}
-}
-
-//nolint:staticcheck
-func setupProjectAndDevice(t *testing.T, projectId, deviceId *string) []metal.Port {
-	projId, err := helper.CreateTestProject("metal-cli-test-ports-project")
-	if err != nil {
-		t.Error(err)
-	}
-	projectId = &projId
-
-	devId, err := helper.CreateTestDevice(*projectId, "metal-cli-test-ports-device")
-	if err != nil {
-		t.Error(err)
-	}
-	deviceId = &devId
-
-	active, err := helper.IsDeviceStateActive(*deviceId)
-	if err != nil {
-		t.Error(err)
-	}
-	if !active {
-		t.Errorf("Timeout while waiting for device: %s to be active", *deviceId)
-	}
-
-	device, err := helper.GetDeviceById(*deviceId)
-	if err != nil {
-		t.Error(err)
-		return nil
-	}
-	if len(device.NetworkPorts) < 3 {
-		t.Errorf("All 3 ports doesnot exist for the created device: %s", device.GetId())
-	}
-
-	return device.GetNetworkPorts()
 }
 
 func assertPortCmdOutput(t *testing.T, port *metal.Port, out, networkType string, bonded bool) {

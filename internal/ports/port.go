@@ -21,8 +21,9 @@
 package ports
 
 import (
-	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
+
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
