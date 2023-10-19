@@ -123,6 +123,7 @@ func TestPorts_Convert(t *testing.T) {
 	}
 }
 
+//nolint:staticcheck
 func setupProjectAndDevice(t *testing.T, projectId, deviceId *string) []metal.Port {
 	projId, err := helper.CreateTestProject("metal-cli-test-ports-project")
 	if err != nil {
