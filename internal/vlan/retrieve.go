@@ -41,19 +41,28 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			vnets, _, err := c.Service.List(projectID, c.Servicer.ListOptions(nil, nil))
+			request := c.Service.FindVirtualNetworks(cmd.Context(), projectID).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil))
+			filters := c.Servicer.Filters()
+			if filters["facility"] != "" {
+				request = request.Facility(filters["facility"])
+			}
+
+			if filters["metro"] != "" {
+				request = request.Metro(filters["metro"])
+			}
+			virtualNetworksList, _, err := request.Execute()
 			if err != nil {
 				return fmt.Errorf("Could not list Project Virtual Networks: %w", err)
 			}
+			virtualNetworks := virtualNetworksList.GetVirtualNetworks()
+			data := make([][]string, len(virtualNetworks))
 
-			data := make([][]string, len(vnets.VirtualNetworks))
-
-			for i, n := range vnets.VirtualNetworks {
-				data[i] = []string{n.ID, n.Description, strconv.Itoa(n.VXLAN), n.FacilityCode, n.CreatedAt}
+			for i, n := range virtualNetworks {
+				data[i] = []string{n.GetId(), n.GetDescription(), strconv.Itoa(int(n.GetVxlan())), n.GetMetroCode(), n.GetCreatedAt().String()}
 			}
-			header := []string{"ID", "Description", "VXLAN", "Facility", "Created"}
+			header := []string{"ID", "Description", "VXLAN", "Metro", "Created"}
 
-			return c.Out.Output(vnets, header, &data)
+			return c.Out.Output(virtualNetworksList, header, &data)
 		},
 	}
 	retrieveVirtualNetworksCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
