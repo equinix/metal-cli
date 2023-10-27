@@ -21,16 +21,18 @@
 package gateway
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"strconv"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Create() *cobra.Command {
 	var projectID, vnID, reservationID string
-	var netSize int
+	var netSize int32
 
 	// createMetalGatewayCmd represents the createMetalGateway command
 	createMetalGatewayCmd := &cobra.Command{
@@ -45,14 +47,29 @@ func (c *Client) Create() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
+			includes := []string{"virtual_network", "ip_reservation"}
 
-			req := &packngo.MetalGatewayCreateRequest{
-				VirtualNetworkID:      vnID,
-				IPReservationID:       reservationID,
-				PrivateIPv4SubnetSize: netSize,
+			if reservationID == "" && netSize == 0 {
+				return errors.New("Invalid input. Provide either 'private-subnet-size' or 'ip-reservation-id'")
 			}
 
-			n, _, err := c.Service.Create(projectID, req)
+			req := metal.CreateMetalGatewayRequest{
+				MetalGatewayCreateInput: &metal.MetalGatewayCreateInput{
+					VirtualNetworkId: vnID,
+				},
+			}
+			if reservationID != "" {
+				req.MetalGatewayCreateInput.SetIpReservationId(reservationID)
+			} else {
+				req.MetalGatewayCreateInput.SetPrivateIpv4SubnetSize(netSize)
+			}
+
+			n, _, err := c.Service.
+				CreateMetalGateway(context.Background(), projectID).
+				Include(c.Servicer.Includes(includes)).
+				Exclude(c.Servicer.Excludes(nil)).
+				CreateMetalGatewayRequest(req).
+				Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create Metal Gateway: %w", err)
 			}
@@ -60,22 +77,25 @@ func (c *Client) Create() *cobra.Command {
 			data := make([][]string, 1)
 			address := ""
 
-			if n.IPReservation != nil {
-				address = n.IPReservation.Address + "/" + strconv.Itoa(n.IPReservation.CIDR)
+			gway := n.MetalGateway
+			ipReservation := gway.IpReservation
+			if ipReservation != nil {
+				address = ipReservation.GetAddress() + "/" + strconv.Itoa(int(ipReservation.GetCidr()))
 			}
 
-			data[0] = []string{n.ID, n.VirtualNetwork.MetroCode, strconv.Itoa(n.VirtualNetwork.VXLAN), address, string(n.State), n.CreatedAt}
+			data[0] = []string{gway.GetId(), gway.VirtualNetwork.GetMetroCode(),
+				strconv.Itoa(int(gway.VirtualNetwork.GetVxlan())), address, string(gway.GetState()), gway.GetCreatedAt().String()}
 
 			header := []string{"ID", "Metro", "VXLAN", "Addresses", "State", "Created"}
 
-			return c.Out.Output(n, header, &data)
+			return c.Out.Output(gway, header, &data)
 		},
 	}
 
 	createMetalGatewayCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
 	createMetalGatewayCmd.Flags().StringVarP(&reservationID, "ip-reservation-id", "r", "", "UUID of the Public or VRF IP Reservation to assign.")
 	createMetalGatewayCmd.Flags().StringVarP(&vnID, "virtual-network", "v", "", "UUID of the Virtual Network to assign.")
-	createMetalGatewayCmd.Flags().IntVarP(&netSize, "private-subnet-size", "s", 0, "Size of the private subnet to request (8 for /29)")
+	createMetalGatewayCmd.Flags().Int32VarP(&netSize, "private-subnet-size", "s", 0, "Size of the private subnet to request (8 for /29)")
 
 	_ = createMetalGatewayCmd.MarkFlagRequired("project-id")
 	_ = createMetalGatewayCmd.MarkFlagRequired("virtual-network")

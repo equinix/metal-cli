@@ -21,8 +21,11 @@
 package gateway
 
 import (
+	"context"
 	"fmt"
 	"strconv"
+
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 
 	"github.com/spf13/cobra"
 )
@@ -42,26 +45,39 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			listOpts := c.Servicer.ListOptions(nil, nil).Including("virtual_network", "ip_reservation")
-			gways, _, err := c.Service.List(projectID, listOpts)
+			includes := []string{"virtual_network", "ip_reservation"}
+
+			gwayList, _, err := c.Service.
+				FindMetalGatewaysByProject(context.Background(), projectID).
+				Include(c.Servicer.Includes(includes)).
+				Exclude(c.Servicer.Excludes(nil)).
+				Execute()
 			if err != nil {
 				return fmt.Errorf("Could not list Project Metal Gateways: %w", err)
 			}
 
+			gways := gwayList.GetMetalGateways()
+
 			data := make([][]string, len(gways))
+			metalGways := make([]*metal.MetalGateway, len(gways))
 
 			for i, n := range gways {
+				gway := n.MetalGateway
+				metalGways = append(metalGways, gway)
+
 				address := ""
 
-				if n.IPReservation != nil {
-					address = n.IPReservation.Address + "/" + strconv.Itoa(n.IPReservation.CIDR)
+				ipReservation := gway.IpReservation
+				if ipReservation != nil {
+					address = ipReservation.GetAddress() + "/" + strconv.Itoa(int(ipReservation.GetCidr()))
 				}
 
-				data[i] = []string{n.ID, n.VirtualNetwork.MetroCode, strconv.Itoa(n.VirtualNetwork.VXLAN), address, string(n.State), n.CreatedAt}
+				data[i] = []string{gway.GetId(), gway.VirtualNetwork.GetMetroCode(), strconv.Itoa(int(gway.VirtualNetwork.GetVxlan())),
+					address, string(gway.GetState()), gway.GetCreatedAt().String()}
 			}
 			header := []string{"ID", "Metro", "VXLAN", "Addresses", "State", "Created"}
 
-			return c.Out.Output(gways, header, &data)
+			return c.Out.Output(metalGways, header, &data)
 		},
 	}
 	retrieveMetalGatewaysCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")

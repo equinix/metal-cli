@@ -1,0 +1,95 @@
+package gateways
+
+import (
+	"io"
+	"os"
+	"strconv"
+	"strings"
+	"testing"
+
+	root "github.com/equinix/metal-cli/internal/cli"
+	"github.com/equinix/metal-cli/internal/gateway"
+	outputPkg "github.com/equinix/metal-cli/internal/outputs"
+	"github.com/spf13/cobra"
+
+	"github.com/equinix/metal-cli/test/helper"
+)
+
+func TestGateways_Retrieve(t *testing.T) {
+	var projectId, deviceId string
+	subCommand := "gateways"
+	consumerToken := ""
+	apiURL := ""
+	Version := "devel"
+	rootClient := root.NewClient(consumerToken, apiURL, Version)
+
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	defer func() {
+		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
+			t.Error(err)
+		}
+	}()
+
+	vlan, err := helper.CreateTestVLAN(projectId)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	defer func() {
+		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
+			t.Error(err)
+		}
+	}()
+
+	subnetSize := int32(8)
+	metalGateway, err := helper.CreateTestGateway(projectId, vlan.GetId(), &subnetSize)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	defer func() {
+		if err := helper.CleanTestGateway(metalGateway.GetId()); err != nil &&
+			!strings.Contains(err.Error(), "Not Found") {
+			t.Error(err)
+		}
+	}()
+
+	tests := []struct {
+		name    string
+		cmd     *cobra.Command
+		want    *cobra.Command
+		cmdFunc func(*testing.T, *cobra.Command)
+	}{
+		{
+			name: "retrieve gateways by projectId",
+			cmd:  gateway.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
+			want: &cobra.Command{},
+			cmdFunc: func(t *testing.T, c *cobra.Command) {
+				root := c.Root()
+
+				// get using projectId
+				root.SetArgs([]string{subCommand, "get", "-p", projectId})
+
+				rescueStdout := os.Stdout
+				r, w, _ := os.Pipe()
+				os.Stdout = w
+				if err := root.Execute(); err != nil {
+					t.Error(err)
+				}
+				w.Close()
+				out, _ := io.ReadAll(r)
+				os.Stdout = rescueStdout
+
+				assertGatewaysCmdOutput(t, string(out[:]), metalGateway.GetId(), device.Metro.GetCode(), strconv.Itoa(int(vlan.GetVxlan())))
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rootCmd := rootClient.NewCommand()
+			rootCmd.AddCommand(tt.cmd)
+			tt.cmdFunc(t, tt.cmd)
+		})
+	}
+}

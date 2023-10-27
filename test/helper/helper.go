@@ -72,6 +72,27 @@ func CreateTestVLAN(projectId string) (*openapiclient.VirtualNetwork, error) {
 	return vlan, nil
 }
 
+func CreateTestGateway(projectId, vlanId string, privateIPv4SubnetSize *int32) (*openapiclient.MetalGateway, error) {
+	TestApiClient := TestClient()
+
+	gatewayCreateInput := openapiclient.CreateMetalGatewayRequest{
+		MetalGatewayCreateInput: &openapiclient.MetalGatewayCreateInput{
+			VirtualNetworkId:      vlanId,
+			PrivateIpv4SubnetSize: privateIPv4SubnetSize,
+		},
+	}
+	gateway, _, err := TestApiClient.MetalGatewaysApi.
+		CreateMetalGateway(context.Background(), projectId).
+		Include([]string{"ip_reservation"}).
+		CreateMetalGatewayRequest(gatewayCreateInput).
+		Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `MetalGatewaysApi.CreateMetalGateway`: %v\n", err)
+		return nil, err
+	}
+	return gateway.MetalGateway, nil
+}
+
 func GetDeviceById(deviceId string) (*openapiclient.Device, error) {
 	TestApiClient := TestClient()
 	includes := []string{"network_ports"}
@@ -315,4 +336,18 @@ func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapicl
 	}
 
 	return device
+}
+
+func CleanTestGateway(gatewayId string) error {
+	TestApiClient := TestClient()
+	_, _, err := TestApiClient.MetalGatewaysApi.
+		DeleteMetalGateway(context.Background(), gatewayId).
+		Include([]string{"ip_reservation"}).
+		Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `MetalGatewaysApi.DeleteMetalGateway``: %v\n", err)
+		return err
+	}
+
+	return nil
 }
