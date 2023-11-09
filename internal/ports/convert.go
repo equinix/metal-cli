@@ -21,20 +21,21 @@
 package ports
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/manifoldco/promptui"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Convert() *cobra.Command {
 	var portID string
 	var bonded, layer2, bulk, force, ipv4, ipv6 bool
-	// retrievePortCmd represents the retrievePort command
-	retrievePortCmd := &cobra.Command{
+	convertPortCmd := &cobra.Command{
 		Use:     `convert -i <port_UUID> [--bonded] [--bulk] --layer2 [--force] [--public-ipv4] [--public-ipv6]`,
 		Aliases: []string{},
 		Short:   "Converts a list of ports or the details of the specified port.",
@@ -54,25 +55,13 @@ func (c *Client) Convert() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-			if f := cmd.Flag("bonded"); f.Changed {
-				_, _, err := map[bool]func(string, bool) (*packngo.Port, *packngo.Response, error){
-					true:  c.PortService.Bond,
-					false: c.PortService.Disbond,
-				}[bonded](portID, bulk)
-				if err != nil {
+			if cmd.Flag("bonded").Changed {
+				if err := portBondingHandler(bonded, c, portID); err != nil {
 					return fmt.Errorf("failed to change port bonding: %w", err)
 				}
 			}
-			addrs := []packngo.AddressRequest{{AddressFamily: 4, Public: false}}
 
-			if f := cmd.Flag("public-ipv4"); f.Changed {
-				addrs = append(addrs, packngo.AddressRequest{AddressFamily: 4, Public: true})
-			}
-			if f := cmd.Flag("public-ipv6"); f.Changed {
-				addrs = append(addrs, packngo.AddressRequest{AddressFamily: 6, Public: true})
-			}
-
-			convToL2 := func(portID string) (*packngo.Port, *packngo.Response, error) {
+			convToL2 := func(portID string) (*metal.Port, *http.Response, error) {
 				if !force {
 					prompt := promptui.Prompt{
 						Label:     fmt.Sprintf("Are you sure you want to convert Port %s to Layer2 and remove assigned IP addresses: ", portID),
@@ -84,14 +73,38 @@ func (c *Client) Convert() *cobra.Command {
 						return nil, nil, nil
 					}
 				}
-				return c.PortService.ConvertToLayerTwo(portID)
+
+				return c.PortService.ConvertLayer2(context.Background(), portID).
+					PortAssignInput(*metal.NewPortAssignInput()).
+					Execute()
 			}
-			convToL3 := func(portID string) (*packngo.Port, *packngo.Response, error) {
+
+			addressFamily := int32(metal.IPADDRESSADDRESSFAMILY__4)
+			public := false
+			addrs := []metal.PortConvertLayer3InputRequestIpsInner{{AddressFamily: &addressFamily, Public: &public}}
+
+			if f := cmd.Flag("public-ipv4"); f.Changed {
+				addressFamily = int32(metal.IPADDRESSADDRESSFAMILY__4)
+				public = true
+				addrs = append(addrs, metal.PortConvertLayer3InputRequestIpsInner{AddressFamily: &addressFamily, Public: &public})
+			}
+			if f := cmd.Flag("public-ipv6"); f.Changed {
+				addressFamily = int32(metal.IPADDRESSADDRESSFAMILY__6)
+				public = true
+				addrs = append(addrs, metal.PortConvertLayer3InputRequestIpsInner{AddressFamily: &addressFamily, Public: &public})
+			}
+
+			convToL3 := func(portID string) (*metal.Port, *http.Response, error) {
 				log.Printf("Converting port %s to layer-3 with addresses %v", portID, addrs)
-				return c.PortService.ConvertToLayerThree(portID, addrs)
+				return c.PortService.
+					ConvertLayer3(context.Background(), portID).
+					PortConvertLayer3Input(metal.PortConvertLayer3Input{
+						RequestIps: addrs,
+					}).
+					Execute()
 			}
 			if f := cmd.Flag("layer2"); f.Changed {
-				_, _, err := map[bool]func(string) (*packngo.Port, *packngo.Response, error){
+				_, _, err := map[bool]func(string) (*metal.Port, *http.Response, error){
 					true:  convToL2,
 					false: convToL3,
 				}[layer2](portID)
@@ -99,30 +112,44 @@ func (c *Client) Convert() *cobra.Command {
 					return fmt.Errorf("failed to change port network mode: %w", err)
 				}
 			}
-			listOpts := c.Servicer.ListOptions(nil, nil)
 
-			getOpts := &packngo.GetOptions{Includes: listOpts.Includes, Excludes: listOpts.Excludes}
-			port, _, err := c.PortService.Get(portID, getOpts)
+			port, _, err := c.PortService.FindPortById(context.Background(), portID).
+				Include(c.Servicer.Includes(nil)).
+				Execute()
 			if err != nil {
 				return fmt.Errorf("Could not get Port: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{port.ID, port.Name, port.Type, port.NetworkType, port.Data.MAC, strconv.FormatBool(port.Data.Bonded)}
+			data[0] = []string{port.GetId(), port.GetName(), string(port.GetType()), string(port.GetNetworkType()), port.Data.GetMac(), strconv.FormatBool(port.Data.GetBonded())}
 			header := []string{"ID", "Name", "Type", "Network Type", "MAC", "Bonded"}
 
 			return c.Out.Output(port, header, &data)
 		},
 	}
 
-	retrievePortCmd.Flags().StringVarP(&portID, "port-id", "i", "", "The UUID of a port.")
-	retrievePortCmd.Flags().BoolVarP(&bonded, "bonded", "b", false, "Convert to layer-2 bonded.")
-	retrievePortCmd.Flags().BoolVarP(&bulk, "bulk", "", false, "Affect both ports in a bond.")
-	retrievePortCmd.Flags().BoolVarP(&layer2, "layer2", "2", false, "Convert to layer-2 unbonded.")
-	retrievePortCmd.Flags().BoolVarP(&force, "force", "f", false, "Force conversion to layer-2 bonded.")
-	retrievePortCmd.Flags().BoolVarP(&ipv4, "public-ipv4", "4", false, "Convert to layer-2 bonded with public IPv4.")
-	retrievePortCmd.Flags().BoolVarP(&ipv6, "public-ipv6", "6", false, "Convert to layer-2 bonded with public IPv6.")
+	convertPortCmd.Flags().StringVarP(&portID, "port-id", "i", "", "The UUID of a port.")
+	convertPortCmd.Flags().BoolVarP(&bonded, "bonded", "b", false, "Convert to layer-2 bonded.")
+	convertPortCmd.Flags().BoolVarP(&bulk, "bulk", "", false, "Affect both ports in a bond.")
+	convertPortCmd.Flags().BoolVarP(&layer2, "layer2", "2", false, "Convert to layer-2 unbonded.")
+	convertPortCmd.Flags().BoolVarP(&force, "force", "f", false, "Force conversion to layer-2 bonded.")
+	convertPortCmd.Flags().BoolVarP(&ipv4, "public-ipv4", "4", false, "Convert to layer-2 bonded with public IPv4.")
+	convertPortCmd.Flags().BoolVarP(&ipv6, "public-ipv6", "6", false, "Convert to layer-2 bonded with public IPv6.")
 
-	return retrievePortCmd
+	return convertPortCmd
+}
+
+func portBondingHandler(bonded bool, c *Client, portId string) error {
+	if bonded {
+		_, _, err := c.PortService.BondPort(context.Background(), portId).
+			Include(c.Servicer.Includes(nil)).
+			Execute()
+		return err
+	}
+
+	_, _, err := c.PortService.DisbondPort(context.Background(), portId).
+		Include(c.Servicer.Includes(nil)).
+		Execute()
+	return err
 }

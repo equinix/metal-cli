@@ -22,14 +22,15 @@ package ports
 
 import (
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
+
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/spf13/cobra"
 )
 
 type Client struct {
 	Servicer    Servicer
-	PortService packngo.PortService
-	VLANService packngo.VLANAssignmentService
+	PortService *metal.PortsApiService
+	VLANService *metal.VLANsApiService
 	Out         outputs.Outputer
 }
 
@@ -45,8 +46,8 @@ func (c *Client) NewCommand() *cobra.Command {
 					root.PersistentPreRun(cmd, args)
 				}
 			}
-			c.PortService = c.Servicer.API(cmd).Ports
-			c.VLANService = c.Servicer.API(cmd).VLANAssignments
+			c.PortService = c.Servicer.MetalAPI(cmd).PortsApi
+			c.VLANService = c.Servicer.MetalAPI(cmd).VLANsApi
 		},
 	}
 
@@ -59,8 +60,9 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
+	MetalAPI(*cobra.Command) *metal.APIClient
+	Filters() map[string]string
+	Includes(defaultIncludes []string) (incl []string)
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {

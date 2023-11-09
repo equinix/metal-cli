@@ -44,7 +44,7 @@ func TestCli_Vlan_Get(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
-				vlanId, err = helper.CreateTestVlan(projectId, 2023, "metal-cli-vlan-delete-test")
+				vlanId, err = helper.CreateTestVlanWithVxLan(projectId, 2023, "metal-cli-vlan-delete-test")
 				if len(projectId) != 0 && len(vlanId) != 0 {
 					root.SetArgs([]string{subCommand, "get", "-p", projectId})
 					rescueStdout := os.Stdout
