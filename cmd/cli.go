@@ -15,6 +15,7 @@ import (
 	"github.com/equinix/metal-cli/internal/gateway"
 	"github.com/equinix/metal-cli/internal/hardware"
 	initPkg "github.com/equinix/metal-cli/internal/init"
+	"github.com/equinix/metal-cli/internal/interconnections"
 	"github.com/equinix/metal-cli/internal/ips"
 	"github.com/equinix/metal-cli/internal/metros"
 	"github.com/equinix/metal-cli/internal/organizations"
@@ -93,5 +94,6 @@ func (cli *Cli) RegisterCommands(client *root.Client) {
 		twofa.NewClient(client, cli.Outputer).NewCommand(),
 		gateway.NewClient(client, cli.Outputer).NewCommand(),
 		ports.NewClient(client, cli.Outputer).NewCommand(),
+		interconnections.NewClient(client, cli.Outputer).NewCommand(),
 	)
 }

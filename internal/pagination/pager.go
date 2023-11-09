@@ -165,3 +165,23 @@ func GetAllIPReservations(s metal.IPAddressesApiService, projectId string, inc [
 		return ipReservations, nil
 	}
 }
+
+func GetAllProjectInterconnections(s metal.InterconnectionsApiService, projectId string, include []string, exclude []string) ([]metal.Interconnection, error) {
+	var interConn []metal.Interconnection
+
+	page := int32(1)     // int32 | Page to return (optional) (default to 1)
+	perPage := int32(20) // int32 | Items returned per page (optional) (default to 10)
+
+	for {
+		interConnPage, _, err := s.ProjectListInterconnections(context.Background(), projectId).Include(include).Exclude(exclude).Page(page).PerPage(perPage).Execute()
+		if err != nil {
+			return nil, err
+		}
+		interConn = append(interConn, interConnPage.GetInterconnections()...)
+		if interConnPage.Meta.GetLastPage() > interConnPage.Meta.GetCurrentPage() {
+			page = page + 1
+			continue
+		}
+		return interConn, nil
+	}
+}
