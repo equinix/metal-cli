@@ -24,6 +24,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	metal "github.com/equinix-labs/metal-go/metal/v1"
 
@@ -35,6 +36,7 @@ func (c *Client) Update() *cobra.Command {
 		description   string
 		locked        bool
 		userdata      string
+		userdataFile  string
 		hostname      string
 		tags          []string
 		alwaysPXE     bool
@@ -44,7 +46,7 @@ func (c *Client) Update() *cobra.Command {
 	)
 	// updateDeviceCmd represents the updateDevice command
 	updateDeviceCmd := &cobra.Command{
-		Use:   `update -i <device_id> [-H <hostname>] [-d <description>] [--locked <boolean>] [-t <tags>] [-u <userdata>] [-c <customdata>] [-s <ipxe_script_url>] [--always-pxe=<true|false>]`,
+		Use:   `update -i <device_id> [-H <hostname>] [-d <description>] [--locked <boolean>] [-t <tags>] [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-s <ipxe_script_url>] [--always-pxe=<true|false>]`,
 		Short: "Updates a device.",
 		Long:  "Updates the hostname of a device. Updates or adds a description, tags, userdata, custom data, and iPXE settings for an already provisioned device. Can also lock or unlock future changes to the device.",
 		Example: `  # Updates the hostname of a device:
@@ -60,6 +62,18 @@ func (c *Client) Update() *cobra.Command {
 
 			if description != "" {
 				deviceUpdate.Description = &description
+			}
+
+			if userdata != "" && userdataFile != "" {
+				return fmt.Errorf("either userdata or userdata-file should be set")
+			}
+
+			if userdataFile != "" {
+				userdataRaw, readErr := os.ReadFile(userdataFile)
+				if readErr != nil {
+					return fmt.Errorf("could not read userdata-file: %w", readErr)
+				}
+				userdata = string(userdataRaw)
 			}
 
 			if userdata != "" {
@@ -108,9 +122,10 @@ func (c *Client) Update() *cobra.Command {
 	updateDeviceCmd.Flags().StringVarP(&hostname, "hostname", "H", "", "The new hostname of the device.")
 	updateDeviceCmd.Flags().StringVarP(&description, "description", "d", "", "Adds or updates the description for the device.")
 	updateDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "Adds or updates the userdata for the device.")
-	updateDeviceCmd.Flags().BoolVarP(&locked, "locked", "l", false, "Locks or unlocks the device for future changes.")
+	updateDeviceCmd.Flags().StringVarP(&userdataFile, "userdata-file", "", "", "Path to a userdata file for device initialization. Can not be used with --userdata.")
+	updateDeviceCmd.Flags().BoolVarP(&locked, "locked", "l", false, "Locks or unlocks the device for future changes (<true|false>).")
 	updateDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Adds or updates the tags for the device --tags="tag1,tag2".`)
-	updateDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, "Sets the device to always iPXE on reboot.")
+	updateDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, "Updates the always_pxe toggle for the device (<true|false>).")
 	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "Add or update the URL of the iPXE script.")
 	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Adds or updates custom data to be included with your device's metadata.")
 	_ = updateDeviceCmd.MarkFlagRequired("id")

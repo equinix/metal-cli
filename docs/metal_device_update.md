@@ -7,7 +7,7 @@ Updates a device.
 Updates the hostname of a device. Updates or adds a description, tags, userdata, custom data, and iPXE settings for an already provisioned device. Can also lock or unlock future changes to the device.
 
 ```
-metal device update -i <device_id> [-H <hostname>] [-d <description>] [--locked <boolean>] [-t <tags>] [-u <userdata>] [-c <customdata>] [-s <ipxe_script_url>] [--always-pxe=<true|false>] [flags]
+metal device update -i <device_id> [-H <hostname>] [-d <description>] [--locked <boolean>] [-t <tags>] [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-s <ipxe_script_url>] [--always-pxe=<true|false>] [flags]
 ```
 
 ### Examples
@@ -20,16 +20,17 @@ metal device update -i <device_id> [-H <hostname>] [-d <description>] [--locked 
 ### Options
 
 ```
-  -a, --always-pxe               Sets the device to always iPXE on reboot.
+  -a, --always-pxe               Updates the always_pxe toggle for the device (<true|false>).
   -c, --customdata string        Adds or updates custom data to be included with your device's metadata.
   -d, --description string       Adds or updates the description for the device.
   -h, --help                     help for update
   -H, --hostname string          The new hostname of the device.
   -i, --id string                The UUID of the device.
   -s, --ipxe-script-url string   Add or update the URL of the iPXE script.
-  -l, --locked                   Locks or unlocks the device for future changes.
+  -l, --locked                   Locks or unlocks the device for future changes (<true|false>).
   -t, --tags strings             Adds or updates the tags for the device --tags="tag1,tag2".
   -u, --userdata string          Adds or updates the userdata for the device.
+      --userdata-file string     Path to a userdata file for device initialization. Can not be used with --userdata.
 ```
 
 ### Options inherited from parent commands
