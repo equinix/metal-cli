@@ -3,10 +3,11 @@ package terraform
 import (
 	"bytes"
 	_ "embed"
+	"fmt"
+	"html"
 	"html/template"
 	"path"
-
-	"github.com/packethost/packngo"
+	metal "github.com/equinix-labs/metal-go/metal/v1"
 )
 
 var (
@@ -23,21 +24,29 @@ func many(s string) string {
 
 func Marshal(i interface{}) ([]byte, error) {
 	f := ""
-	switch i.(type) {
-	case *packngo.Device:
+
+	switch v := i.(type) {
+	case *metal.Device:
+		fmt.Printf("single device")
 		f = deviceFormat
-	case []packngo.Device:
+	case []metal.Device:
+		fmt.Printf("devices")
 		f = many(deviceFormat)
-	case *packngo.Project:
+	case *metal.Project:
 		f = projectFormat
-	case []packngo.Project:
+	case []metal.Project:
 		f = many(projectFormat)
+	default:
+		return nil, fmt.Errorf("%v is not compatible with terraform output", v)
 	}
+
+	addQuotesToString(i)
 
 	tmpl, err := template.New("terraform").Funcs(template.FuncMap{
 		"hrefToID": func(href string) string {
-			return path.Base(href)
+			return fmt.Sprintf("\"%s", path.Base(href))
 		},
+		"nullIfNilOrEmpty": nullIfNilOrEmpty,
 	}).Parse(f)
 	if err != nil {
 		return nil, err
@@ -47,5 +56,6 @@ func Marshal(i interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return buf.Bytes(), nil
+	result := html.UnescapeString(buf.String())
+	return []byte(result), nil
 }

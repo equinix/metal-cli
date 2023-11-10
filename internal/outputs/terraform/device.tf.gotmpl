@@ -1,11 +1,26 @@
-# terraform import equinix_metal_device.{{.Hostname}} {{.ID}}
-resource "equinix_metal_device" "{{.Hostname}}" {
-  plan = "{{.Plan.Slug}}"
-  hostname = "{{.Hostname}}"
-  billing_cycle = "{{.BillingCycle}}"
-  metro = "{{.Metro.Code}}"
-  operating_system = "{{.OS.Slug}}"
-  project_id = "{{.Project.ID}}"
-
-  tags = {{.Tags}}
+# terraform import equinix_metal_device.example {{.Id}}
+resource "equinix_metal_device" "example" {
+  always_pxe                       = {{.AlwaysPxe}}
+  billing_cycle                    = {{.BillingCycle}}
+  custom_data                      = {{.Customdata | nullIfNilOrEmpty}}
+  description                      = {{.Description | nullIfNilOrEmpty}}
+  force_detach_volumes             = false
+{{- if .HardwareReservation }}
+  hardware_reservation_id          = {{.HardwareReservation.Id }}
+{{ else }}
+  hardware_reservation_id          = null
+{{- end }}
+  hostname                         = {{.Hostname}}
+  ipxe_script_url                  = {{.IpxeScriptUrl}}
+  metro                            = {{.Metro.Code}}
+  operating_system                 = {{.OperatingSystem.Slug}}
+  plan                             = {{.Plan.Slug}}
+  project_id                       = {{ hrefToID .Project.Href}}
+  project_ssh_key_ids              = null
+  storage                          = {{.Storage | nullIfNilOrEmpty}}
+  tags                             = {{.Tags}}
+  termination_time                 = {{.TerminationTime | nullIfNilOrEmpty}}
+  user_data                        = {{.Userdata | nullIfNilOrEmpty}} # sensitive
+  user_ssh_key_ids                 = null
+  wait_for_reservation_deprovision = false
 }
