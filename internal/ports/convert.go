@@ -95,7 +95,7 @@ func (c *Client) Convert() *cobra.Command {
 			}
 
 			convToL3 := func(portID string) (*metal.Port, *http.Response, error) {
-				log.Printf("Converting port %s to layer-3 with addresses %v", portID, addrs)
+				log.Printf("Converting port %s to layer-3", portID)
 				return c.PortService.
 					ConvertLayer3(context.Background(), portID).
 					PortConvertLayer3Input(metal.PortConvertLayer3Input{
