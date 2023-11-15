@@ -24,7 +24,16 @@ func TestPorts_VLANs(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	device, err := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	defer func() {
+		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
+			t.Error(err)
+		}
+	}()
+	if err != nil {
+		return
+	}
+
 	port := &device.GetNetworkPorts()[2]
 	if port == nil {
 		t.Error("bond0 Port not found on device")
@@ -41,15 +50,11 @@ func TestPorts_VLANs(t *testing.T) {
 		t.Error(err)
 		return
 	}
-
 	defer func() {
 		if err := helper.UnAssignPortVlan(port.GetId(), vlan.GetId()); err != nil {
 			t.Error(err)
 		}
 		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
-			t.Error(err)
-		}
-		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
 			t.Error(err)
 		}
 	}()

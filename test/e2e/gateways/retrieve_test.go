@@ -23,12 +23,16 @@ func TestGateways_Retrieve(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	device, err := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
 	defer func() {
 		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
 			t.Error(err)
 		}
 	}()
+
+	if err != nil {
+		return
+	}
 
 	vlan, err := helper.CreateTestVLAN(projectId)
 	if err != nil {
