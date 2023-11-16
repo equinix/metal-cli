@@ -20,7 +20,7 @@ func (c *Client) Delete() *cobra.Command {
 			return err
 		}
 		fmt.Println("VRF", id, "successfully deleted.")
-		fmt.Println("Device deletion initiated. Please check 'metal vrf get -i", vrfID, "' for status")
+		fmt.Println("VRF deletion initiated. Please check 'metal vrf get -i", vrfID, "' for status")
 		return nil // No need to return 'err' here; it's always nil.
 	}
 
