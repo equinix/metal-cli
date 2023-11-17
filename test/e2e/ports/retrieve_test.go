@@ -22,13 +22,13 @@ func TestPorts_Retrieve(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device, err := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
-	defer func() {
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	t.Cleanup(func() {
 		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
 			t.Error(err)
 		}
-	}()
-	if err != nil {
+	})
+	if device == nil {
 		return
 	}
 

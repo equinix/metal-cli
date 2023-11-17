@@ -25,27 +25,26 @@ func TestGateways_Create(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device, err := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
-	defer func() {
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	t.Cleanup(func() {
 		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
 			t.Error(err)
 		}
-	}()
-
-	if err != nil {
+	})
+	if device == nil {
 		return
 	}
 
 	vlan, err := helper.CreateTestVLAN(projectId)
+	t.Cleanup(func() {
+		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
+			t.Error(err)
+		}
+	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	defer func() {
-		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
-			t.Error(err)
-		}
-	}()
 
 	tests := []struct {
 		name    string

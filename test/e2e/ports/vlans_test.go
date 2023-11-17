@@ -24,13 +24,13 @@ func TestPorts_VLANs(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device, err := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
-	defer func() {
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	t.Cleanup(func() {
 		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
 			t.Error(err)
 		}
-	}()
-	if err != nil {
+	})
+	if device == nil {
 		return
 	}
 
@@ -46,18 +46,18 @@ func TestPorts_VLANs(t *testing.T) {
 	}
 
 	vlan, err := helper.CreateTestVLAN(projectId)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	defer func() {
+	t.Cleanup(func() {
 		if err := helper.UnAssignPortVlan(port.GetId(), vlan.GetId()); err != nil {
 			t.Error(err)
 		}
 		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
 			t.Error(err)
 		}
-	}()
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
 	tests := []struct {
 		name    string

@@ -305,38 +305,43 @@ func CleanupProjectAndDevice(deviceId, projectId string) error {
 }
 
 //nolint:staticcheck
-func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) (*openapiclient.Device, error) {
+func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapiclient.Device {
 	t.Helper()
 	projId, err := CreateTestProject("metal-cli-test-project")
 	if err != nil {
-		return nil, err
+		t.Fatal(err)
+		return nil
 	}
 	*projectId = projId
 
 	devId, err := CreateTestDevice(*projectId, "metal-cli-test-device")
 	if err != nil {
-		return nil, err
+		t.Fatal(err)
+		return nil
 	}
 	*deviceId = devId
 
 	active, err := IsDeviceStateActive(*deviceId)
 	if err != nil {
-		return nil, err
+		t.Fatal(err)
+		return nil
 	}
 	if !active {
-		return nil, fmt.Errorf("Timeout while waiting for device: %s to be active", *deviceId)
-
+		t.Fatal("Timeout while waiting for device: %s to be active", *deviceId)
+		return nil
 	}
 
 	device, err := GetDeviceById(*deviceId)
 	if err != nil {
-		return nil, err
+		t.Fatal(err)
+		return nil
 	}
 	if len(device.NetworkPorts) < 3 {
-		return nil, fmt.Errorf("All 3 ports doesnot exist for the created device: %s", device.GetId())
+		t.Fatal("All 3 ports doesnot exist for the created device: %s", device.GetId())
+		return nil
 	}
 
-	return device, nil
+	return device
 }
 
 func CleanTestGateway(gatewayId string) error {

@@ -23,40 +23,39 @@ func TestGateways_Retrieve(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device, err := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
-	defer func() {
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	t.Cleanup(func() {
 		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
 			t.Error(err)
 		}
-	}()
-
-	if err != nil {
+	})
+	if device == nil {
 		return
 	}
 
 	vlan, err := helper.CreateTestVLAN(projectId)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	defer func() {
+	t.Cleanup(func() {
 		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
 			t.Error(err)
 		}
-	}()
-
-	subnetSize := int32(8)
-	metalGateway, err := helper.CreateTestGateway(projectId, vlan.GetId(), &subnetSize)
+	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	defer func() {
+
+	subnetSize := int32(8)
+	metalGateway, err := helper.CreateTestGateway(projectId, vlan.GetId(), &subnetSize)
+	t.Cleanup(func() {
 		if err := helper.CleanTestGateway(metalGateway.GetId()); err != nil &&
 			!strings.Contains(err.Error(), "Not Found") {
 			t.Error(err)
 		}
-	}()
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
 	tests := []struct {
 		name    string
