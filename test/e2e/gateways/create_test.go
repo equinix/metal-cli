@@ -27,7 +27,8 @@ func TestGateways_Create(t *testing.T) {
 
 	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
 	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
+		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil &&
+			!strings.Contains(err.Error(), "Not Found") {
 			t.Error(err)
 		}
 	})
@@ -37,7 +38,8 @@ func TestGateways_Create(t *testing.T) {
 
 	vlan, err := helper.CreateTestVLAN(projectId)
 	t.Cleanup(func() {
-		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
+		if err := helper.CleanTestVlan(vlan.GetId()); err != nil &&
+			!strings.Contains(err.Error(), "Not Found") {
 			t.Error(err)
 		}
 	})
@@ -100,18 +102,18 @@ func TestGateways_Create(t *testing.T) {
 
 func assertGatewaysCmdOutput(t *testing.T, out, gatewayId, metro, vxlan string) {
 	if !strings.Contains(out, gatewayId) {
-		t.Errorf("cmd output should contain ID of the gateway: %s", gatewayId)
+		t.Errorf("cmd output should contain ID of the gateway: [%s] \n output:\n%s", gatewayId, out)
 	}
 
 	if !strings.Contains(out, metro) {
-		t.Errorf("cmd output should contain metro same as device: %s", metro)
+		t.Errorf("cmd output should contain metro same as device: [%s] \n output:\n%s", metro, out)
 	}
 
 	if !strings.Contains(out, vxlan) {
-		t.Errorf("cmd output should contain vxlan, gateway is attached with: %s", vxlan)
+		t.Errorf("cmd output should contain vxlan, gateway is attached with: [%s] \n output:\n%s", vxlan, out)
 	}
 
 	if !strings.Contains(out, "ready") {
-		t.Errorf("cmd output should contain 'ready' state of the gateway")
+		t.Errorf("cmd output should contain 'ready' state of the gateway, output:\n%s", out)
 	}
 }

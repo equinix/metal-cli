@@ -8,6 +8,7 @@ import (
 	"time"
 
 	openapiclient "github.com/equinix-labs/metal-go/metal/v1"
+	"github.com/pkg/errors"
 )
 
 func TestClient() *openapiclient.APIClient {
@@ -159,7 +160,7 @@ func WaitForAttachVlanToPort(portId string, attach bool) error {
 		case <-ticker.C:
 			port, err := GetPortById(portId)
 			if err != nil {
-				return err
+				return errors.Wrapf(err, "Error while fetching the port using ID: %s", portId)
 			}
 
 			vlans := port.GetVirtualNetworks()
@@ -327,7 +328,7 @@ func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapicl
 		return nil
 	}
 	if !active {
-		t.Fatal("Timeout while waiting for device: %s to be active", *deviceId)
+		t.Fatalf("Timeout while waiting for device: %s to be active", *deviceId)
 		return nil
 	}
 
@@ -337,7 +338,7 @@ func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapicl
 		return nil
 	}
 	if len(device.NetworkPorts) < 3 {
-		t.Fatal("All 3 ports doesnot exist for the created device: %s", device.GetId())
+		t.Fatalf("All 3 ports doesnot exist for the created device: %s", device.GetId())
 		return nil
 	}
 

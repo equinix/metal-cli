@@ -31,7 +31,8 @@ func TestGateways_Delete(t *testing.T) {
 	}()
 	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
 	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
+		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil &&
+			!strings.Contains(err.Error(), "Not Found") {
 			t.Error(err)
 		}
 	})
@@ -41,8 +42,9 @@ func TestGateways_Delete(t *testing.T) {
 
 	vlan, err := helper.CreateTestVLAN(projectId)
 	t.Cleanup(func() {
-		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
-			t.Error(err)
+		if err := helper.CleanTestVlan(vlan.GetId()); err != nil &&
+			!strings.Contains(err.Error(), "Not Found") {
+			t.Error("Error while cleaning up vLan", err)
 		}
 	})
 	if err != nil {
