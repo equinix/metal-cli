@@ -28,6 +28,7 @@ import (
 	"github.com/equinix/metal-cli/internal/twofa"
 	"github.com/equinix/metal-cli/internal/users"
 	"github.com/equinix/metal-cli/internal/vlan"
+	"github.com/equinix/metal-cli/internal/vrf"
 )
 
 // Cli struct
@@ -95,5 +96,6 @@ func (cli *Cli) RegisterCommands(client *root.Client) {
 		gateway.NewClient(client, cli.Outputer).NewCommand(),
 		ports.NewClient(client, cli.Outputer).NewCommand(),
 		interconnections.NewClient(client, cli.Outputer).NewCommand(),
+		vrf.NewClient(client, cli.Outputer).NewCommand(),
 	)
 }

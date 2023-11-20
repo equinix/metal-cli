@@ -1,34 +1,15 @@
-## metal device get
+## metal vrf
 
-Retrieves device list or device details.
+VRF operations : create, get, delete
 
 ### Synopsis
 
-Retrieves a list of devices in the project, or the details of the specified device. Either a project ID or a device ID is required.
-
-```
-metal device get [-p <project_id>] | [-i <device_id>] [flags]
-```
-
-### Examples
-
-```
-  # Gets the details of the specified device:
-  metal device get -i 52b60ca7-1ae2-4875-846b-4e4635223471
-  
-  # Gets a list of devices in the specified project:
-  metal device get -p 5ad070a5-62e8-4cfe-a0b9-3b79e59f1cfe
-
-  # Get a list of devices with the hostname foo and a default project configured:
-  metal device get --filter hostname=foo
-```
+VRF operations : It defines a collection of customer-managed IP blocks that can be used in BGP peering on one or more virtual networks and basic operations
 
 ### Options
 
 ```
-  -h, --help                help for get
-  -i, --id string           The UUID of a device.
-  -p, --project-id string   The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
+  -h, --help   help for vrf
 ```
 
 ### Options inherited from parent commands
@@ -48,5 +29,8 @@ metal device get [-p <project_id>] | [-i <device_id>] [flags]
 
 ### SEE ALSO
 
-* [metal device](metal_device.md)	 - Device operations: create, get, update, delete, reinstall, start, stop, and reboot.
+* [metal](metal.md)	 - Command line interface for Equinix Metal
+* [metal vrf create](metal_vrf_create.md)	 - Creates a Virtual Routing and Forwarding(VRF) for a specified project.
+* [metal vrf delete](metal_vrf_delete.md)	 - Deletes a VRF.
+* [metal vrf get](metal_vrf_get.md)	 - Lists VRFs.
 

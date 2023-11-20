@@ -39,7 +39,10 @@ func (c *Client) Retrieve() *cobra.Command {
   metal device get -i 52b60ca7-1ae2-4875-846b-4e4635223471
   
   # Gets a list of devices in the specified project:
-  metal device get -p 5ad070a5-62e8-4cfe-a0b9-3b79e59f1cfe`,
+  metal device get -p 5ad070a5-62e8-4cfe-a0b9-3b79e59f1cfe
+
+  # Get a list of devices with the hostname foo and a default project configured:
+  metal device get --filter hostname=foo`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			deviceID, _ := cmd.Flags().GetString("id")

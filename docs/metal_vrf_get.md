@@ -1,34 +1,32 @@
-## metal device get
+## metal vrf get
 
-Retrieves device list or device details.
+Lists VRFs.
 
 ### Synopsis
 
-Retrieves a list of devices in the project, or the details of the specified device. Either a project ID or a device ID is required.
+Retrieves a list of all VRFs for the specified project or the details of the specified VRF ID. Either a project ID or a VRF ID is required.
 
 ```
-metal device get [-p <project_id>] | [-i <device_id>] [flags]
+metal vrf get -p <project_Id>  [flags]
 ```
 
 ### Examples
 
 ```
-  # Gets the details of the specified device:
-  metal device get -i 52b60ca7-1ae2-4875-846b-4e4635223471
-  
-  # Gets a list of devices in the specified project:
-  metal device get -p 5ad070a5-62e8-4cfe-a0b9-3b79e59f1cfe
+ # Gets the details of the specified device
+  metal vrf get -i 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
 
-  # Get a list of devices with the hostname foo and a default project configured:
-  metal device get --filter hostname=foo
+  # Lists VRFs for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
+  metal vrf list -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
 ```
 
 ### Options
 
 ```
   -h, --help                help for get
-  -i, --id string           The UUID of a device.
+  -m, --metro string        Filter by Metro ID (uuid) or Metro Code
   -p, --project-id string   The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
+  -v, --vrfID string        VRF UUID
 ```
 
 ### Options inherited from parent commands
@@ -48,5 +46,5 @@ metal device get [-p <project_id>] | [-i <device_id>] [flags]
 
 ### SEE ALSO
 
-* [metal device](metal_device.md)	 - Device operations: create, get, update, delete, reinstall, start, stop, and reboot.
+* [metal vrf](metal_vrf.md)	 - VRF operations : create, get, delete
 
