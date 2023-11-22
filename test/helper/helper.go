@@ -8,6 +8,7 @@ import (
 	"time"
 
 	openapiclient "github.com/equinix-labs/metal-go/metal/v1"
+	"github.com/pkg/errors"
 )
 
 func TestClient() *openapiclient.APIClient {
@@ -70,6 +71,27 @@ func CreateTestVLAN(projectId string) (*openapiclient.VirtualNetwork, error) {
 		return nil, err
 	}
 	return vlan, nil
+}
+
+func CreateTestGateway(projectId, vlanId string, privateIPv4SubnetSize *int32) (*openapiclient.MetalGateway, error) {
+	TestApiClient := TestClient()
+
+	gatewayCreateInput := openapiclient.CreateMetalGatewayRequest{
+		MetalGatewayCreateInput: &openapiclient.MetalGatewayCreateInput{
+			VirtualNetworkId:      vlanId,
+			PrivateIpv4SubnetSize: privateIPv4SubnetSize,
+		},
+	}
+	gateway, _, err := TestApiClient.MetalGatewaysApi.
+		CreateMetalGateway(context.Background(), projectId).
+		Include([]string{"ip_reservation"}).
+		CreateMetalGatewayRequest(gatewayCreateInput).
+		Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `MetalGatewaysApi.CreateMetalGateway`: %v\n", err)
+		return nil, err
+	}
+	return gateway.MetalGateway, nil
 }
 
 func GetDeviceById(deviceId string) (*openapiclient.Device, error) {
@@ -138,7 +160,7 @@ func WaitForAttachVlanToPort(portId string, attach bool) error {
 		case <-ticker.C:
 			port, err := GetPortById(portId)
 			if err != nil {
-				return err
+				return errors.Wrapf(err, "Error while fetching the port using ID: %s", portId)
 			}
 
 			vlans := port.GetVirtualNetworks()
@@ -285,34 +307,54 @@ func CleanupProjectAndDevice(deviceId, projectId string) error {
 
 //nolint:staticcheck
 func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapiclient.Device {
+	t.Helper()
 	projId, err := CreateTestProject("metal-cli-test-project")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
+		return nil
 	}
 	*projectId = projId
 
 	devId, err := CreateTestDevice(*projectId, "metal-cli-test-device")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
+		return nil
 	}
 	*deviceId = devId
 
 	active, err := IsDeviceStateActive(*deviceId)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
+		return nil
 	}
 	if !active {
-		t.Errorf("Timeout while waiting for device: %s to be active", *deviceId)
+		t.Fatalf("Timeout while waiting for device: %s to be active", *deviceId)
+		return nil
 	}
 
 	device, err := GetDeviceById(*deviceId)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 		return nil
 	}
 	if len(device.NetworkPorts) < 3 {
-		t.Errorf("All 3 ports doesnot exist for the created device: %s", device.GetId())
+		t.Fatalf("All 3 ports doesnot exist for the created device: %s", device.GetId())
+		return nil
 	}
 
 	return device
+}
+
+func CleanTestGateway(gatewayId string) error {
+	TestApiClient := TestClient()
+	_, _, err := TestApiClient.MetalGatewaysApi.
+		DeleteMetalGateway(context.Background(), gatewayId).
+		Include([]string{"ip_reservation"}).
+		Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `MetalGatewaysApi.DeleteMetalGateway``: %v\n", err)
+		return err
+	}
+
+	return nil
 }

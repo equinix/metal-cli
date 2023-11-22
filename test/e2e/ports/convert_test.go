@@ -25,12 +25,16 @@ func TestPorts_Convert(t *testing.T) {
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
 	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
-	port := &device.GetNetworkPorts()[2]
-	defer func() {
+	t.Cleanup(func() {
 		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
 			t.Error(err)
 		}
-	}()
+	})
+	if device == nil {
+		return
+	}
+
+	port := &device.GetNetworkPorts()[2]
 	if port == nil {
 		t.Error("bond0 Port not found on device")
 		return

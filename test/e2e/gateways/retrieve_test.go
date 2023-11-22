@@ -1,22 +1,23 @@
-package ports
+package gateways
 
 import (
 	"io"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 
 	root "github.com/equinix/metal-cli/internal/cli"
+	"github.com/equinix/metal-cli/internal/gateway"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
-	"github.com/equinix/metal-cli/internal/ports"
-	"github.com/equinix/metal-cli/test/helper"
-
 	"github.com/spf13/cobra"
+
+	"github.com/equinix/metal-cli/test/helper"
 )
 
-func TestPorts_Retrieve(t *testing.T) {
+func TestGateways_Retrieve(t *testing.T) {
 	var projectId, deviceId string
-	subCommand := "port"
+	subCommand := "gateways"
 	consumerToken := ""
 	apiURL := ""
 	Version := "devel"
@@ -32,9 +33,27 @@ func TestPorts_Retrieve(t *testing.T) {
 		return
 	}
 
-	port := &device.GetNetworkPorts()[2]
-	if port == nil {
-		t.Error("bond0 Port not found on device")
+	vlan, err := helper.CreateTestVLAN(projectId)
+	t.Cleanup(func() {
+		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
+			t.Error(err)
+		}
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	subnetSize := int32(8)
+	metalGateway, err := helper.CreateTestGateway(projectId, vlan.GetId(), &subnetSize)
+	t.Cleanup(func() {
+		if err := helper.CleanTestGateway(metalGateway.GetId()); err != nil &&
+			!strings.Contains(err.Error(), "Not Found") {
+			t.Error(err)
+		}
+	})
+	if err != nil {
+		t.Error(err)
 		return
 	}
 
@@ -45,12 +64,14 @@ func TestPorts_Retrieve(t *testing.T) {
 		cmdFunc func(*testing.T, *cobra.Command)
 	}{
 		{
-			name: "retrieve port",
-			cmd:  ports.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
+			name: "retrieve gateways by projectId",
+			cmd:  gateway.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				root.SetArgs([]string{subCommand, "get", "-i", port.GetId()})
+
+				// get using projectId
+				root.SetArgs([]string{subCommand, "get", "-p", projectId})
 
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
@@ -62,11 +83,7 @@ func TestPorts_Retrieve(t *testing.T) {
 				out, _ := io.ReadAll(r)
 				os.Stdout = rescueStdout
 
-				if !strings.Contains(string(out[:]), port.Data.GetMac()) {
-					t.Errorf("cmd output should contain MAC address of the port: %s", port.Data.GetMac())
-				}
-
-				assertPortCmdOutput(t, port, string(out[:]), string(port.GetNetworkType()), port.Data.GetBonded())
+				assertGatewaysCmdOutput(t, string(out[:]), metalGateway.GetId(), device.Metro.GetCode(), strconv.Itoa(int(vlan.GetVxlan())))
 			},
 		},
 	}

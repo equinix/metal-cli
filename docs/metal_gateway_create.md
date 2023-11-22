@@ -23,11 +23,11 @@ metal gateway create -p <project_UUID> --virtual-network <virtual_network_UUID> 
 ### Options
 
 ```
-  -h, --help                       help for create
-  -r, --ip-reservation-id string   UUID of the Public or VRF IP Reservation to assign.
-  -s, --private-subnet-size int    Size of the private subnet to request (8 for /29)
-  -p, --project-id string          The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
-  -v, --virtual-network string     UUID of the Virtual Network to assign.
+  -h, --help                        help for create
+  -r, --ip-reservation-id string    UUID of the Public or VRF IP Reservation to assign.
+  -s, --private-subnet-size int32   Size of the private subnet to request (8 for /29)
+  -p, --project-id string           The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
+  -v, --virtual-network string      UUID of the Virtual Network to assign.
 ```
 
 ### Options inherited from parent commands
