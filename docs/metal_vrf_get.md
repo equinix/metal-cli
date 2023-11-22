@@ -14,7 +14,7 @@ metal vrf get -p <project_Id>  [flags]
 
 ```
  # Gets the details of the specified device
-  metal vrf get -i 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
+  metal vrf get -v 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
 
   # Lists VRFs for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
   metal vrf list -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
@@ -26,7 +26,7 @@ metal vrf get -p <project_Id>  [flags]
   -h, --help                help for get
   -m, --metro string        Filter by Metro ID (uuid) or Metro Code
   -p, --project-id string   The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
-  -v, --vrfID string        VRF UUID
+  -v, --vrf-id string       Specify the VRF UUID.
 ```
 
 ### Options inherited from parent commands

@@ -63,7 +63,7 @@ func (c *Client) Delete() *cobra.Command {
 		},
 	}
 
-	deleteVrfCmd.Flags().StringVarP(&vrfID, "id", "i", "", "UUID of the VRF.")
+	deleteVrfCmd.Flags().StringVarP(&vrfID, "id", "i", "", "Specify the UUID of the VRF")
 	deleteVrfCmd.Flags().BoolVarP(&force, "force", "f", false, "Skips confirmation for the removal of the VRF.")
 
 	_ = deleteVrfCmd.MarkFlagRequired("id")

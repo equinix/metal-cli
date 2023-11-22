@@ -1,8 +1,6 @@
 package ports
 
 import (
-	"strconv"
-	"strings"
 	"testing"
 
 	root "github.com/equinix/metal-cli/internal/cli"
@@ -10,7 +8,6 @@ import (
 	"github.com/equinix/metal-cli/internal/ports"
 	"github.com/equinix/metal-cli/test/helper"
 
-	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/spf13/cobra"
 )
 
@@ -45,7 +42,7 @@ func TestPorts_Convert(t *testing.T) {
 
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				assertPortCmdOutput(t, port, string(out[:]), "layer2-individual", false)
+				helper.AssertPortCmdOutput(t, port, string(out[:]), "layer2-individual", false)
 			},
 		},
 		{
@@ -59,7 +56,7 @@ func TestPorts_Convert(t *testing.T) {
 
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				assertPortCmdOutput(t, port, string(out[:]), "layer2-bonded", true)
+				helper.AssertPortCmdOutput(t, port, string(out[:]), "layer2-bonded", true)
 			},
 		},
 		{
@@ -73,7 +70,7 @@ func TestPorts_Convert(t *testing.T) {
 
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				assertPortCmdOutput(t, port, string(out[:]), "layer3", true)
+				helper.AssertPortCmdOutput(t, port, string(out[:]), "layer3", true)
 			},
 		},
 	}
@@ -84,23 +81,5 @@ func TestPorts_Convert(t *testing.T) {
 			rootCmd.AddCommand(tt.cmd)
 			tt.cmdFunc(t, tt.cmd)
 		})
-	}
-}
-
-func assertPortCmdOutput(t *testing.T, port *metal.Port, out, networkType string, bonded bool) {
-	if !strings.Contains(out, port.GetId()) {
-		t.Errorf("cmd output should contain ID of the port: %s", port.GetId())
-	}
-
-	if !strings.Contains(out, port.GetName()) {
-		t.Errorf("cmd output should contain name of the port: %s", port.GetName())
-	}
-
-	if !strings.Contains(out, networkType) {
-		t.Errorf("cmd output should contain type of the port: %s", string(port.GetNetworkType()))
-	}
-
-	if !strings.Contains(out, strconv.FormatBool(bonded)) {
-		t.Errorf("cmd output should contain if port is bonded: %s", strconv.FormatBool(port.Data.GetBonded()))
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -379,6 +380,24 @@ func SetupProjectAndDevice(t *testing.T, projPrefix string) (*metalv1.Project, *
 	return project, device
 }
 
+func AssertPortCmdOutput(t *testing.T, port *metalv1.Port, out, networkType string, bonded bool) {
+	if !strings.Contains(out, port.GetId()) {
+		t.Errorf("cmd output should contain ID of the port: %s", port.GetId())
+	}
+
+	if !strings.Contains(out, port.GetName()) {
+		t.Errorf("cmd output should contain name of the port: %s", port.GetName())
+	}
+
+	if !strings.Contains(out, networkType) {
+		t.Errorf("cmd output should contain type of the port: %s", string(port.GetNetworkType()))
+	}
+
+	if !strings.Contains(out, strconv.FormatBool(bonded)) {
+		t.Errorf("cmd output should contain if port is bonded: %s", strconv.FormatBool(port.Data.GetBonded()))
+	}
+}
+
 func CleanTestGateway(t *testing.T, gatewayId string) error {
 	t.Helper()
 
@@ -619,5 +638,40 @@ func waitForInterconnectionDeleted(apiClient *metalv1.APIClient, connId string, 
 
 			fmt.Printf("Connection not deleted. Current status: [%s]", conn.GetStatus())
 		}
+	}
+}
+
+//nolint:staticcheck
+func CreateTestVrfs(t *testing.T, projectId, name string) *metalv1.Vrf {
+	t.Helper()
+	TestApiClient := TestClient()
+
+	var IpRanges []string
+
+	vrfCreateInput := *metalv1.NewVrfCreateInput("da", name)
+	vrfCreateInput.SetLocalAsn(5678)
+	IpRanges = append(IpRanges, "10.10.1.0/24")
+	vrfCreateInput.SetIpRanges(IpRanges)
+
+	resp, _, err := TestApiClient.VRFsApi.CreateVrf(context.Background(), projectId).VrfCreateInput(vrfCreateInput).Execute()
+	if err != nil {
+		t.Fatalf("Error when calling `VRFsApi.CreateVrf``: %v\n", err)
+	}
+
+	t.Cleanup(func() {
+		CleanTestVrfs(t, resp.GetId())
+	})
+
+	return resp
+}
+
+//nolint:staticcheck
+func CleanTestVrfs(t *testing.T, vrfId string) {
+	t.Helper()
+	TestApiClient := TestClient()
+
+	resp, err := TestApiClient.VRFsApi.DeleteVrf(context.Background(), vrfId).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `VRFsApi.DeleteVrf`` for %v: %v\n", vrfId, err)
 	}
 }

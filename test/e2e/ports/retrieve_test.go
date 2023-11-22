@@ -44,7 +44,7 @@ func TestPorts_Retrieve(t *testing.T) {
 					t.Errorf("cmd output should contain MAC address of the port: %s", port.Data.GetMac())
 				}
 
-				assertPortCmdOutput(t, port, string(out[:]), string(port.GetNetworkType()), port.Data.GetBonded())
+				helper.AssertPortCmdOutput(t, port, string(out[:]), string(port.GetNetworkType()), port.Data.GetBonded())
 			},
 		},
 	}
