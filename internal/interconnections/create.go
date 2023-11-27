@@ -44,7 +44,6 @@ func (c *Client) Create() *cobra.Command {
 					metal.VlanFabricVcCreateInputType(connType),
 				)
 				in.Vlans = vlans
-
 				createOrganizationInterconnectionRequest.
 					VlanFabricVcCreateInput = in
 			case vrfsFabricVcCreate(vrfs):
@@ -95,19 +94,11 @@ func (c *Client) Create() *cobra.Command {
 }
 
 func vlanFabricVcCreate(vlans []int32) bool {
-	if vlans != nil && len(vlans) > 0 {
-		return true
-	}
-
-	return false
+	return len(vlans) > 0
 }
 
 func vrfsFabricVcCreate(vrfs []string) bool {
-	if vrfs != nil && len(vrfs) > 0 {
-		return true
-	}
-
-	return false
+	return len(vrfs) > 0
 }
 
 func (c *Client) handleCreate(projectID, organizationID string,

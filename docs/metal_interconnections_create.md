@@ -24,14 +24,16 @@ metal interconnections create -n <name> [-m <metro>] [-r <redundancy> ] [-t <typ
 ### Options
 
 ```
-  -h, --help                    help for create
-  -m, --metro string            metro in the interconnection
-  -n, --name string             Name of the interconnection
-  -O, --organizationID string   Org ID
-  -p, --projectID string        project ID
-  -r, --redundancy string       Website URL of the organization.
-  -t, --type string             type of of interconnection.
-  -v, --vrfs strings            Return only the specified vrfs.
+  -h, --help                        help for create
+  -m, --metro string                metro in the interconnection
+  -n, --name string                 Name of the interconnection
+  -O, --organizationID string       Org ID
+  -p, --projectID string            project ID
+  -r, --redundancy string           Website URL of the organization.
+      --service-token-type string   Type of service token for shared connection. Enum: 'a_side', 'z_side'
+  -t, --type string                 type of of interconnection.
+      --vlans int32Slice            Array of int vLANs (default [])
+      --vrfs strings                Array of strings VRF <uuid>.
 ```
 
 ### Options inherited from parent commands
