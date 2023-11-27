@@ -2,6 +2,8 @@ package helper
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"os"
 	"testing"
@@ -14,6 +16,8 @@ import (
 func TestClient() *openapiclient.APIClient {
 	configuration := openapiclient.NewConfiguration()
 	configuration.AddDefaultHeader("X-Auth-Token", os.Getenv("METAL_AUTH_TOKEN"))
+	// For debug purpose
+	//configuration.Debug = true
 	apiClient := openapiclient.NewAPIClient(configuration)
 	return apiClient
 }
@@ -357,4 +361,75 @@ func CleanTestGateway(gatewayId string) error {
 	}
 
 	return nil
+}
+
+func CreateTestOrganization(name string) (string, error) {
+	TestApiClient := TestClient()
+
+	organizationInput := openapiclient.NewOrganizationInput()
+	organizationInput.Name = &name
+	organizationInput.Description = &name
+
+	addr := openapiclient.NewAddressWithDefaults()
+	addr.SetAddress("Boston")
+	addr.SetCity("Boston")
+	addr.SetCountry("US")
+	addr.SetZipCode("02108")
+	organizationInput.Address = addr
+
+	resp, _, err := TestApiClient.OrganizationsApi.CreateOrganization(context.Background()).OrganizationInput(*organizationInput).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `OrganizationsApi.CreateOrganization``: %v\n", err)
+		return "", err
+	}
+
+	return resp.GetId(), nil
+}
+
+func CleanTestOrganization(orgId string) error {
+	TestApiClient := TestClient()
+
+	_, err := TestApiClient.OrganizationsApi.DeleteOrganization(context.Background(), orgId).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `OrganizationsApi.DeleteOrganization``: %v\n", err)
+		return err
+	}
+
+	return nil
+}
+
+func CreateTestBgpEnableTest(projId string) error {
+	TestApiClient := TestClient()
+
+	bgpConfigRequestInput := *openapiclient.NewBgpConfigRequestInput(int32(65000), openapiclient.BgpConfigRequestInputDeploymentType("local"))
+
+	_, err := TestApiClient.BGPApi.RequestBgpConfig(context.Background(), projId).BgpConfigRequestInput(bgpConfigRequestInput).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `BGPApi.RequestBgpConfig``: %v\n", err)
+		return err
+	}
+	return nil
+}
+
+//nolint:staticcheck
+func GenerateRandomString(length int) (string, error) {
+	// Calculate the number of bytes needed for the given string length
+	numBytes := (length * 3) / 4
+
+	// Create a byte slice to store the random bytes
+	randomBytes := make([]byte, numBytes)
+
+	// Read random bytes from the crypto/rand package
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		return "", err
+	}
+
+	// Encode the random bytes to base64 to get a string
+	randomString := base64.URLEncoding.EncodeToString(randomBytes)
+
+	// Trim any padding characters
+	randomString = randomString[:length]
+
+	return randomString, nil
 }

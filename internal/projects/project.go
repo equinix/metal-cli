@@ -23,14 +23,13 @@ package projects
 import (
 	metal "github.com/equinix-labs/metal-go/metal/v1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
 type Client struct {
 	Servicer         Servicer
 	ProjectService   metal.ProjectsApiService
-	BGPConfigService packngo.BGPConfigService
+	BGPConfigService metal.BGPApiService
 
 	Out outputs.Outputer
 }
@@ -39,7 +38,7 @@ func (c *Client) NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     `project`,
 		Aliases: []string{"projects"},
-		Short:   "Project operations: create, get, update, delete, and bgpenable, bgpconfig, bgpsessions.",
+		Short:   "Project operations: create, get, update, delete, and bgp-enable, bgp-config, bgp-sessions.",
 		Long:    "Information and management for Projects and Project-level BGP. Documentation on Projects is on https://metal.equinix.com/developers/docs/accounts/projects/, and documentation on BGP is on https://metal.equinix.com/developers/docs/bgp/bgp-on-equinix-metal/.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
@@ -49,7 +48,7 @@ func (c *Client) NewCommand() *cobra.Command {
 				}
 			}
 			c.ProjectService = *c.Servicer.MetalAPI(cmd).ProjectsApi
-			c.BGPConfigService = c.Servicer.API(cmd).BGPConfig
+			c.BGPConfigService = *c.Servicer.MetalAPI(cmd).BGPApi
 		},
 	}
 
@@ -67,9 +66,10 @@ func (c *Client) NewCommand() *cobra.Command {
 
 type Servicer interface {
 	MetalAPI(*cobra.Command) *metal.APIClient
-	API(*cobra.Command) *packngo.Client
-	ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions
 	Format() outputs.Format
+	Includes(defaultIncludes []string) (incl []string)
+	Excludes(defaultExcludes []string) (excl []string)
+	Filters() map[string]string
 }
 
 func NewClient(s Servicer, out outputs.Outputer) *Client {

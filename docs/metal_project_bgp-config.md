@@ -13,8 +13,7 @@ metal project bgp-config --project-id <project_UUID> [flags]
 ### Examples
 
 ```
-  # Get BGP config for project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
-  metal project bgp-config --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
+  metal project bgp-config --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 -d 
 ```
 
 ### Options
@@ -41,5 +40,5 @@ metal project bgp-config --project-id <project_UUID> [flags]
 
 ### SEE ALSO
 
-* [metal project](metal_project.md)	 - Project operations: create, get, update, delete, and bgpenable, bgpconfig, bgpsessions.
+* [metal project](metal_project.md)	 - Project operations: create, get, update, delete, and bgp-enable, bgp-config, bgp-sessions.
 
