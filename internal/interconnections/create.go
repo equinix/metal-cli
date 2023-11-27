@@ -2,6 +2,7 @@ package interconnections
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
@@ -9,8 +10,9 @@ import (
 )
 
 func (c *Client) Create() *cobra.Command {
-	var name, metro, redundancy, connType, projectID, organizationID string
+	var name, metro, redundancy, connType, projectID, organizationID, svcTokenType string
 	var vrfs []string
+	var vlans []int32
 
 	createInterconnectionsCmd := &cobra.Command{
 		Use:   `create -n <name> [-m <metro>] [-r <redundancy> ] [-t <type> ] [-p <project_id> ] | [-O <organization_id> ]`,
@@ -25,24 +27,49 @@ func (c *Client) Create() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
+
+			if projectID == "" && organizationID == "" {
+				return errors.New("could you provide at least either of projectID OR organizationID")
+			}
+
+			if vlanFabricVcCreate(vlans) || vrfsFabricVcCreate(vrfs) && svcTokenType == "" {
+				return errors.New("flag 'service-token-type' is required for vlan or vrfs fabric VC create")
+			}
+
 			var interconn *metal.Interconnection
 			var err error
 
-			createOrganizationInterconnectionRequest := metal.CreateOrganizationInterconnectionRequest{DedicatedPortCreateInput: metal.NewDedicatedPortCreateInput(metro, name, redundancy, metal.DedicatedPortCreateInputType(connType))}
-			if projectID != "" {
+			createOrganizationInterconnectionRequest := metal.CreateOrganizationInterconnectionRequest{}
 
-				interconn, _, err = c.Service.CreateProjectInterconnection(context.Background(), projectID).CreateOrganizationInterconnectionRequest(createOrganizationInterconnectionRequest).Execute()
-				if err != nil {
-					return fmt.Errorf("could not create interconnections: %w", err)
+			switch true {
+			case vlanFabricVcCreate(vlans):
+				in := metal.NewVlanFabricVcCreateInput(
+					metro, name, redundancy, metal.VlanFabricVcCreateInputServiceTokenType(svcTokenType),
+					metal.VlanFabricVcCreateInputType(connType),
+				)
+				in.Vlans = vlans
 
-				}
-			} else if organizationID != "" {
-				interconn, _, err = c.Service.CreateOrganizationInterconnection(context.Background(), organizationID).CreateOrganizationInterconnectionRequest(createOrganizationInterconnectionRequest).Execute()
-				if err != nil {
-					return fmt.Errorf("could not create interconnections: %w", err)
-				}
-			} else {
-				return fmt.Errorf("Could you provide at least either of projectID OR organizationID")
+				createOrganizationInterconnectionRequest.
+					VlanFabricVcCreateInput = in
+			case vrfsFabricVcCreate(vrfs):
+				createOrganizationInterconnectionRequest.
+					VrfFabricVcCreateInput = metal.NewVrfFabricVcCreateInput(
+					metro, name, redundancy, metal.VlanFabricVcCreateInputServiceTokenType(svcTokenType),
+					metal.VlanFabricVcCreateInputType(connType), vrfs,
+				)
+			default:
+				createOrganizationInterconnectionRequest.
+					DedicatedPortCreateInput = metal.NewDedicatedPortCreateInput(
+					metro, name, redundancy, metal.DedicatedPortCreateInputType(connType),
+				)
+			}
+
+			interconn, err = c.handleCreate(
+				projectID,
+				organizationID,
+				createOrganizationInterconnectionRequest)
+			if err != nil {
+				return fmt.Errorf("could not create interconnections: %w", err)
 			}
 
 			data := make([][]string, 1)
@@ -58,14 +85,49 @@ func (c *Client) Create() *cobra.Command {
 	createInterconnectionsCmd.Flags().StringVarP(&metro, "metro", "m", "", "metro in the interconnection")
 	createInterconnectionsCmd.Flags().StringVarP(&redundancy, "redundancy", "r", "", "Website URL of the organization.")
 	createInterconnectionsCmd.Flags().StringVarP(&connType, "type", "t", "", "type of of interconnection.")
-	// createInterconnectionsCmd.Flags().StringVarP(&connType, "serviceTokentype", "T", "", "service token type for interconnection either fabric OR Metal builds")
-	createInterconnectionsCmd.Flags().StringSliceVarP(&vrfs, "vrfs", "v", []string{}, "Return only the specified vrfs.")
+	createInterconnectionsCmd.Flags().StringSliceVar(&vrfs, "vrfs", []string{}, "Array of strings VRF <uuid>.")
 	createInterconnectionsCmd.Flags().StringVarP(&projectID, "projectID", "p", "", "project ID")
 	createInterconnectionsCmd.Flags().StringVarP(&organizationID, "organizationID", "O", "", "Org ID")
+	createInterconnectionsCmd.Flags().Int32SliceVar(&vlans, "vlans", []int32{}, "Array of int vLANs")
+	createInterconnectionsCmd.Flags().StringVar(&svcTokenType, "service-token-type", "", "Type of service token for shared connection. Enum: 'a_side', 'z_side'")
 
 	_ = createInterconnectionsCmd.MarkFlagRequired("name")
 	_ = createInterconnectionsCmd.MarkFlagRequired("metro")
 	_ = createInterconnectionsCmd.MarkFlagRequired("redundancy")
 	_ = createInterconnectionsCmd.MarkFlagRequired("type")
 	return createInterconnectionsCmd
+}
+
+func vlanFabricVcCreate(vlans []int32) bool {
+	if vlans != nil && len(vlans) > 0 {
+		return true
+	}
+
+	return false
+}
+
+func vrfsFabricVcCreate(vrfs []string) bool {
+	if vrfs != nil && len(vrfs) > 0 {
+		return true
+	}
+
+	return false
+}
+
+func (c *Client) handleCreate(projectID, organizationID string,
+	req metal.CreateOrganizationInterconnectionRequest) (*metal.Interconnection, error) {
+
+	if projectID != "" {
+		interconn, _, err := c.Service.
+			CreateProjectInterconnection(context.Background(), projectID).
+			CreateOrganizationInterconnectionRequest(req).
+			Execute()
+		return interconn, err
+	}
+
+	interconn, _, err := c.Service.
+		CreateOrganizationInterconnection(context.Background(), organizationID).
+		CreateOrganizationInterconnectionRequest(req).
+		Execute()
+	return interconn, err
 }
