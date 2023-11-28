@@ -28,20 +28,16 @@ func (c *Client) Create() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-			if projectID == "" && organizationID == "" {
-				return errors.New("could you provide at least either of projectID OR organizationID")
-			}
-
-			if vlanFabricVcCreate(vlans) || vrfsFabricVcCreate(vrfs) && svcTokenType == "" {
-				return errors.New("flag 'service-token-type' is required for vlan or vrfs fabric VC create")
-			}
-
 			var interconn *metal.Interconnection
 			var err error
 
+			if err := validInputArgs(projectID, organizationID, vlans, vrfs, svcTokenType); err != nil {
+				return err
+			}
+
 			createOrganizationInterconnectionRequest := metal.CreateOrganizationInterconnectionRequest{}
 
-			switch true {
+			switch {
 			case vlanFabricVcCreate(vlans):
 				in := metal.NewVlanFabricVcCreateInput(
 					metro, name, redundancy, metal.VlanFabricVcCreateInputServiceTokenType(svcTokenType),
@@ -130,4 +126,20 @@ func (c *Client) handleCreate(projectID, organizationID string,
 		CreateOrganizationInterconnectionRequest(req).
 		Execute()
 	return interconn, err
+}
+
+func validInputArgs(projectID, organizationID string, vlans []int32, vrfs []string, svcTokenType string) error {
+	if projectID == "" && organizationID == "" {
+		return errors.New("could you provide at least either of projectID OR organizationID")
+	}
+
+	if vlanFabricVcCreate(vlans) || vrfsFabricVcCreate(vrfs) && svcTokenType == "" {
+		return errors.New("flag 'service-token-type' is required for vlan or vrfs fabric VC create")
+	}
+
+	if vlanFabricVcCreate(vlans) && vrfsFabricVcCreate(vrfs) {
+		return errors.New("vLans and vrfs both are provided. Please provide any one type of interconnection")
+	}
+
+	return nil
 }
