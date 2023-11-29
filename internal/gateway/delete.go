@@ -24,7 +24,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/manifoldco/promptui"
+	"github.com/c-bata/go-prompt"
 	"github.com/spf13/cobra"
 )
 
@@ -65,18 +65,19 @@ func (c *Client) Delete() *cobra.Command {
 			cmd.SilenceUsage = true
 
 			if !force {
-				prompt := promptui.Prompt{
-					Label:     fmt.Sprintf("Are you sure you want to delete Metal Gateway %s", gwayID),
-					IsConfirm: true,
-				}
-
-				_, err := prompt.Run()
-				if err != nil {
+				fmt.Printf("Are you sure you want to delete device %s (y/N): ", gwayID)
+				userInput := prompt.Input(">", func(d prompt.Document) []prompt.Suggest {
+					return []prompt.Suggest{
+						{Text: "y", Description: "Yes"},
+						{Text: "n", Description: "No"},
+					}
+				})
+				if userInput != "y" && userInput != "Y" {
 					return nil
 				}
 			}
 			if err := deleteGway(gwayID); err != nil {
-				return fmt.Errorf("Could not delete Metal Gateway: %w", err)
+				return fmt.Errorf("could not delete Metal Gateway: %w", err)
 			}
 			return nil
 		},

@@ -24,7 +24,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/manifoldco/promptui"
+	"github.com/c-bata/go-prompt"
 	"github.com/spf13/cobra"
 )
 
@@ -56,20 +56,22 @@ func (c *Client) Delete() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			if !force {
-				prompt := promptui.Prompt{
-					Label:     fmt.Sprintf("Are you sure you want to delete SSH Key %s: ", sshKeyID),
-					IsConfirm: true,
-				}
 
-				_, err := prompt.Run()
-				if err != nil {
+			if !force {
+				fmt.Printf("Are you sure you want to delete device %s (y/N): ", sshKeyID)
+				userInput := prompt.Input(">", func(d prompt.Document) []prompt.Suggest {
+					return []prompt.Suggest{
+						{Text: "y", Description: "Yes"},
+						{Text: "n", Description: "No"},
+					}
+				})
+				if userInput != "y" && userInput != "Y" {
 					return nil
 				}
 			}
 
 			if err := deleteSSHKey(sshKeyID); err != nil {
-				return fmt.Errorf("Could not delete SSH Key: %w", err)
+				return fmt.Errorf("could not delete SSH Key: %w", err)
 			}
 			return nil
 		},

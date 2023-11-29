@@ -27,8 +27,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/c-bata/go-prompt"
 	metal "github.com/equinix-labs/metal-go/metal/v1"
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -62,14 +62,16 @@ func (c *Client) Convert() *cobra.Command {
 			}
 
 			convToL2 := func(portID string) (*metal.Port, *http.Response, error) {
-				if !force {
-					prompt := promptui.Prompt{
-						Label:     fmt.Sprintf("Are you sure you want to convert Port %s to Layer2 and remove assigned IP addresses: ", portID),
-						IsConfirm: true,
-					}
 
-					_, err := prompt.Run()
-					if err != nil {
+				if !force {
+					fmt.Printf("Are you sure you want to convert Port %s to Layer2 and remove assigned IP addresses? (y/N): ", portID)
+					confirmation := prompt.Input(">>> ", func(d prompt.Document) []prompt.Suggest {
+						return []prompt.Suggest{
+							{Text: "y", Description: "Yes"},
+							{Text: "n", Description: "No"},
+						}
+					})
+					if confirmation != "y" && confirmation != "Y" {
 						return nil, nil, nil
 					}
 				}
