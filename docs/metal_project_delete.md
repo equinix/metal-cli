@@ -47,5 +47,5 @@ metal project delete --id <project_UUID> [--force] [flags]
 
 ### SEE ALSO
 
-* [metal project](metal_project.md)	 - Project operations: create, get, update, delete, and bgpenable, bgpconfig, bgpsessions.
+* [metal project](metal_project.md)	 - Project operations: create, get, update, delete, and bgp-enable, bgp-config, bgp-sessions.
 

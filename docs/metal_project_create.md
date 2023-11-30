@@ -46,5 +46,5 @@ metal project create -n <project_name> [-O <organization_UUID>] [-m <payment_met
 
 ### SEE ALSO
 
-* [metal project](metal_project.md)	 - Project operations: create, get, update, delete, and bgpenable, bgpconfig, bgpsessions.
+* [metal project](metal_project.md)	 - Project operations: create, get, update, delete, and bgp-enable, bgp-config, bgp-sessions.
 

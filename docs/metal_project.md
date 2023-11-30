@@ -1,6 +1,6 @@
 ## metal project
 
-Project operations: create, get, update, delete, and bgpenable, bgpconfig, bgpsessions.
+Project operations: create, get, update, delete, and bgp-enable, bgp-config, bgp-sessions.
 
 ### Synopsis
 

@@ -13,7 +13,6 @@ metal project bgp-enable --project-id <project_UUID> --deployment-type <deployme
 ### Examples
 
 ```
-  # Enable BGP on project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
   metal project bgp-enable --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 --deployment-type local --asn 65000
 ```
 
@@ -45,5 +44,5 @@ metal project bgp-enable --project-id <project_UUID> --deployment-type <deployme
 
 ### SEE ALSO
 
-* [metal project](metal_project.md)	 - Project operations: create, get, update, delete, and bgpenable, bgpconfig, bgpsessions.
+* [metal project](metal_project.md)	 - Project operations: create, get, update, delete, and bgp-enable, bgp-config, bgp-sessions.
 
