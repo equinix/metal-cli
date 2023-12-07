@@ -27,8 +27,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/c-bata/go-prompt"
 	metal "github.com/equinix-labs/metal-go/metal/v1"
+	"github.com/rivo/tview"
 	"github.com/spf13/cobra"
 )
 
@@ -62,23 +62,29 @@ func (c *Client) Convert() *cobra.Command {
 			}
 
 			convToL2 := func(portID string) (*metal.Port, *http.Response, error) {
-
+				var (
+					port *metal.Port
+					resp *http.Response
+					rerr error
+				)
 				if !force {
-					fmt.Printf("Are you sure you want to convert Port %s to Layer2 and remove assigned IP addresses? (y/N): ", portID)
-					confirmation := prompt.Input(">>> ", func(d prompt.Document) []prompt.Suggest {
-						return []prompt.Suggest{
-							{Text: "y", Description: "Yes"},
-							{Text: "n", Description: "No"},
-						}
-					})
-					if confirmation != "y" && confirmation != "Y" {
+					app := tview.NewApplication()
+
+					confirmModal := tview.NewModal().
+						SetText(fmt.Sprintf("Are you sure you want to convert Port %s to Layer2 and remove assigned IP addresses?", portID)).
+						AddButtons([]string{"Yes", "No"}).
+						SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+							if buttonLabel == "Yes" {
+								port, resp, rerr = c.PortService.ConvertLayer2(context.Background(), portID).PortAssignInput(*metal.NewPortAssignInput()).Execute()
+							}
+							app.Stop()
+						})
+
+					if err := app.SetRoot(confirmModal, false).Run(); err != nil {
 						return nil, nil, nil
 					}
 				}
-
-				return c.PortService.ConvertLayer2(context.Background(), portID).
-					PortAssignInput(*metal.NewPortAssignInput()).
-					Execute()
+				return port, resp, rerr
 			}
 
 			addressFamily := int32(metal.IPADDRESSADDRESSFAMILY__4)

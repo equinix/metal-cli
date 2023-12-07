@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/c-bata/go-prompt"
+	"github.com/rivo/tview"
 	"github.com/spf13/cobra"
 )
 
@@ -34,20 +34,29 @@ func (c *Client) Delete() *cobra.Command {
   metal device delete -f -i 7ec86e23-8dcf-48ed-bd9b-c25c20958277`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
+
 			if !force {
-				fmt.Printf("Are you sure you want to delete device %s (y/N): ", deviceID)
-				userInput := prompt.Input(">", func(d prompt.Document) []prompt.Suggest {
-					return []prompt.Suggest{
-						{Text: "y", Description: "Yes"},
-						{Text: "n", Description: "No"},
-					}
-				})
-				if userInput != "y" && userInput != "Y" {
-					return nil
+				app := tview.NewApplication()
+
+				modal := tview.NewModal().
+					SetText(fmt.Sprintf("Are you sure you want to delete Device %s ?", deviceID)).
+					AddButtons([]string{"Yes", "No"}).
+					SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+						if buttonLabel == "Yes" {
+							if err := deleteDevice(deviceID); err != nil {
+								fmt.Printf("could not delete Device: %v\n", err)
+							}
+						}
+						app.Stop()
+					})
+
+				if err := app.SetRoot(modal, false).Run(); err != nil {
+					return fmt.Errorf("prompt failed: %w", err)
 				}
-			}
-			if err := deleteDevice(deviceID); err != nil {
-				return fmt.Errorf("could not delete Device: %w", err)
+			} else {
+				if err := deleteDevice(deviceID); err != nil {
+					return fmt.Errorf("could not delete Device: %w", err)
+				}
 			}
 			return nil
 		},
