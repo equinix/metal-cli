@@ -40,7 +40,7 @@ func TestCli_Vlan_Create(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-vlan-create-pro")
+				projectId, err = helper.CreateTestProject(t, "metal-cli-vlan-create-pro")
 				if err != nil {
 					t.Error(err)
 				}
@@ -61,7 +61,7 @@ func TestCli_Vlan_Create(t *testing.T) {
 						t.Error("expected output should include metal-cli-vlan-test, da and 2023 strings in the out string")
 					}
 
-					err = helper.CleanTestProject(projectId)
+					err = helper.CleanTestProject(t, projectId)
 					if err != nil {
 						t.Error(err)
 					}

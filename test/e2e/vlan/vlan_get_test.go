@@ -40,11 +40,11 @@ func TestCli_Vlan_Get(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-vlan-delete-pro")
+				projectId, err = helper.CreateTestProject(t, "metal-cli-vlan-delete-pro")
 				if err != nil {
 					t.Error(err)
 				}
-				vlanId, err = helper.CreateTestVlanWithVxLan(projectId, 2023, "metal-cli-vlan-delete-test")
+				vlanId, err = helper.CreateTestVlanWithVxLan(t, projectId, 2023, "metal-cli-vlan-delete-test")
 				if len(projectId) != 0 && len(vlanId) != 0 {
 					root.SetArgs([]string{subCommand, "get", "-p", projectId})
 					rescueStdout := os.Stdout
@@ -62,11 +62,11 @@ func TestCli_Vlan_Get(t *testing.T) {
 						t.Error("expected output should include metal-cli-vlan-get-test, da and 2023 strings in the out string")
 					}
 
-					err = helper.CleanTestVlan(vlanId)
+					err = helper.CleanTestVlan(t, vlanId)
 					if err != nil {
 						t.Error(err)
 					}
-					err = helper.CleanTestProject(projectId)
+					err = helper.CleanTestProject(t, projectId)
 					if err != nil {
 						t.Error(err)
 					}

@@ -40,15 +40,31 @@ func TestCli_Devices_Update(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-stop-pro")
+				projectId, err = helper.CreateTestProject(t, "metal-cli-stop-pro")
+				t.Cleanup(func() {
+					if err := helper.CleanTestProject(t, projectId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
 					t.Error(err)
+					return
 				}
-				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-stop-dev")
+
+				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-stop-dev")
+				t.Cleanup(func() {
+					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
 					t.Error(err)
+					return
 				}
-				status, err := helper.IsDeviceStateActive(deviceId)
+
+				status, err := helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
 					t.Error(err)
 				}
@@ -66,11 +82,11 @@ func TestCli_Devices_Update(t *testing.T) {
 					if !strings.Contains(string(out[:]), "Device "+deviceId+" successfully stopped.") {
 						t.Error("expected output should include" + "Device " + deviceId + " successfully stopped." + "in the out string ")
 					} else {
-						err = helper.CleanTestDevice(deviceId)
+						err = helper.CleanTestDevice(t, deviceId)
 						if err != nil {
 							t.Error(err)
 						}
-						err = helper.CleanTestProject(projectId)
+						err = helper.CleanTestProject(t, projectId)
 						if err != nil {
 							t.Error(err)
 						}

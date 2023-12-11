@@ -27,7 +27,7 @@ func TestGateways_Create(t *testing.T) {
 
 	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
 	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil &&
+		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil &&
 			!strings.Contains(err.Error(), "Not Found") {
 			t.Error(err)
 		}
@@ -36,9 +36,9 @@ func TestGateways_Create(t *testing.T) {
 		return
 	}
 
-	vlan, err := helper.CreateTestVLAN(projectId)
+	vlan, err := helper.CreateTestVLAN(t, projectId)
 	t.Cleanup(func() {
-		if err := helper.CleanTestVlan(vlan.GetId()); err != nil &&
+		if err := helper.CleanTestVlan(t, vlan.GetId()); err != nil &&
 			!strings.Contains(err.Error(), "Not Found") {
 			t.Error(err)
 		}

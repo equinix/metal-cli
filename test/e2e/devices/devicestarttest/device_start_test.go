@@ -42,25 +42,41 @@ func TestCli_Devices_Update(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-start-pro")
+				projectId, err = helper.CreateTestProject(t, "metal-cli-start-pro")
+				t.Cleanup(func() {
+					if err := helper.CleanTestProject(t, projectId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
 					t.Error(err)
+					return
 				}
-				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-start-dev")
+
+				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-start-dev")
+				t.Cleanup(func() {
+					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
 					t.Error(err)
+					return
 				}
-				status, err = helper.IsDeviceStateActive(deviceId)
+
+				status, err = helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
-					_, err := helper.IsDeviceStateActive(deviceId)
+					_, err := helper.IsDeviceStateActive(t, deviceId)
 					if err != nil {
 						t.Error(err)
 					} else {
-						err = helper.StopTestDevice(deviceId)
+						err = helper.StopTestDevice(t, deviceId)
 						if err != nil {
 							t.Error(err)
 						}
-						status, err = helper.IsDeviceStateActive(deviceId)
+						status, err = helper.IsDeviceStateActive(t, deviceId)
 						if err == nil {
 							t.Error(err)
 						}
@@ -81,21 +97,21 @@ func TestCli_Devices_Update(t *testing.T) {
 					if !strings.Contains(string(out[:]), "Device "+deviceId+" successfully started.") {
 						t.Error("expected output should include" + "Device " + deviceId + " successfully started." + "in the out string ")
 					} else {
-						status, _ = helper.IsDeviceStateActive(deviceId)
+						status, _ = helper.IsDeviceStateActive(t, deviceId)
 						if err != nil || status {
 							if !status {
-								_, err = helper.IsDeviceStateActive(deviceId)
+								_, err = helper.IsDeviceStateActive(t, deviceId)
 								if err != nil {
 									t.Error(err)
 								}
 							}
 							fmt.Print("Device is Active")
-							err = helper.CleanTestDevice(deviceId)
+							err = helper.CleanTestDevice(t, deviceId)
 							if err != nil {
 								t.Error(err)
 							}
 							fmt.Print("Cleaned Test Device")
-							err = helper.CleanTestProject(projectId)
+							err = helper.CleanTestProject(t, projectId)
 							if err != nil {
 								t.Error(err)
 							}

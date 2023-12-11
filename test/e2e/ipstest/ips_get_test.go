@@ -43,11 +43,11 @@ func TestCli_Ips_Get(t *testing.T) {
 					t.Skip("Skipping this test because someCondition is true")
 				}
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-ips-get-pro")
+				projectId, err = helper.CreateTestProject(t, "metal-cli-ips-get-pro")
 				if err != nil {
 					t.Error(err)
 				}
-				ipsId, err = helper.CreateTestIps(projectId, 1, "public_ipv4")
+				ipsId, err = helper.CreateTestIps(t, projectId, 1, "public_ipv4")
 				if len(projectId) != 0 && len(ipsId) != 0 {
 					root.SetArgs([]string{subCommand, "get", "-p", projectId})
 					rescueStdout := os.Stdout
@@ -64,11 +64,11 @@ func TestCli_Ips_Get(t *testing.T) {
 						t.Error("expected output should include " + ipsId + " da strings in the out string")
 					}
 
-					err = helper.CleanTestIps(ipsId)
+					err = helper.CleanTestIps(t, ipsId)
 					if err != nil {
 						t.Error(err)
 					}
-					err = helper.CleanTestProject(projectId)
+					err = helper.CleanTestProject(t, projectId)
 					if err != nil {
 						t.Error(err)
 					}

@@ -41,11 +41,20 @@ func TestCli_Devices_Get(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-get-pro")
+				projectName := "metal-cli-get-pro" + helper.GenerateUUID()
+				projectId, err = helper.CreateTestProject(t, projectName)
+				t.Cleanup(func() {
+					if err := helper.CleanTestProject(t, projectId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
 					t.Error(err)
+					return
 				}
-				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-get-dev")
+
+				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-get-dev")
 				if err != nil {
 					t.Error(err)
 				}
@@ -59,17 +68,24 @@ func TestCli_Devices_Get(t *testing.T) {
 				w.Close()
 				out, _ := io.ReadAll(r)
 				os.Stdout = rescueStdout
+				t.Cleanup(func() {
+					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
+
 				if !strings.Contains(string(out[:]), deviceId) {
 					t.Error("expected output should include " + deviceId)
 				}
 				if len(projectId) != 0 && len(deviceId) != 0 {
-					resp, err = helper.IsDeviceStateActive(deviceId)
+					resp, err = helper.IsDeviceStateActive(t, deviceId)
 					if err == nil && resp == true {
-						err = helper.CleanTestDevice(deviceId)
+						err = helper.CleanTestDevice(t, deviceId)
 						if err != nil {
 							t.Error(err)
 						}
-						err = helper.CleanTestProject(projectId)
+						err = helper.CleanTestProject(t, projectId)
 						if err != nil {
 							t.Error(err)
 						}

@@ -26,7 +26,7 @@ func TestPorts_VLANs(t *testing.T) {
 
 	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
 	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
+		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
 			t.Error(err)
 		}
 	})
@@ -45,12 +45,12 @@ func TestPorts_VLANs(t *testing.T) {
 		return
 	}
 
-	vlan, err := helper.CreateTestVLAN(projectId)
+	vlan, err := helper.CreateTestVLAN(t, projectId)
 	t.Cleanup(func() {
-		if err := helper.UnAssignPortVlan(port.GetId(), vlan.GetId()); err != nil {
+		if err := helper.UnAssignPortVlan(t, port.GetId(), vlan.GetId()); err != nil {
 			t.Error(err)
 		}
-		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
+		if err := helper.CleanTestVlan(t, vlan.GetId()); err != nil {
 			t.Error(err)
 		}
 	})
@@ -87,7 +87,7 @@ func TestPorts_VLANs(t *testing.T) {
 				os.Stdout = rescueStdout
 
 				// wait for port to have vlans attached
-				if err := helper.WaitForAttachVlanToPort(port.GetId(), true); err != nil {
+				if err := helper.WaitForAttachVlanToPort(t, port.GetId(), true); err != nil {
 					t.Error(err)
 					return
 				}

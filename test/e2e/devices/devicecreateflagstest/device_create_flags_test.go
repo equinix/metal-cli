@@ -42,10 +42,19 @@ func TestCli_Devices_Create_Flags(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-create-flags-pro")
+				projectName := "metal-cli-create-flags-pro" + helper.GenerateUUID()
+				projectId, err = helper.CreateTestProject(t, projectName)
+				t.Cleanup(func() {
+					if err := helper.CleanTestProject(t, projectId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
 					t.Error(err)
+					return
 				}
+
 				if len(projectId) != 0 {
 
 					root.SetArgs([]string{subCommand, "create", "-p", projectId, "-P", "m3.small.x86", "-m", "da", "-H", "metal-cli-create-flags-dev", "--operating-system", "custom_ipxe", "--always-pxe=true", "--ipxe-script-url", "https://boot.netboot.xyz/"})
@@ -58,6 +67,13 @@ func TestCli_Devices_Create_Flags(t *testing.T) {
 					w.Close()
 					out, _ := io.ReadAll(r)
 					os.Stdout = rescueStdout
+					t.Cleanup(func() {
+						if err := helper.CleanTestDevice(t, deviceId); err != nil &&
+							!strings.Contains(err.Error(), "Not Found") {
+							t.Error(err)
+						}
+					})
+
 					if !strings.Contains(string(out[:]), "metal-cli-create-flags-dev") &&
 						!strings.Contains(string(out[:]), "Ubuntu 20.04 LTS") &&
 						!strings.Contains(string(out[:]), "queued") {
@@ -72,13 +88,13 @@ func TestCli_Devices_Create_Flags(t *testing.T) {
 					// Extract the ID from the match
 					if len(match) > 1 {
 						deviceId = strings.TrimSpace(match[1])
-						resp, err = helper.IsDeviceStateActive(deviceId)
+						resp, err = helper.IsDeviceStateActive(t, deviceId)
 						if err == nil && resp == true {
-							err = helper.CleanTestDevice(deviceId)
+							err = helper.CleanTestDevice(t, deviceId)
 							if err != nil {
 								t.Error(err)
 							}
-							err = helper.CleanTestProject(projectId)
+							err = helper.CleanTestProject(t, projectId)
 							if err != nil {
 								t.Error(err)
 							}

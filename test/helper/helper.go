@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os"
+	"strconv"
 	"testing"
 	"time"
 
@@ -22,7 +23,8 @@ func TestClient() *openapiclient.APIClient {
 	return apiClient
 }
 
-func CreateTestProject(name string) (string, error) {
+func CreateTestProject(t *testing.T, name string) (string, error) {
+	t.Helper()
 	TestApiClient := TestClient()
 
 	projectCreateFromRootInput := *openapiclient.NewProjectCreateFromRootInput(name) // ProjectCreateFromRootInput | Project to create
@@ -36,7 +38,8 @@ func CreateTestProject(name string) (string, error) {
 	return projectResp.GetId(), nil
 }
 
-func CreateTestDevice(projectId, name string) (string, error) {
+func CreateTestDevice(t *testing.T, projectId, name string) (string, error) {
+	t.Helper()
 	TestApiClient := TestClient()
 
 	hostname := name
@@ -59,8 +62,9 @@ func CreateTestDevice(projectId, name string) (string, error) {
 	return deviceResp.GetId(), nil
 }
 
-func CreateTestVLAN(projectId string) (*openapiclient.VirtualNetwork, error) {
+func CreateTestVLAN(t *testing.T, projectId string) (*openapiclient.VirtualNetwork, error) {
 	TestApiClient := TestClient()
+	t.Helper()
 
 	metro := "sv"
 	vlanCreateInput := openapiclient.VirtualNetworkCreateInput{
@@ -77,8 +81,9 @@ func CreateTestVLAN(projectId string) (*openapiclient.VirtualNetwork, error) {
 	return vlan, nil
 }
 
-func CreateTestGateway(projectId, vlanId string, privateIPv4SubnetSize *int32) (*openapiclient.MetalGateway, error) {
+func CreateTestGateway(t *testing.T, projectId, vlanId string, privateIPv4SubnetSize *int32) (*openapiclient.MetalGateway, error) {
 	TestApiClient := TestClient()
+	t.Helper()
 
 	gatewayCreateInput := openapiclient.CreateMetalGatewayRequest{
 		MetalGatewayCreateInput: &openapiclient.MetalGatewayCreateInput{
@@ -98,8 +103,10 @@ func CreateTestGateway(projectId, vlanId string, privateIPv4SubnetSize *int32) (
 	return gateway.MetalGateway, nil
 }
 
-func GetDeviceById(deviceId string) (*openapiclient.Device, error) {
+func GetDeviceById(t *testing.T, deviceId string) (*openapiclient.Device, error) {
 	TestApiClient := TestClient()
+	t.Helper()
+
 	includes := []string{"network_ports"}
 
 	device, _, err := TestApiClient.DevicesApi.
@@ -114,7 +121,8 @@ func GetDeviceById(deviceId string) (*openapiclient.Device, error) {
 	return device, nil
 }
 
-func GetPortById(portId string) (*openapiclient.Port, error) {
+func GetPortById(t *testing.T, portId string) (*openapiclient.Port, error) {
+	t.Helper()
 	TestApiClient := TestClient()
 	includes := []string{"virtual_network"}
 
@@ -130,12 +138,13 @@ func GetPortById(portId string) (*openapiclient.Port, error) {
 	return port, nil
 }
 
-func IsDeviceStateActive(deviceId string) (bool, error) {
+func IsDeviceStateActive(t *testing.T, deviceId string) (bool, error) {
+	t.Helper()
 	predefinedTime := 500 * time.Second // Adjust this as needed
 	retryInterval := 10 * time.Second   // Adjust this as needed
 	startTime := time.Now()
 	for time.Since(startTime) < predefinedTime {
-		device, err := GetDeviceById(deviceId)
+		device, err := GetDeviceById(t, deviceId)
 		if err != nil {
 			return false, err
 		}
@@ -149,7 +158,8 @@ func IsDeviceStateActive(deviceId string) (bool, error) {
 	return false, fmt.Errorf("timed out waiting for device %v to become active", deviceId)
 }
 
-func WaitForAttachVlanToPort(portId string, attach bool) error {
+func WaitForAttachVlanToPort(t *testing.T, portId string, attach bool) error {
+	t.Helper()
 	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
 
@@ -162,7 +172,7 @@ func WaitForAttachVlanToPort(portId string, attach bool) error {
 		case <-ctx.Done():
 			return fmt.Errorf("Timeout exceeded for vlan assignment with port ID: %s", portId)
 		case <-ticker.C:
-			port, err := GetPortById(portId)
+			port, err := GetPortById(t, portId)
 			if err != nil {
 				return errors.Wrapf(err, "Error while fetching the port using ID: %s", portId)
 			}
@@ -181,7 +191,8 @@ func WaitForAttachVlanToPort(portId string, attach bool) error {
 	}
 }
 
-func StopTestDevice(deviceId string) error {
+func StopTestDevice(t *testing.T, deviceId string) error {
+	t.Helper()
 
 	deviceActionInput := *openapiclient.NewDeviceActionInput("power_off")
 	TestApiClient := TestClient()
@@ -194,13 +205,13 @@ func StopTestDevice(deviceId string) error {
 	return nil
 }
 
-func CleanTestDevice(deviceId string) error {
-	forceDelete := true // bool | Force the deletion of the device, by detaching any storage volume still active. (optional)
+func CleanTestDevice(t *testing.T, deviceId string) error {
+	t.Helper()
 
 	TestApiClient := TestClient()
 	_, err := TestApiClient.DevicesApi.
 		DeleteDevice(context.Background(), deviceId).
-		ForceDelete(forceDelete).
+		ForceDelete(true).
 		Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.DeleteDevice``: %v\n", err)
@@ -209,7 +220,8 @@ func CleanTestDevice(deviceId string) error {
 	return nil
 }
 
-func CleanTestProject(projectId string) error {
+func CleanTestProject(t *testing.T, projectId string) error {
+	t.Helper()
 	TestApiClient := TestClient()
 	r, err := TestApiClient.ProjectsApi.
 		DeleteProject(context.Background(), projectId).
@@ -222,7 +234,8 @@ func CleanTestProject(projectId string) error {
 	return nil
 }
 
-func CreateTestIps(projectId string, quantity int, ipType string) (string, error) {
+func CreateTestIps(t *testing.T, projectId string, quantity int, ipType string) (string, error) {
+	t.Helper()
 	TestApiClient := TestClient()
 	metro := "da"
 	var tags []string
@@ -248,7 +261,8 @@ func CreateTestIps(projectId string, quantity int, ipType string) (string, error
 	return ipsresp.IPReservation.GetId(), nil
 }
 
-func CleanTestIps(ipsId string) error {
+func CleanTestIps(t *testing.T, ipsId string) error {
+	t.Helper()
 	TestApiClient := TestClient()
 	_, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), ipsId).Execute()
 	if err != nil {
@@ -258,7 +272,8 @@ func CleanTestIps(ipsId string) error {
 	return nil
 }
 
-func CreateTestVlanWithVxLan(projectId string, Id int, desc string) (string, error) {
+func CreateTestVlanWithVxLan(t *testing.T, projectId string, Id int, desc string) (string, error) {
+	t.Helper()
 	TestApiClient := TestClient()
 	virtualNetworkCreateInput := *openapiclient.NewVirtualNetworkCreateInput()
 	virtualNetworkCreateInput.SetDescription(desc)
@@ -273,7 +288,8 @@ func CreateTestVlanWithVxLan(projectId string, Id int, desc string) (string, err
 	return vlanresp.GetId(), nil
 }
 
-func CleanTestVlan(vlanId string) error {
+func CleanTestVlan(t *testing.T, vlanId string) error {
+	t.Helper()
 	TestApiClient := TestClient()
 	_, _, err := TestApiClient.VLANsApi.DeleteVirtualNetwork(context.Background(), vlanId).Execute()
 	if err != nil {
@@ -284,7 +300,8 @@ func CleanTestVlan(vlanId string) error {
 	return nil
 }
 
-func UnAssignPortVlan(portId, vlanId string) error {
+func UnAssignPortVlan(t *testing.T, portId, vlanId string) error {
+	t.Helper()
 	testClient := TestClient()
 	_, _, err := testClient.PortsApi.
 		UnassignPort(context.Background(), portId).
@@ -293,14 +310,15 @@ func UnAssignPortVlan(portId, vlanId string) error {
 	return err
 }
 
-func CleanupProjectAndDevice(deviceId, projectId string) error {
-	resp, err := IsDeviceStateActive(deviceId)
+func CleanupProjectAndDevice(t *testing.T, deviceId, projectId string) error {
+	t.Helper()
+	resp, err := IsDeviceStateActive(t, deviceId)
 	if err == nil && resp {
-		err = CleanTestDevice(deviceId)
+		err = CleanTestDevice(t, deviceId)
 		if err != nil {
 			return err
 		}
-		err = CleanTestProject(projectId)
+		err = CleanTestProject(t, projectId)
 		if err != nil {
 			return err
 		}
@@ -312,21 +330,21 @@ func CleanupProjectAndDevice(deviceId, projectId string) error {
 //nolint:staticcheck
 func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapiclient.Device {
 	t.Helper()
-	projId, err := CreateTestProject("metal-cli-test-project")
+	projId, err := CreateTestProject(t, "metal-cli-test-project")
 	if err != nil {
 		t.Fatal(err)
 		return nil
 	}
 	*projectId = projId
 
-	devId, err := CreateTestDevice(*projectId, "metal-cli-test-device")
+	devId, err := CreateTestDevice(t, *projectId, "metal-cli-test-device")
 	if err != nil {
 		t.Fatal(err)
 		return nil
 	}
 	*deviceId = devId
 
-	active, err := IsDeviceStateActive(*deviceId)
+	active, err := IsDeviceStateActive(t, *deviceId)
 	if err != nil {
 		t.Fatal(err)
 		return nil
@@ -336,7 +354,7 @@ func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapicl
 		return nil
 	}
 
-	device, err := GetDeviceById(*deviceId)
+	device, err := GetDeviceById(t, *deviceId)
 	if err != nil {
 		t.Fatal(err)
 		return nil
@@ -349,7 +367,9 @@ func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapicl
 	return device
 }
 
-func CleanTestGateway(gatewayId string) error {
+func CleanTestGateway(t *testing.T, gatewayId string) error {
+	t.Helper()
+
 	TestApiClient := TestClient()
 	_, _, err := TestApiClient.MetalGatewaysApi.
 		DeleteMetalGateway(context.Background(), gatewayId).
@@ -436,4 +456,8 @@ func GenerateRandomString(length int) (string, error) {
 	randomString = randomString[:length]
 
 	return randomString, nil
+}
+
+func GenerateUUID() string {
+	return strconv.Itoa(int(time.Now().UnixNano()))
 }

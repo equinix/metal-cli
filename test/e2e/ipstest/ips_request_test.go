@@ -44,7 +44,7 @@ func TestCli_Vlan_Create(t *testing.T) {
 					t.Skip("Skipping temporarily for now")
 				}
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-ips-create-pro")
+				projectId, err = helper.CreateTestProject(t, "metal-cli-ips-create-pro")
 				if err != nil {
 					t.Error(err)
 				}
@@ -66,7 +66,7 @@ func TestCli_Vlan_Create(t *testing.T) {
 						t.Error("expected output should include ID, PUBLIC and true strings in the out string")
 					}
 				}
-				err = helper.CleanTestProject(projectId)
+				err = helper.CleanTestProject(t, projectId)
 				if err != nil {
 					t.Error(err)
 				}

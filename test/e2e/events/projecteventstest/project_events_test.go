@@ -41,7 +41,7 @@ func TestCli_Events_Get(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 
-				projectId, err = helper.CreateTestProject("metal-cli-events-pro")
+				projectId, err = helper.CreateTestProject(t, "metal-cli-events-pro")
 				if err != nil {
 					t.Error(err)
 				}
@@ -58,7 +58,7 @@ func TestCli_Events_Get(t *testing.T) {
 				if !strings.Contains(string(out[:]), "metal-cli-events-pro") {
 					t.Error("expected output should include metal-cli-events-pro in output string")
 				}
-				err = helper.CleanTestProject(projectId)
+				err = helper.CleanTestProject(t, projectId)
 				if err != nil {
 					t.Error(err)
 				}

@@ -40,15 +40,31 @@ func TestCli_Devices_Update(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-update-pro")
+				projectId, err = helper.CreateTestProject(t, "metal-cli-update-pro")
+				t.Cleanup(func() {
+					if err := helper.CleanTestProject(t, projectId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
 					t.Error(err)
+					return
 				}
-				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-update-dev")
+
+				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-update-dev")
+				t.Cleanup(func() {
+					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
 					t.Error(err)
+					return
 				}
-				status, err := helper.IsDeviceStateActive(deviceId)
+
+				status, err := helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
 					t.Error(err)
 				}
@@ -65,15 +81,6 @@ func TestCli_Devices_Update(t *testing.T) {
 					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), "metal-cli-update-dev-test") {
 						t.Error("expected output should include metal-cli-update-dev-test in the out string ")
-					}
-
-					err = helper.CleanTestDevice(deviceId)
-					if err != nil {
-						t.Error(err)
-					}
-					err = helper.CleanTestProject(projectId)
-					if err != nil {
-						t.Error(err)
 					}
 				}
 			},

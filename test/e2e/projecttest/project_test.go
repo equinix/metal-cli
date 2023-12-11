@@ -33,13 +33,13 @@ func setupTestOrganization(t *testing.T, projectName string) (string, func()) {
 
 // setupTestProject initializes a test project and returns its ID along with a cleanup function.
 func setupTestProject(t *testing.T, projectName string) (string, func()) {
-	projectId, err := helper.CreateTestProject(projectName)
+	projectId, err := helper.CreateTestProject(t, projectName)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	teardown := func() {
-		err := helper.CleanTestProject(projectId)
+		err := helper.CleanTestProject(t, projectId)
 		if err != nil {
 			t.Error(err)
 		}

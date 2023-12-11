@@ -42,17 +42,17 @@ func TestCli_Events_Get(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 
-				projectId, err = helper.CreateTestProject("metal-cli-events-pro")
+				projectId, err = helper.CreateTestProject(t, "metal-cli-events-pro")
 				if err != nil {
 					t.Error(err)
 				}
-				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-events-dev")
+				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-events-dev")
 				if err != nil {
 					t.Error(err)
 				}
-				status, err = helper.IsDeviceStateActive(deviceId)
+				status, err = helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
-					status, err = helper.IsDeviceStateActive(deviceId)
+					status, err = helper.IsDeviceStateActive(t, deviceId)
 					if err != nil || !status {
 						t.Error(err)
 					}
@@ -72,11 +72,11 @@ func TestCli_Events_Get(t *testing.T) {
 					!strings.Contains(string(out[:]), "Provision complete! Your device is ready to go.") {
 					t.Error("expected output should include Queued for provisioning in output string")
 				}
-				err = helper.CleanTestDevice(deviceId)
+				err = helper.CleanTestDevice(t, deviceId)
 				if err != nil {
 					t.Error(err)
 				}
-				err = helper.CleanTestProject(projectId)
+				err = helper.CleanTestProject(t, projectId)
 				if err != nil {
 					t.Error(err)
 				}

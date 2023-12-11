@@ -1,6 +1,7 @@
 package devicereinstalltest
 
 import (
+	"strings"
 	"testing"
 
 	root "github.com/equinix/metal-cli/internal/cli"
@@ -38,17 +39,33 @@ func TestCli_Devices_Update(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-reinstall-pro")
+				projectId, err = helper.CreateTestProject(t, "metal-cli-reinstall-pro")
+				t.Cleanup(func() {
+					if err := helper.CleanTestProject(t, projectId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
 					t.Error(err)
+					return
 				}
-				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-reinstall-dev")
+
+				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-reinstall-dev")
+				t.Cleanup(func() {
+					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
 					t.Error(err)
+					return
 				}
-				status, err = helper.IsDeviceStateActive(deviceId)
+
+				status, err = helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
-					status, err = helper.IsDeviceStateActive(deviceId)
+					status, err = helper.IsDeviceStateActive(t, deviceId)
 					if err != nil {
 						t.Error(err)
 					}
@@ -60,20 +77,20 @@ func TestCli_Devices_Update(t *testing.T) {
 					if err != nil {
 						t.Error(err)
 					} else {
-						status, err = helper.IsDeviceStateActive(deviceId)
+						status, err = helper.IsDeviceStateActive(t, deviceId)
 						// The below case will excute in both Device Active and Non-active states.
 						if err != nil || status {
 							if !status {
-								_, err = helper.IsDeviceStateActive(deviceId)
+								_, err = helper.IsDeviceStateActive(t, deviceId)
 								if err != nil {
 									t.Error(err)
 								}
 							}
-							err = helper.CleanTestDevice(deviceId)
+							err = helper.CleanTestDevice(t, deviceId)
 							if err != nil {
 								t.Error(err)
 							}
-							err = helper.CleanTestProject(projectId)
+							err = helper.CleanTestProject(t, projectId)
 							if err != nil {
 								t.Error(err)
 							}

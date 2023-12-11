@@ -24,7 +24,7 @@ func TestPorts_Retrieve(t *testing.T) {
 
 	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
 	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
+		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
 			t.Error(err)
 		}
 	})
