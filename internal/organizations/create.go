@@ -51,6 +51,13 @@ func (c *Client) Create() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
+			// API spec says organization address.address is required,
+			// but the address is not included by default
+			defaultIncludes := []string{"address", "billing_address"}
+
+			include := c.Servicer.Includes(defaultIncludes)
+			exclude := c.Servicer.Excludes(nil)
+
 			req := metal.NewOrganizationInput()
 			req.Name = &name
 
@@ -70,7 +77,7 @@ func (c *Client) Create() *cobra.Command {
 				req.Logo = &logo
 			}
 
-			org, _, err := c.Service.CreateOrganization(context.Background()).OrganizationInput(*req).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil)).Execute()
+			org, _, err := c.Service.CreateOrganization(context.Background()).OrganizationInput(*req).Include(include).Exclude(exclude).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create Organization: %w", err)
 			}
