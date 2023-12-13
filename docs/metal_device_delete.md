@@ -16,7 +16,7 @@ metal device delete -i <device_id> [-f] [flags]
   # Deletes the specified device:
   metal device delete -i 7ec86e23-8dcf-48ed-bd9b-c25c20958277
   >
-  ✔ Are you sure you want to delete device 7ec86e23-8dcf-48ed-bd9b-c25c20958277: y
+  ✔ Are you sure you want to delete device 7ec86e23-8dcf-48ed-bd9b-c25c20958277 [Y/N]: y
 		
   # Deletes a VLAN, skipping confirmation:
   metal device delete -f -i 7ec86e23-8dcf-48ed-bd9b-c25c20958277

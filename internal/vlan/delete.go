@@ -23,15 +23,16 @@ package vlan
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Delete() *cobra.Command {
 	var (
-		vnetID string
-		force  bool
+		vnetID       string
+		force        bool
+		confirmation string
 	)
 
 	deleteVnet := func(id string) error {
@@ -51,7 +52,7 @@ func (c *Client) Delete() *cobra.Command {
 		Example: `  # Deletes a VLAN, with confirmation.
   metal virtual-network delete -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
   >
-  ✔ Are you sure you want to delete virtual network 77e6d57a-d7a4-4816-b451-cf9b043444e2: y
+  ✔ Are you sure you want to delete virtual network 77e6d57a-d7a4-4816-b451-cf9b043444e2 [Y/N]: y
 		
   # Deletes a VLAN, skipping confirmation.
   metal virtual-network delete -f -i 77e6d57a-d7a4-4816-b451-cf9b043444e2`,
@@ -60,13 +61,17 @@ func (c *Client) Delete() *cobra.Command {
 			cmd.SilenceUsage = true
 
 			if !force {
-				prompt := promptui.Prompt{
-					Label:     fmt.Sprintf("Are you sure you want to delete virtual network %s", vnetID),
-					IsConfirm: true,
+				fmt.Printf("Are you sure you want to delete virtual network %s [Y/N]: ", vnetID)
+
+				_, err := fmt.Scanln(&confirmation)
+				if err != nil {
+					fmt.Println("Error reading confirmation:", err)
+					return nil
 				}
 
-				_, err := prompt.Run()
-				if err != nil {
+				confirmation = strings.TrimSpace(strings.ToLower(confirmation))
+				if confirmation != "yes" && confirmation != "y" {
+					fmt.Println("virtual network deletion cancelled.")
 					return nil
 				}
 			}

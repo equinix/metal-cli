@@ -23,15 +23,16 @@ package gateway
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Delete() *cobra.Command {
 	var (
-		gwayID string
-		force  bool
+		gwayID       string
+		force        bool
+		confirmation string
 	)
 	includes := []string{"virtual_network", "ip_reservation"}
 
@@ -56,7 +57,7 @@ func (c *Client) Delete() *cobra.Command {
 		Example: `  # Deletes a Gateway, with confirmation.
   metal gateway delete -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
   >
-  ✔ Are you sure you want to delete Metal Gateway 77e6d57a-d7a4-4816-b451-cf9b043444e2: y
+  ✔ Are you sure you want to delete Metal Gateway 77e6d57a-d7a4-4816-b451-cf9b043444e2 [Y/N]: y
 
   # Deletes a Gateway, skipping confirmation.
   metal gateway delete -f -i 77e6d57a-d7a4-4816-b451-cf9b043444e2`,
@@ -65,18 +66,22 @@ func (c *Client) Delete() *cobra.Command {
 			cmd.SilenceUsage = true
 
 			if !force {
-				prompt := promptui.Prompt{
-					Label:     fmt.Sprintf("Are you sure you want to delete Metal Gateway %s", gwayID),
-					IsConfirm: true,
+				fmt.Printf("Are you sure you want to delete Metal Gateway %s [Y/N]: ", gwayID)
+
+				_, err := fmt.Scanln(&confirmation)
+				if err != nil {
+					fmt.Println("Error reading confirmation:", err)
+					return nil
 				}
 
-				_, err := prompt.Run()
-				if err != nil {
+				confirmation = strings.TrimSpace(strings.ToLower(confirmation))
+				if confirmation != "yes" && confirmation != "y" {
+					fmt.Println("Metal Gateway deletion cancelled.")
 					return nil
 				}
 			}
 			if err := deleteGway(gwayID); err != nil {
-				return fmt.Errorf("Could not delete Metal Gateway: %w", err)
+				return fmt.Errorf("could not delete Metal Gateway: %w", err)
 			}
 			return nil
 		},

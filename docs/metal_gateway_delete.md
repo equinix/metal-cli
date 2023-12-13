@@ -16,7 +16,7 @@ metal gateway delete -i <metal_gateway_UUID> [-f] [flags]
   # Deletes a Gateway, with confirmation.
   metal gateway delete -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
   >
-  ✔ Are you sure you want to delete Metal Gateway 77e6d57a-d7a4-4816-b451-cf9b043444e2: y
+  ✔ Are you sure you want to delete Metal Gateway 77e6d57a-d7a4-4816-b451-cf9b043444e2 [Y/N]: y
 
   # Deletes a Gateway, skipping confirmation.
   metal gateway delete -f -i 77e6d57a-d7a4-4816-b451-cf9b043444e2

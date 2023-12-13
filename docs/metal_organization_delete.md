@@ -16,7 +16,7 @@ metal organization delete -i <organization_UUID> [flags]
   # Deletes an organization, with confirmation: 
   metal organization delete -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8
   >
-  ✔ Are you sure you want to delete organization 3bd5bf07-6094-48ad-bd03-d94e8712fdc8: y
+  ✔ Are you sure you want to delete organization 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 [Y/N]: y
   
   # Deletes an organization, skipping confirmation:
   metal organization delete -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 -f

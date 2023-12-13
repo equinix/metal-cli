@@ -23,15 +23,16 @@ package ssh
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Delete() *cobra.Command {
 	var (
-		sshKeyID string
-		force    bool
+		sshKeyID     string
+		force        bool
+		confirmation string
 	)
 	deleteSSHKey := func(id string) error {
 		_, err := c.Service.DeleteSSHKey(context.Background(), sshKeyID).Execute()
@@ -49,27 +50,32 @@ func (c *Client) Delete() *cobra.Command {
 		Example: `  # Deletes an SSH key, with confirmation:
   metal ssh-key delete -i 5cb96463-88fd-4d68-94ba-2c9505ff265e
   >
-  ✔ Are you sure you want to delete SSH Key 5cb96463-88fd-4d68-94ba-2c9505ff265e: y
+  ✔ Are you sure you want to delete SSH Key 5cb96463-88fd-4d68-94ba-2c9505ff265e [Y/N]: y
   
   # Deletes an SSH key, skipping confirmation:
   metal ssh-key delete -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -f`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
+
 			if !force {
-				prompt := promptui.Prompt{
-					Label:     fmt.Sprintf("Are you sure you want to delete SSH Key %s: ", sshKeyID),
-					IsConfirm: true,
+				fmt.Printf("Are you sure you want to delete SSH Key %s [Y/N]: ", sshKeyID)
+
+				_, err := fmt.Scanln(&confirmation)
+				if err != nil {
+					fmt.Println("Error reading confirmation:", err)
+					return nil
 				}
 
-				_, err := prompt.Run()
-				if err != nil {
+				confirmation = strings.TrimSpace(strings.ToLower(confirmation))
+				if confirmation != "yes" && confirmation != "y" {
+					fmt.Println("SSH Key deletion cancelled.")
 					return nil
 				}
 			}
 
 			if err := deleteSSHKey(sshKeyID); err != nil {
-				return fmt.Errorf("Could not delete SSH Key: %w", err)
+				return fmt.Errorf("could not delete SSH Key: %w", err)
 			}
 			return nil
 		},

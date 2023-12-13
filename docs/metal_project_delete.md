@@ -16,7 +16,7 @@ metal project delete --id <project_UUID> [--force] [flags]
   # Deletes project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
   metal project delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
   >
-  ✔ Are you sure you want to delete project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375: y
+  ✔ Are you sure you want to delete project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 [Y/N]: y
   
   # Deletes project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375, skipping confirmation:
   metal project delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 -f
