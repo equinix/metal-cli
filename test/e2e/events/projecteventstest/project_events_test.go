@@ -41,7 +41,8 @@ func TestCli_Events_Get(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 
-				projectId, err = helper.CreateTestProject(t, "metal-cli-events-pro")
+				projectName := "metal-cli-events-pro" + helper.GenerateUUID()
+				projectId, err = helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)
 				}

@@ -44,7 +44,8 @@ func TestCli_Vlan_Create(t *testing.T) {
 					t.Skip("Skipping temporarily for now")
 				}
 				root := c.Root()
-				projectId, err = helper.CreateTestProject(t, "metal-cli-ips-create-pro")
+				projectName := "metal-cli-ips-get-pro" + helper.GenerateUUID()
+				projectId, err = helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)
 				}

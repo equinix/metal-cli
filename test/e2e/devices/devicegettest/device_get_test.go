@@ -57,6 +57,7 @@ func TestCli_Devices_Get(t *testing.T) {
 				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-get-dev")
 				if err != nil {
 					t.Error(err)
+					return
 				}
 				root.SetArgs([]string{subCommand, "get", "-i", deviceId})
 				rescueStdout := os.Stdout

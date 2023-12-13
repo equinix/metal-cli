@@ -29,11 +29,9 @@ func CreateTestProject(t *testing.T, name string) (string, error) {
 
 	projectCreateFromRootInput := *openapiclient.NewProjectCreateFromRootInput(name) // ProjectCreateFromRootInput | Project to create
 
-	projectResp, r, err := TestApiClient.ProjectsApi.CreateProject(context.Background()).ProjectCreateFromRootInput(projectCreateFromRootInput).Execute()
+	projectResp, _, err := TestApiClient.ProjectsApi.CreateProject(context.Background()).ProjectCreateFromRootInput(projectCreateFromRootInput).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `ProjectsApi.CreateProject`: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-		return "", err
+		return "", fmt.Errorf("Error when calling `ProjectsApi.CreateProject`: %v\n", err)
 	}
 	return projectResp.GetId(), nil
 }
@@ -56,8 +54,7 @@ func CreateTestDevice(t *testing.T, projectId, name string) (string, error) {
 		CreateDeviceRequest(metroDeviceRequest).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.CreateDevice`: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("Error when calling `DevicesApi.CreateDevice`: %v\n", err)
 	}
 	return deviceResp.GetId(), nil
 }
@@ -75,8 +72,7 @@ func CreateTestVLAN(t *testing.T, projectId string) (*openapiclient.VirtualNetwo
 		VirtualNetworkCreateInput(vlanCreateInput).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.CreateVirtualNetwork`: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("Error when calling `VLANsApi.CreateVirtualNetwork`: %v\n", err)
 	}
 	return vlan, nil
 }
@@ -97,8 +93,7 @@ func CreateTestGateway(t *testing.T, projectId, vlanId string, privateIPv4Subnet
 		CreateMetalGatewayRequest(gatewayCreateInput).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `MetalGatewaysApi.CreateMetalGateway`: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("Error when calling `MetalGatewaysApi.CreateMetalGateway`: %v\n", err)
 	}
 	return gateway.MetalGateway, nil
 }
@@ -114,8 +109,7 @@ func GetDeviceById(t *testing.T, deviceId string) (*openapiclient.Device, error)
 		Include(includes).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.FindDeviceById`: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("Error when calling `DevicesApi.FindDeviceById`: %v\n", err)
 	}
 
 	return device, nil
@@ -131,8 +125,7 @@ func GetPortById(t *testing.T, portId string) (*openapiclient.Port, error) {
 		Include(includes).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `PortsApi.FindPortById`: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("Error when calling `PortsApi.FindPortById`: %v\n", err)
 	}
 
 	return port, nil
@@ -199,8 +192,7 @@ func StopTestDevice(t *testing.T, deviceId string) error {
 
 	_, err := TestApiClient.DevicesApi.PerformAction(context.Background(), deviceId).DeviceActionInput(deviceActionInput).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.PerformAction``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `DevicesApi.PerformAction``: %v\n", err)
 	}
 	return nil
 }
@@ -214,8 +206,7 @@ func CleanTestDevice(t *testing.T, deviceId string) error {
 		ForceDelete(true).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.DeleteDevice``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `DevicesApi.DeleteDevice``: %v\n", err)
 	}
 	return nil
 }
@@ -223,13 +214,11 @@ func CleanTestDevice(t *testing.T, deviceId string) error {
 func CleanTestProject(t *testing.T, projectId string) error {
 	t.Helper()
 	TestApiClient := TestClient()
-	r, err := TestApiClient.ProjectsApi.
+	_, err := TestApiClient.ProjectsApi.
 		DeleteProject(context.Background(), projectId).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `ProjectsApi.DeleteProject``: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-		return err
+		return fmt.Errorf("Error when calling `ProjectsApi.DeleteProject``: %v\n", err)
 	}
 	return nil
 }
@@ -255,8 +244,7 @@ func CreateTestIps(t *testing.T, projectId string, quantity int, ipType string) 
 
 	ipsresp, _, err := TestApiClient.IPAddressesApi.RequestIPReservation(context.Background(), projectId).RequestIPReservationRequest(*requestIPReservationRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `IPAddressesApi.FindIPReservations``: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("Error when calling `IPAddressesApi.FindIPReservations``: %v\n", err)
 	}
 	return ipsresp.IPReservation.GetId(), nil
 }
@@ -266,8 +254,7 @@ func CleanTestIps(t *testing.T, ipsId string) error {
 	TestApiClient := TestClient()
 	_, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), ipsId).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `IPAddressesApi.DeleteIPAddress``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `IPAddressesApi.DeleteIPAddress``: %v\n", err)
 	}
 	return nil
 }
@@ -282,8 +269,7 @@ func CreateTestVlanWithVxLan(t *testing.T, projectId string, Id int, desc string
 
 	vlanresp, _, err := TestApiClient.VLANsApi.CreateVirtualNetwork(context.Background(), projectId).VirtualNetworkCreateInput(virtualNetworkCreateInput).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.CreateVirtualNetwork``: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("Error when calling `VLANsApi.CreateVirtualNetwork``: %v\n", err)
 	}
 	return vlanresp.GetId(), nil
 }
@@ -293,8 +279,7 @@ func CleanTestVlan(t *testing.T, vlanId string) error {
 	TestApiClient := TestClient()
 	_, _, err := TestApiClient.VLANsApi.DeleteVirtualNetwork(context.Background(), vlanId).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.DeleteVirtualNetwork``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `VLANsApi.DeleteVirtualNetwork``: %v\n", err)
 	}
 
 	return nil
@@ -330,7 +315,8 @@ func CleanupProjectAndDevice(t *testing.T, deviceId, projectId string) error {
 //nolint:staticcheck
 func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapiclient.Device {
 	t.Helper()
-	projId, err := CreateTestProject(t, "metal-cli-test-project")
+	projectName := "metal-cli-test-project" + GenerateUUID()
+	projId, err := CreateTestProject(t, projectName)
 	if err != nil {
 		t.Fatal(err)
 		return nil
@@ -376,8 +362,7 @@ func CleanTestGateway(t *testing.T, gatewayId string) error {
 		Include([]string{"ip_reservation"}).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `MetalGatewaysApi.DeleteMetalGateway``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `MetalGatewaysApi.DeleteMetalGateway``: %v\n", err)
 	}
 
 	return nil
@@ -403,8 +388,7 @@ func CreateTestOrganization(name string) (string, error) {
 
 	resp, _, err := TestApiClient.OrganizationsApi.CreateOrganization(context.Background()).OrganizationInput(*organizationInput).Include(defaultIncludes).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `OrganizationsApi.CreateOrganization``: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("Error when calling `OrganizationsApi.CreateOrganization``: %v\n", err)
 	}
 
 	return resp.GetId(), nil
@@ -415,8 +399,7 @@ func CleanTestOrganization(orgId string) error {
 
 	_, err := TestApiClient.OrganizationsApi.DeleteOrganization(context.Background(), orgId).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `OrganizationsApi.DeleteOrganization``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `OrganizationsApi.DeleteOrganization``: %v\n", err)
 	}
 
 	return nil
@@ -429,8 +412,7 @@ func CreateTestBgpEnableTest(projId string) error {
 
 	_, err := TestApiClient.BGPApi.RequestBgpConfig(context.Background(), projId).BgpConfigRequestInput(bgpConfigRequestInput).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `BGPApi.RequestBgpConfig``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `BGPApi.RequestBgpConfig``: %v\n", err)
 	}
 	return nil
 }

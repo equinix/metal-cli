@@ -40,7 +40,8 @@ func TestCli_Devices_Update(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject(t, "metal-cli-stop-pro")
+				projectName := "metal-cli-stop-pro" + helper.GenerateUUID()
+				projectId, err = helper.CreateTestProject(t, projectName)
 				t.Cleanup(func() {
 					if err := helper.CleanTestProject(t, projectId); err != nil &&
 						!strings.Contains(err.Error(), "Not Found") {
@@ -67,6 +68,7 @@ func TestCli_Devices_Update(t *testing.T) {
 				status, err := helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
 					t.Error(err)
+					return
 				}
 				if len(projectId) != 0 && len(deviceId) != 0 && status {
 					root.SetArgs([]string{subCommand, "stop", "--id", deviceId})
@@ -75,12 +77,14 @@ func TestCli_Devices_Update(t *testing.T) {
 					os.Stdout = w
 					if err := root.Execute(); err != nil {
 						t.Error(err)
+						return
 					}
 					w.Close()
 					out, _ := io.ReadAll(r)
 					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), "Device "+deviceId+" successfully stopped.") {
 						t.Error("expected output should include" + "Device " + deviceId + " successfully stopped." + "in the out string ")
+						return
 					} else {
 						err = helper.CleanTestDevice(t, deviceId)
 						if err != nil {

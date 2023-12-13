@@ -64,6 +64,7 @@ func TestCli_Devices_Create(t *testing.T) {
 					os.Stdout = w
 					if err := root.Execute(); err != nil {
 						t.Error(err)
+						return
 					}
 					w.Close()
 					out, _ := io.ReadAll(r)

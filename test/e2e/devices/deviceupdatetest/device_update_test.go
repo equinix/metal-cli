@@ -40,7 +40,8 @@ func TestCli_Devices_Update(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject(t, "metal-cli-update-pro")
+				projectName := "metal-cli-update-pro" + helper.GenerateUUID()
+				projectId, err = helper.CreateTestProject(t, projectName)
 				t.Cleanup(func() {
 					if err := helper.CleanTestProject(t, projectId); err != nil &&
 						!strings.Contains(err.Error(), "Not Found") {
@@ -67,6 +68,7 @@ func TestCli_Devices_Update(t *testing.T) {
 				status, err := helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
 					t.Error(err)
+					return
 				}
 				if len(projectId) != 0 && len(deviceId) != 0 && status == true {
 					root.SetArgs([]string{subCommand, "update", "-i", deviceId, "-H", "metal-cli-update-dev-test", "-d", "This device used for testing"})
@@ -75,6 +77,7 @@ func TestCli_Devices_Update(t *testing.T) {
 					os.Stdout = w
 					if err := root.Execute(); err != nil {
 						t.Error(err)
+						return
 					}
 					w.Close()
 					out, _ := io.ReadAll(r)

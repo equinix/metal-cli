@@ -39,7 +39,8 @@ func TestCli_Devices_Update(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject(t, "metal-cli-reinstall-pro")
+				projectName := "metal-cli-reinstall-pro" + helper.GenerateUUID()
+				projectId, err = helper.CreateTestProject(t, projectName)
 				t.Cleanup(func() {
 					if err := helper.CleanTestProject(t, projectId); err != nil &&
 						!strings.Contains(err.Error(), "Not Found") {
@@ -76,6 +77,7 @@ func TestCli_Devices_Update(t *testing.T) {
 					err = root.Execute()
 					if err != nil {
 						t.Error(err)
+						return
 					} else {
 						status, err = helper.IsDeviceStateActive(t, deviceId)
 						// The below case will excute in both Device Active and Non-active states.
