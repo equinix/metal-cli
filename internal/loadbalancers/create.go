@@ -40,14 +40,14 @@ func (c *Client) Create() *cobra.Command {
 
 	// loadbalancerCreateCmd represents the loadbalancerCreate command
 	createLoadBalancerCmd := &cobra.Command{
-		Use:   `create -n <loadbalancer_name> [-O <organization_UUID>] [-m <payment_method_UUID>]`,
+		Use:   `create -n <loadbalancer_name> -l <location_id_or_metro> [-p <project_UUID>] [--provider <provider_id>] [--port <port_UUID>]`,
 		Short: "Creates a loadbalancer.",
-		Long:  "Creates a loadbalancer with the specified name. If no organization is specified, the loadbalancer is created in the current user's default organization. If no payment method is specified the organization's default payment method is used.",
-		Example: `  # Creates a new loadbalancer named dev-cluster02: 
-  metal loadbalancer create --name dev-cluster02
+		Long:  "Creates a loadbalancer with the specified name.",
+		Example: `  # Creates a new loadbalancer named dev-loadbal in the Dallas metro: 
+  metal loadbalancer create --name dev-loadbal -l da
   
-  # Creates a new loadbalancer named dev-cluster03 in the specified organization with a payment method:
-  metal loadbalancer create -n dev-cluster03 -O 814b09ca-0d0c-4656-9de0-4ce65c6faf70 -m ab1fbdaa-8b25-4c3e-8360-e283852e3747`,
+  # Creates a new loadbalancer named prod-loadbal in the DC metro:
+  metal loadbalancer create -n prod-loadbal -l dc`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
@@ -81,9 +81,9 @@ func (c *Client) Create() *cobra.Command {
 
 	createLoadBalancerCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the loadbalancer")
 	createLoadBalancerCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
-	createLoadBalancerCmd.Flags().StringVarP(&locationId, "location", "l", "", "The location's ID.")
+	createLoadBalancerCmd.Flags().StringVarP(&locationId, "location", "l", "", "The location's ID. This flag is required.")
 	createLoadBalancerCmd.Flags().StringVarP(&providerId, "provider", "r", ProviderID, "The provider ID.")
-	createLoadBalancerCmd.Flags().StringSliceVar(&portIds, "port", []string{}, "The port's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PORT_ID environment variable.")
+	createLoadBalancerCmd.Flags().StringSliceVar(&portIds, "port", []string{}, "The port(s) UUID")
 
 	// TODO(displague) Not sure if this is needed
 	_ = createLoadBalancerCmd.MarkFlagRequired("location")

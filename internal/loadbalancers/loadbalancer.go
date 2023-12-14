@@ -40,18 +40,21 @@ type Client struct {
 
 const ProviderID = "loadpvd-gOB_-byp5ebFo7A3LHv2B"
 
+// LBMetros is a map of metro codes to loadbalancer location IDs
+// TODO: this should be removed once the API supports accessing loadbalancers by metro short codes
 var LBMetros = map[string]string{
 	"da": "lctnloc--uxs0GLeAELHKV8GxO_AI",
 	"ny": "lctnloc-Vy-1Qpw31mPi6RJQwVf9A",
 	"sv": "lctnloc-H5rl2M2VL5dcFmdxhbEKx",
+	"dc": "lctnloc--uxs0GLeAELHKV8GxO_AI",
 }
 
 func (c *Client) NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     `loadbalancer`,
-		Aliases: []string{"loadbalancers"},
-		Short:   "LoadBalancer operations: create, get, update, delete, and bgpconfig.",
-		Long:    "Information and management for LoadBalancers and LoadBalancer-level BGP. Documentation on LoadBalancers is on https://lbaas.equinix.com/developers/docs/accounts/loadbalancers/, and documentation on BGP is on https://lbaas.equinix.com/developers/docs/bgp/bgp-on-equinix-metal/.",
+		Use:     `loadbalancer-beta`,
+		Aliases: []string{"loadbalancers-beta", "loadbalancers", "loadbalancer", "lb", "lbs"},
+		Short:   "LoadBalancer BETA operations: create, get, update, and delete.",
+		Long:    "Information and management for LoadBalancers is on https://deploy.equinix.com/developers/docs/metal/networking/load-balancers/.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
@@ -72,7 +75,6 @@ func (c *Client) NewCommand() *cobra.Command {
 		c.Create(),
 		c.Delete(),
 		// c.Update(),
-		// c.BGPConfig(),
 	)
 	return cmd
 }

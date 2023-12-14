@@ -34,8 +34,8 @@ func (c *Client) Retrieve() *cobra.Command {
 	retrieveLoadBalancerCmd := &cobra.Command{
 		Use:     `get [-i <loadbalancer_UUID> | -n <loadbalancer_name>]`,
 		Aliases: []string{"list"},
-		Short:   "Retrieves all the current user's loadbalancers or the details of a specified loadbalancer.",
-		Long:    "Retrieves all the current user's loadbalancers or the details of a specified loadbalancer. You can specify which loadbalancer by UUID or name. When using `--json` or `--yaml` flags, the `--include=members` flag is implied.",
+		Short:   "Retrieves all the project loadbalancers or the details of a specified loadbalancer.",
+		Long:    "Retrieves all the project loadbalancers or the details of a specified loadbalancer. You can specify which loadbalancer by UUID or name.",
 		Example: `  # Retrieve all loadbalancers:
   metal loadbalancer get
   

@@ -23,8 +23,8 @@ package loadbalancers
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -32,6 +32,7 @@ func (c *Client) Delete() *cobra.Command {
 	var (
 		force          bool
 		loadbalancerID string
+		confirmation   string
 	)
 	deleteLoadBalancer := func(id string) error {
 		_, err := c.loadBalancerService.DeleteLoadBalancer(context.Background(), id).Execute()
@@ -45,7 +46,7 @@ func (c *Client) Delete() *cobra.Command {
 	deleteLoadBalancerCmd := &cobra.Command{
 		Use:   `delete --id <loadbalancer_UUID> [--force]`,
 		Short: "Deletes a loadbalancer.",
-		Long:  "Deletes the specified loadbalancer with a confirmation prompt. To skip the confirmation use --force. You can't delete a loadbalancer that has active resources. You have to deprovision all servers and other infrastructure from a loadbalancer in order to delete it.",
+		Long:  "Deletes the specified loadbalancer with a confirmation prompt. To skip the confirmation use --force.",
 		Example: `  # Deletes loadbalancer 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
   metal loadbalancer delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
   >
@@ -57,16 +58,18 @@ func (c *Client) Delete() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			if !force {
-				prompt := promptui.Prompt{
-					Label:     fmt.Sprintf("Are you sure you want to delete loadbalancer %s: ", loadbalancerID),
-					IsConfirm: true,
-				}
-
-				_, err := prompt.Run()
+				fmt.Printf("Are you sure you want to delete Metal Loadbalancer %s [Y/N]: ", loadbalancerID)
+				_, err := fmt.Scanln(&confirmation)
 				if err != nil {
 					return nil
 				}
 			}
+			confirmation = strings.TrimSpace(strings.ToLower(confirmation))
+			if confirmation != "yes" && confirmation != "y" {
+				fmt.Println("Metal Loadbalancer deletion cancelled.")
+				return nil
+			}
+
 			if err := deleteLoadBalancer(loadbalancerID); err != nil {
 				return fmt.Errorf("Could not delete LoadBalancer: %w", err)
 			}
