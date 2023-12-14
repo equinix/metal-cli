@@ -49,8 +49,7 @@ func TestCli_Devices_Update(t *testing.T) {
 					}
 				})
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 
 				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-update-dev")
@@ -61,27 +60,28 @@ func TestCli_Devices_Update(t *testing.T) {
 					}
 				})
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 
 				status, err := helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 				if len(projectId) != 0 && len(deviceId) != 0 && status == true {
 					root.SetArgs([]string{subCommand, "update", "-i", deviceId, "-H", "metal-cli-update-dev-test", "-d", "This device used for testing"})
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
-						return
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), "metal-cli-update-dev-test") {
 						t.Error("expected output should include metal-cli-update-dev-test in the out string ")
 					}

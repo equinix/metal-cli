@@ -49,8 +49,7 @@ func TestCli_Devices_Update(t *testing.T) {
 					}
 				})
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 
 				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-stop-dev")
@@ -61,39 +60,30 @@ func TestCli_Devices_Update(t *testing.T) {
 					}
 				})
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 
 				status, err := helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 				if len(projectId) != 0 && len(deviceId) != 0 && status {
 					root.SetArgs([]string{subCommand, "stop", "--id", deviceId})
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
-						return
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), "Device "+deviceId+" successfully stopped.") {
-						t.Error("expected output should include" + "Device " + deviceId + " successfully stopped." + "in the out string ")
-						return
-					} else {
-						err = helper.CleanTestDevice(t, deviceId)
-						if err != nil {
-							t.Error(err)
-						}
-						err = helper.CleanTestProject(t, projectId)
-						if err != nil {
-							t.Error(err)
-						}
+						t.Fatal("expected output should include" + "Device " + deviceId + " successfully stopped." + "in the out string ")
 					}
 				}
 			},

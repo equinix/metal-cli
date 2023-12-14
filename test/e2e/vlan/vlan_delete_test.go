@@ -51,12 +51,16 @@ func TestCli_Vlan_Clean(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), "Virtual Network "+vlanId+" successfully deleted.") {
 						t.Error("expected output should include Virtual Network " + vlanId + "successfully deleted." + "in the out string")
 					}

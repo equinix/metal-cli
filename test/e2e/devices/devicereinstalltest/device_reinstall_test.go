@@ -48,8 +48,7 @@ func TestCli_Devices_Update(t *testing.T) {
 					}
 				})
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 
 				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-reinstall-dev")
@@ -60,15 +59,14 @@ func TestCli_Devices_Update(t *testing.T) {
 					}
 				})
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 
 				status, err = helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
 					status, err = helper.IsDeviceStateActive(t, deviceId)
 					if err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
 				}
 
@@ -76,27 +74,15 @@ func TestCli_Devices_Update(t *testing.T) {
 					root.SetArgs([]string{subCommand, "reinstall", "--id", deviceId, "-O", "ubuntu_22_04", "--preserve-data"})
 					err = root.Execute()
 					if err != nil {
-						t.Error(err)
-						return
-					} else {
-						status, err = helper.IsDeviceStateActive(t, deviceId)
-						// The below case will excute in both Device Active and Non-active states.
-						if err != nil || status {
-							if !status {
-								_, err = helper.IsDeviceStateActive(t, deviceId)
-								if err != nil {
-									t.Error(err)
-								}
-							}
-							err = helper.CleanTestDevice(t, deviceId)
-							if err != nil {
-								t.Error(err)
-							}
-							err = helper.CleanTestProject(t, projectId)
-							if err != nil {
-								t.Error(err)
-							}
-						}
+						t.Fatal(err)
+					}
+
+					status, err = helper.IsDeviceStateActive(t, deviceId)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if !status {
+						t.Fatalf("Device not yet active, %s", deviceId)
 					}
 				}
 			},

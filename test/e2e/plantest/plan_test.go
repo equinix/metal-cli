@@ -44,12 +44,16 @@ func TestCli_Plans(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "m3.small.x86") &&
 					!strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "c3.medium.x86") &&
@@ -73,12 +77,16 @@ func TestCli_Plans(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "m3.small.x86") {
 					t.Error("expected output should include m3.small.x86 by SLUG")
 				}
@@ -97,12 +105,17 @@ func TestCli_Plans(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "m3.small.x86") &&
 					!strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "c3.medium.x86") &&

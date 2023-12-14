@@ -50,12 +50,17 @@ func TestCli_Vlan_Create(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
+
 					if !strings.Contains(string(out[:]), "metal-cli-vlan-test") &&
 						!strings.Contains(string(out[:]), "da") &&
 						!strings.Contains(string(out[:]), "2023") {

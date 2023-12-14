@@ -1,7 +1,6 @@
 package devicestarttest
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -51,8 +50,7 @@ func TestCli_Devices_Update(t *testing.T) {
 					}
 				})
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 
 				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-start-dev")
@@ -63,8 +61,7 @@ func TestCli_Devices_Update(t *testing.T) {
 					}
 				})
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 
 				status, err = helper.IsDeviceStateActive(t, deviceId)
@@ -89,37 +86,26 @@ func TestCli_Devices_Update(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
-						return
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), "Device "+deviceId+" successfully started.") {
-						t.Error("expected output should include" + "Device " + deviceId + " successfully started." + "in the out string ")
-						return
-					} else {
-						status, _ = helper.IsDeviceStateActive(t, deviceId)
-						if err != nil || status {
-							if !status {
-								_, err = helper.IsDeviceStateActive(t, deviceId)
-								if err != nil {
-									t.Error(err)
-								}
-							}
-							fmt.Print("Device is Active")
-							err = helper.CleanTestDevice(t, deviceId)
-							if err != nil {
-								t.Error(err)
-							}
-							fmt.Print("Cleaned Test Device")
-							err = helper.CleanTestProject(t, projectId)
-							if err != nil {
-								t.Error(err)
-							}
-							fmt.Print("Cleaned Test Project")
-						}
+						t.Fatal("expected output should include" + "Device " + deviceId + " successfully started." + "in the out string ")
+					}
+
+					status, err = helper.IsDeviceStateActive(t, deviceId)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if !status {
+						t.Fatalf("Device not yet active, %s", deviceId)
 					}
 				}
 			},

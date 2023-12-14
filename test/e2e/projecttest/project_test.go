@@ -85,12 +85,16 @@ func TestCli_Project_Tests(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), projName) {
 						t.Error("expected output should include " + projName + ", in the out string ")
 					}
@@ -119,12 +123,16 @@ func TestCli_Project_Tests(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), updateProjName) &&
 						!strings.Contains(string(out[:]), projectId) {
 						t.Error("expected output should include " + updateProjName + projectId + ", in the out string ")
@@ -152,12 +160,16 @@ func TestCli_Project_Tests(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), projName) &&
 						!strings.Contains(string(out[:]), projectId) {
 						t.Error("expected output should include " + projName + projectId + ", in the out string ")
@@ -185,12 +197,16 @@ func TestCli_Project_Tests(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), projName) &&
 						!strings.Contains(string(out[:]), projectId) {
 						t.Error("expected output should include " + projName + projectId + ", in the out string ")
@@ -218,12 +234,16 @@ func TestCli_Project_Tests(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					expectedOut := fmt.Sprintf("Project %s successfully deleted.", projectId)
 					if !strings.Contains(string(out[:]), expectedOut) {
 						t.Error(fmt.Errorf("expected output: '%s' but got '%s'", expectedOut, string(out)))
@@ -254,12 +274,16 @@ func TestCli_Project_Tests(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), projectId) &&
 						!strings.Contains(string(out[:]), asn) &&
 						!strings.Contains(string(out[:]), dtype) {
@@ -298,12 +322,16 @@ func TestCli_Project_Tests(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), projectId) &&
 						!strings.Contains(string(out[:]), asn) &&
 						!strings.Contains(string(out[:]), status) &&

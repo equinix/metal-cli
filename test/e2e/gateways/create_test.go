@@ -66,12 +66,16 @@ func TestGateways_Create(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 
 				apiClient := helper.TestClient()
 				gateways, _, err := apiClient.MetalGatewaysApi.
@@ -79,8 +83,7 @@ func TestGateways_Create(t *testing.T) {
 					Include([]string{"ip_reservation"}).
 					Execute()
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 				if len(gateways.MetalGateways) != 1 {
 					t.Error(errors.New("Gateway Not Found. Failed to create gateway"))

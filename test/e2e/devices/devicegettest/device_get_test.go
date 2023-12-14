@@ -16,7 +16,6 @@ import (
 func TestCli_Devices_Get(t *testing.T) {
 	var projectId, deviceId string
 	var err error
-	var resp bool
 	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
@@ -50,49 +49,37 @@ func TestCli_Devices_Get(t *testing.T) {
 					}
 				})
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 
 				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-get-dev")
-				if err != nil {
-					t.Error(err)
-					return
-				}
-				root.SetArgs([]string{subCommand, "get", "-i", deviceId})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				if err := root.Execute(); err != nil {
-					t.Error(err)
-				}
-				w.Close()
-				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				t.Cleanup(func() {
 					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
 						!strings.Contains(err.Error(), "Not Found") {
 						t.Error(err)
 					}
 				})
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				root.SetArgs([]string{subCommand, "get", "-i", deviceId})
+				rescueStdout := os.Stdout
+				r, w, _ := os.Pipe()
+				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
+				if err := root.Execute(); err != nil {
+					t.Fatal(err)
+				}
+
+				out, _ := io.ReadAll(r)
 
 				if !strings.Contains(string(out[:]), deviceId) {
-					t.Error("expected output should include " + deviceId)
-				}
-				if len(projectId) != 0 && len(deviceId) != 0 {
-					resp, err = helper.IsDeviceStateActive(t, deviceId)
-					if err == nil && resp == true {
-						err = helper.CleanTestDevice(t, deviceId)
-						if err != nil {
-							t.Error(err)
-						}
-						err = helper.CleanTestProject(t, projectId)
-						if err != nil {
-							t.Error(err)
-						}
-					} else {
-						t.Error(err)
-					}
+					t.Fatal("expected output should include " + deviceId)
 				}
 			},
 		},

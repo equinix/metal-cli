@@ -61,12 +61,16 @@ func TestCli_Events_Get(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "Queued for provisioning") &&
 					!strings.Contains(string(out[:]), "Connected to magic install system") &&
 					!strings.Contains(string(out[:]), "Provision complete! Your device is ready to go.") {

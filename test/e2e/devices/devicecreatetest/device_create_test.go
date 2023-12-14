@@ -17,7 +17,6 @@ import (
 func TestCli_Devices_Create(t *testing.T) {
 	var projectId, deviceId string
 	var err error
-	var resp bool
 	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
@@ -51,8 +50,7 @@ func TestCli_Devices_Create(t *testing.T) {
 					}
 				})
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 
 				if len(projectId) != 0 {
@@ -62,20 +60,16 @@ func TestCli_Devices_Create(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
-					if err := root.Execute(); err != nil {
-						t.Error(err)
-						return
-					}
-					w.Close()
-					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
-
 					t.Cleanup(func() {
-						if err := helper.CleanTestDevice(t, deviceId); err != nil &&
-							!strings.Contains(err.Error(), "Not Found") {
-							t.Error(err)
-						}
+						w.Close()
+						os.Stdout = rescueStdout
 					})
+
+					if err := root.Execute(); err != nil {
+						t.Fatal(err)
+					}
+
+					out, _ := io.ReadAll(r)
 
 					if !strings.Contains(string(out[:]), deviceName) &&
 						!strings.Contains(string(out[:]), "Ubuntu 20.04 LTS") &&
@@ -91,19 +85,15 @@ func TestCli_Devices_Create(t *testing.T) {
 					// Extract the ID from the match
 					if len(match) > 1 {
 						deviceId = strings.TrimSpace(match[1])
-						resp, err = helper.IsDeviceStateActive(t, deviceId)
-						if err != nil || resp {
-							if !resp {
-								resp, err = helper.IsDeviceStateActive(t, deviceId)
-							}
-							err = helper.CleanTestDevice(t, deviceId)
-							if err != nil {
+						_, err = helper.IsDeviceStateActive(t, deviceId)
+						t.Cleanup(func() {
+							if err := helper.CleanTestDevice(t, deviceId); err != nil &&
+								!strings.Contains(err.Error(), "Not Found") {
 								t.Error(err)
 							}
-							err = helper.CleanTestProject(t, projectId)
-							if err != nil {
-								t.Error(err)
-							}
+						})
+						if err != nil {
+							t.Fatal(err)
 						}
 					}
 				}
