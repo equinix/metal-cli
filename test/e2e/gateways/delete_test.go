@@ -93,6 +93,7 @@ func TestGateways_Delete(t *testing.T) {
 				apiClient := helper.TestClient()
 				gateways, _, err := apiClient.MetalGatewaysApi.
 					FindMetalGatewayById(context.Background(), metalGateway.GetId()).
+					Include([]string{"ip_reservation"}).
 					Execute()
 				if err != nil && !strings.Contains(err.Error(), "Not Found") {
 					t.Error(err)

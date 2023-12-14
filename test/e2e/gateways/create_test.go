@@ -76,6 +76,7 @@ func TestGateways_Create(t *testing.T) {
 				apiClient := helper.TestClient()
 				gateways, _, err := apiClient.MetalGatewaysApi.
 					FindMetalGatewaysByProject(context.Background(), projectId).
+					Include([]string{"ip_reservation"}).
 					Execute()
 				if err != nil {
 					t.Error(err)
