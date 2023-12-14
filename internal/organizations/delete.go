@@ -23,8 +23,8 @@ package organizations
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -32,6 +32,7 @@ func (c *Client) Delete() *cobra.Command {
 	var (
 		organizationID string
 		force          bool
+		confirmation   string
 	)
 	deleteOrganization := func(id string) error {
 		_, err := c.Service.DeleteOrganization(context.Background(), id).Execute()
@@ -51,26 +52,31 @@ func (c *Client) Delete() *cobra.Command {
 		Example: `  # Deletes an organization, with confirmation: 
   metal organization delete -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8
   >
-  ✔ Are you sure you want to delete organization 3bd5bf07-6094-48ad-bd03-d94e8712fdc8: y
+  ✔ Are you sure you want to delete organization 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 [Y/N]: y
   
   # Deletes an organization, skipping confirmation:
   metal organization delete -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 -f`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
+
 			if !force {
-				prompt := promptui.Prompt{
-					Label:     fmt.Sprintf("Are you sure you want to delete organization %s: ", organizationID),
-					IsConfirm: true,
+				fmt.Printf("Are you sure you want to delete organization %s [Y/N]: ", organizationID)
+
+				_, err := fmt.Scanln(&confirmation)
+				if err != nil {
+					fmt.Println("Error reading confirmation:", err)
+					return nil
 				}
 
-				_, err := prompt.Run()
-				if err != nil {
+				confirmation = strings.TrimSpace(strings.ToLower(confirmation))
+				if confirmation != "yes" && confirmation != "y" {
+					fmt.Println("organization deletion cancelled.")
 					return nil
 				}
 			}
 			if err := deleteOrganization(organizationID); err != nil {
-				return fmt.Errorf("Could not delete Organization: %w", err)
+				return fmt.Errorf("could not delete Organization: %w", err)
 			}
 			return nil
 		},

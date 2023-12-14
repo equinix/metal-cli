@@ -26,15 +26,23 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	metal "github.com/equinix-labs/metal-go/metal/v1"
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Convert() *cobra.Command {
-	var portID string
-	var bonded, layer2, bulk, force, ipv4, ipv6 bool
+	var (
+		portID       string
+		bonded       bool
+		layer2       bool
+		bulk         bool
+		force        bool
+		ipv4         bool
+		ipv6         bool
+		confirmation string
+	)
 	convertPortCmd := &cobra.Command{
 		Use:     `convert -i <port_UUID> [--bonded] [--bulk] --layer2 [--force] [--public-ipv4] [--public-ipv6]`,
 		Aliases: []string{},
@@ -62,18 +70,22 @@ func (c *Client) Convert() *cobra.Command {
 			}
 
 			convToL2 := func(portID string) (*metal.Port, *http.Response, error) {
+
 				if !force {
-					prompt := promptui.Prompt{
-						Label:     fmt.Sprintf("Are you sure you want to convert Port %s to Layer2 and remove assigned IP addresses: ", portID),
-						IsConfirm: true,
+					fmt.Printf("Are you sure you want to convert Port %s to Layer2 and remove assigned IP addresses [Y/N]: ", portID)
+
+					_, err := fmt.Scanln(&confirmation)
+					if err != nil {
+						fmt.Println("Error reading confirmation:", err)
+						return nil, nil, nil
 					}
 
-					_, err := prompt.Run()
-					if err != nil {
+					confirmation = strings.TrimSpace(strings.ToLower(confirmation))
+					if confirmation != "yes" && confirmation != "y" {
+						fmt.Println("convert Port to Layer2 cancelled.")
 						return nil, nil, nil
 					}
 				}
-
 				return c.PortService.ConvertLayer2(context.Background(), portID).
 					PortAssignInput(*metal.NewPortAssignInput()).
 					Execute()

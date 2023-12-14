@@ -16,7 +16,7 @@ metal ssh-key delete --id <SSH-key_UUID> [--force] [flags]
   # Deletes an SSH key, with confirmation:
   metal ssh-key delete -i 5cb96463-88fd-4d68-94ba-2c9505ff265e
   >
-  ✔ Are you sure you want to delete SSH Key 5cb96463-88fd-4d68-94ba-2c9505ff265e: y
+  ✔ Are you sure you want to delete SSH Key 5cb96463-88fd-4d68-94ba-2c9505ff265e [Y/N]: y
   
   # Deletes an SSH key, skipping confirmation:
   metal ssh-key delete -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -f

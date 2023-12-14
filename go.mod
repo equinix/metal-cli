@@ -4,7 +4,6 @@ go 1.19
 
 require (
 	github.com/equinix-labs/metal-go v0.26.0
-	github.com/manifoldco/promptui v0.9.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/packethost/packngo v0.30.0
 	github.com/pkg/errors v0.9.1
@@ -17,7 +16,6 @@ require (
 )
 
 require (
-	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect

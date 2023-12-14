@@ -3,15 +3,16 @@ package vrf
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Delete() *cobra.Command {
 	var (
-		vrfID string
-		force bool
+		vrfID        string
+		force        bool
+		confirmation string
 	)
 
 	deleteVrf := func(id string) error {
@@ -31,7 +32,7 @@ func (c *Client) Delete() *cobra.Command {
 		Example: `# Deletes a VRF, with confirmation.
   metal delete vrf -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
   >
-  ✔ Are you sure you want to delete device 7ec86e23-8dcf-48ed-bd9b-c25c20958277: y
+  ✔ Are you sure you want to delete device 7ec86e23-8dcf-48ed-bd9b-c25c20958277 [Y/N]: y
 
   # Deletes a VRF, skipping confirmation.
   metal delete vrf -f -i 77e6d57a-d7a4-4816-b451-cf9b043444e2`,
@@ -39,13 +40,17 @@ func (c *Client) Delete() *cobra.Command {
 			cmd.SilenceUsage = true
 
 			if !force {
-				prompt := promptui.Prompt{
-					Label:     fmt.Sprintf("Are you sure you want to delete VRF %s: ", vrfID),
-					IsConfirm: true,
+				fmt.Printf("Are you sure you want to delete VRF %s [Y/N]: ", vrfID)
+
+				_, err := fmt.Scanln(&confirmation)
+				if err != nil {
+					fmt.Println("Error reading confirmation:", err)
+					return nil
 				}
 
-				result, err := prompt.Run()
-				if err != nil || result != "y" {
+				confirmation = strings.TrimSpace(strings.ToLower(confirmation))
+				if confirmation != "yes" && confirmation != "y" {
+					fmt.Println("VRF deletion cancelled.")
 					return nil
 				}
 			}

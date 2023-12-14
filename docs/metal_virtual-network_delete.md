@@ -16,7 +16,7 @@ metal virtual-network delete -i <virtual_network_UUID> [-f] [flags]
   # Deletes a VLAN, with confirmation.
   metal virtual-network delete -i 77e6d57a-d7a4-4816-b451-cf9b043444e2
   >
-  ✔ Are you sure you want to delete virtual network 77e6d57a-d7a4-4816-b451-cf9b043444e2: y
+  ✔ Are you sure you want to delete virtual network 77e6d57a-d7a4-4816-b451-cf9b043444e2 [Y/N]: y
 		
   # Deletes a VLAN, skipping confirmation.
   metal virtual-network delete -f -i 77e6d57a-d7a4-4816-b451-cf9b043444e2

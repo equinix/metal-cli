@@ -23,15 +23,16 @@ package projects
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
 func (c *Client) Delete() *cobra.Command {
 	var (
-		force     bool
-		projectID string
+		force        bool
+		projectID    string
+		confirmation string
 	)
 	deleteProject := func(id string) error {
 		_, err := c.ProjectService.DeleteProject(context.Background(), id).Execute()
@@ -49,26 +50,31 @@ func (c *Client) Delete() *cobra.Command {
 		Example: `  # Deletes project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375:
   metal project delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375
   >
-  ✔ Are you sure you want to delete project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375: y
+  ✔ Are you sure you want to delete project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 [Y/N]: y
   
   # Deletes project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375, skipping confirmation:
   metal project delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 -f`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
+
 			if !force {
-				prompt := promptui.Prompt{
-					Label:     fmt.Sprintf("Are you sure you want to delete project %s: ", projectID),
-					IsConfirm: true,
+				fmt.Printf("Are you sure you want to delete project %s [Y/N]: ", projectID)
+
+				_, err := fmt.Scanln(&confirmation)
+				if err != nil {
+					fmt.Println("Error reading confirmation:", err)
+					return nil
 				}
 
-				_, err := prompt.Run()
-				if err != nil {
+				confirmation = strings.TrimSpace(strings.ToLower(confirmation))
+				if confirmation != "yes" && confirmation != "y" {
+					fmt.Println("project deletion cancelled.")
 					return nil
 				}
 			}
 			if err := deleteProject(projectID); err != nil {
-				return fmt.Errorf("Could not delete Project: %w", err)
+				return fmt.Errorf("could not delete Project: %w", err)
 			}
 			return nil
 		},
