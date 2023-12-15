@@ -44,7 +44,12 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			include := c.Servicer.Includes(nil)
+
+			// API spec says organization address.address is required,
+			// but the address is not included by default
+			defaultIncludes := []string{"address", "billing_address"}
+
+			include := c.Servicer.Includes(defaultIncludes)
 			exclude := c.Servicer.Excludes(nil)
 
 			if organizationID == "" {

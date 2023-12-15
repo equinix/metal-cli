@@ -42,6 +42,13 @@ func (c *Client) Update() *cobra.Command {
 			cmd.SilenceUsage = true
 			req := metal.NewOrganizationInput()
 
+			// API spec says organization address.address is required,
+			// but the address is not included by default
+			defaultIncludes := []string{"address", "billing_address"}
+
+			include := c.Servicer.Includes(defaultIncludes)
+			exclude := c.Servicer.Excludes(nil)
+
 			if name != "" {
 				req.Name = &name
 			}
@@ -62,7 +69,7 @@ func (c *Client) Update() *cobra.Command {
 				req.Website = &website
 			}
 
-			org, _, err := c.Service.UpdateOrganization(context.Background(), organizationID).OrganizationInput(*req).Execute()
+			org, _, err := c.Service.UpdateOrganization(context.Background(), organizationID).OrganizationInput(*req).Include(include).Exclude(exclude).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not update Organization: %w", err)
 			}

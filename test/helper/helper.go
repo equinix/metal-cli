@@ -377,7 +377,11 @@ func CreateTestOrganization(name string) (string, error) {
 	addr.SetZipCode("02108")
 	organizationInput.Address = addr
 
-	resp, _, err := TestApiClient.OrganizationsApi.CreateOrganization(context.Background()).OrganizationInput(*organizationInput).Execute()
+	// API spec says organization address.address is required,
+	// but the address is not included by default
+	defaultIncludes := []string{"address", "billing_address"}
+
+	resp, _, err := TestApiClient.OrganizationsApi.CreateOrganization(context.Background()).OrganizationInput(*organizationInput).Include(defaultIncludes).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `OrganizationsApi.CreateOrganization``: %v\n", err)
 		return "", err
