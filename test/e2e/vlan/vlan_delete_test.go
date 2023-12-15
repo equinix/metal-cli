@@ -40,7 +40,7 @@ func TestCli_Vlan_Clean(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectName := "metal-cli-vlan-get-pro" + helper.GenerateUUID()
+				projectName := "metal-cli-vlan-get-pro" + helper.GenerateRandomString(5)
 				projectId, err = helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)

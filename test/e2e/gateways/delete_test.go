@@ -29,7 +29,7 @@ func TestGateways_Delete(t *testing.T) {
 			t.Error(err)
 		}
 	}()
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-gateway-delete")
 	t.Cleanup(func() {
 		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil &&
 			!strings.Contains(err.Error(), "Not Found") {

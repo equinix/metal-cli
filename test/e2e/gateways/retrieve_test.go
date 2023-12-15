@@ -23,7 +23,7 @@ func TestGateways_Retrieve(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-gateway-get")
 	t.Cleanup(func() {
 		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
 			t.Error(err)

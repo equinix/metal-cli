@@ -313,9 +313,9 @@ func CleanupProjectAndDevice(t *testing.T, deviceId, projectId string) error {
 }
 
 //nolint:staticcheck
-func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapiclient.Device {
+func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string, projPrefix string) *openapiclient.Device {
 	t.Helper()
-	projectName := "metal-cli-test-project" + GenerateUUID()
+	projectName := projPrefix + GenerateRandomString(5)
 	projId, err := CreateTestProject(t, projectName)
 	if err != nil {
 		t.Fatal(err)
@@ -418,7 +418,7 @@ func CreateTestBgpEnableTest(projId string) error {
 }
 
 //nolint:staticcheck
-func GenerateRandomString(length int) (string, error) {
+func GenerateRandomString(length int) string {
 	// Calculate the number of bytes needed for the given string length
 	numBytes := (length * 3) / 4
 
@@ -428,7 +428,7 @@ func GenerateRandomString(length int) (string, error) {
 	// Read random bytes from the crypto/rand package
 	_, err := rand.Read(randomBytes)
 	if err != nil {
-		return "", err
+		return strconv.Itoa(int(time.Now().UnixNano()))
 	}
 
 	// Encode the random bytes to base64 to get a string
@@ -437,9 +437,5 @@ func GenerateRandomString(length int) (string, error) {
 	// Trim any padding characters
 	randomString = randomString[:length]
 
-	return randomString, nil
-}
-
-func GenerateUUID() string {
-	return strconv.Itoa(int(time.Now().UnixNano()))
+	return randomString
 }

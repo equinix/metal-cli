@@ -40,7 +40,7 @@ func TestCli_Devices_Get(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectName := "metal-cli-get-pro" + helper.GenerateUUID()
+				projectName := "metal-cli-device-get" + helper.GenerateRandomString(5)
 				projectId, err = helper.CreateTestProject(t, projectName)
 				t.Cleanup(func() {
 					if err := helper.CleanTestProject(t, projectId); err != nil &&

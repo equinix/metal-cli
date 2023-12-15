@@ -22,6 +22,8 @@ func TestCli_Devices_Create(t *testing.T) {
 	apiURL := ""
 	Version := "metal"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	randomId := helper.GenerateRandomString(5)
+
 	type fields struct {
 		MainCmd  *cobra.Command
 		Outputer outputPkg.Outputer
@@ -41,7 +43,7 @@ func TestCli_Devices_Create(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectName := "metal-cli-create-pro" + helper.GenerateUUID()
+				projectName := "metal-cli-device-create" + randomId
 				projectId, err = helper.CreateTestProject(t, projectName)
 				t.Cleanup(func() {
 					if err := helper.CleanTestProject(t, projectId); err != nil &&
@@ -55,7 +57,7 @@ func TestCli_Devices_Create(t *testing.T) {
 
 				if len(projectId) != 0 {
 
-					deviceName := "metal-cli-create-dev" + helper.GenerateUUID()
+					deviceName := "metal-cli-create-dev" + randomId
 					root.SetArgs([]string{subCommand, "create", "-p", projectId, "-P", "m3.small.x86", "-m", "da", "-O", "ubuntu_20_04", "-H", deviceName})
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()

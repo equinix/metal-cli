@@ -43,7 +43,7 @@ func TestCli_Ips_Get(t *testing.T) {
 					t.Skip("Skipping this test because someCondition is true")
 				}
 				root := c.Root()
-				projectName := "metal-cli-ips-get-pro" + helper.GenerateUUID()
+				projectName := "metal-cli-ips-get" + helper.GenerateRandomString(5)
 				projectId, err = helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)

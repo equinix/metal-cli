@@ -24,7 +24,7 @@ func TestPorts_Convert(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-port-convert")
 	t.Cleanup(func() {
 		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
 			t.Error(err)

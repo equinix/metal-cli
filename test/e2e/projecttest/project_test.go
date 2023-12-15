@@ -54,7 +54,7 @@ func TestCli_Project_Tests(t *testing.T) {
 	apiURL := ""
 	Version := "metal"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
-	randName, _ := helper.GenerateRandomString(32)
+	randName := helper.GenerateRandomString(5)
 
 	type fields struct {
 		MainCmd  *cobra.Command

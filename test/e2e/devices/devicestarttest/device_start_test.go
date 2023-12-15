@@ -41,7 +41,7 @@ func TestCli_Devices_Update(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectName := "metal-cli-start-pro" + helper.GenerateUUID()
+				projectName := "metal-cli-device-start" + helper.GenerateRandomString(5)
 				projectId, err = helper.CreateTestProject(t, projectName)
 				t.Cleanup(func() {
 					if err := helper.CleanTestProject(t, projectId); err != nil &&
