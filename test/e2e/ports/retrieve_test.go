@@ -22,9 +22,9 @@ func TestPorts_Retrieve(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-port-get")
 	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
+		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
 			t.Error(err)
 		}
 	})
@@ -55,12 +55,16 @@ func TestPorts_Retrieve(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 
 				if !strings.Contains(string(out[:]), port.Data.GetMac()) {
 					t.Errorf("cmd output should contain MAC address of the port: %s", port.Data.GetMac())

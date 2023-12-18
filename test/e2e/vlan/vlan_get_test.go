@@ -40,33 +40,38 @@ func TestCli_Vlan_Get(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-vlan-delete-pro")
+				projectName := "metal-cli-vlan-delete-pro" + helper.GenerateRandomString(5)
+				projectId, err = helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)
 				}
-				vlanId, err = helper.CreateTestVlanWithVxLan(projectId, 2023, "metal-cli-vlan-delete-test")
+				vlanId, err = helper.CreateTestVlanWithVxLan(t, projectId, 2023, "metal-cli-vlan-delete-test")
 				if len(projectId) != 0 && len(vlanId) != 0 {
 					root.SetArgs([]string{subCommand, "get", "-p", projectId})
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), "metal-cli-vlan-get-test") &&
 						!strings.Contains(string(out[:]), "da") &&
 						!strings.Contains(string(out[:]), "2023") {
 						t.Error("expected output should include metal-cli-vlan-get-test, da and 2023 strings in the out string")
 					}
 
-					err = helper.CleanTestVlan(vlanId)
+					err = helper.CleanTestVlan(t, vlanId)
 					if err != nil {
 						t.Error(err)
 					}
-					err = helper.CleanTestProject(projectId)
+					err = helper.CleanTestProject(t, projectId)
 					if err != nil {
 						t.Error(err)
 					}

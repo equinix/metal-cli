@@ -43,32 +43,37 @@ func TestCli_Ips_Get(t *testing.T) {
 					t.Skip("Skipping this test because someCondition is true")
 				}
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-ips-get-pro")
+				projectName := "metal-cli-ips-get" + helper.GenerateRandomString(5)
+				projectId, err = helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)
 				}
-				ipsId, err = helper.CreateTestIps(projectId, 1, "public_ipv4")
+				ipsId, err = helper.CreateTestIps(t, projectId, 1, "public_ipv4")
 				if len(projectId) != 0 && len(ipsId) != 0 {
 					root.SetArgs([]string{subCommand, "get", "-p", projectId})
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), ipsId) &&
 						!strings.Contains(string(out[:]), "da") {
 						t.Error("expected output should include " + ipsId + " da strings in the out string")
 					}
 
-					err = helper.CleanTestIps(ipsId)
+					err = helper.CleanTestIps(t, ipsId)
 					if err != nil {
 						t.Error(err)
 					}
-					err = helper.CleanTestProject(projectId)
+					err = helper.CleanTestProject(t, projectId)
 					if err != nil {
 						t.Error(err)
 					}

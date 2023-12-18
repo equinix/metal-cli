@@ -44,7 +44,8 @@ func TestCli_Vlan_Create(t *testing.T) {
 					t.Skip("Skipping temporarily for now")
 				}
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-ips-create-pro")
+				projectName := "metal-cli-ips-get" + helper.GenerateRandomString(5)
+				projectId, err = helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)
 				}
@@ -54,19 +55,23 @@ func TestCli_Vlan_Create(t *testing.T) {
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), "ID") &&
 						!strings.Contains(string(out[:]), "PUBLIC") &&
 						!strings.Contains(string(out[:]), "true") {
 						t.Error("expected output should include ID, PUBLIC and true strings in the out string")
 					}
 				}
-				err = helper.CleanTestProject(projectId)
+				err = helper.CleanTestProject(t, projectId)
 				if err != nil {
 					t.Error(err)
 				}

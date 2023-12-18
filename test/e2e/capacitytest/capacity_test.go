@@ -41,12 +41,16 @@ func TestCli_Capacity(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "n3.xlarge.x86") &&
 					!strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "s3.xlarge.x86") &&
@@ -70,12 +74,16 @@ func TestCli_Capacity(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "c3.small.x86") &&
 					!strings.Contains(string(out[:]), "mt") &&
 					!strings.Contains(string(out[:]), "sv") &&
@@ -99,12 +107,16 @@ func TestCli_Capacity(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "mt") &&
 					!strings.Contains(string(out[:]), "sv") &&
@@ -127,12 +139,16 @@ func TestCli_Capacity(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "c3.medium.x86") &&
 					!strings.Contains(string(out[:]), "ny") &&
 					!strings.Contains(string(out[:]), "da") {
@@ -153,12 +169,16 @@ func TestCli_Capacity(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "c3.medium.x86") &&
 					!strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "ny") &&
@@ -180,12 +200,16 @@ func TestCli_Capacity(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "c3.medium.x86") &&
 					!strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "ny") &&

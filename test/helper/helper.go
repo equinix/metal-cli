@@ -2,12 +2,12 @@ package helper
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/base64"
 	"fmt"
 	"os"
 	"testing"
 	"time"
+
+	"golang.org/x/exp/rand"
 
 	openapiclient "github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/pkg/errors"
@@ -22,21 +22,21 @@ func TestClient() *openapiclient.APIClient {
 	return apiClient
 }
 
-func CreateTestProject(name string) (string, error) {
+func CreateTestProject(t *testing.T, name string) (string, error) {
+	t.Helper()
 	TestApiClient := TestClient()
 
 	projectCreateFromRootInput := *openapiclient.NewProjectCreateFromRootInput(name) // ProjectCreateFromRootInput | Project to create
 
-	projectResp, r, err := TestApiClient.ProjectsApi.CreateProject(context.Background()).ProjectCreateFromRootInput(projectCreateFromRootInput).Execute()
+	projectResp, _, err := TestApiClient.ProjectsApi.CreateProject(context.Background()).ProjectCreateFromRootInput(projectCreateFromRootInput).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `ProjectsApi.CreateProject`: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-		return "", err
+		return "", fmt.Errorf("Error when calling `ProjectsApi.CreateProject`: %v\n", err)
 	}
 	return projectResp.GetId(), nil
 }
 
-func CreateTestDevice(projectId, name string) (string, error) {
+func CreateTestDevice(t *testing.T, projectId, name string) (string, error) {
+	t.Helper()
 	TestApiClient := TestClient()
 
 	hostname := name
@@ -53,14 +53,14 @@ func CreateTestDevice(projectId, name string) (string, error) {
 		CreateDeviceRequest(metroDeviceRequest).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.CreateDevice`: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("Error when calling `DevicesApi.CreateDevice`: %v\n", err)
 	}
 	return deviceResp.GetId(), nil
 }
 
-func CreateTestVLAN(projectId string) (*openapiclient.VirtualNetwork, error) {
+func CreateTestVLAN(t *testing.T, projectId string) (*openapiclient.VirtualNetwork, error) {
 	TestApiClient := TestClient()
+	t.Helper()
 
 	metro := "sv"
 	vlanCreateInput := openapiclient.VirtualNetworkCreateInput{
@@ -71,14 +71,14 @@ func CreateTestVLAN(projectId string) (*openapiclient.VirtualNetwork, error) {
 		VirtualNetworkCreateInput(vlanCreateInput).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.CreateVirtualNetwork`: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("Error when calling `VLANsApi.CreateVirtualNetwork`: %v\n", err)
 	}
 	return vlan, nil
 }
 
-func CreateTestGateway(projectId, vlanId string, privateIPv4SubnetSize *int32) (*openapiclient.MetalGateway, error) {
+func CreateTestGateway(t *testing.T, projectId, vlanId string, privateIPv4SubnetSize *int32) (*openapiclient.MetalGateway, error) {
 	TestApiClient := TestClient()
+	t.Helper()
 
 	gatewayCreateInput := openapiclient.CreateMetalGatewayRequest{
 		MetalGatewayCreateInput: &openapiclient.MetalGatewayCreateInput{
@@ -92,14 +92,15 @@ func CreateTestGateway(projectId, vlanId string, privateIPv4SubnetSize *int32) (
 		CreateMetalGatewayRequest(gatewayCreateInput).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `MetalGatewaysApi.CreateMetalGateway`: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("Error when calling `MetalGatewaysApi.CreateMetalGateway`: %v\n", err)
 	}
 	return gateway.MetalGateway, nil
 }
 
-func GetDeviceById(deviceId string) (*openapiclient.Device, error) {
+func GetDeviceById(t *testing.T, deviceId string) (*openapiclient.Device, error) {
 	TestApiClient := TestClient()
+	t.Helper()
+
 	includes := []string{"network_ports"}
 
 	device, _, err := TestApiClient.DevicesApi.
@@ -107,14 +108,14 @@ func GetDeviceById(deviceId string) (*openapiclient.Device, error) {
 		Include(includes).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.FindDeviceById`: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("Error when calling `DevicesApi.FindDeviceById`: %v\n", err)
 	}
 
 	return device, nil
 }
 
-func GetPortById(portId string) (*openapiclient.Port, error) {
+func GetPortById(t *testing.T, portId string) (*openapiclient.Port, error) {
+	t.Helper()
 	TestApiClient := TestClient()
 	includes := []string{"virtual_network"}
 
@@ -123,19 +124,19 @@ func GetPortById(portId string) (*openapiclient.Port, error) {
 		Include(includes).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `PortsApi.FindPortById`: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("Error when calling `PortsApi.FindPortById`: %v\n", err)
 	}
 
 	return port, nil
 }
 
-func IsDeviceStateActive(deviceId string) (bool, error) {
+func IsDeviceStateActive(t *testing.T, deviceId string) (bool, error) {
+	t.Helper()
 	predefinedTime := 500 * time.Second // Adjust this as needed
 	retryInterval := 10 * time.Second   // Adjust this as needed
 	startTime := time.Now()
 	for time.Since(startTime) < predefinedTime {
-		device, err := GetDeviceById(deviceId)
+		device, err := GetDeviceById(t, deviceId)
 		if err != nil {
 			return false, err
 		}
@@ -149,7 +150,8 @@ func IsDeviceStateActive(deviceId string) (bool, error) {
 	return false, fmt.Errorf("timed out waiting for device %v to become active", deviceId)
 }
 
-func WaitForAttachVlanToPort(portId string, attach bool) error {
+func WaitForAttachVlanToPort(t *testing.T, portId string, attach bool) error {
+	t.Helper()
 	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
 
@@ -162,7 +164,7 @@ func WaitForAttachVlanToPort(portId string, attach bool) error {
 		case <-ctx.Done():
 			return fmt.Errorf("Timeout exceeded for vlan assignment with port ID: %s", portId)
 		case <-ticker.C:
-			port, err := GetPortById(portId)
+			port, err := GetPortById(t, portId)
 			if err != nil {
 				return errors.Wrapf(err, "Error while fetching the port using ID: %s", portId)
 			}
@@ -181,48 +183,47 @@ func WaitForAttachVlanToPort(portId string, attach bool) error {
 	}
 }
 
-func StopTestDevice(deviceId string) error {
+func StopTestDevice(t *testing.T, deviceId string) error {
+	t.Helper()
 
 	deviceActionInput := *openapiclient.NewDeviceActionInput("power_off")
 	TestApiClient := TestClient()
 
 	_, err := TestApiClient.DevicesApi.PerformAction(context.Background(), deviceId).DeviceActionInput(deviceActionInput).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.PerformAction``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `DevicesApi.PerformAction``: %v\n", err)
 	}
 	return nil
 }
 
-func CleanTestDevice(deviceId string) error {
-	forceDelete := true // bool | Force the deletion of the device, by detaching any storage volume still active. (optional)
+func CleanTestDevice(t *testing.T, deviceId string) error {
+	t.Helper()
 
 	TestApiClient := TestClient()
 	_, err := TestApiClient.DevicesApi.
 		DeleteDevice(context.Background(), deviceId).
-		ForceDelete(forceDelete).
+		ForceDelete(true).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DevicesApi.DeleteDevice``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `DevicesApi.DeleteDevice``: %v\n", err)
 	}
 	return nil
 }
 
-func CleanTestProject(projectId string) error {
+func CleanTestProject(t *testing.T, projectId string) error {
+	t.Helper()
 	TestApiClient := TestClient()
-	r, err := TestApiClient.ProjectsApi.
+	_, err := TestApiClient.ProjectsApi.
 		DeleteProject(context.Background(), projectId).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `ProjectsApi.DeleteProject``: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-		return err
+		return fmt.Errorf("Error when calling `ProjectsApi.DeleteProject``: %v\n", err)
 	}
 	return nil
 }
 
-func CreateTestIps(projectId string, quantity int, ipType string) (string, error) {
+func CreateTestIps(t *testing.T, projectId string, quantity int, ipType string) (string, error) {
+	t.Helper()
 	TestApiClient := TestClient()
 	metro := "da"
 	var tags []string
@@ -242,23 +243,23 @@ func CreateTestIps(projectId string, quantity int, ipType string) (string, error
 
 	ipsresp, _, err := TestApiClient.IPAddressesApi.RequestIPReservation(context.Background(), projectId).RequestIPReservationRequest(*requestIPReservationRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `IPAddressesApi.FindIPReservations``: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("Error when calling `IPAddressesApi.FindIPReservations``: %v\n", err)
 	}
 	return ipsresp.IPReservation.GetId(), nil
 }
 
-func CleanTestIps(ipsId string) error {
+func CleanTestIps(t *testing.T, ipsId string) error {
+	t.Helper()
 	TestApiClient := TestClient()
 	_, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), ipsId).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `IPAddressesApi.DeleteIPAddress``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `IPAddressesApi.DeleteIPAddress``: %v\n", err)
 	}
 	return nil
 }
 
-func CreateTestVlanWithVxLan(projectId string, Id int, desc string) (string, error) {
+func CreateTestVlanWithVxLan(t *testing.T, projectId string, Id int, desc string) (string, error) {
+	t.Helper()
 	TestApiClient := TestClient()
 	virtualNetworkCreateInput := *openapiclient.NewVirtualNetworkCreateInput()
 	virtualNetworkCreateInput.SetDescription(desc)
@@ -267,24 +268,24 @@ func CreateTestVlanWithVxLan(projectId string, Id int, desc string) (string, err
 
 	vlanresp, _, err := TestApiClient.VLANsApi.CreateVirtualNetwork(context.Background(), projectId).VirtualNetworkCreateInput(virtualNetworkCreateInput).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.CreateVirtualNetwork``: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("Error when calling `VLANsApi.CreateVirtualNetwork``: %v\n", err)
 	}
 	return vlanresp.GetId(), nil
 }
 
-func CleanTestVlan(vlanId string) error {
+func CleanTestVlan(t *testing.T, vlanId string) error {
+	t.Helper()
 	TestApiClient := TestClient()
 	_, _, err := TestApiClient.VLANsApi.DeleteVirtualNetwork(context.Background(), vlanId).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `VLANsApi.DeleteVirtualNetwork``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `VLANsApi.DeleteVirtualNetwork``: %v\n", err)
 	}
 
 	return nil
 }
 
-func UnAssignPortVlan(portId, vlanId string) error {
+func UnAssignPortVlan(t *testing.T, portId, vlanId string) error {
+	t.Helper()
 	testClient := TestClient()
 	_, _, err := testClient.PortsApi.
 		UnassignPort(context.Background(), portId).
@@ -293,14 +294,15 @@ func UnAssignPortVlan(portId, vlanId string) error {
 	return err
 }
 
-func CleanupProjectAndDevice(deviceId, projectId string) error {
-	resp, err := IsDeviceStateActive(deviceId)
+func CleanupProjectAndDevice(t *testing.T, deviceId, projectId string) error {
+	t.Helper()
+	resp, err := IsDeviceStateActive(t, deviceId)
 	if err == nil && resp {
-		err = CleanTestDevice(deviceId)
+		err = CleanTestDevice(t, deviceId)
 		if err != nil {
 			return err
 		}
-		err = CleanTestProject(projectId)
+		err = CleanTestProject(t, projectId)
 		if err != nil {
 			return err
 		}
@@ -310,23 +312,24 @@ func CleanupProjectAndDevice(deviceId, projectId string) error {
 }
 
 //nolint:staticcheck
-func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapiclient.Device {
+func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string, projPrefix string) *openapiclient.Device {
 	t.Helper()
-	projId, err := CreateTestProject("metal-cli-test-project")
+	projectName := projPrefix + GenerateRandomString(5)
+	projId, err := CreateTestProject(t, projectName)
 	if err != nil {
 		t.Fatal(err)
 		return nil
 	}
 	*projectId = projId
 
-	devId, err := CreateTestDevice(*projectId, "metal-cli-test-device")
+	devId, err := CreateTestDevice(t, *projectId, "metal-cli-test-device")
 	if err != nil {
 		t.Fatal(err)
 		return nil
 	}
 	*deviceId = devId
 
-	active, err := IsDeviceStateActive(*deviceId)
+	active, err := IsDeviceStateActive(t, *deviceId)
 	if err != nil {
 		t.Fatal(err)
 		return nil
@@ -336,7 +339,7 @@ func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapicl
 		return nil
 	}
 
-	device, err := GetDeviceById(*deviceId)
+	device, err := GetDeviceById(t, *deviceId)
 	if err != nil {
 		t.Fatal(err)
 		return nil
@@ -349,15 +352,16 @@ func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string) *openapicl
 	return device
 }
 
-func CleanTestGateway(gatewayId string) error {
+func CleanTestGateway(t *testing.T, gatewayId string) error {
+	t.Helper()
+
 	TestApiClient := TestClient()
 	_, _, err := TestApiClient.MetalGatewaysApi.
 		DeleteMetalGateway(context.Background(), gatewayId).
 		Include([]string{"ip_reservation"}).
 		Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `MetalGatewaysApi.DeleteMetalGateway``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `MetalGatewaysApi.DeleteMetalGateway``: %v\n", err)
 	}
 
 	return nil
@@ -383,8 +387,7 @@ func CreateTestOrganization(name string) (string, error) {
 
 	resp, _, err := TestApiClient.OrganizationsApi.CreateOrganization(context.Background()).OrganizationInput(*organizationInput).Include(defaultIncludes).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `OrganizationsApi.CreateOrganization``: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("Error when calling `OrganizationsApi.CreateOrganization``: %v\n", err)
 	}
 
 	return resp.GetId(), nil
@@ -395,8 +398,7 @@ func CleanTestOrganization(orgId string) error {
 
 	_, err := TestApiClient.OrganizationsApi.DeleteOrganization(context.Background(), orgId).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `OrganizationsApi.DeleteOrganization``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `OrganizationsApi.DeleteOrganization``: %v\n", err)
 	}
 
 	return nil
@@ -409,31 +411,19 @@ func CreateTestBgpEnableTest(projId string) error {
 
 	_, err := TestApiClient.BGPApi.RequestBgpConfig(context.Background(), projId).BgpConfigRequestInput(bgpConfigRequestInput).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `BGPApi.RequestBgpConfig``: %v\n", err)
-		return err
+		return fmt.Errorf("Error when calling `BGPApi.RequestBgpConfig``: %v\n", err)
 	}
 	return nil
 }
 
 //nolint:staticcheck
-func GenerateRandomString(length int) (string, error) {
-	// Calculate the number of bytes needed for the given string length
-	numBytes := (length * 3) / 4
+func GenerateRandomString(length int) string {
+	charSet := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	random := rand.New(rand.NewSource(uint64(time.Now().UnixNano())))
 
-	// Create a byte slice to store the random bytes
-	randomBytes := make([]byte, numBytes)
-
-	// Read random bytes from the crypto/rand package
-	_, err := rand.Read(randomBytes)
-	if err != nil {
-		return "", err
+	result := make([]byte, length)
+	for i := range result {
+		result[i] = charSet[random.Intn(len(charSet))]
 	}
-
-	// Encode the random bytes to base64 to get a string
-	randomString := base64.URLEncoding.EncodeToString(randomBytes)
-
-	// Trim any padding characters
-	randomString = randomString[:length]
-
-	return randomString, nil
+	return string(result)
 }

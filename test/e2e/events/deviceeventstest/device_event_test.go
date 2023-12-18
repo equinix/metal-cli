@@ -41,18 +41,18 @@ func TestCli_Events_Get(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-
-				projectId, err = helper.CreateTestProject("metal-cli-events-pro")
+				projectName := "metal-cli-device-events" + helper.GenerateRandomString(5)
+				projectId, err = helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)
 				}
-				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-events-dev")
+				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-events-dev")
 				if err != nil {
 					t.Error(err)
 				}
-				status, err = helper.IsDeviceStateActive(deviceId)
+				status, err = helper.IsDeviceStateActive(t, deviceId)
 				if err != nil {
-					status, err = helper.IsDeviceStateActive(deviceId)
+					status, err = helper.IsDeviceStateActive(t, deviceId)
 					if err != nil || !status {
 						t.Error(err)
 					}
@@ -61,22 +61,26 @@ func TestCli_Events_Get(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 				if !strings.Contains(string(out[:]), "Queued for provisioning") &&
 					!strings.Contains(string(out[:]), "Connected to magic install system") &&
 					!strings.Contains(string(out[:]), "Provision complete! Your device is ready to go.") {
 					t.Error("expected output should include Queued for provisioning in output string")
 				}
-				err = helper.CleanTestDevice(deviceId)
+				err = helper.CleanTestDevice(t, deviceId)
 				if err != nil {
 					t.Error(err)
 				}
-				err = helper.CleanTestProject(projectId)
+				err = helper.CleanTestProject(t, projectId)
 				if err != nil {
 					t.Error(err)
 				}

@@ -23,9 +23,9 @@ func TestGateways_Retrieve(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-gateway-get")
 	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
+		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
 			t.Error(err)
 		}
 	})
@@ -33,9 +33,9 @@ func TestGateways_Retrieve(t *testing.T) {
 		return
 	}
 
-	vlan, err := helper.CreateTestVLAN(projectId)
+	vlan, err := helper.CreateTestVLAN(t, projectId)
 	t.Cleanup(func() {
-		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
+		if err := helper.CleanTestVlan(t, vlan.GetId()); err != nil {
 			t.Error(err)
 		}
 	})
@@ -45,9 +45,9 @@ func TestGateways_Retrieve(t *testing.T) {
 	}
 
 	subnetSize := int32(8)
-	metalGateway, err := helper.CreateTestGateway(projectId, vlan.GetId(), &subnetSize)
+	metalGateway, err := helper.CreateTestGateway(t, projectId, vlan.GetId(), &subnetSize)
 	t.Cleanup(func() {
-		if err := helper.CleanTestGateway(metalGateway.GetId()); err != nil &&
+		if err := helper.CleanTestGateway(t, metalGateway.GetId()); err != nil &&
 			!strings.Contains(err.Error(), "Not Found") {
 			t.Error(err)
 		}
@@ -76,12 +76,16 @@ func TestGateways_Retrieve(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 
 				assertGatewaysCmdOutput(t, string(out[:]), metalGateway.GetId(), device.Metro.GetCode(), strconv.Itoa(int(vlan.GetVxlan())))
 			},

@@ -40,26 +40,31 @@ func TestCli_Vlan_Clean(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-vlan-get-pro")
+				projectName := "metal-cli-vlan-get-pro" + helper.GenerateRandomString(5)
+				projectId, err = helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)
 				}
-				vlanId, err = helper.CreateTestVlanWithVxLan(projectId, 2023, "metal-cli-vlan-get-test")
+				vlanId, err = helper.CreateTestVlanWithVxLan(t, projectId, 2023, "metal-cli-vlan-get-test")
 				if len(projectId) != 0 && len(vlanId) != 0 {
 					root.SetArgs([]string{subCommand, "delete", "-f", "-i", vlanId})
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
 					if !strings.Contains(string(out[:]), "Virtual Network "+vlanId+" successfully deleted.") {
 						t.Error("expected output should include Virtual Network " + vlanId + "successfully deleted." + "in the out string")
 					}
-					err = helper.CleanTestProject(projectId)
+					err = helper.CleanTestProject(t, projectId)
 					if err != nil {
 						t.Error(err)
 					}

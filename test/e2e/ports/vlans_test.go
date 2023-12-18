@@ -24,9 +24,9 @@ func TestPorts_VLANs(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-port-vlan")
 	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil {
+		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
 			t.Error(err)
 		}
 	})
@@ -45,12 +45,12 @@ func TestPorts_VLANs(t *testing.T) {
 		return
 	}
 
-	vlan, err := helper.CreateTestVLAN(projectId)
+	vlan, err := helper.CreateTestVLAN(t, projectId)
 	t.Cleanup(func() {
-		if err := helper.UnAssignPortVlan(port.GetId(), vlan.GetId()); err != nil {
+		if err := helper.UnAssignPortVlan(t, port.GetId(), vlan.GetId()); err != nil {
 			t.Error(err)
 		}
-		if err := helper.CleanTestVlan(vlan.GetId()); err != nil {
+		if err := helper.CleanTestVlan(t, vlan.GetId()); err != nil {
 			t.Error(err)
 		}
 	})
@@ -79,17 +79,20 @@ func TestPorts_VLANs(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 
 				// wait for port to have vlans attached
-				if err := helper.WaitForAttachVlanToPort(port.GetId(), true); err != nil {
-					t.Error(err)
-					return
+				if err := helper.WaitForAttachVlanToPort(t, port.GetId(), true); err != nil {
+					t.Fatal(err)
 				}
 
 				assertPortCmdOutput(t, port, string(out[:]), "layer2-bonded", true)

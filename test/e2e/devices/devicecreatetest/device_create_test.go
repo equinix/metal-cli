@@ -17,12 +17,13 @@ import (
 func TestCli_Devices_Create(t *testing.T) {
 	var projectId, deviceId string
 	var err error
-	var resp bool
 	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
 	Version := "metal"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	randomId := helper.GenerateRandomString(5)
+
 	type fields struct {
 		MainCmd  *cobra.Command
 		Outputer outputPkg.Outputer
@@ -42,29 +43,43 @@ func TestCli_Devices_Create(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-create-pro")
+				projectName := "metal-cli-device-create" + randomId
+				projectId, err = helper.CreateTestProject(t, projectName)
+				t.Cleanup(func() {
+					if err := helper.CleanTestProject(t, projectId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
+
 				if len(projectId) != 0 {
 
-					root.SetArgs([]string{subCommand, "create", "-p", projectId, "-P", "m3.small.x86", "-m", "da", "-O", "ubuntu_20_04", "-H", "metal-cli-create-dev"})
+					deviceName := "metal-cli-create-dev" + randomId
+					root.SetArgs([]string{subCommand, "create", "-p", projectId, "-P", "m3.small.x86", "-m", "da", "-O", "ubuntu_20_04", "-H", deviceName})
 					rescueStdout := os.Stdout
 					r, w, _ := os.Pipe()
 					os.Stdout = w
+					t.Cleanup(func() {
+						w.Close()
+						os.Stdout = rescueStdout
+					})
+
 					if err := root.Execute(); err != nil {
-						t.Error(err)
+						t.Fatal(err)
 					}
-					w.Close()
+
 					out, _ := io.ReadAll(r)
-					os.Stdout = rescueStdout
-					if !strings.Contains(string(out[:]), "metal-cli-create-dev") &&
+
+					if !strings.Contains(string(out[:]), deviceName) &&
 						!strings.Contains(string(out[:]), "Ubuntu 20.04 LTS") &&
 						!strings.Contains(string(out[:]), "queued") {
-						t.Error("expected output should include metal-cli-create-dev, Ubuntu 20.04 LTS, and queued strings in the out string ")
+						t.Errorf("expected output should include %s, Ubuntu 20.04 LTS, and queued strings in the out string ", deviceName)
 					}
-					name := "metal-cli-create-dev"
-					idNamePattern := `(?m)^\| ([a-zA-Z0-9-]+) +\| *` + name + ` *\|`
+
+					idNamePattern := `(?m)^\| ([a-zA-Z0-9-]+) +\| *` + deviceName + ` *\|`
 
 					// Find the match of the ID and NAME pattern in the table string
 					match := regexp.MustCompile(idNamePattern).FindStringSubmatch(string(out[:]))
@@ -72,19 +87,15 @@ func TestCli_Devices_Create(t *testing.T) {
 					// Extract the ID from the match
 					if len(match) > 1 {
 						deviceId = strings.TrimSpace(match[1])
-						resp, err = helper.IsDeviceStateActive(deviceId)
-						if err != nil || resp {
-							if !resp {
-								resp, err = helper.IsDeviceStateActive(deviceId)
-							}
-							err = helper.CleanTestDevice(deviceId)
-							if err != nil {
+						_, err = helper.IsDeviceStateActive(t, deviceId)
+						t.Cleanup(func() {
+							if err := helper.CleanTestDevice(t, deviceId); err != nil &&
+								!strings.Contains(err.Error(), "Not Found") {
 								t.Error(err)
 							}
-							err = helper.CleanTestProject(projectId)
-							if err != nil {
-								t.Error(err)
-							}
+						})
+						if err != nil {
+							t.Fatal(err)
 						}
 					}
 				}

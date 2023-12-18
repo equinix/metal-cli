@@ -25,9 +25,9 @@ func TestGateways_Create(t *testing.T) {
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId)
+	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-gateways-create")
 	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(deviceId, projectId); err != nil &&
+		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil &&
 			!strings.Contains(err.Error(), "Not Found") {
 			t.Error(err)
 		}
@@ -36,9 +36,9 @@ func TestGateways_Create(t *testing.T) {
 		return
 	}
 
-	vlan, err := helper.CreateTestVLAN(projectId)
+	vlan, err := helper.CreateTestVLAN(t, projectId)
 	t.Cleanup(func() {
-		if err := helper.CleanTestVlan(vlan.GetId()); err != nil &&
+		if err := helper.CleanTestVlan(t, vlan.GetId()); err != nil &&
 			!strings.Contains(err.Error(), "Not Found") {
 			t.Error(err)
 		}
@@ -66,12 +66,16 @@ func TestGateways_Create(t *testing.T) {
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
 
 				apiClient := helper.TestClient()
 				gateways, _, err := apiClient.MetalGatewaysApi.
@@ -79,8 +83,7 @@ func TestGateways_Create(t *testing.T) {
 					Include([]string{"ip_reservation"}).
 					Execute()
 				if err != nil {
-					t.Error(err)
-					return
+					t.Fatal(err)
 				}
 				if len(gateways.MetalGateways) != 1 {
 					t.Error(errors.New("Gateway Not Found. Failed to create gateway"))

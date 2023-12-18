@@ -16,7 +16,6 @@ import (
 func TestCli_Devices_Get(t *testing.T) {
 	var projectId, deviceId string
 	var err error
-	var resp bool
 	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
@@ -41,41 +40,46 @@ func TestCli_Devices_Get(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectId, err = helper.CreateTestProject("metal-cli-get-pro")
+				projectName := "metal-cli-device-get" + helper.GenerateRandomString(5)
+				projectId, err = helper.CreateTestProject(t, projectName)
+				t.Cleanup(func() {
+					if err := helper.CleanTestProject(t, projectId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				deviceId, err = helper.CreateTestDevice(projectId, "metal-cli-get-dev")
+
+				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-get-dev")
+				t.Cleanup(func() {
+					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
+						!strings.Contains(err.Error(), "Not Found") {
+						t.Error(err)
+					}
+				})
 				if err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
+
 				root.SetArgs([]string{subCommand, "get", "-i", deviceId})
 				rescueStdout := os.Stdout
 				r, w, _ := os.Pipe()
 				os.Stdout = w
+				t.Cleanup(func() {
+					w.Close()
+					os.Stdout = rescueStdout
+				})
+
 				if err := root.Execute(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
-				w.Close()
+
 				out, _ := io.ReadAll(r)
-				os.Stdout = rescueStdout
+
 				if !strings.Contains(string(out[:]), deviceId) {
-					t.Error("expected output should include " + deviceId)
-				}
-				if len(projectId) != 0 && len(deviceId) != 0 {
-					resp, err = helper.IsDeviceStateActive(deviceId)
-					if err == nil && resp == true {
-						err = helper.CleanTestDevice(deviceId)
-						if err != nil {
-							t.Error(err)
-						}
-						err = helper.CleanTestProject(projectId)
-						if err != nil {
-							t.Error(err)
-						}
-					} else {
-						t.Error(err)
-					}
+					t.Fatal("expected output should include " + deviceId)
 				}
 			},
 		},
