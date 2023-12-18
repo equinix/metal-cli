@@ -2,13 +2,12 @@ package helper
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/base64"
 	"fmt"
 	"os"
-	"strconv"
 	"testing"
 	"time"
+
+	"golang.org/x/exp/rand"
 
 	openapiclient "github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/pkg/errors"
@@ -419,23 +418,12 @@ func CreateTestBgpEnableTest(projId string) error {
 
 //nolint:staticcheck
 func GenerateRandomString(length int) string {
-	// Calculate the number of bytes needed for the given string length
-	numBytes := (length * 3) / 4
+	charSet := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	random := rand.New(rand.NewSource(uint64(time.Now().UnixNano())))
 
-	// Create a byte slice to store the random bytes
-	randomBytes := make([]byte, numBytes)
-
-	// Read random bytes from the crypto/rand package
-	_, err := rand.Read(randomBytes)
-	if err != nil {
-		return strconv.Itoa(int(time.Now().UnixNano()))
+	result := make([]byte, length)
+	for i := range result {
+		result[i] = charSet[random.Intn(len(charSet))]
 	}
-
-	// Encode the random bytes to base64 to get a string
-	randomString := base64.URLEncoding.EncodeToString(randomBytes)
-
-	// Trim any padding characters
-	randomString = randomString[:length]
-
-	return randomString
+	return string(result)
 }
