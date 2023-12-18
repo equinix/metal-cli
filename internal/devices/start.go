@@ -24,7 +24,7 @@ import (
 	"context"
 	"fmt"
 
-	metal "github.com/equinix-labs/metal-go/metal/v1"
+	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/spf13/cobra"
 )
 

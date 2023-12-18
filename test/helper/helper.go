@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	openapiclient "github.com/equinix-labs/metal-go/metal/v1"
+	openapiclient "github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/pkg/errors"
 )
 
