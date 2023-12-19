@@ -13,6 +13,7 @@ func (c *Client) Create() *cobra.Command {
 	var name, metro, redundancy, connType, projectID, organizationID, svcTokenType string
 	var vrfs []string
 	var vlans []int32
+	var speed int32
 
 	createInterconnectionsCmd := &cobra.Command{
 		Use:   `create -n <name> [-m <metro>] [-r <redundancy> ] [-t <type> ] [-p <project_id> ] | [-O <organization_id> ]`,
@@ -44,6 +45,9 @@ func (c *Client) Create() *cobra.Command {
 					metal.VlanFabricVcCreateInputType(connType),
 				)
 				in.Vlans = vlans
+				// default speed
+				in.SetSpeed(speed)
+
 				createOrganizationInterconnectionRequest.
 					VlanFabricVcCreateInput = in
 			case vrfsFabricVcCreate(vrfs):
@@ -84,7 +88,8 @@ func (c *Client) Create() *cobra.Command {
 	createInterconnectionsCmd.Flags().StringVarP(&projectID, "projectID", "p", "", "project ID")
 	createInterconnectionsCmd.Flags().StringVarP(&organizationID, "organizationID", "O", "", "Org ID")
 	createInterconnectionsCmd.Flags().Int32SliceVar(&vlans, "vlans", []int32{}, "Array of int vLANs")
-	createInterconnectionsCmd.Flags().StringVar(&svcTokenType, "service-token-type", "", "Type of service token for shared connection. Enum: 'a_side', 'z_side'")
+	createInterconnectionsCmd.Flags().StringVarP(&svcTokenType, "service-token-type", "T", "", "Type of service token for shared connection. Enum: 'a_side', 'z_side'")
+	createInterconnectionsCmd.Flags().Int32Var(&speed, "speed", int32(1000000000), "the maximum speed of the interconnections")
 
 	_ = createInterconnectionsCmd.MarkFlagRequired("name")
 	_ = createInterconnectionsCmd.MarkFlagRequired("metro")
@@ -124,7 +129,7 @@ func validInputArgs(projectID, organizationID string, vlans []int32, vrfs []stri
 		return errors.New("could you provide at least either of projectID OR organizationID")
 	}
 
-	if vlanFabricVcCreate(vlans) || vrfsFabricVcCreate(vrfs) && svcTokenType == "" {
+	if (vlanFabricVcCreate(vlans) || vrfsFabricVcCreate(vrfs)) && svcTokenType == "" {
 		return errors.New("flag 'service-token-type' is required for vlan or vrfs fabric VC create")
 	}
 

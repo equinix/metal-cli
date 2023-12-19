@@ -30,7 +30,8 @@ metal interconnections create -n <name> [-m <metro>] [-r <redundancy> ] [-t <typ
   -O, --organizationID string       Org ID
   -p, --projectID string            project ID
   -r, --redundancy string           Website URL of the organization.
-      --service-token-type string   Type of service token for shared connection. Enum: 'a_side', 'z_side'
+  -T, --service-token-type string   Type of service token for shared connection. Enum: 'a_side', 'z_side'
+      --speed int32                 the maximum speed of the interconnections (default 1000000000)
   -t, --type string                 type of of interconnection.
       --vlans int32Slice            Array of int vLANs (default [])
       --vrfs strings                Array of strings VRF <uuid>.
