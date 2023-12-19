@@ -1,28 +1,11 @@
-// Copyright © 2018 Jasmin Gacic <jasmin@stackpointcloud.com>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 package ips
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"log"
 	"strconv"
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
@@ -31,50 +14,100 @@ import (
 
 func (c *Client) Request() *cobra.Command {
 	var (
-		ttype     string
-		quantity  int
-		comments  string
-		facility  string
-		metro     string
-		projectID string
-		tags      []string
+		ttype      string
+		quantity   int
+		comments   string
+		facility   string
+		metro      string
+		projectID  string
+		cidr       int
+		network    string
+		vrfID      string
+		details    string
+		tags       []string
+		customdata string
 	)
 
 	// requestIPCmd represents the requestIp command
 	requestIPCmd := &cobra.Command{
-		Use:   `request -p <project_id> -t <ip_address_type> -q <quantity> (-m <metro> | -f <facility>) [-f <flags>] [-c <comments>]`,
+		Use:   `request -p <project-id> -t <ip_address_type> -q <quantity> (-m <metro> | -f <facility>) [-f <flags>] [-c <comments>]`,
 		Short: "Request a block of IP addresses.",
 		Long:  "Requests either a block of public IPv4 addresses or global IPv4 addresses for your project in a specific metro or facility.",
 		Example: `  # Requests a block of 4 public IPv4 addresses in Dallas:
-  metal ip request -p $METAL_PROJECT_ID -t public_ipv4 -q 4 -m da`,
+  metal ip request -p $METAL_PROJECT_ID -t public_ipv4 -q 4 -m da
+
+  metal ip request -v df18fbd8-2919-4104-a042-5d42a05b8eed -t vrf --cidr 24 -n 172.89.1.0 --tags foo --tags bar --customdata '{"my":"goodness"}' --details "i don't think VRF users need this or will see it after submitting the request"`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
+			var (
+				req                         *metal.IPReservationRequestInput
+				vrfReq                      *metal.VrfIpReservationCreateInput
+				requestIPReservationRequest *metal.RequestIPReservationRequest
+			)
 			cmd.SilenceUsage = true
+			// It's a required flag in case of VRFIPReservations and we conduct thorough validation to ensure its inclusion.
+			// By detecting its presence, we can identify whether it pertains to a standard IP Reservation Request or a VRF IP Reservation Request.
 
-			req := &metal.IPReservationRequestInput{
-				Metro:    &metro,
-				Tags:     tags,
-				Quantity: int32(quantity),
-				Type:     ttype,
-				Facility: &facility,
+			if ttype != "vrf" {
+
+				req = &metal.IPReservationRequestInput{
+					Metro:    &metro,
+					Tags:     tags,
+					Quantity: int32(quantity),
+					Type:     ttype,
+					Facility: &facility,
+				}
+
+				requestIPReservationRequest = &metal.RequestIPReservationRequest{
+					IPReservationRequestInput: req,
+				}
+			} else {
+				// Below are required Flags in VRF IP Reservation Request.
+				if cidr == 0 || network == "" || vrfID == "" {
+					return errors.New(" cidr, network and ID of the VRF are required to create VFR IP Reservations")
+				}
+				// This is an optinal Flag in VRF IP Reservation Request.
+				var data map[string]interface{}
+				if customdata != "" {
+					err := json.Unmarshal([]byte(customdata), &data)
+					if err != nil {
+						log.Fatalf("Error parsing custom data: %v", err)
+					}
+				}
+
+				vrfReq = &metal.VrfIpReservationCreateInput{
+					Type:       ttype,
+					Cidr:       int32(cidr),
+					Network:    network,
+					VrfId:      vrfID,
+					Details:    &details,
+					Customdata: data,
+					Tags:       tags,
+				}
+				requestIPReservationRequest = &metal.RequestIPReservationRequest{
+					VrfIpReservationCreateInput: vrfReq,
+				}
 			}
-
-			requestIPReservationRequest := &metal.RequestIPReservationRequest{
-				IPReservationRequestInput: req,
-			}
-
 			reservation, _, err := c.IPService.RequestIPReservation(context.Background(), projectID).RequestIPReservationRequest(*requestIPReservationRequest).Execute()
 			if err != nil {
-				return fmt.Errorf("Could not request IP addresses: %w", err)
+				return fmt.Errorf("could not request IP addresses: %w", err)
 			}
 
 			data := make([][]string, 1)
-
-			data[0] = []string{reservation.IPReservation.GetId(),
-				reservation.IPReservation.GetAddress(),
-				strconv.FormatBool(reservation.IPReservation.GetPublic()),
-				reservation.IPReservation.CreatedAt.String()}
-			header := []string{"ID", "Address", "Public", "Created"}
+			if ttype != "vrf" {
+				data[0] = []string{reservation.IPReservation.GetId(),
+					string(reservation.IPReservation.GetType()),
+					reservation.IPReservation.GetAddress(),
+					strconv.FormatBool(reservation.IPReservation.GetPublic()),
+					reservation.IPReservation.CreatedAt.String()}
+			} else {
+				data[0] = []string{reservation.VrfIpReservation.GetId(),
+					string(reservation.VrfIpReservation.GetType()),
+					reservation.VrfIpReservation.GetAddress(),
+					strconv.FormatBool(reservation.VrfIpReservation.GetPublic()),
+					reservation.VrfIpReservation.CreatedAt.String()}
+			}
+			header := []string{"ID", "Type", "Address", "Public", "Created"}
 
 			return c.Out.Output(reservation, header, &data)
 		},
@@ -85,11 +118,15 @@ func (c *Client) Request() *cobra.Command {
 	requestIPCmd.Flags().StringVarP(&facility, "facility", "f", "", "Code of the facility where the IP Reservation will be created")
 	requestIPCmd.Flags().StringVarP(&metro, "metro", "m", "", "Code of the metro where the IP Reservation will be created")
 	requestIPCmd.Flags().IntVarP(&quantity, "quantity", "q", 0, "Number of IP addresses to reserve.")
-	requestIPCmd.Flags().StringSliceVar(&tags, "tags", nil, "Tag or Tags to add to the reservation, in a comma-separated list.")
+	requestIPCmd.Flags().StringSliceVarP(&tags, "tags", "", []string{}, `Adds the tags for the IP Reservations --tags "tag1,tag2" OR --tags "tag1" --tags "tag2"`)
+	requestIPCmd.Flags().IntVar(&cidr, "cidr", 0, "The size of the desired subnet in bits.")
+	requestIPCmd.Flags().StringVarP(&network, "network", "n", "", "The starting address for this VRF IP Reservation's subnet")
+	requestIPCmd.Flags().StringVarP(&vrfID, "vrf-id", "v", "", "Specify the VRF UUID.")
+	requestIPCmd.Flags().StringVarP(&details, "details", "", "", "VRF IP Reservation's details")
+	requestIPCmd.Flags().StringVarP(&customdata, "customdata", "", "", "customdata is to add to the reservation, in a comma-separated list.")
 
 	_ = requestIPCmd.MarkFlagRequired("project-id")
 	_ = requestIPCmd.MarkFlagRequired("type")
-	_ = requestIPCmd.MarkFlagRequired("quantity")
 
 	requestIPCmd.Flags().StringVarP(&comments, "comments", "c", "", "General comments or description.")
 	return requestIPCmd

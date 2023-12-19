@@ -675,3 +675,37 @@ func CleanTestVrfs(t *testing.T, vrfId string) {
 		t.Fatalf("Error when calling `VRFsApi.DeleteVrf`` for %v: %v\n", vrfId, err)
 	}
 }
+
+func CreateTestVrfIpRequest(t *testing.T, projectId, vrfId string) *metalv1.RequestIPReservation201Response {
+	t.Helper()
+	TestApiClient := TestClient()
+
+	vrfReq := &metalv1.VrfIpReservationCreateInput{
+		Type:    "vrf",
+		Cidr:    int32(24),
+		Network: "10.10.1.0",
+		VrfId:   vrfId,
+	}
+	requestIPReservationRequest := &metalv1.RequestIPReservationRequest{
+		VrfIpReservationCreateInput: vrfReq,
+	}
+	reservation, _, err := TestApiClient.IPAddressesApi.RequestIPReservation(context.Background(), projectId).RequestIPReservationRequest(*requestIPReservationRequest).Execute()
+	if err != nil {
+		t.Fatalf("Error when calling `IPAddressesApi.RequestIPReservation` for %v: %v\n", vrfId, err)
+	}
+
+	t.Cleanup(func() {
+		CleanTestVrfIpRequest(t, reservation.IPReservation.GetId())
+	})
+
+	return reservation
+}
+
+func CleanTestVrfIpRequest(t *testing.T, IPReservationId string) {
+	t.Helper()
+	TestApiClient := TestClient()
+	resp, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), IPReservationId).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `IPAddressesApi.DeleteIPAddress``for %v: %v\n", IPReservationId, err)
+	}
+}

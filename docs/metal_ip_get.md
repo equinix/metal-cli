@@ -7,7 +7,7 @@ Retrieves information about IP addresses, IP address reservations, and IP addres
 Retrieves information about the IP addresses in a project, the IP addresses that are in a specified assignment, or the IP addresses that are in a specified reservation.
 
 ```
-metal ip get -p <project_UUID> | -a <assignment_UUID> | -r <reservation_UUID> [flags]
+metal ip get -p <project-id> | -a <assignment-id> | -r <reservation-id> [flags]
 ```
 
 ### Examples

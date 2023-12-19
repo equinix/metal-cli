@@ -1,15 +1,32 @@
-## metal vrf
+## metal vrf ips
 
-VRF operations : create, get, delete
+Retrieves the list of VRF IP Reservations for the VRF.
 
 ### Synopsis
 
-VRF operations : It defines a collection of customer-managed IP blocks that can be used in BGP peering on one or more virtual networks and basic operations
+Retrieves the list of VRF IP Reservations for the VRF.
+
+```
+metal vrf ips [-v <vrf-id] [-i <ip-id>] [flags]
+```
+
+### Examples
+
+```
+ # Retrieves the list of VRF IP Reservations for the VRF.
+	
+	metal vrf ips [-v <vrf-id] 
+
+	# Retrieve a specific IP Reservation for a VRF
+	metal vrf ips [-v <vrf-id] [-i <ip-id>]
+```
 
 ### Options
 
 ```
-  -h, --help   help for vrf
+  -h, --help            help for ips
+  -i, --id string       Specify the IP UUID to retrieve the details of a VRF IP reservation.
+  -v, --vrf-id string   Specify the VRF UUID to list its associated IP reservations.
 ```
 
 ### Options inherited from parent commands
@@ -29,9 +46,5 @@ VRF operations : It defines a collection of customer-managed IP blocks that can 
 
 ### SEE ALSO
 
-* [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal vrf create](metal_vrf_create.md)	 - Creates a Virtual Routing and Forwarding(VRF) for a specified project.
-* [metal vrf delete](metal_vrf_delete.md)	 - Deletes a VRF.
-* [metal vrf get](metal_vrf_get.md)	 - Lists VRFs.
-* [metal vrf ips](metal_vrf_ips.md)	 - Retrieves the list of VRF IP Reservations for the VRF.
+* [metal vrf](metal_vrf.md)	 - VRF operations : create, get, delete
 
