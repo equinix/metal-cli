@@ -3,67 +3,81 @@ package helper
 import (
 	"context"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"testing"
 	"time"
 
 	"golang.org/x/exp/rand"
 
-	openapiclient "github.com/equinix/equinix-sdk-go/services/metalv1"
+	"github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 )
 
-func TestClient() *openapiclient.APIClient {
-	configuration := openapiclient.NewConfiguration()
+func TestClient() *metalv1.APIClient {
+	configuration := metalv1.NewConfiguration()
 	configuration.AddDefaultHeader("X-Auth-Token", os.Getenv("METAL_AUTH_TOKEN"))
 	// For debug purpose
 	//configuration.Debug = true
-	apiClient := openapiclient.NewAPIClient(configuration)
+	apiClient := metalv1.NewAPIClient(configuration)
 	return apiClient
 }
 
-func CreateTestProject(t *testing.T, name string) (string, error) {
+func CreateTestProject(t *testing.T, name string) *metalv1.Project {
 	t.Helper()
 	TestApiClient := TestClient()
 
-	projectCreateFromRootInput := *openapiclient.NewProjectCreateFromRootInput(name) // ProjectCreateFromRootInput | Project to create
+	projectCreateFromRootInput := *metalv1.NewProjectCreateFromRootInput(name) // ProjectCreateFromRootInput | Project to create
 
-	projectResp, _, err := TestApiClient.ProjectsApi.CreateProject(context.Background()).ProjectCreateFromRootInput(projectCreateFromRootInput).Execute()
+	project, _, err := TestApiClient.ProjectsApi.CreateProject(context.Background()).ProjectCreateFromRootInput(projectCreateFromRootInput).Execute()
 	if err != nil {
-		return "", fmt.Errorf("Error when calling `ProjectsApi.CreateProject`: %v\n", err)
+		t.Fatalf("Error when calling `ProjectsApi.CreateProject`: %v\n", err)
+		return nil
 	}
-	return projectResp.GetId(), nil
+
+	t.Cleanup(func() {
+		CleanTestProject(t, project.GetId())
+	})
+
+	return project
 }
 
-func CreateTestDevice(t *testing.T, projectId, name string) (string, error) {
+func CreateTestDevice(t *testing.T, projectId, name string) *metalv1.Device {
 	t.Helper()
 	TestApiClient := TestClient()
 
 	hostname := name
-	metroDeviceRequest := openapiclient.CreateDeviceRequest{
-		DeviceCreateInMetroInput: &openapiclient.DeviceCreateInMetroInput{
+	metroDeviceRequest := metalv1.CreateDeviceRequest{
+		DeviceCreateInMetroInput: &metalv1.DeviceCreateInMetroInput{
 			Metro:           "sv",
 			Plan:            "m3.small.x86",
 			OperatingSystem: "ubuntu_20_04",
 			Hostname:        &hostname,
 		},
 	}
-	deviceResp, _, err := TestApiClient.DevicesApi.
+	device, _, err := TestApiClient.DevicesApi.
 		CreateDevice(context.Background(), projectId).
 		CreateDeviceRequest(metroDeviceRequest).
 		Execute()
 	if err != nil {
-		return "", fmt.Errorf("Error when calling `DevicesApi.CreateDevice`: %v\n", err)
+		t.Fatalf("Error when calling `DevicesApi.CreateDevice`: %v\n", err)
 	}
-	return deviceResp.GetId(), nil
+
+	t.Cleanup(func() {
+		CleanTestDevice(t, device.GetId())
+	})
+
+	return device
 }
 
-func CreateTestVLAN(t *testing.T, projectId string) (*openapiclient.VirtualNetwork, error) {
+func CreateTestVLAN(t *testing.T, projectId string) *metalv1.VirtualNetwork {
 	TestApiClient := TestClient()
 	t.Helper()
 
 	metro := "sv"
-	vlanCreateInput := openapiclient.VirtualNetworkCreateInput{
+	vlanCreateInput := metalv1.VirtualNetworkCreateInput{
 		Metro: &metro,
 	}
 	vlan, _, err := TestApiClient.VLANsApi.
@@ -71,17 +85,22 @@ func CreateTestVLAN(t *testing.T, projectId string) (*openapiclient.VirtualNetwo
 		VirtualNetworkCreateInput(vlanCreateInput).
 		Execute()
 	if err != nil {
-		return nil, fmt.Errorf("Error when calling `VLANsApi.CreateVirtualNetwork`: %v\n", err)
+		t.Fatalf("Error when calling `VLANsApi.CreateVirtualNetwork`: %v\n", err)
 	}
-	return vlan, nil
+
+	t.Cleanup(func() {
+		CleanTestVlan(t, vlan.GetId())
+	})
+
+	return vlan
 }
 
-func CreateTestGateway(t *testing.T, projectId, vlanId string, privateIPv4SubnetSize *int32) (*openapiclient.MetalGateway, error) {
+func CreateTestGateway(t *testing.T, projectId, vlanId string, privateIPv4SubnetSize *int32) *metalv1.MetalGateway {
 	TestApiClient := TestClient()
 	t.Helper()
 
-	gatewayCreateInput := openapiclient.CreateMetalGatewayRequest{
-		MetalGatewayCreateInput: &openapiclient.MetalGatewayCreateInput{
+	gatewayCreateInput := metalv1.CreateMetalGatewayRequest{
+		MetalGatewayCreateInput: &metalv1.MetalGatewayCreateInput{
 			VirtualNetworkId:      vlanId,
 			PrivateIpv4SubnetSize: privateIPv4SubnetSize,
 		},
@@ -92,12 +111,13 @@ func CreateTestGateway(t *testing.T, projectId, vlanId string, privateIPv4Subnet
 		CreateMetalGatewayRequest(gatewayCreateInput).
 		Execute()
 	if err != nil {
-		return nil, fmt.Errorf("Error when calling `MetalGatewaysApi.CreateMetalGateway`: %v\n", err)
+		t.Fatalf("Error when calling `MetalGatewaysApi.CreateMetalGateway`: %v\n", err)
 	}
-	return gateway.MetalGateway, nil
+
+	return gateway.MetalGateway
 }
 
-func GetDeviceById(t *testing.T, deviceId string) (*openapiclient.Device, error) {
+func GetDeviceById(t *testing.T, deviceId string) (*metalv1.Device, error) {
 	TestApiClient := TestClient()
 	t.Helper()
 
@@ -114,7 +134,7 @@ func GetDeviceById(t *testing.T, deviceId string) (*openapiclient.Device, error)
 	return device, nil
 }
 
-func GetPortById(t *testing.T, portId string) (*openapiclient.Port, error) {
+func GetPortById(t *testing.T, portId string) (*metalv1.Port, error) {
 	t.Helper()
 	TestApiClient := TestClient()
 	includes := []string{"virtual_network"}
@@ -186,7 +206,7 @@ func WaitForAttachVlanToPort(t *testing.T, portId string, attach bool) error {
 func StopTestDevice(t *testing.T, deviceId string) error {
 	t.Helper()
 
-	deviceActionInput := *openapiclient.NewDeviceActionInput("power_off")
+	deviceActionInput := *metalv1.NewDeviceActionInput("power_off")
 	TestApiClient := TestClient()
 
 	_, err := TestApiClient.DevicesApi.PerformAction(context.Background(), deviceId).DeviceActionInput(deviceActionInput).Execute()
@@ -196,30 +216,34 @@ func StopTestDevice(t *testing.T, deviceId string) error {
 	return nil
 }
 
-func CleanTestDevice(t *testing.T, deviceId string) error {
+func CleanTestDevice(t *testing.T, deviceId string) {
 	t.Helper()
 
+	_, err := IsDeviceStateActive(t, deviceId)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	TestApiClient := TestClient()
-	_, err := TestApiClient.DevicesApi.
+	_, err = TestApiClient.DevicesApi.
 		DeleteDevice(context.Background(), deviceId).
 		ForceDelete(true).
 		Execute()
+
 	if err != nil {
-		return fmt.Errorf("Error when calling `DevicesApi.DeleteDevice``: %v\n", err)
+		t.Fatalf("Error when calling `DevicesApi.DeleteDevice`` for %v: %v\n", deviceId, err)
 	}
-	return nil
 }
 
-func CleanTestProject(t *testing.T, projectId string) error {
+func CleanTestProject(t *testing.T, projectId string) {
 	t.Helper()
 	TestApiClient := TestClient()
 	_, err := TestApiClient.ProjectsApi.
 		DeleteProject(context.Background(), projectId).
 		Execute()
 	if err != nil {
-		return fmt.Errorf("Error when calling `ProjectsApi.DeleteProject``: %v\n", err)
+		t.Fatalf("Error when calling `ProjectsApi.DeleteProject`` for %v: %v\n", projectId, err)
 	}
-	return nil
 }
 
 func CreateTestIps(t *testing.T, projectId string, quantity int, ipType string) (string, error) {
@@ -229,7 +253,7 @@ func CreateTestIps(t *testing.T, projectId string, quantity int, ipType string) 
 	var tags []string
 	var facility string
 
-	req := &openapiclient.IPReservationRequestInput{
+	req := &metalv1.IPReservationRequestInput{
 		Metro:    &metro,
 		Tags:     tags,
 		Quantity: int32(quantity),
@@ -237,7 +261,7 @@ func CreateTestIps(t *testing.T, projectId string, quantity int, ipType string) 
 		Facility: &facility,
 	}
 
-	requestIPReservationRequest := &openapiclient.RequestIPReservationRequest{
+	requestIPReservationRequest := &metalv1.RequestIPReservationRequest{
 		IPReservationRequestInput: req,
 	}
 
@@ -253,7 +277,7 @@ func CleanTestIps(t *testing.T, ipsId string) error {
 	TestApiClient := TestClient()
 	_, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), ipsId).Execute()
 	if err != nil {
-		return fmt.Errorf("Error when calling `IPAddressesApi.DeleteIPAddress``: %v\n", err)
+		return fmt.Errorf("Error when calling `IPAddressesApi.DeleteIPAddress`` for %v: %v\n", ipsId, err)
 	}
 	return nil
 }
@@ -261,7 +285,7 @@ func CleanTestIps(t *testing.T, ipsId string) error {
 func CreateTestVlanWithVxLan(t *testing.T, projectId string, Id int, desc string) (string, error) {
 	t.Helper()
 	TestApiClient := TestClient()
-	virtualNetworkCreateInput := *openapiclient.NewVirtualNetworkCreateInput()
+	virtualNetworkCreateInput := *metalv1.NewVirtualNetworkCreateInput()
 	virtualNetworkCreateInput.SetDescription(desc)
 	virtualNetworkCreateInput.SetMetro("da")
 	virtualNetworkCreateInput.SetVxlan(int32(Id))
@@ -273,15 +297,13 @@ func CreateTestVlanWithVxLan(t *testing.T, projectId string, Id int, desc string
 	return vlanresp.GetId(), nil
 }
 
-func CleanTestVlan(t *testing.T, vlanId string) error {
+func CleanTestVlan(t *testing.T, vlanId string) {
 	t.Helper()
 	TestApiClient := TestClient()
-	_, _, err := TestApiClient.VLANsApi.DeleteVirtualNetwork(context.Background(), vlanId).Execute()
-	if err != nil {
-		return fmt.Errorf("Error when calling `VLANsApi.DeleteVirtualNetwork``: %v\n", err)
+	_, resp, err := TestApiClient.VLANsApi.DeleteVirtualNetwork(context.Background(), vlanId).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `VLANsApi.DeleteVirtualNetwork`` for %v: %v\n", vlanId, err)
 	}
-
-	return nil
 }
 
 func UnAssignPortVlan(t *testing.T, portId, vlanId string) error {
@@ -289,67 +311,40 @@ func UnAssignPortVlan(t *testing.T, portId, vlanId string) error {
 	testClient := TestClient()
 	_, _, err := testClient.PortsApi.
 		UnassignPort(context.Background(), portId).
-		PortAssignInput(openapiclient.PortAssignInput{Vnid: &vlanId}).
+		PortAssignInput(metalv1.PortAssignInput{Vnid: &vlanId}).
 		Execute()
 	return err
 }
 
-func CleanupProjectAndDevice(t *testing.T, deviceId, projectId string) error {
-	t.Helper()
-	resp, err := IsDeviceStateActive(t, deviceId)
-	if err == nil && resp {
-		err = CleanTestDevice(t, deviceId)
-		if err != nil {
-			return err
-		}
-		err = CleanTestProject(t, projectId)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 //nolint:staticcheck
-func SetupProjectAndDevice(t *testing.T, projectId, deviceId *string, projPrefix string) *openapiclient.Device {
+func SetupProjectAndDevice(t *testing.T, projPrefix string) (*metalv1.Project, *metalv1.Device) {
 	t.Helper()
 	projectName := projPrefix + GenerateRandomString(5)
-	projId, err := CreateTestProject(t, projectName)
-	if err != nil {
-		t.Fatal(err)
-		return nil
-	}
-	*projectId = projId
+	project := CreateTestProject(t, projectName)
 
-	devId, err := CreateTestDevice(t, *projectId, "metal-cli-test-device")
-	if err != nil {
-		t.Fatal(err)
-		return nil
-	}
-	*deviceId = devId
+	device := CreateTestDevice(t, project.GetId(), "metal-cli-test-device")
 
-	active, err := IsDeviceStateActive(t, *deviceId)
+	active, err := IsDeviceStateActive(t, device.GetId())
 	if err != nil {
 		t.Fatal(err)
-		return nil
+		return nil, nil
 	}
 	if !active {
-		t.Fatalf("Timeout while waiting for device: %s to be active", *deviceId)
-		return nil
+		t.Fatalf("Timeout while waiting for device: %s to be active", device.GetId())
+		return nil, nil
 	}
 
-	device, err := GetDeviceById(t, *deviceId)
+	device, err = GetDeviceById(t, device.GetId())
 	if err != nil {
 		t.Fatal(err)
-		return nil
+		return nil, nil
 	}
 	if len(device.NetworkPorts) < 3 {
 		t.Fatalf("All 3 ports doesnot exist for the created device: %s", device.GetId())
-		return nil
+		return nil, nil
 	}
 
-	return device
+	return project, device
 }
 
 func CleanTestGateway(t *testing.T, gatewayId string) error {
@@ -361,20 +356,20 @@ func CleanTestGateway(t *testing.T, gatewayId string) error {
 		Include([]string{"ip_reservation"}).
 		Execute()
 	if err != nil {
-		return fmt.Errorf("Error when calling `MetalGatewaysApi.DeleteMetalGateway``: %v\n", err)
+		return fmt.Errorf("Error when calling `MetalGatewaysApi.DeleteMetalGateway`` for %v: %v\n", gatewayId, err)
 	}
 
 	return nil
 }
 
-func CreateTestOrganization(name string) (string, error) {
+func CreateTestOrganization(t *testing.T, name string) *metalv1.Organization {
 	TestApiClient := TestClient()
 
-	organizationInput := openapiclient.NewOrganizationInput()
+	organizationInput := metalv1.NewOrganizationInput()
 	organizationInput.Name = &name
 	organizationInput.Description = &name
 
-	addr := openapiclient.NewAddressWithDefaults()
+	addr := metalv1.NewAddressWithDefaults()
 	addr.SetAddress("Boston")
 	addr.SetCity("Boston")
 	addr.SetCountry("US")
@@ -387,27 +382,29 @@ func CreateTestOrganization(name string) (string, error) {
 
 	resp, _, err := TestApiClient.OrganizationsApi.CreateOrganization(context.Background()).OrganizationInput(*organizationInput).Include(defaultIncludes).Execute()
 	if err != nil {
-		return "", fmt.Errorf("Error when calling `OrganizationsApi.CreateOrganization``: %v\n", err)
+		t.Fatalf("Error when calling `OrganizationsApi.CreateOrganization``: %v\n", err)
 	}
 
-	return resp.GetId(), nil
+	t.Cleanup(func() {
+		CleanTestOrganization(t, resp.GetId())
+	})
+
+	return resp
 }
 
-func CleanTestOrganization(orgId string) error {
+func CleanTestOrganization(t *testing.T, orgId string) {
 	TestApiClient := TestClient()
 
 	_, err := TestApiClient.OrganizationsApi.DeleteOrganization(context.Background(), orgId).Execute()
 	if err != nil {
-		return fmt.Errorf("Error when calling `OrganizationsApi.DeleteOrganization``: %v\n", err)
+		t.Fatalf("Error when calling `OrganizationsApi.DeleteOrganization`` for %v: %v\n", orgId, err)
 	}
-
-	return nil
 }
 
 func CreateTestBgpEnableTest(projId string) error {
 	TestApiClient := TestClient()
 
-	bgpConfigRequestInput := *openapiclient.NewBgpConfigRequestInput(int32(65000), openapiclient.BgpConfigRequestInputDeploymentType("local"))
+	bgpConfigRequestInput := *metalv1.NewBgpConfigRequestInput(int32(65000), metalv1.BgpConfigRequestInputDeploymentType("local"))
 
 	_, err := TestApiClient.BGPApi.RequestBgpConfig(context.Background(), projId).BgpConfigRequestInput(bgpConfigRequestInput).Execute()
 	if err != nil {
@@ -426,4 +423,30 @@ func GenerateRandomString(length int) string {
 		result[i] = charSet[random.Intn(len(charSet))]
 	}
 	return string(result)
+}
+
+func ExecuteAndCaptureOutput(t *testing.T, root *cobra.Command) []byte {
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := root.Execute()
+
+	ioErr := w.Close()
+	if ioErr != nil {
+		t.Logf("error while capturing command output: %v", ioErr)
+	}
+
+	os.Stdout = rescueStdout
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	out, ioErr := io.ReadAll(r)
+	if ioErr != nil {
+		t.Logf("error while reading command output: %v", ioErr)
+	}
+
+	return out
 }

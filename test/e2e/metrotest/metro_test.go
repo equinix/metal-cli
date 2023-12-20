@@ -1,14 +1,13 @@
 package metrotest
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
 	root "github.com/equinix/metal-cli/internal/cli"
 	"github.com/equinix/metal-cli/internal/metros"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
+	"github.com/equinix/metal-cli/test/helper"
 	"github.com/spf13/cobra"
 )
 
@@ -38,19 +37,9 @@ func TestCli_Metros(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "get"})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "Seattle") &&
 					!strings.Contains(string(out[:]), "Tokyo") &&
 					!strings.Contains(string(out[:]), "Sydney") &&

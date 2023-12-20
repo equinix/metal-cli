@@ -1,7 +1,6 @@
 package plantest
 
 import (
-	"io"
 	"os"
 	"strings"
 	"testing"
@@ -9,6 +8,7 @@ import (
 	root "github.com/equinix/metal-cli/internal/cli"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
 	"github.com/equinix/metal-cli/internal/plans"
+	"github.com/equinix/metal-cli/test/helper"
 	"github.com/spf13/cobra"
 )
 
@@ -41,19 +41,9 @@ func TestCli_Plans(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "get"})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "m3.small.x86") &&
 					!strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "c3.medium.x86") &&
@@ -74,19 +64,9 @@ func TestCli_Plans(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "get", "--token", os.Getenv("METAL_AUTH_TOKEN"), "--filter", "slug=m3.small.x86"})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "m3.small.x86") {
 					t.Error("expected output should include m3.small.x86 by SLUG")
 				}
@@ -102,20 +82,9 @@ func TestCli_Plans(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "get", "--token", os.Getenv("METAL_AUTH_TOKEN"), "--filter", "type=standard"})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "m3.small.x86") &&
 					!strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "c3.medium.x86") &&

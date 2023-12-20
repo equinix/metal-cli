@@ -1,11 +1,8 @@
 package ipstest
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
-	"time"
 
 	root "github.com/equinix/metal-cli/internal/cli"
 	"github.com/equinix/metal-cli/internal/ips"
@@ -15,8 +12,6 @@ import (
 )
 
 func TestCli_Vlan_Create(t *testing.T) {
-	var projectId string
-	var err error
 	subCommand := "ip"
 	consumerToken := ""
 	apiURL := ""
@@ -45,35 +40,16 @@ func TestCli_Vlan_Create(t *testing.T) {
 				}
 				root := c.Root()
 				projectName := "metal-cli-ips-get" + helper.GenerateRandomString(5)
-				projectId, err = helper.CreateTestProject(t, projectName)
-				if err != nil {
-					t.Error(err)
-				}
-				time.Sleep(10 * time.Second)
-				if len(projectId) != 0 {
-					root.SetArgs([]string{subCommand, "request", "-p", projectId, "-t", "public_ipv4", "-m", "da", "-q", "4"})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				project := helper.CreateTestProject(t, projectName)
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+				root.SetArgs([]string{subCommand, "request", "-p", project.GetId(), "-t", "public_ipv4", "-m", "da", "-q", "4"})
 
-					out, _ := io.ReadAll(r)
-					if !strings.Contains(string(out[:]), "ID") &&
-						!strings.Contains(string(out[:]), "PUBLIC") &&
-						!strings.Contains(string(out[:]), "true") {
-						t.Error("expected output should include ID, PUBLIC and true strings in the out string")
-					}
-				}
-				err = helper.CleanTestProject(t, projectId)
-				if err != nil {
-					t.Error(err)
+				out := helper.ExecuteAndCaptureOutput(t, root)
+
+				if !strings.Contains(string(out[:]), "ID") &&
+					!strings.Contains(string(out[:]), "PUBLIC") &&
+					!strings.Contains(string(out[:]), "true") {
+					t.Error("expected output should include ID, PUBLIC and true strings in the out string")
 				}
 			},
 		},

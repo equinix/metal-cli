@@ -2,8 +2,6 @@ package ports
 
 import (
 	"context"
-	"io"
-	"os"
 	"strconv"
 	"testing"
 
@@ -17,22 +15,13 @@ import (
 )
 
 func TestPorts_VLANs(t *testing.T) {
-	var projectId, deviceId string
 	subCommand := "port"
 	consumerToken := ""
 	apiURL := ""
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-port-vlan")
-	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
-			t.Error(err)
-		}
-	})
-	if device == nil {
-		return
-	}
+	project, device := helper.SetupProjectAndDevice(t, "metal-cli-port-vlan")
 
 	port := &device.GetNetworkPorts()[2]
 	if port == nil {
@@ -45,19 +34,12 @@ func TestPorts_VLANs(t *testing.T) {
 		return
 	}
 
-	vlan, err := helper.CreateTestVLAN(t, projectId)
+	vlan := helper.CreateTestVLAN(t, project.GetId())
 	t.Cleanup(func() {
 		if err := helper.UnAssignPortVlan(t, port.GetId(), vlan.GetId()); err != nil {
 			t.Error(err)
 		}
-		if err := helper.CleanTestVlan(t, vlan.GetId()); err != nil {
-			t.Error(err)
-		}
 	})
-	if err != nil {
-		t.Error(err)
-		return
-	}
 
 	tests := []struct {
 		name    string
@@ -76,19 +58,7 @@ func TestPorts_VLANs(t *testing.T) {
 				// should be layer2-bonded
 				root.SetArgs([]string{subCommand, "vlan", "-i", port.GetId(), "-a", vxLanStr})
 
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
-
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
-
-				out, _ := io.ReadAll(r)
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
 				// wait for port to have vlans attached
 				if err := helper.WaitForAttachVlanToPort(t, port.GetId(), true); err != nil {

@@ -2,8 +2,6 @@ package projecttest
 
 import (
 	"fmt"
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -13,40 +11,6 @@ import (
 	"github.com/equinix/metal-cli/test/helper"
 	"github.com/spf13/cobra"
 )
-
-// setupTestOrganization initializes a test Orge and returns its ID along with a cleanup function.
-func setupTestOrganization(t *testing.T, projectName string) (string, func()) {
-	orgId, err := helper.CreateTestOrganization(projectName)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	teardown := func() {
-		err := helper.CleanTestOrganization(orgId)
-		if err != nil {
-			t.Error(err)
-		}
-	}
-
-	return orgId, teardown
-}
-
-// setupTestProject initializes a test project and returns its ID along with a cleanup function.
-func setupTestProject(t *testing.T, projectName string) (string, func()) {
-	projectId, err := helper.CreateTestProject(t, projectName)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	teardown := func() {
-		err := helper.CleanTestProject(t, projectId)
-		if err != nil {
-			t.Error(err)
-		}
-	}
-
-	return projectId, teardown
-}
 
 func TestCli_Project_Tests(t *testing.T) {
 	subCommand := "project"
@@ -77,27 +41,14 @@ func TestCli_Project_Tests(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command, rootCmd *cobra.Command, projectID string) {
 				root := c.Root()
 				projName := "metal-cli-" + randName + "-project-create-test"
-				orgId, cleanupOrg := setupTestOrganization(t, projName)
-				defer cleanupOrg()
+				org := helper.CreateTestOrganization(t, projName)
 
-				if orgId != "" {
-					root.SetArgs([]string{subCommand, "create", "-O", orgId, "-n", projName})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				root.SetArgs([]string{subCommand, "create", "-O", org.GetId(), "-n", projName})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-					out, _ := io.ReadAll(r)
-					if !strings.Contains(string(out[:]), projName) {
-						t.Error("expected output should include " + projName + ", in the out string ")
-					}
+				if !strings.Contains(string(out[:]), projName) {
+					t.Error("expected output should include " + projName + ", in the out string ")
 				}
 			},
 		},
@@ -114,29 +65,16 @@ func TestCli_Project_Tests(t *testing.T) {
 
 				projName := "metal-cli-" + randName + "-project-update-test"
 
-				projectId, cleanProject := setupTestProject(t, projName)
-				defer cleanProject()
+				project := helper.CreateTestProject(t, projName)
 				updateProjName := projName + "-123"
 
-				if projectId != "" {
-					root.SetArgs([]string{subCommand, "update", "-i", projectId, "-n", updateProjName})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				root.SetArgs([]string{subCommand, "update", "-i", project.GetId(), "-n", updateProjName})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-					out, _ := io.ReadAll(r)
-					if !strings.Contains(string(out[:]), updateProjName) &&
-						!strings.Contains(string(out[:]), projectId) {
-						t.Error("expected output should include " + updateProjName + projectId + ", in the out string ")
-					}
+				if !strings.Contains(string(out[:]), updateProjName) &&
+					!strings.Contains(string(out[:]), project.GetId()) {
+					t.Error("expected output should include " + updateProjName + project.GetId() + ", in the out string ")
 				}
 			},
 		},
@@ -152,28 +90,15 @@ func TestCli_Project_Tests(t *testing.T) {
 				root := c.Root()
 				projName := "metal-cli-" + randName + "-project-get-test"
 
-				projectId, cleanProject := setupTestProject(t, projName)
-				defer cleanProject()
+				project := helper.CreateTestProject(t, projName)
 
-				if projectId != "" {
-					root.SetArgs([]string{subCommand, "get"})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				root.SetArgs([]string{subCommand, "get"})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-					out, _ := io.ReadAll(r)
-					if !strings.Contains(string(out[:]), projName) &&
-						!strings.Contains(string(out[:]), projectId) {
-						t.Error("expected output should include " + projName + projectId + ", in the out string ")
-					}
+				if !strings.Contains(string(out[:]), projName) &&
+					!strings.Contains(string(out[:]), project.GetId()) {
+					t.Error("expected output should include " + projName + project.GetId() + ", in the out string ")
 				}
 			},
 		},
@@ -189,28 +114,15 @@ func TestCli_Project_Tests(t *testing.T) {
 				root := c.Root()
 				projName := "metal-cli-" + randName + "-project-get-id-test"
 
-				projectId, cleanProject := setupTestProject(t, projName)
-				defer cleanProject()
+				project := helper.CreateTestProject(t, projName)
 
-				if projectId != "" {
-					root.SetArgs([]string{subCommand, "get", "-i", projectId})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				root.SetArgs([]string{subCommand, "get", "-i", project.GetId()})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-					out, _ := io.ReadAll(r)
-					if !strings.Contains(string(out[:]), projName) &&
-						!strings.Contains(string(out[:]), projectId) {
-						t.Error("expected output should include " + projName + projectId + ", in the out string ")
-					}
+				if !strings.Contains(string(out[:]), projName) &&
+					!strings.Contains(string(out[:]), project.GetId()) {
+					t.Error("expected output should include " + projName + project.GetId() + ", in the out string ")
 				}
 			},
 		},
@@ -227,27 +139,15 @@ func TestCli_Project_Tests(t *testing.T) {
 
 				projName := "metal-cli-" + randName + "-project-delete-test"
 
-				projectId, _ := setupTestProject(t, projName)
+				project := helper.CreateTestProject(t, projName)
 
-				if projectId != "" {
-					root.SetArgs([]string{subCommand, "delete", "-i", projectId, "-f"})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				root.SetArgs([]string{subCommand, "delete", "-i", project.GetId(), "-f"})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-					out, _ := io.ReadAll(r)
-					expectedOut := fmt.Sprintf("Project %s successfully deleted.", projectId)
-					if !strings.Contains(string(out[:]), expectedOut) {
-						t.Error(fmt.Errorf("expected output: '%s' but got '%s'", expectedOut, string(out)))
-					}
+				expectedOut := fmt.Sprintf("Project %s successfully deleted.", project.GetId())
+				if !strings.Contains(string(out[:]), expectedOut) {
+					t.Error(fmt.Errorf("expected output: '%s' but got '%s'", expectedOut, string(out)))
 				}
 			},
 		},
@@ -264,31 +164,18 @@ func TestCli_Project_Tests(t *testing.T) {
 
 				projName := "metal-cli-" + randName + "-project-bgpenable-test"
 
-				projectId, cleanProject := setupTestProject(t, projName)
-				defer cleanProject()
+				project := helper.CreateTestProject(t, projName)
 				asn := "65000"
 				dtype := "local"
 
-				if projectId != "" {
-					root.SetArgs([]string{subCommand, "bgp-enable", "--project-id", projectId, "--deployment-type", dtype, "--asn", asn})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				root.SetArgs([]string{subCommand, "bgp-enable", "--project-id", project.GetId(), "--deployment-type", dtype, "--asn", asn})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-					out, _ := io.ReadAll(r)
-					if !strings.Contains(string(out[:]), projectId) &&
-						!strings.Contains(string(out[:]), asn) &&
-						!strings.Contains(string(out[:]), dtype) {
-						t.Error("expected output should include " + projectId + "," + asn + " and " + dtype + ", in the out string ")
-					}
+				if !strings.Contains(string(out[:]), project.GetId()) &&
+					!strings.Contains(string(out[:]), asn) &&
+					!strings.Contains(string(out[:]), dtype) {
+					t.Error("expected output should include " + project.GetId() + "," + asn + " and " + dtype + ", in the out string ")
 				}
 			},
 		},
@@ -305,10 +192,9 @@ func TestCli_Project_Tests(t *testing.T) {
 
 				projName := "metal-cli-" + randName + "-project-bgpconfig-test"
 
-				projectId, cleanProject := setupTestProject(t, projName)
-				defer cleanProject()
+				project := helper.CreateTestProject(t, projName)
 
-				err := helper.CreateTestBgpEnableTest(projectId)
+				err := helper.CreateTestBgpEnableTest(project.GetId())
 				if err != nil {
 					t.Error(err)
 				}
@@ -317,27 +203,15 @@ func TestCli_Project_Tests(t *testing.T) {
 				dtype := "local"
 				status := "enabled"
 
-				if projectId != "" {
-					root.SetArgs([]string{subCommand, "bgp-config", "--project-id", projectId})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				root.SetArgs([]string{subCommand, "bgp-config", "--project-id", project.GetId()})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-					out, _ := io.ReadAll(r)
-					if !strings.Contains(string(out[:]), projectId) &&
-						!strings.Contains(string(out[:]), asn) &&
-						!strings.Contains(string(out[:]), status) &&
-						!strings.Contains(string(out[:]), dtype) {
-						t.Error("expected output should include " + projectId + "," + asn + "," + dtype + " and " + status + ", in the out string ")
-					}
+				if !strings.Contains(string(out[:]), project.GetId()) &&
+					!strings.Contains(string(out[:]), asn) &&
+					!strings.Contains(string(out[:]), status) &&
+					!strings.Contains(string(out[:]), dtype) {
+					t.Error("expected output should include " + project.GetId() + "," + asn + "," + dtype + " and " + status + ", in the out string ")
 				}
 			},
 		},

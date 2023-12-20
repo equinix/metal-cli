@@ -1,8 +1,6 @@
 package ports
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -15,22 +13,13 @@ import (
 )
 
 func TestPorts_Retrieve(t *testing.T) {
-	var projectId, deviceId string
 	subCommand := "port"
 	consumerToken := ""
 	apiURL := ""
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-port-get")
-	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
-			t.Error(err)
-		}
-	})
-	if device == nil {
-		return
-	}
+	_, device := helper.SetupProjectAndDevice(t, "metal-cli-port-get")
 
 	port := &device.GetNetworkPorts()[2]
 	if port == nil {
@@ -52,19 +41,7 @@ func TestPorts_Retrieve(t *testing.T) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "get", "-i", port.GetId()})
 
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
-
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
-
-				out, _ := io.ReadAll(r)
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
 				if !strings.Contains(string(out[:]), port.Data.GetMac()) {
 					t.Errorf("cmd output should contain MAC address of the port: %s", port.Data.GetMac())

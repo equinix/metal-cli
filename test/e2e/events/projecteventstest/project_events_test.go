@@ -1,8 +1,6 @@
 package eventsprojtest
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,8 +12,6 @@ import (
 )
 
 func TestCli_Events_Get(t *testing.T) {
-	var projectId string
-	var err error
 	subCommand := "event"
 	consumerToken := ""
 	apiURL := ""
@@ -42,30 +38,14 @@ func TestCli_Events_Get(t *testing.T) {
 				root := c.Root()
 
 				projectName := "metal-cli-projects-events" + helper.GenerateRandomString(5)
-				projectId, err = helper.CreateTestProject(t, projectName)
-				if err != nil {
-					t.Error(err)
-				}
-				root.SetArgs([]string{subCommand, "get", "-p", projectId})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
+				project := helper.CreateTestProject(t, projectName)
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				root.SetArgs([]string{subCommand, "get", "-p", project.GetId()})
 
-				out, _ := io.ReadAll(r)
+				out := helper.ExecuteAndCaptureOutput(t, root)
+
 				if !strings.Contains(string(out[:]), "metal-cli-events-pro") {
 					t.Error("expected output should include metal-cli-events-pro in output string")
-				}
-				err = helper.CleanTestProject(t, projectId)
-				if err != nil {
-					t.Error(err)
 				}
 			},
 		},

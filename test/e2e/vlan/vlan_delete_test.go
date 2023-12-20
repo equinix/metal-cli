@@ -1,8 +1,6 @@
 package vlan
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,7 +12,7 @@ import (
 )
 
 func TestCli_Vlan_Clean(t *testing.T) {
-	var projectId, vlanId string
+	var vlanId string
 	var err error
 	subCommand := "vlan"
 	consumerToken := ""
@@ -41,32 +39,18 @@ func TestCli_Vlan_Clean(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				projectName := "metal-cli-vlan-get-pro" + helper.GenerateRandomString(5)
-				projectId, err = helper.CreateTestProject(t, projectName)
+				project := helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)
 				}
-				vlanId, err = helper.CreateTestVlanWithVxLan(t, projectId, 2023, "metal-cli-vlan-get-test")
-				if len(projectId) != 0 && len(vlanId) != 0 {
+				vlanId, err = helper.CreateTestVlanWithVxLan(t, project.GetId(), 2023, "metal-cli-vlan-get-test")
+				if len(vlanId) != 0 {
 					root.SetArgs([]string{subCommand, "delete", "-f", "-i", vlanId})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+					out := helper.ExecuteAndCaptureOutput(t, root)
 
-					out, _ := io.ReadAll(r)
 					if !strings.Contains(string(out[:]), "Virtual Network "+vlanId+" successfully deleted.") {
 						t.Error("expected output should include Virtual Network " + vlanId + "successfully deleted." + "in the out string")
-					}
-					err = helper.CleanTestProject(t, projectId)
-					if err != nil {
-						t.Error(err)
 					}
 				}
 			},
