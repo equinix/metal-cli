@@ -1,8 +1,6 @@
 package devicestest
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,8 +12,6 @@ import (
 )
 
 func TestCli_Devices_Get(t *testing.T) {
-	var projectId, deviceId string
-	var err error
 	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
@@ -41,45 +37,15 @@ func TestCli_Devices_Get(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				projectName := "metal-cli-device-get" + helper.GenerateRandomString(5)
-				projectId, err = helper.CreateTestProject(t, projectName)
-				t.Cleanup(func() {
-					if err := helper.CleanTestProject(t, projectId); err != nil &&
-						!strings.Contains(err.Error(), "Not Found") {
-						t.Error(err)
-					}
-				})
-				if err != nil {
-					t.Fatal(err)
-				}
+				project := helper.CreateTestProject(t, projectName)
+				device := helper.CreateTestDevice(t, project.GetId(), "metal-cli-get-dev")
 
-				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-get-dev")
-				t.Cleanup(func() {
-					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
-						!strings.Contains(err.Error(), "Not Found") {
-						t.Error(err)
-					}
-				})
-				if err != nil {
-					t.Fatal(err)
-				}
+				root.SetArgs([]string{subCommand, "get", "-i", device.GetId()})
 
-				root.SetArgs([]string{subCommand, "get", "-i", deviceId})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
-
-				out, _ := io.ReadAll(r)
-
-				if !strings.Contains(string(out[:]), deviceId) {
-					t.Fatal("expected output should include " + deviceId)
+				if !strings.Contains(string(out[:]), device.GetId()) {
+					t.Fatal("expected output should include " + device.GetId())
 				}
 			},
 		},

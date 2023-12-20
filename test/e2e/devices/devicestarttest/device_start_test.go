@@ -1,8 +1,6 @@
 package devicestarttest
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,9 +12,6 @@ import (
 )
 
 func TestCli_Devices_Update(t *testing.T) {
-	var projectId, deviceId string
-	var err error
-	var status bool
 	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
@@ -42,70 +37,41 @@ func TestCli_Devices_Update(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				projectName := "metal-cli-device-start" + helper.GenerateRandomString(5)
-				projectId, err = helper.CreateTestProject(t, projectName)
-				t.Cleanup(func() {
-					if err := helper.CleanTestProject(t, projectId); err != nil &&
-						!strings.Contains(err.Error(), "Not Found") {
-						t.Error(err)
-					}
-				})
-				if err != nil {
-					t.Fatal(err)
-				}
+				project := helper.CreateTestProject(t, projectName)
+				device := helper.CreateTestDevice(t, project.GetId(), "metal-cli-start-dev")
+				status, err := helper.IsDeviceStateActive(t, device.GetId())
 
-				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-start-dev")
-				t.Cleanup(func() {
-					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
-						!strings.Contains(err.Error(), "Not Found") {
-						t.Error(err)
-					}
-				})
 				if err != nil {
-					t.Fatal(err)
-				}
-
-				status, err = helper.IsDeviceStateActive(t, deviceId)
-				if err != nil {
-					_, err := helper.IsDeviceStateActive(t, deviceId)
+					_, err := helper.IsDeviceStateActive(t, device.GetId())
 					if err != nil {
 						t.Error(err)
 					} else {
-						err = helper.StopTestDevice(t, deviceId)
+						err = helper.StopTestDevice(t, device.GetId())
 						if err != nil {
 							t.Error(err)
 						}
-						status, err = helper.IsDeviceStateActive(t, deviceId)
+						status, err = helper.IsDeviceStateActive(t, device.GetId())
 						if err == nil {
 							t.Error(err)
 						}
 					}
 				}
 
-				if len(projectId) != 0 && len(deviceId) != 0 && !status {
-					root.SetArgs([]string{subCommand, "start", "--id", deviceId})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				if !status {
+					root.SetArgs([]string{subCommand, "start", "--id", device.GetId()})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
+					out := helper.ExecuteAndCaptureOutput(t, root)
+
+					if !strings.Contains(string(out[:]), "Device "+device.GetId()+" successfully started.") {
+						t.Fatal("expected output should include" + "Device " + device.GetId() + " successfully started." + "in the out string ")
 					}
 
-					out, _ := io.ReadAll(r)
-					if !strings.Contains(string(out[:]), "Device "+deviceId+" successfully started.") {
-						t.Fatal("expected output should include" + "Device " + deviceId + " successfully started." + "in the out string ")
-					}
-
-					status, err = helper.IsDeviceStateActive(t, deviceId)
+					status, err = helper.IsDeviceStateActive(t, device.GetId())
 					if err != nil {
 						t.Fatal(err)
 					}
 					if !status {
-						t.Fatalf("Device not yet active, %s", deviceId)
+						t.Fatalf("Device not yet active, %s", device.GetId())
 					}
 				}
 			},

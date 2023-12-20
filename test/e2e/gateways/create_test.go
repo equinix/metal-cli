@@ -3,8 +3,6 @@ package gateways
 import (
 	"context"
 	"errors"
-	"io"
-	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -18,35 +16,14 @@ import (
 )
 
 func TestGateways_Create(t *testing.T) {
-	var projectId, deviceId string
 	subCommand := "gateways"
 	consumerToken := ""
 	apiURL := ""
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-gateways-create")
-	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil &&
-			!strings.Contains(err.Error(), "Not Found") {
-			t.Error(err)
-		}
-	})
-	if device == nil {
-		return
-	}
-
-	vlan, err := helper.CreateTestVLAN(t, projectId)
-	t.Cleanup(func() {
-		if err := helper.CleanTestVlan(t, vlan.GetId()); err != nil &&
-			!strings.Contains(err.Error(), "Not Found") {
-			t.Error(err)
-		}
-	})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	project := helper.CreateTestProject(t, "metal-cli-gateways-create")
+	vlan := helper.CreateTestVLAN(t, project.GetId())
 
 	tests := []struct {
 		name    string
@@ -61,25 +38,13 @@ func TestGateways_Create(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 
-				root.SetArgs([]string{subCommand, "create", "-p", projectId, "-v", vlan.GetId(), "-s", "8"})
+				root.SetArgs([]string{subCommand, "create", "-p", project.GetId(), "-v", vlan.GetId(), "-s", "8"})
 
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
-
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
-
-				out, _ := io.ReadAll(r)
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
 				apiClient := helper.TestClient()
 				gateways, _, err := apiClient.MetalGatewaysApi.
-					FindMetalGatewaysByProject(context.Background(), projectId).
+					FindMetalGatewaysByProject(context.Background(), project.GetId()).
 					Include([]string{"ip_reservation"}).
 					Execute()
 				if err != nil {
@@ -90,7 +55,7 @@ func TestGateways_Create(t *testing.T) {
 					return
 				}
 
-				assertGatewaysCmdOutput(t, string(out[:]), gateways.MetalGateways[0].MetalGateway.GetId(), device.Metro.GetCode(), strconv.Itoa(int(vlan.GetVxlan())))
+				assertGatewaysCmdOutput(t, string(out[:]), gateways.MetalGateways[0].MetalGateway.GetId(), vlan.GetMetroCode(), strconv.Itoa(int(vlan.GetVxlan())))
 			},
 		},
 	}
@@ -110,7 +75,7 @@ func assertGatewaysCmdOutput(t *testing.T, out, gatewayId, metro, vxlan string) 
 	}
 
 	if !strings.Contains(out, metro) {
-		t.Errorf("cmd output should contain metro same as device: [%s] \n output:\n%s", metro, out)
+		t.Errorf("cmd output should contain metro same as vlan: [%s] \n output:\n%s", metro, out)
 	}
 
 	if !strings.Contains(out, vxlan) {

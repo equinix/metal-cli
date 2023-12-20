@@ -1,8 +1,6 @@
 package devicecreatetest
 
 import (
-	"io"
-	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -15,7 +13,7 @@ import (
 )
 
 func TestCli_Devices_Create(t *testing.T) {
-	var projectId, deviceId string
+	var deviceId string
 	var err error
 	subCommand := "device"
 	consumerToken := ""
@@ -44,60 +42,36 @@ func TestCli_Devices_Create(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				projectName := "metal-cli-device-create" + randomId
-				projectId, err = helper.CreateTestProject(t, projectName)
-				t.Cleanup(func() {
-					if err := helper.CleanTestProject(t, projectId); err != nil &&
-						!strings.Contains(err.Error(), "Not Found") {
-						t.Error(err)
-					}
-				})
-				if err != nil {
-					t.Fatal(err)
+				project := helper.CreateTestProject(t, projectName)
+
+				deviceName := "metal-cli-create-dev" + randomId
+				root.SetArgs([]string{subCommand, "create", "-p", project.GetId(), "-P", "m3.small.x86", "-m", "da", "-O", "ubuntu_20_04", "-H", deviceName})
+
+				out := helper.ExecuteAndCaptureOutput(t, root)
+
+				if !strings.Contains(string(out[:]), deviceName) &&
+					!strings.Contains(string(out[:]), "Ubuntu 20.04 LTS") &&
+					!strings.Contains(string(out[:]), "queued") {
+					t.Errorf("expected output should include %s, Ubuntu 20.04 LTS, and queued strings in the out string ", deviceName)
 				}
 
-				if len(projectId) != 0 {
+				idNamePattern := `(?m)^\| ([a-zA-Z0-9-]+) +\| *` + deviceName + ` *\|`
 
-					deviceName := "metal-cli-create-dev" + randomId
-					root.SetArgs([]string{subCommand, "create", "-p", projectId, "-P", "m3.small.x86", "-m", "da", "-O", "ubuntu_20_04", "-H", deviceName})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
+				// Find the match of the ID and NAME pattern in the table string
+				match := regexp.MustCompile(idNamePattern).FindStringSubmatch(string(out[:]))
+
+				// Extract the ID from the match
+				if len(match) > 1 {
+					deviceId = strings.TrimSpace(match[1])
+					_, err = helper.IsDeviceStateActive(t, deviceId)
 					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
+						helper.CleanTestDevice(t, deviceId)
 					})
-
-					if err := root.Execute(); err != nil {
+					if err != nil {
 						t.Fatal(err)
 					}
-
-					out, _ := io.ReadAll(r)
-
-					if !strings.Contains(string(out[:]), deviceName) &&
-						!strings.Contains(string(out[:]), "Ubuntu 20.04 LTS") &&
-						!strings.Contains(string(out[:]), "queued") {
-						t.Errorf("expected output should include %s, Ubuntu 20.04 LTS, and queued strings in the out string ", deviceName)
-					}
-
-					idNamePattern := `(?m)^\| ([a-zA-Z0-9-]+) +\| *` + deviceName + ` *\|`
-
-					// Find the match of the ID and NAME pattern in the table string
-					match := regexp.MustCompile(idNamePattern).FindStringSubmatch(string(out[:]))
-
-					// Extract the ID from the match
-					if len(match) > 1 {
-						deviceId = strings.TrimSpace(match[1])
-						_, err = helper.IsDeviceStateActive(t, deviceId)
-						t.Cleanup(func() {
-							if err := helper.CleanTestDevice(t, deviceId); err != nil &&
-								!strings.Contains(err.Error(), "Not Found") {
-								t.Error(err)
-							}
-						})
-						if err != nil {
-							t.Fatal(err)
-						}
-					}
+				} else {
+					t.Errorf("No match found for %v in %v", idNamePattern, string(out[:]))
 				}
 			},
 		},

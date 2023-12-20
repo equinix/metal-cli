@@ -1,8 +1,6 @@
 package devicestoptest
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,8 +12,6 @@ import (
 )
 
 func TestCli_Devices_Update(t *testing.T) {
-	var projectId, deviceId string
-	var err error
 	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
@@ -41,49 +37,20 @@ func TestCli_Devices_Update(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				projectName := "metal-cli-device-stop" + helper.GenerateRandomString(5)
-				projectId, err = helper.CreateTestProject(t, projectName)
-				t.Cleanup(func() {
-					if err := helper.CleanTestProject(t, projectId); err != nil &&
-						!strings.Contains(err.Error(), "Not Found") {
-						t.Error(err)
-					}
-				})
+				project := helper.CreateTestProject(t, projectName)
+				device := helper.CreateTestDevice(t, project.GetId(), "metal-cli-stop-dev")
+
+				status, err := helper.IsDeviceStateActive(t, device.GetId())
 				if err != nil {
 					t.Fatal(err)
 				}
+				if status {
+					root.SetArgs([]string{subCommand, "stop", "--id", device.GetId()})
 
-				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-stop-dev")
-				t.Cleanup(func() {
-					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
-						!strings.Contains(err.Error(), "Not Found") {
-						t.Error(err)
-					}
-				})
-				if err != nil {
-					t.Fatal(err)
-				}
+					out := helper.ExecuteAndCaptureOutput(t, root)
 
-				status, err := helper.IsDeviceStateActive(t, deviceId)
-				if err != nil {
-					t.Fatal(err)
-				}
-				if len(projectId) != 0 && len(deviceId) != 0 && status {
-					root.SetArgs([]string{subCommand, "stop", "--id", deviceId})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
-
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
-
-					out, _ := io.ReadAll(r)
-					if !strings.Contains(string(out[:]), "Device "+deviceId+" successfully stopped.") {
-						t.Fatal("expected output should include" + "Device " + deviceId + " successfully stopped." + "in the out string ")
+					if !strings.Contains(string(out[:]), "Device "+device.GetId()+" successfully stopped.") {
+						t.Fatal("expected output should include" + "Device " + device.GetId() + " successfully stopped." + "in the out string ")
 					}
 				}
 			},

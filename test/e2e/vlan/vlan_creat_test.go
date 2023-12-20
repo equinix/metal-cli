@@ -1,8 +1,6 @@
 package vlan
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,7 +12,6 @@ import (
 )
 
 func TestCli_Vlan_Create(t *testing.T) {
-	var projectId string
 	var err error
 	subCommand := "vlan"
 	consumerToken := ""
@@ -41,36 +38,18 @@ func TestCli_Vlan_Create(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				projectName := "metal-cli-vlan-create-pro" + helper.GenerateRandomString(5)
-				projectId, err = helper.CreateTestProject(t, projectName)
+				project := helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)
 				}
-				if len(projectId) != 0 {
-					root.SetArgs([]string{subCommand, "create", "-p", projectId, "-m", "da", "--vxlan", "2023", "-d", "metal-cli-vlan-test"})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				root.SetArgs([]string{subCommand, "create", "-p", project.GetId(), "-m", "da", "--vxlan", "2023", "-d", "metal-cli-vlan-test"})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-					out, _ := io.ReadAll(r)
-
-					if !strings.Contains(string(out[:]), "metal-cli-vlan-test") &&
-						!strings.Contains(string(out[:]), "da") &&
-						!strings.Contains(string(out[:]), "2023") {
-						t.Error("expected output should include metal-cli-vlan-test, da and 2023 strings in the out string")
-					}
-
-					err = helper.CleanTestProject(t, projectId)
-					if err != nil {
-						t.Error(err)
-					}
+				if !strings.Contains(string(out[:]), "metal-cli-vlan-test") &&
+					!strings.Contains(string(out[:]), "da") &&
+					!strings.Contains(string(out[:]), "2023") {
+					t.Error("expected output should include metal-cli-vlan-test, da and 2023 strings in the out string")
 				}
 			},
 		},

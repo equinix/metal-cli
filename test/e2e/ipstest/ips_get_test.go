@@ -1,8 +1,6 @@
 package ipstest
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,7 +12,7 @@ import (
 )
 
 func TestCli_Ips_Get(t *testing.T) {
-	var projectId, ipsId string
+	var ipsId string
 	var err error
 	subCommand := "ip"
 	consumerToken := ""
@@ -44,36 +42,19 @@ func TestCli_Ips_Get(t *testing.T) {
 				}
 				root := c.Root()
 				projectName := "metal-cli-ips-get" + helper.GenerateRandomString(5)
-				projectId, err = helper.CreateTestProject(t, projectName)
-				if err != nil {
-					t.Error(err)
-				}
-				ipsId, err = helper.CreateTestIps(t, projectId, 1, "public_ipv4")
-				if len(projectId) != 0 && len(ipsId) != 0 {
-					root.SetArgs([]string{subCommand, "get", "-p", projectId})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
+				project := helper.CreateTestProject(t, projectName)
+				ipsId, err = helper.CreateTestIps(t, project.GetId(), 1, "public_ipv4")
+				if len(ipsId) != 0 {
+					root.SetArgs([]string{subCommand, "get", "-p", project.GetId()})
 
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
+					out := helper.ExecuteAndCaptureOutput(t, root)
 
-					out, _ := io.ReadAll(r)
 					if !strings.Contains(string(out[:]), ipsId) &&
 						!strings.Contains(string(out[:]), "da") {
 						t.Error("expected output should include " + ipsId + " da strings in the out string")
 					}
 
 					err = helper.CleanTestIps(t, ipsId)
-					if err != nil {
-						t.Error(err)
-					}
-					err = helper.CleanTestProject(t, projectId)
 					if err != nil {
 						t.Error(err)
 					}

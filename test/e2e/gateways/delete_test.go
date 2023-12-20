@@ -3,8 +3,6 @@ package gateways
 import (
 	"context"
 	"fmt"
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -17,53 +15,18 @@ import (
 )
 
 func TestGateways_Delete(t *testing.T) {
-	var projectId, deviceId string
 	subCommand := "gateways"
 	consumerToken := ""
 	apiURL := ""
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	defer func() {
-		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
-			t.Error(err)
-		}
-	}()
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-gateway-delete")
-	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil &&
-			!strings.Contains(err.Error(), "Not Found") {
-			t.Error(err)
-		}
-	})
-	if device == nil {
-		return
-	}
+	project := helper.CreateTestProject(t, "metal-cli-gateway-delete")
 
-	vlan, err := helper.CreateTestVLAN(t, projectId)
-	t.Cleanup(func() {
-		if err := helper.CleanTestVlan(t, vlan.GetId()); err != nil &&
-			!strings.Contains(err.Error(), "Not Found") {
-			t.Error("Error while cleaning up vLan", err)
-		}
-	})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	vlan := helper.CreateTestVLAN(t, project.GetId())
 
 	subnetSize := int32(8)
-	metalGateway, err := helper.CreateTestGateway(t, projectId, vlan.GetId(), &subnetSize)
-	t.Cleanup(func() {
-		if err := helper.CleanTestGateway(t, metalGateway.GetId()); err != nil &&
-			!strings.Contains(err.Error(), "Not Found") {
-			t.Error(err)
-		}
-	})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	metalGateway := helper.CreateTestGateway(t, project.GetId(), vlan.GetId(), &subnetSize)
 
 	tests := []struct {
 		name    string
@@ -80,19 +43,7 @@ func TestGateways_Delete(t *testing.T) {
 
 				root.SetArgs([]string{subCommand, "delete", "-f", "-i", metalGateway.GetId()})
 
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
-
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
-
-				out, _ := io.ReadAll(r)
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
 				apiClient := helper.TestClient()
 				gateways, _, err := apiClient.MetalGatewaysApi.

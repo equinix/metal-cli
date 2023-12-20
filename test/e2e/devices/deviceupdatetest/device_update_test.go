@@ -1,8 +1,6 @@
 package deviceupdatetest
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,8 +12,6 @@ import (
 )
 
 func TestCli_Devices_Update(t *testing.T) {
-	var projectId, deviceId string
-	var err error
 	subCommand := "device"
 	consumerToken := ""
 	apiURL := ""
@@ -41,47 +37,18 @@ func TestCli_Devices_Update(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				projectName := "metal-cli-device-update" + helper.GenerateRandomString(5)
-				projectId, err = helper.CreateTestProject(t, projectName)
-				t.Cleanup(func() {
-					if err := helper.CleanTestProject(t, projectId); err != nil &&
-						!strings.Contains(err.Error(), "Not Found") {
-						t.Error(err)
-					}
-				})
+				project := helper.CreateTestProject(t, projectName)
+				device := helper.CreateTestDevice(t, project.GetId(), "metal-cli-update-dev")
+
+				status, err := helper.IsDeviceStateActive(t, device.GetId())
 				if err != nil {
 					t.Fatal(err)
 				}
+				if status == true {
+					root.SetArgs([]string{subCommand, "update", "-i", device.GetId(), "-H", "metal-cli-update-dev-test", "-d", "This device used for testing"})
 
-				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-update-dev")
-				t.Cleanup(func() {
-					if err := helper.CleanTestDevice(t, deviceId); err != nil &&
-						!strings.Contains(err.Error(), "Not Found") {
-						t.Error(err)
-					}
-				})
-				if err != nil {
-					t.Fatal(err)
-				}
+					out := helper.ExecuteAndCaptureOutput(t, root)
 
-				status, err := helper.IsDeviceStateActive(t, deviceId)
-				if err != nil {
-					t.Fatal(err)
-				}
-				if len(projectId) != 0 && len(deviceId) != 0 && status == true {
-					root.SetArgs([]string{subCommand, "update", "-i", deviceId, "-H", "metal-cli-update-dev-test", "-d", "This device used for testing"})
-					rescueStdout := os.Stdout
-					r, w, _ := os.Pipe()
-					os.Stdout = w
-					t.Cleanup(func() {
-						w.Close()
-						os.Stdout = rescueStdout
-					})
-
-					if err := root.Execute(); err != nil {
-						t.Fatal(err)
-					}
-
-					out, _ := io.ReadAll(r)
 					if !strings.Contains(string(out[:]), "metal-cli-update-dev-test") {
 						t.Error("expected output should include metal-cli-update-dev-test in the out string ")
 					}

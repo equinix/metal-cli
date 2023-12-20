@@ -1,8 +1,6 @@
 package ports
 
 import (
-	"io"
-	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -17,22 +15,13 @@ import (
 )
 
 func TestPorts_Convert(t *testing.T) {
-	var projectId, deviceId string
 	subCommand := "port"
 	consumerToken := ""
 	apiURL := ""
 	Version := "devel"
 	rootClient := root.NewClient(consumerToken, apiURL, Version)
 
-	device := helper.SetupProjectAndDevice(t, &projectId, &deviceId, "metal-cli-port-convert")
-	t.Cleanup(func() {
-		if err := helper.CleanupProjectAndDevice(t, deviceId, projectId); err != nil {
-			t.Error(err)
-		}
-	})
-	if device == nil {
-		return
-	}
+	_, device := helper.SetupProjectAndDevice(t, "metal-cli-port-convert")
 
 	port := &device.GetNetworkPorts()[2]
 	if port == nil {
@@ -57,19 +46,7 @@ func TestPorts_Convert(t *testing.T) {
 
 				root.SetArgs([]string{subCommand, "convert", "-i", port.GetId(), "--layer2", "--bonded=false", "--force"})
 
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
-
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
-
-				out, _ := io.ReadAll(r)
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
 				assertPortCmdOutput(t, port, string(out[:]), "layer2-individual", false)
 			},
@@ -83,19 +60,7 @@ func TestPorts_Convert(t *testing.T) {
 
 				root.SetArgs([]string{subCommand, "convert", "-i", port.GetId(), "--layer2", "--bonded", "--force"})
 
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
-
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
-
-				out, _ := io.ReadAll(r)
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
 				assertPortCmdOutput(t, port, string(out[:]), "layer2-bonded", true)
 			},
@@ -109,19 +74,7 @@ func TestPorts_Convert(t *testing.T) {
 
 				root.SetArgs([]string{subCommand, "convert", "-i", port.GetId(), "-2=false", "--force"})
 
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
-
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
-
-				out, _ := io.ReadAll(r)
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
 				assertPortCmdOutput(t, port, string(out[:]), "layer3", true)
 			},

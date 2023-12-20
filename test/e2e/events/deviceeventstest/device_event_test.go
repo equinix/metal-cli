@@ -1,8 +1,6 @@
 package eventsprojtest
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -14,9 +12,6 @@ import (
 )
 
 func TestCli_Events_Get(t *testing.T) {
-	var projectId, deviceId string
-	var err error
-	var status bool
 	subCommand := "event"
 	consumerToken := ""
 	apiURL := ""
@@ -42,47 +37,23 @@ func TestCli_Events_Get(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				projectName := "metal-cli-device-events" + helper.GenerateRandomString(5)
-				projectId, err = helper.CreateTestProject(t, projectName)
-				if err != nil {
-					t.Error(err)
-				}
-				deviceId, err = helper.CreateTestDevice(t, projectId, "metal-cli-events-dev")
-				if err != nil {
-					t.Error(err)
-				}
-				status, err = helper.IsDeviceStateActive(t, deviceId)
-				if err != nil {
-					status, err = helper.IsDeviceStateActive(t, deviceId)
+				project := helper.CreateTestProject(t, projectName)
+				device := helper.CreateTestDevice(t, project.GetId(), "metal-cli-events-dev")
+				status, err := helper.IsDeviceStateActive(t, device.GetId())
+				if err != nil || !status {
+					status, err = helper.IsDeviceStateActive(t, device.GetId())
 					if err != nil || !status {
-						t.Error(err)
+						t.Fatal(err)
 					}
 				}
-				root.SetArgs([]string{subCommand, "get", "-d", deviceId})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
+				root.SetArgs([]string{subCommand, "get", "-d", device.GetId()})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "Queued for provisioning") &&
 					!strings.Contains(string(out[:]), "Connected to magic install system") &&
 					!strings.Contains(string(out[:]), "Provision complete! Your device is ready to go.") {
 					t.Error("expected output should include Queued for provisioning in output string")
-				}
-				err = helper.CleanTestDevice(t, deviceId)
-				if err != nil {
-					t.Error(err)
-				}
-				err = helper.CleanTestProject(t, projectId)
-				if err != nil {
-					t.Error(err)
 				}
 			},
 		},

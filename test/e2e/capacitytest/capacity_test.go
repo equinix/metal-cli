@@ -1,14 +1,13 @@
 package capacitytest
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 
 	"github.com/equinix/metal-cli/internal/capacity"
 	root "github.com/equinix/metal-cli/internal/cli"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
+	"github.com/equinix/metal-cli/test/helper"
 	"github.com/spf13/cobra"
 )
 
@@ -38,19 +37,9 @@ func TestCli_Capacity(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "get"})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "n3.xlarge.x86") &&
 					!strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "s3.xlarge.x86") &&
@@ -71,19 +60,9 @@ func TestCli_Capacity(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "get", "-m", "-P", "c3.small.x86"})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "c3.small.x86") &&
 					!strings.Contains(string(out[:]), "mt") &&
 					!strings.Contains(string(out[:]), "sv") &&
@@ -104,19 +83,9 @@ func TestCli_Capacity(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "get", "-m", "-P", "m3.large.x86"})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "mt") &&
 					!strings.Contains(string(out[:]), "sv") &&
@@ -136,19 +105,9 @@ func TestCli_Capacity(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "check", "-m", "ny,da", "-P", "c3.medium.x86", "-q", "10"})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "c3.medium.x86") &&
 					!strings.Contains(string(out[:]), "ny") &&
 					!strings.Contains(string(out[:]), "da") {
@@ -166,19 +125,9 @@ func TestCli_Capacity(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "check", "-m", "da", "-P", "c3.medium.x86,m3.large.x86", "-q", "10"})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "c3.medium.x86") &&
 					!strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "ny") &&
@@ -197,19 +146,9 @@ func TestCli_Capacity(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 				root.SetArgs([]string{subCommand, "check", "-m", "ny,da", "-P", "c3.medium.x86,m3.large.x86", "-q", "10"})
-				rescueStdout := os.Stdout
-				r, w, _ := os.Pipe()
-				os.Stdout = w
-				t.Cleanup(func() {
-					w.Close()
-					os.Stdout = rescueStdout
-				})
 
-				if err := root.Execute(); err != nil {
-					t.Fatal(err)
-				}
+				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				out, _ := io.ReadAll(r)
 				if !strings.Contains(string(out[:]), "c3.medium.x86") &&
 					!strings.Contains(string(out[:]), "m3.large.x86") &&
 					!strings.Contains(string(out[:]), "ny") &&
