@@ -15,7 +15,7 @@ IP address and subnet operations, including requesting IPv4 and IPv6 addresses, 
 ### Options inherited from parent commands
 
 ```
-      --config string         Path to JSON or YAML configuration file
+      --config string         Path to JSON or YAML configuration file (METAL_CONFIG)
       --exclude strings       Comma separated Href references to collapse in results, may be dotted three levels deep
       --filter stringArray    Filter 'get' actions with name value pairs. Filter is not supported by all resources and is implemented as request query parameters.
       --http-header strings   Headers to add to requests (in format key=value)
