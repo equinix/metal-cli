@@ -20,7 +20,7 @@ func TestClient() *metalv1.APIClient {
 	configuration := metalv1.NewConfiguration()
 	configuration.AddDefaultHeader("X-Auth-Token", os.Getenv("METAL_AUTH_TOKEN"))
 	// For debug purpose
-	//configuration.Debug = true
+	// configuration.Debug = true
 	apiClient := metalv1.NewAPIClient(configuration)
 	return apiClient
 }
@@ -49,12 +49,14 @@ func CreateTestDevice(t *testing.T, projectId, name string) *metalv1.Device {
 	TestApiClient := TestClient()
 
 	hostname := name
+	termination := time.Now().Add(1 * time.Hour)
 	metroDeviceRequest := metalv1.CreateDeviceRequest{
 		DeviceCreateInMetroInput: &metalv1.DeviceCreateInMetroInput{
 			Metro:           "sv",
 			Plan:            "m3.small.x86",
 			OperatingSystem: "ubuntu_20_04",
 			Hostname:        &hostname,
+			TerminationTime: &termination,
 		},
 	}
 	device, _, err := TestApiClient.DevicesApi.
