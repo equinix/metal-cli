@@ -19,6 +19,7 @@ import (
 func TestClient() *metalv1.APIClient {
 	configuration := metalv1.NewConfiguration()
 	configuration.AddDefaultHeader("X-Auth-Token", os.Getenv("METAL_AUTH_TOKEN"))
+	configuration.UserAgent = fmt.Sprintf("metal-cli/test-helper %s", configuration.UserAgent)
 	// For debug purpose
 	// configuration.Debug = true
 	apiClient := metalv1.NewAPIClient(configuration)
