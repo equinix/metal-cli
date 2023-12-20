@@ -228,12 +228,12 @@ func CleanTestDevice(t *testing.T, deviceId string) {
 	}
 
 	TestApiClient := TestClient()
-	_, err = TestApiClient.DevicesApi.
+	resp, err := TestApiClient.DevicesApi.
 		DeleteDevice(context.Background(), deviceId).
 		ForceDelete(true).
 		Execute()
 
-	if err != nil {
+	if err != nil && resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("Error when calling `DevicesApi.DeleteDevice`` for %v: %v\n", deviceId, err)
 	}
 }
@@ -241,10 +241,10 @@ func CleanTestDevice(t *testing.T, deviceId string) {
 func CleanTestProject(t *testing.T, projectId string) {
 	t.Helper()
 	TestApiClient := TestClient()
-	_, err := TestApiClient.ProjectsApi.
+	resp, err := TestApiClient.ProjectsApi.
 		DeleteProject(context.Background(), projectId).
 		Execute()
-	if err != nil {
+	if err != nil && resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("Error when calling `ProjectsApi.DeleteProject`` for %v: %v\n", projectId, err)
 	}
 }
@@ -278,8 +278,8 @@ func CreateTestIps(t *testing.T, projectId string, quantity int, ipType string) 
 func CleanTestIps(t *testing.T, ipsId string) error {
 	t.Helper()
 	TestApiClient := TestClient()
-	_, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), ipsId).Execute()
-	if err != nil {
+	resp, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), ipsId).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
 		return fmt.Errorf("Error when calling `IPAddressesApi.DeleteIPAddress`` for %v: %v\n", ipsId, err)
 	}
 	return nil
@@ -398,8 +398,8 @@ func CreateTestOrganization(t *testing.T, name string) *metalv1.Organization {
 func CleanTestOrganization(t *testing.T, orgId string) {
 	TestApiClient := TestClient()
 
-	_, err := TestApiClient.OrganizationsApi.DeleteOrganization(context.Background(), orgId).Execute()
-	if err != nil {
+	resp, err := TestApiClient.OrganizationsApi.DeleteOrganization(context.Background(), orgId).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("Error when calling `OrganizationsApi.DeleteOrganization`` for %v: %v\n", orgId, err)
 	}
 }
