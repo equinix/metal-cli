@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -154,23 +155,31 @@ func GetPortById(t *testing.T, portId string) (*metalv1.Port, error) {
 }
 
 func IsDeviceStateActive(t *testing.T, deviceId string) (bool, error) {
+	return WaitForDeviceState(t, deviceId, metalv1.DEVICESTATE_ACTIVE)
+}
+
+func WaitForDeviceState(t *testing.T, deviceId string, states ...metalv1.DeviceState) (bool, error) {
+	var device *metalv1.Device
+	var err error
 	t.Helper()
 	predefinedTime := 500 * time.Second // Adjust this as needed
 	retryInterval := 10 * time.Second   // Adjust this as needed
 	startTime := time.Now()
 	for time.Since(startTime) < predefinedTime {
-		device, err := GetDeviceById(t, deviceId)
+		device, err = GetDeviceById(t, deviceId)
 		if err != nil {
 			return false, err
 		}
-		if device.GetState() == "active" {
-			return true, nil
+		for _, state := range states {
+			if device.GetState() == state {
+				return true, nil
+			}
 		}
 
 		// Sleep for the specified interval
 		time.Sleep(retryInterval)
 	}
-	return false, fmt.Errorf("timed out waiting for device %v to become active", deviceId)
+	return false, fmt.Errorf("timed out waiting for device %v state %v to become one of %v", deviceId, device.GetState(), states)
 }
 
 func WaitForAttachVlanToPort(t *testing.T, portId string, attach bool) error {
@@ -222,8 +231,13 @@ func StopTestDevice(t *testing.T, deviceId string) error {
 func CleanTestDevice(t *testing.T, deviceId string) {
 	t.Helper()
 
-	_, err := IsDeviceStateActive(t, deviceId)
-	if err != nil {
+	_, err := WaitForDeviceState(t, deviceId, metalv1.DEVICESTATE_ACTIVE, metalv1.DEVICESTATE_INACTIVE)
+	// WaitForDeviceState doesn't return a response so we
+	// look at the error message for now; we can revisit
+	// this in a future refactoring
+	if err != nil &&
+		!strings.Contains(err.Error(), fmt.Sprint(http.StatusNotFound)) &&
+		!strings.Contains(err.Error(), fmt.Sprint(http.StatusForbidden)) {
 		t.Fatal(err)
 	}
 
