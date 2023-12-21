@@ -32,14 +32,14 @@ func (c *Client) Create() *cobra.Command {
 			var interconn *metal.Interconnection
 			var err error
 
-			if err := validInputArgs(projectID, organizationID, vlans, vrfs, svcTokenType); err != nil {
+			if err := validInputArgs(projectID, organizationID, connType, vlans, vrfs, svcTokenType); err != nil {
 				return err
 			}
 
 			createOrganizationInterconnectionRequest := metal.CreateOrganizationInterconnectionRequest{}
 
 			switch {
-			case vlanFabricVcCreate(vlans):
+			case vlanFabricVcCreate(connType, vlans):
 				in := metal.NewVlanFabricVcCreateInput(
 					metro, name, redundancy, metal.VlanFabricVcCreateInputServiceTokenType(svcTokenType),
 					metal.VlanFabricVcCreateInputType(connType),
@@ -50,7 +50,7 @@ func (c *Client) Create() *cobra.Command {
 
 				createOrganizationInterconnectionRequest.
 					VlanFabricVcCreateInput = in
-			case vrfsFabricVcCreate(vrfs):
+			case vrfsFabricVcCreate(connType, vrfs):
 				createOrganizationInterconnectionRequest.
 					VrfFabricVcCreateInput = metal.NewVrfFabricVcCreateInput(
 					metro, name, redundancy, metal.VlanFabricVcCreateInputServiceTokenType(svcTokenType),
@@ -80,16 +80,16 @@ func (c *Client) Create() *cobra.Command {
 		},
 	}
 
-	createInterconnectionsCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the interconnection")
-	createInterconnectionsCmd.Flags().StringVarP(&metro, "metro", "m", "", "metro in the interconnection")
-	createInterconnectionsCmd.Flags().StringVarP(&redundancy, "redundancy", "r", "", "Website URL of the organization.")
-	createInterconnectionsCmd.Flags().StringVarP(&connType, "type", "t", "", "type of of interconnection.")
-	createInterconnectionsCmd.Flags().StringSliceVar(&vrfs, "vrfs", []string{}, "Array of strings VRF <uuid>.")
-	createInterconnectionsCmd.Flags().StringVarP(&projectID, "projectID", "p", "", "project ID")
-	createInterconnectionsCmd.Flags().StringVarP(&organizationID, "organizationID", "O", "", "Org ID")
-	createInterconnectionsCmd.Flags().Int32SliceVar(&vlans, "vlans", []int32{}, "Array of int vLANs")
-	createInterconnectionsCmd.Flags().StringVarP(&svcTokenType, "service-token-type", "T", "", "Type of service token for shared connection. Enum: 'a_side', 'z_side'")
-	createInterconnectionsCmd.Flags().Int32Var(&speed, "speed", int32(1000000000), "the maximum speed of the interconnections")
+	createInterconnectionsCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the interconnection.")
+	createInterconnectionsCmd.Flags().StringVarP(&metro, "metro", "m", "", "Metro Id or Metro Code from where the interconnection will be originated.")
+	createInterconnectionsCmd.Flags().StringVarP(&redundancy, "redundancy", "r", "", "Types of redundancy for the interconnection. Either 'primary' or 'redundant'.")
+	createInterconnectionsCmd.Flags().StringVarP(&connType, "type", "t", "", "Type of of interconnection. Either 'dedicated' or 'shared' when requesting for a Fabric VC.")
+	createInterconnectionsCmd.Flags().StringSliceVar(&vrfs, "vrf", []string{}, "A list of VRFs to attach to the Interconnection. Ex: --vrfs uuid1, uuid2 .")
+	createInterconnectionsCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. Either one of this flag or --organization-id is required.")
+	createInterconnectionsCmd.Flags().StringVar(&organizationID, "organization-id", "", "The Organization's UUID to be used for creating org level interconnection request. Either one of this flag or --project-id is required.")
+	createInterconnectionsCmd.Flags().Int32SliceVar(&vlans, "vlan", []int32{}, "A list of VLANs to attach to the Interconnection. Ex: --vlans 1000, 1001 .")
+	createInterconnectionsCmd.Flags().StringVarP(&svcTokenType, "service-token-type", "T", "", "Type of service token for shared connection. Enum: 'a_side', 'z_side'.")
+	createInterconnectionsCmd.Flags().Int32Var(&speed, "speed", int32(1000000000), "The maximum speed of the interconnections.")
 
 	_ = createInterconnectionsCmd.MarkFlagRequired("name")
 	_ = createInterconnectionsCmd.MarkFlagRequired("metro")
@@ -98,12 +98,12 @@ func (c *Client) Create() *cobra.Command {
 	return createInterconnectionsCmd
 }
 
-func vlanFabricVcCreate(vlans []int32) bool {
-	return len(vlans) > 0
+func vlanFabricVcCreate(connType string, vlans []int32) bool {
+	return connType == "shared" && len(vlans) > 0
 }
 
-func vrfsFabricVcCreate(vrfs []string) bool {
-	return len(vrfs) > 0
+func vrfsFabricVcCreate(connType string, vrfs []string) bool {
+	return connType == "shared" && len(vrfs) > 0
 }
 
 func (c *Client) handleCreate(projectID, organizationID string,
@@ -124,17 +124,17 @@ func (c *Client) handleCreate(projectID, organizationID string,
 	return interconn, err
 }
 
-func validInputArgs(projectID, organizationID string, vlans []int32, vrfs []string, svcTokenType string) error {
+func validInputArgs(projectID, organizationID, connType string, vlans []int32, vrfs []string, svcTokenType string) error {
 	if projectID == "" && organizationID == "" {
 		return errors.New("could you provide at least either of projectID OR organizationID")
 	}
 
-	if (vlanFabricVcCreate(vlans) || vrfsFabricVcCreate(vrfs)) && svcTokenType == "" {
+	if (vlanFabricVcCreate(connType, vlans) || vrfsFabricVcCreate(connType, vrfs)) && svcTokenType == "" {
 		return errors.New("flag 'service-token-type' is required for vlan or vrfs fabric VC create")
 	}
 
-	if vlanFabricVcCreate(vlans) && vrfsFabricVcCreate(vrfs) {
-		return errors.New("vLans and vrfs both are provided. Please provide any one type of interconnection")
+	if vlanFabricVcCreate(connType, vlans) && vrfsFabricVcCreate(connType, vrfs) {
+		return errors.New("vlans and vrfs both are provided. Please provide any one type of interconnection")
 	}
 
 	return nil

@@ -26,7 +26,7 @@ func (c *Client) Delete() *cobra.Command {
 			cmd.SilenceUsage = true
 
 			if !force {
-				fmt.Printf("Are you sure you want to delete device %s [Y/n]: ", connectionID)
+				fmt.Printf("Are you sure you want to delete interconnection %s [Y/n]: ", connectionID)
 
 				_, err := fmt.Scanln(&confirmation)
 				if err != nil {
