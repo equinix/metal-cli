@@ -44,8 +44,8 @@ func TestCli_Events_Get(t *testing.T) {
 
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				if !strings.Contains(string(out[:]), "metal-cli-events-pro") {
-					t.Error("expected output should include metal-cli-events-pro in output string")
+				if !strings.Contains(string(out[:]), projectName) {
+					t.Errorf("expected output should include %v in output string", projectName)
 				}
 			},
 		},
