@@ -233,7 +233,12 @@ func CleanTestDevice(t *testing.T, deviceId string) {
 		ForceDelete(true).
 		Execute()
 
-	if err != nil && resp.StatusCode != http.StatusNotFound {
+	// When deleting a device:
+	// - ignore 404 (likely already deleted)
+	// - ignore 403 (likely failed provision)
+	if err != nil &&
+		resp.StatusCode != http.StatusNotFound &&
+		resp.StatusCode != http.StatusForbidden {
 		t.Fatalf("Error when calling `DevicesApi.DeleteDevice`` for %v: %v\n", deviceId, err)
 	}
 }
