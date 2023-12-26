@@ -38,7 +38,7 @@ func TestCli_Devices_Create(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectName := "metal-cli-device-create-" + randomId
+				projectName := "metal-cli-device-create" + randomId
 				project := helper.CreateTestProject(t, projectName)
 
 				deviceName := "metal-cli-" + randomId + "-create-dev"
