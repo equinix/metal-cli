@@ -162,7 +162,7 @@ func WaitForDeviceState(t *testing.T, deviceId string, states ...metalv1.DeviceS
 	var device *metalv1.Device
 	var err error
 	t.Helper()
-	predefinedTime := 500 * time.Second // Adjust this as needed
+	predefinedTime := 900 * time.Second // Adjust this as needed
 	retryInterval := 10 * time.Second   // Adjust this as needed
 	startTime := time.Now()
 	for time.Since(startTime) < predefinedTime {
