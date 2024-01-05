@@ -120,9 +120,13 @@ func (c *Client) Config(cmd *cobra.Command) *viper.Viper {
 
 		replacer := strings.NewReplacer("-", "_", ".", "_")
 		v.SetEnvKeyReplacer(replacer)
+
 		if c.cfgFile != "" {
 			// Use config file from the flag.
 			v.SetConfigFile(c.cfgFile)
+		} else if envCfgFile := os.Getenv(envPrefix + "_CONFIG"); envCfgFile != "" {
+			// METAL_CONFIG must be checked since cfgFile does not benefit from AutomaticEnv
+			v.SetConfigFile(envCfgFile)
 		} else {
 			configDir := defaultConfigPath()
 			v.SetConfigName(configFileWithoutExtension)
@@ -251,7 +255,7 @@ func (c *Client) NewCommand() *cobra.Command {
 	rootCmd.PersistentFlags().StringSlice("http-header", nil, "Headers to add to requests (in format key=value)")
 	authtoken := rootCmd.PersistentFlags().Lookup("auth-token")
 	authtoken.Hidden = true
-	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", c.cfgFile, "Path to JSON or YAML configuration file")
+	rootCmd.PersistentFlags().StringVar(&c.cfgFile, "config", c.cfgFile, "Path to JSON or YAML configuration file (METAL_CONFIG)")
 	rootCmd.PersistentFlags().StringVarP(&c.outputFormat, "output", "o", "", "Output format (*table, json, yaml). env output formats are (*sh, terraform, capp).")
 	c.includes = rootCmd.PersistentFlags().StringSlice("include", nil, "Comma separated Href references to expand in results, may be dotted three levels deep")
 	c.excludes = rootCmd.PersistentFlags().StringSlice("exclude", nil, "Comma separated Href references to collapse in results, may be dotted three levels deep")
@@ -300,7 +304,6 @@ func (c *Client) Search() (sea string) {
 }
 
 func (c *Client) SortBy() (sBy string) {
-
 	var sortBy string
 
 	if c.rootCmd.Flags().Changed("sort-by") {

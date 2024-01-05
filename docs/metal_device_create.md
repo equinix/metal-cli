@@ -47,7 +47,7 @@ metal device create -p <project_id> (-m <metro> | -f <facility>) -P <plan> -H <h
 ### Options inherited from parent commands
 
 ```
-      --config string         Path to JSON or YAML configuration file
+      --config string         Path to JSON or YAML configuration file (METAL_CONFIG)
       --exclude strings       Comma separated Href references to collapse in results, may be dotted three levels deep
       --filter stringArray    Filter 'get' actions with name value pairs. Filter is not supported by all resources and is implemented as request query parameters.
       --http-header strings   Headers to add to requests (in format key=value)
