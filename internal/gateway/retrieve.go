@@ -41,7 +41,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		Long:    "Retrieves a list of all VLANs for the specified project.",
 		Example: `
   # Lists Metal Gateways for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
-  metal virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c`,
+  metal gateways get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
@@ -80,6 +80,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			return c.Out.Output(metalGways, header, &data)
 		},
 	}
+
 	retrieveMetalGatewaysCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
 	_ = retrieveMetalGatewaysCmd.MarkFlagRequired("project-id")
 

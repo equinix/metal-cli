@@ -89,7 +89,7 @@ func (c *Client) Create() *cobra.Command {
 	createInterconnectionsCmd.Flags().StringVar(&organizationID, "organization-id", "", "The Organization's UUID to be used for creating org level interconnection request. Either one of this flag or --project-id is required.")
 	createInterconnectionsCmd.Flags().Int32SliceVar(&vlans, "vlan", []int32{}, "A list of VLANs to attach to the Interconnection. Ex: --vlans 1000, 1001 .")
 	createInterconnectionsCmd.Flags().StringVarP(&svcTokenType, "service-token-type", "T", "", "Type of service token for shared connection. Enum: 'a_side', 'z_side'.")
-	createInterconnectionsCmd.Flags().Int32Var(&speed, "speed", int32(1000000000), "The maximum speed of the interconnections.")
+	createInterconnectionsCmd.Flags().Int32VarP(&speed, "speed", "s", int32(1000000000), "The maximum speed of the interconnections.")
 
 	_ = createInterconnectionsCmd.MarkFlagRequired("name")
 	_ = createInterconnectionsCmd.MarkFlagRequired("metro")
