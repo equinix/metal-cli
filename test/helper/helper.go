@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -154,23 +155,31 @@ func GetPortById(t *testing.T, portId string) (*metalv1.Port, error) {
 }
 
 func IsDeviceStateActive(t *testing.T, deviceId string) (bool, error) {
+	return WaitForDeviceState(t, deviceId, metalv1.DEVICESTATE_ACTIVE)
+}
+
+func WaitForDeviceState(t *testing.T, deviceId string, states ...metalv1.DeviceState) (bool, error) {
+	var device *metalv1.Device
+	var err error
 	t.Helper()
-	predefinedTime := 500 * time.Second // Adjust this as needed
+	predefinedTime := 900 * time.Second // Adjust this as needed
 	retryInterval := 10 * time.Second   // Adjust this as needed
 	startTime := time.Now()
 	for time.Since(startTime) < predefinedTime {
-		device, err := GetDeviceById(t, deviceId)
+		device, err = GetDeviceById(t, deviceId)
 		if err != nil {
 			return false, err
 		}
-		if device.GetState() == "active" {
-			return true, nil
+		for _, state := range states {
+			if device.GetState() == state {
+				return true, nil
+			}
 		}
 
 		// Sleep for the specified interval
 		time.Sleep(retryInterval)
 	}
-	return false, fmt.Errorf("timed out waiting for device %v to become active", deviceId)
+	return false, fmt.Errorf("timed out waiting for device %v state %v to become one of %v", deviceId, device.GetState(), states)
 }
 
 func WaitForAttachVlanToPort(t *testing.T, portId string, attach bool) error {
@@ -222,18 +231,28 @@ func StopTestDevice(t *testing.T, deviceId string) error {
 func CleanTestDevice(t *testing.T, deviceId string) {
 	t.Helper()
 
-	_, err := IsDeviceStateActive(t, deviceId)
-	if err != nil {
+	_, err := WaitForDeviceState(t, deviceId, metalv1.DEVICESTATE_ACTIVE, metalv1.DEVICESTATE_INACTIVE)
+	// WaitForDeviceState doesn't return a response so we
+	// look at the error message for now; we can revisit
+	// this in a future refactoring
+	if err != nil &&
+		!strings.Contains(err.Error(), fmt.Sprint(http.StatusNotFound)) &&
+		!strings.Contains(err.Error(), fmt.Sprint(http.StatusForbidden)) {
 		t.Fatal(err)
 	}
 
 	TestApiClient := TestClient()
-	_, err = TestApiClient.DevicesApi.
+	resp, err := TestApiClient.DevicesApi.
 		DeleteDevice(context.Background(), deviceId).
 		ForceDelete(true).
 		Execute()
 
-	if err != nil {
+	// When deleting a device:
+	// - ignore 404 (likely already deleted)
+	// - ignore 403 (likely failed provision)
+	if err != nil &&
+		resp.StatusCode != http.StatusNotFound &&
+		resp.StatusCode != http.StatusForbidden {
 		t.Fatalf("Error when calling `DevicesApi.DeleteDevice`` for %v: %v\n", deviceId, err)
 	}
 }
@@ -241,10 +260,10 @@ func CleanTestDevice(t *testing.T, deviceId string) {
 func CleanTestProject(t *testing.T, projectId string) {
 	t.Helper()
 	TestApiClient := TestClient()
-	_, err := TestApiClient.ProjectsApi.
+	resp, err := TestApiClient.ProjectsApi.
 		DeleteProject(context.Background(), projectId).
 		Execute()
-	if err != nil {
+	if err != nil && resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("Error when calling `ProjectsApi.DeleteProject`` for %v: %v\n", projectId, err)
 	}
 }
@@ -278,8 +297,8 @@ func CreateTestIps(t *testing.T, projectId string, quantity int, ipType string) 
 func CleanTestIps(t *testing.T, ipsId string) error {
 	t.Helper()
 	TestApiClient := TestClient()
-	_, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), ipsId).Execute()
-	if err != nil {
+	resp, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), ipsId).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
 		return fmt.Errorf("Error when calling `IPAddressesApi.DeleteIPAddress`` for %v: %v\n", ipsId, err)
 	}
 	return nil
@@ -398,8 +417,8 @@ func CreateTestOrganization(t *testing.T, name string) *metalv1.Organization {
 func CleanTestOrganization(t *testing.T, orgId string) {
 	TestApiClient := TestClient()
 
-	_, err := TestApiClient.OrganizationsApi.DeleteOrganization(context.Background(), orgId).Execute()
-	if err != nil {
+	resp, err := TestApiClient.OrganizationsApi.DeleteOrganization(context.Background(), orgId).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("Error when calling `OrganizationsApi.DeleteOrganization`` for %v: %v\n", orgId, err)
 	}
 }
