@@ -29,7 +29,6 @@ import (
 	"syscall"
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
-	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 	"sigs.k8s.io/yaml"
@@ -139,11 +138,12 @@ func (c *Client) NewCommand() *cobra.Command {
 func getFirstProjectID(s metal.ProjectsApiService, userOrg string) (string, error) {
 	include := []string{"organization"} // []string | Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects. (optional)
 	exclude := []string{"devices", "members", "memberships", "invitations", "ssh_keys", "volumes", "backend_transfer_enabled", "updated_at", "customdata", "event_alert_configuration"}
-	projects, err := pager.GetAllProjects(s, include, exclude)
+	resp, err := s.FindProjects(context.Background()).Include(include).Exclude(exclude).ExecuteWithPagination()
 	if err != nil {
 		return "", err
 	}
 
+	projects := resp.Projects
 	for _, p := range projects {
 		if p.Organization.GetId() == userOrg {
 			return p.GetId(), nil

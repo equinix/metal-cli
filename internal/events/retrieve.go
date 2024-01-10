@@ -26,7 +26,6 @@ import (
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 )
 
@@ -56,7 +55,6 @@ func (c *Client) Retrieve() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			var events []metal.Event
-			var err error
 			header := []string{"ID", "Body", "Type", "Created"}
 			inc := []string{}
 
@@ -70,39 +68,39 @@ func (c *Client) Retrieve() *cobra.Command {
 				return fmt.Errorf("id, project-id, device-id, and organization-id parameters are mutually exclusive")
 			} else if deviceID != "" {
 				deviceRequest := c.EventService.FindDeviceEvents(context.Background(), deviceID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(nil))
-				events, err = pager.GetDeviceEvents(deviceRequest)
+				resp, err := deviceRequest.ExecuteWithPagination()
 				if err != nil {
 					return fmt.Errorf("could not list Device Events: %w", err)
 				}
+				events = resp.Events
 			} else if projectID != "" {
 				projRequest := c.EventService.FindProjectEvents(context.Background(), projectID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(nil))
-				events, err = pager.GetProjectEvents(projRequest)
+				resp, err := projRequest.ExecuteWithPagination()
 				if err != nil {
 					return fmt.Errorf("could not list Project Events: %w", err)
 				}
+				events = resp.Events
 			} else if organizationID != "" {
-
 				orgRequest := c.EventService.FindOrganizationEvents(context.Background(), organizationID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(nil))
-				events, err = pager.GetOrganizationEvents(orgRequest)
+				resp, err := orgRequest.ExecuteWithPagination()
 				if err != nil {
 					return fmt.Errorf("could not list Organization Events: %w", err)
 				}
+				events = resp.Events
 			} else if eventID != "" {
 				event, _, err := c.EventService.FindEventById(context.Background(), eventID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(nil)).Execute()
 				if err != nil {
 					return fmt.Errorf("could not get Event: %w", err)
 				}
 
-				data := make([][]string, 1)
-
-				data[0] = []string{event.GetId(), event.GetBody(), event.GetType(), event.GetCreatedAt().String()}
-				return c.Out.Output(event, header, &data)
+				events = []metal.Event{*event}
 			} else {
 				request := c.EventService.FindEvents(context.Background()).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(nil))
-				events, err = pager.GetAllEvents(request)
+				resp, err := request.ExecuteWithPagination()
 				if err != nil {
 					return fmt.Errorf("could not list Events: %w", err)
 				}
+				events = resp.Events
 			}
 
 			data := make([][]string, len(events))

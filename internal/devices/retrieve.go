@@ -25,7 +25,6 @@ import (
 	"fmt"
 	"strconv"
 
-	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 )
 
@@ -92,10 +91,11 @@ func (c *Client) Retrieve() *cobra.Command {
 				request = request.Tag(filters["tag"])
 			}
 
-			devices, err := pager.GetProjectDevices(request)
+			resp, err := request.ExecuteWithPagination()
 			if err != nil {
 				return fmt.Errorf("Could not list Devices: %w", err)
 			}
+			devices := resp.Devices
 			data := make([][]string, len(devices))
 
 			for i, dc := range devices {
