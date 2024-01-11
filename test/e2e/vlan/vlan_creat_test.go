@@ -14,10 +14,7 @@ import (
 func TestCli_Vlan_Create(t *testing.T) {
 	var err error
 	subCommand := "vlan"
-	consumerToken := ""
-	apiURL := ""
-	Version := "metal"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	type fields struct {
 		MainCmd  *cobra.Command
 		Outputer outputPkg.Outputer
@@ -37,7 +34,7 @@ func TestCli_Vlan_Create(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectName := "metal-cli-vlan-create-pro" + helper.GenerateRandomString(5)
+				projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-vlan-create-pro"
 				project := helper.CreateTestProject(t, projectName)
 				if err != nil {
 					t.Error(err)

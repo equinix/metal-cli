@@ -16,10 +16,7 @@ func TestCli_Devices_Create(t *testing.T) {
 	var deviceId string
 	var err error
 	subCommand := "device"
-	consumerToken := ""
-	apiURL := ""
-	Version := "metal"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	randomId := helper.GenerateRandomString(5)
 
 	type fields struct {
@@ -44,7 +41,7 @@ func TestCli_Devices_Create(t *testing.T) {
 				projectName := "metal-cli-device-create" + randomId
 				project := helper.CreateTestProject(t, projectName)
 
-				deviceName := "metal-cli-create-dev" + randomId
+				deviceName := "metal-cli-" + randomId + "-create-dev"
 				root.SetArgs([]string{subCommand, "create", "-p", project.GetId(), "-P", "m3.small.x86", "-m", "da", "-O", "ubuntu_20_04", "-H", deviceName})
 
 				out := helper.ExecuteAndCaptureOutput(t, root)

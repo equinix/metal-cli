@@ -17,6 +17,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	ConsumerToken = ""
+	URL           = "https://api.equinix.com/metal/v1/"
+	Version       = "metal"
+)
+
 func TestClient() *metalv1.APIClient {
 	configuration := metalv1.NewConfiguration()
 	configuration.AddDefaultHeader("X-Auth-Token", os.Getenv("METAL_AUTH_TOKEN"))

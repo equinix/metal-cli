@@ -13,10 +13,7 @@ import (
 
 func TestCli_Events_Get(t *testing.T) {
 	subCommand := "event"
-	consumerToken := ""
-	apiURL := ""
-	Version := "metal"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	type fields struct {
 		MainCmd  *cobra.Command
 		Outputer outputPkg.Outputer
@@ -37,7 +34,7 @@ func TestCli_Events_Get(t *testing.T) {
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 
-				projectName := "metal-cli-projects-events" + helper.GenerateRandomString(5)
+				projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-projects-events"
 				project := helper.CreateTestProject(t, projectName)
 
 				root.SetArgs([]string{subCommand, "get", "-p", project.GetId()})
