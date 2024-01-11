@@ -15,10 +15,7 @@ func TestCli_Ips_Get(t *testing.T) {
 	var ipsId string
 	var err error
 	subCommand := "ip"
-	consumerToken := ""
-	apiURL := ""
-	Version := "metal"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	type fields struct {
 		MainCmd  *cobra.Command
 		Outputer outputPkg.Outputer
@@ -41,7 +38,7 @@ func TestCli_Ips_Get(t *testing.T) {
 					t.Skip("Skipping this test because someCondition is true")
 				}
 				root := c.Root()
-				projectName := "metal-cli-ips-get" + helper.GenerateRandomString(5)
+				projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-ips-get"
 				project := helper.CreateTestProject(t, projectName)
 				ipsId, err = helper.CreateTestIps(t, project.GetId(), 1, "public_ipv4")
 				if len(ipsId) != 0 {

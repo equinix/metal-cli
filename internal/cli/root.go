@@ -108,6 +108,11 @@ func (c *Client) metalApiConnect(httpClient *http.Client) error {
 	configuration.Debug = checkEnvForDebug()
 	configuration.AddDefaultHeader("X-Auth-Token", c.Token())
 	configuration.UserAgent = fmt.Sprintf("metal-cli/%s %s", c.Version, configuration.UserAgent)
+	configuration.Servers = metal.ServerConfigurations{
+		metal.ServerConfiguration{
+			URL: c.apiURL,
+		},
+	}
 	metalgoClient := metal.NewAPIClient(configuration)
 	c.metalApiClient = metalgoClient
 	return nil
@@ -134,7 +139,7 @@ func (c *Client) Config(cmd *cobra.Command) *viper.Viper {
 		}
 		if err := v.ReadInConfig(); err != nil {
 			if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-				panic(fmt.Errorf("Could not read config: %s", err))
+				panic(fmt.Errorf("could not read config: %s", err))
 			}
 		}
 		c.cfgFile = v.ConfigFileUsed()

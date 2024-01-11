@@ -13,10 +13,7 @@ import (
 
 func TestCli_Devices_Get(t *testing.T) {
 	subCommand := "device"
-	consumerToken := ""
-	apiURL := ""
-	Version := "metal"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	type fields struct {
 		MainCmd  *cobra.Command
 		Outputer outputPkg.Outputer
@@ -36,7 +33,7 @@ func TestCli_Devices_Get(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectName := "metal-cli-device-get" + helper.GenerateRandomString(5)
+				projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-device-get"
 				project := helper.CreateTestProject(t, projectName)
 				device := helper.CreateTestDevice(t, project.GetId(), "metal-cli-get-dev")
 

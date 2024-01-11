@@ -14,10 +14,7 @@ import (
 
 func TestPorts_Retrieve(t *testing.T) {
 	subCommand := "port"
-	consumerToken := ""
-	apiURL := ""
-	Version := "devel"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 
 	_, device := helper.SetupProjectAndDevice(t, "metal-cli-port-get")
 

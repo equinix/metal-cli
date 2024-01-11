@@ -16,10 +16,7 @@ func TestCli_Devices_Create_Flags(t *testing.T) {
 	var deviceId string
 	var err error
 	subCommand := "device"
-	consumerToken := ""
-	apiURL := ""
-	Version := "metal"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	type fields struct {
 		MainCmd  *cobra.Command
 		Outputer outputPkg.Outputer
@@ -39,7 +36,7 @@ func TestCli_Devices_Create_Flags(t *testing.T) {
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
-				projectName := "metal-cli-device-create-flags" + helper.GenerateRandomString(5)
+				projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-device-create-flags"
 				project := helper.CreateTestProject(t, projectName)
 
 				root.SetArgs([]string{subCommand, "create", "-p", project.GetId(), "-P", "m3.small.x86", "-m", "da", "-H", "metal-cli-create-flags-dev", "--operating-system", "custom_ipxe", "--always-pxe=true", "--ipxe-script-url", "https://boot.netboot.xyz/"})

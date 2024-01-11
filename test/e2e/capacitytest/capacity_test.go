@@ -13,10 +13,8 @@ import (
 
 func TestCli_Capacity(t *testing.T) {
 	subCommand := "capacity"
-	consumerToken := ""
-	apiURL := ""
-	Version := "metal"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	type fields struct {
 		MainCmd  *cobra.Command
 		Outputer outputPkg.Outputer

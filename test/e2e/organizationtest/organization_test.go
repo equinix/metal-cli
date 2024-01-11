@@ -6,16 +6,14 @@ import (
 	root "github.com/equinix/metal-cli/internal/cli"
 	"github.com/equinix/metal-cli/internal/organizations"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
+	"github.com/equinix/metal-cli/test/helper"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCli_Organization(t *testing.T) {
 	subCommand := "organization"
-	consumerToken := ""
-	apiURL := ""
-	Version := "metal"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	type fields struct {
 		MainCmd  *cobra.Command
 		Outputer outputPkg.Outputer

@@ -13,14 +13,8 @@ import (
 )
 
 func TestCli_Plans(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test in short mode.")
-	}
 	subCommand := "plans"
-	consumerToken := ""
-	apiURL := ""
-	Version := "metal"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	type fields struct {
 		MainCmd  *cobra.Command
 		Outputer outputPkg.Outputer

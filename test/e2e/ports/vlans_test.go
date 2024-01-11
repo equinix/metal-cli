@@ -16,10 +16,7 @@ import (
 
 func TestPorts_VLANs(t *testing.T) {
 	subCommand := "port"
-	consumerToken := ""
-	apiURL := ""
-	Version := "devel"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 
 	project, device := helper.SetupProjectAndDevice(t, "metal-cli-port-vlan")
 

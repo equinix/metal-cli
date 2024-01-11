@@ -16,12 +16,9 @@ import (
 
 func TestGateways_Delete(t *testing.T) {
 	subCommand := "gateways"
-	consumerToken := ""
-	apiURL := ""
-	Version := "devel"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
-
-	project := helper.CreateTestProject(t, "metal-cli-gateway-delete")
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
+	projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-gateway-delete"
+	project := helper.CreateTestProject(t, projectName)
 
 	vlan := helper.CreateTestVLAN(t, project.GetId())
 

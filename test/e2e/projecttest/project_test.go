@@ -14,10 +14,7 @@ import (
 
 func TestCli_Project_Tests(t *testing.T) {
 	subCommand := "project"
-	consumerToken := ""
-	apiURL := ""
-	Version := "metal"
-	rootClient := root.NewClient(consumerToken, apiURL, Version)
+	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	randName := helper.GenerateRandomString(32)
 
 	type fields struct {
