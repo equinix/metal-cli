@@ -552,3 +552,40 @@ func ExecuteAndCaptureOutput(t *testing.T, root *cobra.Command) []byte {
 
 	return out
 }
+
+func CleanupInterconnectionVC(t *testing.T, connectionId string) {
+	t.Helper()
+	apiClient := TestClient()
+
+	vcList, resp, err := apiClient.InterconnectionsApi.
+		ListInterconnectionVirtualCircuits(context.Background(), connectionId).
+		Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `InterconnectionsApi.ListInterconnectionVirtualCircuits`` for %v: %v\n", connectionId, err)
+	}
+
+	if vcList != nil && vcList.HasVirtualCircuits() {
+		for _, vc := range vcList.GetVirtualCircuits() {
+			_, resp, err := apiClient.InterconnectionsApi.
+				DeleteVirtualCircuit(context.Background(), vc.VlanVirtualCircuit.GetId()).
+				Execute()
+			if err != nil && resp.StatusCode != http.StatusNotFound {
+				t.Fatalf("Error when calling `InterconnectionsApi.DeleteVirtualCircuit`` for %v: %v\n", connectionId, err)
+			}
+		}
+	}
+}
+
+func CleanupInterconnection(t *testing.T, connectionId string) {
+	t.Helper()
+	apiClient := TestClient()
+
+	_, resp, err := apiClient.InterconnectionsApi.
+		DeleteInterconnection(context.Background(), connectionId).
+		Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `InterconnectionsApi.DeleteInterconnection`` for %v: %v\n", connectionId, err)
+	}
+
+	CleanupInterconnectionVC(t, connectionId)
+}

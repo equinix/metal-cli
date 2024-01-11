@@ -31,7 +31,7 @@ metal interconnections create -n <name> [-m <metro>] [-r <redundancy> ] [-t <typ
   -p, --project-id string           The project's UUID. Either one of this flag or --organization-id is required.
   -r, --redundancy string           Types of redundancy for the interconnection. Either 'primary' or 'redundant'.
   -T, --service-token-type string   Type of service token for shared connection. Enum: 'a_side', 'z_side'.
-      --speed int32                 The maximum speed of the interconnections. (default 1000000000)
+  -s, --speed int32                 The maximum speed of the interconnections. (default 1000000000)
   -t, --type string                 Type of of interconnection. Either 'dedicated' or 'shared' when requesting for a Fabric VC.
       --vlan int32Slice             A list of VLANs to attach to the Interconnection. Ex: --vlans 1000, 1001 . (default [])
       --vrf strings                 A list of VRFs to attach to the Interconnection. Ex: --vrfs uuid1, uuid2 .
