@@ -30,8 +30,8 @@ func (c *Client) Retrieve() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			var interConns []metal.Interconnection
-			inc := []string{}
-			exc := []string{}
+			inc := c.Servicer.Includes(nil)
+			exc := c.Servicer.Excludes(nil)
 			header := []string{"ID", "Name", "Type", "Created"}
 
 			if connID != "" && projectID != "" && organizationID != "" {

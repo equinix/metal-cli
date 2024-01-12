@@ -61,8 +61,8 @@ func (c *Client) Retrieve() *cobra.Command {
 			}
 
 			cmd.SilenceUsage = true
-			inc := []string{}
-			exc := []string{}
+			inc := c.Servicer.Includes(nil)
+			exc := c.Servicer.Excludes(nil)
 			types := []metal.FindIPReservationsTypesParameterInner{}
 
 			if assignmentID != "" {

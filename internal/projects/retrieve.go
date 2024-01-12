@@ -50,8 +50,8 @@ func (c *Client) Retrieve() *cobra.Command {
 			if projectID != "" && projectName != "" {
 				return fmt.Errorf("Must specify only one of project-id and project name")
 			}
-			inc := []string{}
-			exc := []string{}
+			inc := c.Servicer.Includes(nil)
+			exc := c.Servicer.Excludes(nil)
 
 			// only fetch extra details when rendered
 			switch c.Servicer.Format() {
