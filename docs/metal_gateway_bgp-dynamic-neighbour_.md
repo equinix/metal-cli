@@ -1,15 +1,16 @@
-## metal gateway
+## metal gateway bgp-dynamic-neighbour 
 
-Metal Gateway operations: create, delete, and retrieve.
 
-### Synopsis
 
-A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For more information, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.
+```
+metal gateway bgp-dynamic-neighbour  [flags]
+```
 
 ### Options
 
 ```
-  -h, --help   help for gateway
+      --bgp-neighbour-id string   
+  -h, --help                      help for this command
 ```
 
 ### Options inherited from parent commands
@@ -29,9 +30,5 @@ A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For mo
 
 ### SEE ALSO
 
-* [metal](metal.md)	 - Command line interface for Equinix Metal
 * [metal gateway bgp-dynamic-neighbour](metal_gateway_bgp-dynamic-neighbour.md)	 - Metal Gateway BGP Dynamic Neighbour operations: create, delete, and get, list
-* [metal gateway create](metal_gateway_create.md)	 - Creates a Metal Gateway.
-* [metal gateway delete](metal_gateway_delete.md)	 - Deletes a Metal Gateway.
-* [metal gateway get](metal_gateway_get.md)	 - Lists Metal Gateways.
 

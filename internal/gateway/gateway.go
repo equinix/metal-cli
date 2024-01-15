@@ -21,6 +21,7 @@
 package gateway
 
 import (
+	neighbours "github.com/equinix/metal-cli/internal/gateway/bgp-dynamic-neighbours"
 	"github.com/equinix/metal-cli/internal/outputs"
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
@@ -54,6 +55,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		c.Retrieve(),
 		c.Create(),
 		c.Delete(),
+		neighbours.NewClient(c.Servicer, c.Out).NewCommand(),
 	)
 	return cmd
 }
