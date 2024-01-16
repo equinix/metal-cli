@@ -1,30 +1,11 @@
-// Copyright © 2018 Jasmin Gacic <jasmin@stackpointcloud.com>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 package hardware
 
 import (
+	"context"
 	"fmt"
 
+	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/equinix/metal-cli/internal/outputs"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 )
 
@@ -47,6 +28,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			header := []string{"ID", "Facility", "Metro", "Plan", "Created"}
 
 			inc := []string{}
+			exc := []string{}
 
 			// only fetch extra details when rendered
 			switch c.Servicer.Format() {
@@ -56,44 +38,57 @@ func (c *Client) Retrieve() *cobra.Command {
 				inc = []string{"facility.metro"}
 			}
 
-			listOpt := c.Servicer.ListOptions(inc, nil)
-
 			if hardwareReservationID == "" && projectID == "" {
 				return fmt.Errorf("either id or project-id should be set")
 			}
 
 			cmd.SilenceUsage = true
 			if hardwareReservationID != "" {
-				getOpts := &packngo.GetOptions{Includes: listOpt.Includes, Excludes: listOpt.Excludes}
-				r, _, err := c.Service.Get(hardwareReservationID, getOpts)
+				r, _, err := c.Service.FindHardwareReservationById(context.Background(), hardwareReservationID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(exc)).Execute()
 				if err != nil {
-					return fmt.Errorf("Could not get Hardware Reservation: %w", err)
+					return fmt.Errorf("could not get Hardware Reservation: %w", err)
 				}
 
 				data := make([][]string, 1)
 				metro := ""
 				if r.Facility.Metro != nil {
-					metro = r.Facility.Metro.Code
+					metro = *r.Facility.Metro.Code
 				}
 
-				data[0] = []string{r.ID, r.Facility.Code, metro, r.Plan.Name, r.CreatedAt.String()}
+				data[0] = []string{r.GetId(), r.Facility.GetCode(), metro, r.Plan.GetName(), r.CreatedAt.String()}
 
 				return c.Out.Output(r, header, &data)
 			}
+			request := c.Service.FindProjectHardwareReservations(context.Background(), projectID).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(exc))
+			filters := c.Servicer.Filters()
 
-			reservations, _, err := c.Service.List(projectID, listOpt)
-			if err != nil {
-				return fmt.Errorf("Could not list Hardware Reservations: %w", err)
+			if filters["query"] != "" {
+				request = request.Query(filters["query"])
 			}
 
+			if filters["state"] != "" {
+				state, _ := metal.NewFindProjectHardwareReservationsStateParameterFromValue(filters["state"])
+				request = request.State(*state)
+			}
+
+			if filters["provisionable"] != "" {
+				provisionable, _ := metal.NewFindProjectHardwareReservationsProvisionableParameterFromValue(filters["provisionable"])
+				request = request.Provisionable(*provisionable)
+			}
+
+			reservationsList, err := request.ExecuteWithPagination()
+			if err != nil {
+				return fmt.Errorf("could not list Hardware Reservations: %w", err)
+			}
+			reservations := reservationsList.GetHardwareReservations()
 			data := make([][]string, len(reservations))
 
 			for i, r := range reservations {
 				metro := ""
 				if r.Facility.Metro != nil {
-					metro = r.Facility.Metro.Code
+					metro = r.Facility.Metro.GetCode()
 				}
-				data[i] = []string{r.ID, r.Facility.Code, metro, r.Plan.Name, r.CreatedAt.String()}
+				data[i] = []string{r.GetId(), r.Facility.GetCode(), metro, r.Plan.GetName(), r.CreatedAt.String()}
 			}
 
 			return c.Out.Output(reservations, header, &data)
