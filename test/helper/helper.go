@@ -10,11 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"golang.org/x/exp/rand"
-
 	"github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"golang.org/x/exp/rand"
 )
 
 const (

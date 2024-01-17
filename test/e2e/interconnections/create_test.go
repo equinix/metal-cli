@@ -1,11 +1,10 @@
 package interconnections
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
-
-	pager "github.com/equinix/metal-cli/internal/pagination"
 
 	root "github.com/equinix/metal-cli/internal/cli"
 	"github.com/equinix/metal-cli/internal/interconnections"
@@ -44,18 +43,30 @@ func TestInterconnections_Create(t *testing.T) {
 
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				conns, err := pager.GetAllProjectInterconnections(*apiClient.InterconnectionsApi, project.GetId(), []string{}, []string{})
+				// Need to find the current user's default org
+				// as orgId is not populated in project. Its created using default org
+				user, _, err := apiClient.UsersApi.
+					FindCurrentUser(context.Background()).
+					Include([]string{"default_organization_id"}).
+					Execute()
 				if err != nil {
 					t.Fatal(err)
 				}
-				if len(conns) < 1 {
+
+				conns, _, err := apiClient.InterconnectionsApi.
+					OrganizationListInterconnections(context.Background(), user.GetDefaultOrganizationId()).
+					Execute()
+				if err != nil {
+					t.Fatal(err)
+				}
+				if len(conns.GetInterconnections()) < 1 {
 					t.Fatal("Interconnections Not Found. Failed to create Interconnections")
 				}
 
 				var conn *metal.Interconnection
-				for index, c := range conns {
+				for index, c := range conns.GetInterconnections() {
 					if c.GetName() == connName {
-						conn = &conns[index]
+						conn = &conns.GetInterconnections()[index]
 						break
 					}
 				}
