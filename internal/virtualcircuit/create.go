@@ -60,7 +60,7 @@ func createVlanVirtualCircuit(vlanInput *metal.VlanVirtualCircuitCreateInput, vn
 		vlanInput.SetNniVlan(int32(nnVlan))
 	}
 	if speed > 0 {
-		vlanInput.SetSpeed(int32(speed))
+		vlanInput.SetSpeed(int64(speed))
 	}
 	vlanInput.SetVnid(vnid)
 
