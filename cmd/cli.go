@@ -27,6 +27,7 @@ import (
 	"github.com/equinix/metal-cli/internal/ssh"
 	"github.com/equinix/metal-cli/internal/twofa"
 	"github.com/equinix/metal-cli/internal/users"
+	"github.com/equinix/metal-cli/internal/virtualcircuit"
 	"github.com/equinix/metal-cli/internal/vlan"
 	"github.com/equinix/metal-cli/internal/vrf"
 )
@@ -97,5 +98,6 @@ func (cli *Cli) RegisterCommands(client *root.Client) {
 		ports.NewClient(client, cli.Outputer).NewCommand(),
 		interconnections.NewClient(client, cli.Outputer).NewCommand(),
 		vrf.NewClient(client, cli.Outputer).NewCommand(),
+		virtualcircuit.NewClient(client, cli.Outputer).NewCommand(),
 	)
 }

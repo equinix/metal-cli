@@ -310,7 +310,7 @@ func CleanTestIps(t *testing.T, ipsId string) error {
 	return nil
 }
 
-func CreateTestVlanWithVxLan(t *testing.T, projectId string, Id int, desc string) (string, error) {
+func CreateTestVlanWithVxLan(t *testing.T, projectId string, Id int, desc string) *metalv1.VirtualNetwork {
 	t.Helper()
 	TestApiClient := TestClient()
 	virtualNetworkCreateInput := *metalv1.NewVirtualNetworkCreateInput()
@@ -320,9 +320,14 @@ func CreateTestVlanWithVxLan(t *testing.T, projectId string, Id int, desc string
 
 	vlanresp, _, err := TestApiClient.VLANsApi.CreateVirtualNetwork(context.Background(), projectId).VirtualNetworkCreateInput(virtualNetworkCreateInput).Execute()
 	if err != nil {
-		return "", fmt.Errorf("Error when calling `VLANsApi.CreateVirtualNetwork``: %v\n", err)
+		t.Fatalf("Error when calling `VLANsApi.CreateVirtualNetwork``: %v\n", err)
 	}
-	return vlanresp.GetId(), nil
+
+	t.Cleanup(func() {
+		CleanTestVlan(t, vlanresp.GetId())
+	})
+
+	return vlanresp
 }
 
 func CleanTestVlan(t *testing.T, vlanId string) {
@@ -386,8 +391,77 @@ func CleanTestGateway(t *testing.T, gatewayId string) error {
 	if err != nil {
 		return fmt.Errorf("Error when calling `MetalGatewaysApi.DeleteMetalGateway`` for %v: %v\n", gatewayId, err)
 	}
-
 	return nil
+}
+
+func CreateTestInterConnection(t *testing.T, projectId, name string) *metalv1.Interconnection {
+	t.Helper()
+	TestApiClient := TestClient()
+
+	createOrganizationInterconnectionRequest := metalv1.CreateOrganizationInterconnectionRequest{DedicatedPortCreateInput: metalv1.NewDedicatedPortCreateInput("da", name, "primary", metalv1.DedicatedPortCreateInputType("dedicated"))}
+
+	resp, _, err := TestApiClient.InterconnectionsApi.CreateProjectInterconnection(context.Background(), projectId).CreateOrganizationInterconnectionRequest(createOrganizationInterconnectionRequest).Execute()
+	if err != nil {
+		t.Fatalf("Error when calling `InterconnectionsApi.CreateProjectInterconnection``: %v\n", err)
+	}
+
+	t.Cleanup(func() {
+		CleanTestInterConnection(t, resp.GetId())
+	})
+	return resp
+}
+
+func CleanTestInterConnection(t *testing.T, connectionID string) {
+	t.Helper()
+	TestApiClient := TestClient()
+	_, resp, err := TestApiClient.InterconnectionsApi.DeleteInterconnection(context.Background(), connectionID).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `InterconnectionsApi.DeleteInterconnection``for %v : %v\n", connectionID, err)
+	}
+}
+
+func GetInterconnPort(t *testing.T, connId string) string {
+	t.Helper()
+	TestApiClient := TestClient()
+	resp, r, err := TestApiClient.InterconnectionsApi.ListInterconnectionPorts(context.Background(), connId).Execute()
+	if err != nil && r.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `InterconnectionsApi.ListInterconnectionPorts``: %v\n", err)
+	}
+
+	return resp.Ports[len(resp.Ports)-1].GetId()
+}
+
+func CreateTestVirtualCircuit(t *testing.T, projectId, connId, portId, vlanId, name string) *metalv1.VirtualCircuit {
+	t.Helper()
+	TestApiClient := TestClient()
+
+	vlanVCCreateInput := metalv1.NewVlanVirtualCircuitCreateInput(projectId)
+	vlanVCCreateInput.SetVnid(vlanId)
+	vlanVCCreateInput.SetSpeed(100)
+	vlanVCCreateInput.SetNniVlan(1110)
+	vlanVCCreateInput.SetName(name)
+
+	virtualCircuitCreateInput := metalv1.VirtualCircuitCreateInput{VlanVirtualCircuitCreateInput: vlanVCCreateInput}
+
+	resp, _, err := TestApiClient.InterconnectionsApi.CreateInterconnectionPortVirtualCircuit(context.Background(), connId, portId).VirtualCircuitCreateInput(virtualCircuitCreateInput).Execute()
+	if err != nil {
+		t.Fatalf("Error when calling `InterconnectionsApi.CreateInterconnectionPortVirtualCircuit``: %v\n", err)
+	}
+
+	t.Cleanup(func() {
+		CleanTestVirtualCircuit(t, resp.VlanVirtualCircuit.GetId())
+	})
+	return resp
+}
+
+func CleanTestVirtualCircuit(t *testing.T, vcId string) {
+	t.Helper()
+	TestApiClient := TestClient()
+
+	_, resp, err := TestApiClient.InterconnectionsApi.DeleteVirtualCircuit(context.Background(), vcId).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `InterconnectionsApi.DeleteVirtualCircuit``for %v : %v\n", vcId, err)
+	}
 }
 
 func CreateTestOrganization(t *testing.T, name string) *metalv1.Organization {
