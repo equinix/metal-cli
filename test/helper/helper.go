@@ -586,5 +586,38 @@ func CleanupInterconnection(t *testing.T, connectionId string) {
 		t.Fatalf("Error when calling `InterconnectionsApi.DeleteInterconnection`` for %v: %v\n", connectionId, err)
 	}
 
+	if err := waitForInterconnectionDeleted(apiClient, connectionId, 5*time.Minute); err != nil {
+		t.Fatal(err)
+	}
+
 	CleanupInterconnectionVC(t, connectionId)
+}
+
+func waitForInterconnectionDeleted(apiClient *metalv1.APIClient, connId string, timeout time.Duration) error {
+	ctx, cancelFunc := context.WithTimeout(context.Background(), timeout)
+	defer cancelFunc()
+
+	ticker := time.NewTicker(2 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return errors.New("Timeout while waiting for connection to be deleted")
+		case <-ticker.C:
+			conn, _, err := apiClient.InterconnectionsApi.GetInterconnection(context.Background(), connId).Execute()
+			if err != nil {
+				if strings.Contains(err.Error(), "Not Found") {
+					return nil
+				}
+				return err
+			}
+
+			if conn == nil {
+				return nil
+			}
+
+			fmt.Printf("Connection not deleted. Current status: [%s]", conn.GetStatus())
+		}
+	}
 }

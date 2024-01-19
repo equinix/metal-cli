@@ -43,19 +43,9 @@ func TestInterconnections_Create(t *testing.T) {
 
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				// Need to find the current user's default org
-				// as orgId is not populated in project. Its created using default org
-				user, _, err := apiClient.UsersApi.
-					FindCurrentUser(context.Background()).
-					Include([]string{"default_organization_id"}).
-					Execute()
-				if err != nil {
-					t.Fatal(err)
-				}
-
-				conns, _, err := apiClient.InterconnectionsApi.
-					OrganizationListInterconnections(context.Background(), user.GetDefaultOrganizationId()).
-					Execute()
+				conns, err := apiClient.InterconnectionsApi.
+					ProjectListInterconnections(context.Background(), project.GetId()).
+					ExecuteWithPagination()
 				if err != nil {
 					t.Fatal(err)
 				}
