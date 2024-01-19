@@ -13,7 +13,7 @@ import (
 type vcParamOuter interface {
 	GetId() string
 	GetName() string
-	GetSpeed() int32
+	GetSpeed() int64
 	GetCreatedAt() time.Time
 }
 

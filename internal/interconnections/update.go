@@ -44,10 +44,6 @@ func (c *Client) Update() *cobra.Command {
 				intInput.SetMode(mod)
 			}
 
-			if redundancy != "" {
-				intInput.SetRedundancy(redundancy)
-			}
-
 			if contactEmail != "" {
 				intInput.SetContactEmail(contactEmail)
 			}
