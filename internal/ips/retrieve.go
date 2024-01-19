@@ -100,8 +100,7 @@ func (c *Client) Retrieve() *cobra.Command {
 				return c.Out.Output(ip, header, &data)
 			}
 
-			// Don't have a paginator for this one
-			resp, _, err := c.IPService.FindIPReservations(context.Background(), projectID).Include(inc).Exclude(exc).Types(types).Execute()
+			resp, err := c.IPService.FindIPReservations(context.Background(), projectID).Include(inc).Exclude(exc).Types(types).ExecuteWithPagination()
 			if err != nil {
 				return fmt.Errorf("Could not list Project IP addresses: %w", err)
 			}
