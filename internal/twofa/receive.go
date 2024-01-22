@@ -57,16 +57,16 @@ func (c *Client) Receive() *cobra.Command {
 				return nil
 			}
 
-			otpURI, _, err := c.TwoFAService.SeedApp()
+			resp, _, err := c.OtpService.SeedApp(context.Background()).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not get the OTP Seed URI: %w", err)
 			}
 
 			data := make([][]string, 1)
 
-			data[0] = []string{otpURI}
+			data[0] = []string{resp.GetOtpUri()}
 			header := []string{"OTP URI"}
-			return c.Out.Output(otpURI, header, &data)
+			return c.Out.Output(resp, header, &data)
 		},
 	}
 
