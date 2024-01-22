@@ -50,12 +50,12 @@ func (c *Client) Disable() *cobra.Command {
 
 			cmd.SilenceUsage = true
 			if sms {
-				_, err := c.TwoFAService.DisableTfaSms(context.Background()).Execute()
+				_, err := c.TwoFAService.DisableTfaSms(context.Background()).XOtpToken(token).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not disable Two-Factor Authentication via SMS: %w", err)
 				}
 			} else if app {
-				_, err := c.TwoFAService.DisableTfaApp(context.Background()).Execute()
+				_, err := c.TwoFAService.DisableTfaApp(context.Background()).XOtpToken(token).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not disable Two-Factor Authentication via App: %w", err)
 				}

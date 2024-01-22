@@ -23,14 +23,14 @@ package twofa
 import (
 	"github.com/equinix/metal-cli/internal/outputs"
 
-	metal "github.com/equinix-labs/metal-go/metal/v1"
+	"github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/spf13/cobra"
 )
 
 type Client struct {
 	Servicer     Servicer
-	TwoFAService *metal.TwoFactorAuthApiService
-	OtpService   *metal.OTPsApiService
+	TwoFAService *metalv1.TwoFactorAuthApiService
+	OtpService   *metalv1.OTPsApiService
 	Out          outputs.Outputer
 }
 
@@ -61,7 +61,7 @@ func (c *Client) NewCommand() *cobra.Command {
 }
 
 type Servicer interface {
-	MetalAPI(*cobra.Command) *metal.APIClient
+	MetalAPI(*cobra.Command) *metalv1.APIClient
 	Filters() map[string]string
 	Includes(defaultIncludes []string) (incl []string)
 	Excludes(defaultExcludes []string) (excl []string)

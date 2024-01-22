@@ -49,12 +49,12 @@ func (c *Client) Enable() *cobra.Command {
 
 			cmd.SilenceUsage = true
 			if sms {
-				_, err := c.TwoFAService.EnableTfaSms(context.Background()).Execute()
+				_, err := c.TwoFAService.EnableTfaSms(context.Background()).XOtpToken(token).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not enable Two-Factor Authentication: %w", err)
 				}
 			} else if app {
-				_, err := c.TwoFAService.EnableTfaApp(context.Background()).Execute()
+				_, err := c.TwoFAService.EnableTfaApp(context.Background()).XOtpToken(token).Execute()
 				if err != nil {
 					return fmt.Errorf("Could not enable Two-Factor Authentication: %w", err)
 				}
