@@ -15,7 +15,7 @@ metal gateway get -p <project_UUID> [flags]
 ```
 
   # Lists Metal Gateways for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
-  metal virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
+  metal gateways get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
 ```
 
 ### Options

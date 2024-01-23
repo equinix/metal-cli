@@ -4,7 +4,7 @@ Deletes a interconnection.
 
 ### Synopsis
 
-Deletes the specified interconnection.
+Deletes the specified interconnection. Use --force to skip confirmation
 
 ```
 metal interconnections delete -i <connection_id>  [flags]
@@ -15,11 +15,15 @@ metal interconnections delete -i <connection_id>  [flags]
 ```
   # Deletes the specified interconnection:
   metal interconnections delete -i 7ec86e23-8dcf-48ed-bd9b-c25c20958277
+  >
+  ✔ Are you sure you want to delete device 7ec86e23-8dcf-48ed-bd9b-c25c20958277 [Y/n]: Y
+
 ```
 
 ### Options
 
 ```
+  -f, --force       Skips confirmation for the interconnection deletion.
   -h, --help        help for delete
   -i, --id string   The UUID of the interconnection.
 ```

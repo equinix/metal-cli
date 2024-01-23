@@ -10,11 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"golang.org/x/exp/rand"
-
 	"github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"golang.org/x/exp/rand"
 )
 
 const (
@@ -551,4 +550,74 @@ func ExecuteAndCaptureOutput(t *testing.T, root *cobra.Command) []byte {
 	}
 
 	return out
+}
+
+func CleanupInterconnectionVC(t *testing.T, connectionId string) {
+	t.Helper()
+	apiClient := TestClient()
+
+	vcList, resp, err := apiClient.InterconnectionsApi.
+		ListInterconnectionVirtualCircuits(context.Background(), connectionId).
+		Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `InterconnectionsApi.ListInterconnectionVirtualCircuits`` for %v: %v\n", connectionId, err)
+	}
+
+	if vcList != nil && vcList.HasVirtualCircuits() {
+		for _, vc := range vcList.GetVirtualCircuits() {
+			_, resp, err := apiClient.InterconnectionsApi.
+				DeleteVirtualCircuit(context.Background(), vc.VlanVirtualCircuit.GetId()).
+				Execute()
+			if err != nil && resp.StatusCode != http.StatusNotFound {
+				t.Fatalf("Error when calling `InterconnectionsApi.DeleteVirtualCircuit`` for %v: %v\n", connectionId, err)
+			}
+		}
+	}
+}
+
+func CleanupInterconnection(t *testing.T, connectionId string) {
+	t.Helper()
+	apiClient := TestClient()
+
+	_, resp, err := apiClient.InterconnectionsApi.
+		DeleteInterconnection(context.Background(), connectionId).
+		Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `InterconnectionsApi.DeleteInterconnection`` for %v: %v\n", connectionId, err)
+	}
+
+	if err := waitForInterconnectionDeleted(apiClient, connectionId, 5*time.Minute); err != nil {
+		t.Fatal(err)
+	}
+
+	CleanupInterconnectionVC(t, connectionId)
+}
+
+func waitForInterconnectionDeleted(apiClient *metalv1.APIClient, connId string, timeout time.Duration) error {
+	ctx, cancelFunc := context.WithTimeout(context.Background(), timeout)
+	defer cancelFunc()
+
+	ticker := time.NewTicker(2 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return errors.New("Timeout while waiting for connection to be deleted")
+		case <-ticker.C:
+			conn, _, err := apiClient.InterconnectionsApi.GetInterconnection(context.Background(), connId).Execute()
+			if err != nil {
+				if strings.Contains(err.Error(), "Not Found") {
+					return nil
+				}
+				return err
+			}
+
+			if conn == nil {
+				return nil
+			}
+
+			fmt.Printf("Connection not deleted. Current status: [%s]", conn.GetStatus())
+		}
+	}
 }

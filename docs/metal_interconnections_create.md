@@ -24,14 +24,17 @@ metal interconnections create -n <name> [-m <metro>] [-r <redundancy> ] [-t <typ
 ### Options
 
 ```
-  -h, --help                    help for create
-  -m, --metro string            metro in the interconnection
-  -n, --name string             Name of the interconnection
-  -O, --organizationID string   Org ID
-  -p, --projectID string        project ID
-  -r, --redundancy string       Website URL of the organization.
-  -t, --type string             type of of interconnection.
-  -v, --vrfs strings            Return only the specified vrfs.
+  -h, --help                        help for create
+  -m, --metro string                Metro Id or Metro Code from where the interconnection will be originated.
+  -n, --name string                 Name of the interconnection.
+      --organization-id string      The Organization's UUID to be used for creating org level interconnection request. Either one of this flag or --project-id is required.
+  -p, --project-id string           The project's UUID. Either one of this flag or --organization-id is required.
+  -r, --redundancy string           Types of redundancy for the interconnection. Either 'primary' or 'redundant'.
+  -T, --service-token-type string   Type of service token for shared connection. Enum: 'a_side', 'z_side'.
+  -s, --speed int32                 The maximum speed of the interconnections. (default 1000000000)
+  -t, --type string                 Type of of interconnection. Either 'dedicated' or 'shared' when requesting for a Fabric VC.
+      --vlan int32Slice             A list of VLANs to attach to the Interconnection. Ex: --vlans 1000, 1001 . (default [])
+      --vrf strings                 A list of VRFs to attach to the Interconnection. Ex: --vrfs uuid1, uuid2 .
 ```
 
 ### Options inherited from parent commands
