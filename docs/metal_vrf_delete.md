@@ -27,7 +27,7 @@ metal vrf delete vrf -i <metal_vrf_UUID> [-f] [flags]
 ```
   -f, --force       Skips confirmation for the removal of the VRF.
   -h, --help        help for delete
-  -i, --id string   UUID of the VRF.
+  -i, --id string   Specify the UUID of the VRF
 ```
 
 ### Options inherited from parent commands

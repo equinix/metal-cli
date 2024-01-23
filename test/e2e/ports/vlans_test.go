@@ -62,7 +62,7 @@ func TestPorts_VLANs(t *testing.T) {
 					t.Fatal(err)
 				}
 
-				assertPortCmdOutput(t, port, string(out[:]), "layer2-bonded", true)
+				helper.AssertPortCmdOutput(t, port, string(out[:]), "layer2-bonded", true)
 			},
 		},
 	}

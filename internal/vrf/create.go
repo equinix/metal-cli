@@ -51,7 +51,7 @@ func (c *Client) Create() *cobra.Command {
 			data := make([][]string, 1)
 
 			// This output block below is probably incorrect but leaving it for now for testing later.
-			data[0] = []string{vrfRequest.GetName(), vrfRequest.GetDescription(), strconv.Itoa(int(vrfRequest.GetLocalAsn())), strings.Join(vrfRequest.GetIpRanges(), ","), vrfRequest.GetCreatedAt().String()}
+			data[0] = []string{vrfRequest.GetId(), vrfRequest.GetName(), vrfRequest.GetDescription(), strconv.Itoa(int(vrfRequest.GetLocalAsn())), strings.Join(vrfRequest.GetIpRanges(), ","), vrfRequest.GetCreatedAt().String()}
 			header := []string{"ID", "Name", "Description", "LocalASN", "IPranges", "Created"}
 
 			return c.Out.Output(vrfRequest, header, &data)
