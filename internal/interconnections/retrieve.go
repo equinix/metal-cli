@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
-	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 )
 
@@ -31,9 +30,8 @@ func (c *Client) Retrieve() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			var interConns []metal.Interconnection
-			var proerr error
-			inc := []string{}
-			exc := []string{}
+			inc := c.Servicer.Includes(nil)
+			exc := c.Servicer.Excludes(nil)
 			header := []string{"ID", "Name", "Type", "Created"}
 
 			if connID != "" && projectID != "" && organizationID != "" {
@@ -45,10 +43,11 @@ func (c *Client) Retrieve() *cobra.Command {
 				}
 				interConns = interConnectionsList.GetInterconnections()
 			} else if projectID != "" {
-				interConns, proerr = pager.GetAllProjectInterconnections(c.Service, projectID, inc, exc)
-				if proerr != nil {
-					return fmt.Errorf("could not list Project Interconnections: %w", proerr)
+				resp, err := c.Service.ProjectListInterconnections(context.Background(), projectID).Include(inc).Exclude(exc).ExecuteWithPagination()
+				if err != nil {
+					return fmt.Errorf("could not list Project Interconnections: %w", err)
 				}
+				interConns = resp.Interconnections
 			} else if connID != "" {
 				interConnection, _, err := c.Service.GetInterconnection(context.Background(), connID).Include(inc).Exclude(exc).Execute()
 				if err != nil {

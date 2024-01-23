@@ -26,7 +26,6 @@ import (
 	"strconv"
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
-	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 )
 
@@ -62,8 +61,8 @@ func (c *Client) Retrieve() *cobra.Command {
 			}
 
 			cmd.SilenceUsage = true
-			inc := []string{}
-			exc := []string{}
+			inc := c.Servicer.Includes(nil)
+			exc := c.Servicer.Excludes(nil)
 			types := []metal.FindIPReservationsTypesParameterInner{}
 
 			if assignmentID != "" {
@@ -101,11 +100,11 @@ func (c *Client) Retrieve() *cobra.Command {
 				return c.Out.Output(ip, header, &data)
 			}
 
-			ips, err := pager.GetAllIPReservations(c.IPService, projectID, inc, exc, types)
+			resp, err := c.IPService.FindIPReservations(context.Background(), projectID).Include(inc).Exclude(exc).Types(types).ExecuteWithPagination()
 			if err != nil {
 				return fmt.Errorf("Could not list Project IP addresses: %w", err)
 			}
-			// ips := ipsList.GetIpAddresses()
+			ips := resp.IpAddresses
 			data := make([][]string, len(ips))
 
 			for i, ip := range ips {

@@ -25,7 +25,6 @@ import (
 	"fmt"
 
 	"github.com/equinix/metal-cli/internal/outputs"
-	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 )
 
@@ -51,8 +50,8 @@ func (c *Client) Retrieve() *cobra.Command {
 			if projectID != "" && projectName != "" {
 				return fmt.Errorf("Must specify only one of project-id and project name")
 			}
-			inc := []string{}
-			exc := []string{}
+			inc := c.Servicer.Includes(nil)
+			exc := c.Servicer.Excludes(nil)
 
 			// only fetch extra details when rendered
 			switch c.Servicer.Format() {
@@ -61,12 +60,13 @@ func (c *Client) Retrieve() *cobra.Command {
 			}
 
 			if projectID == "" {
-				projects, err := pager.GetAllProjects(c.ProjectService, inc, exc)
+				resp, err := c.ProjectService.FindProjects(context.Background()).Include(inc).Exclude(exc).ExecuteWithPagination()
 				if err != nil {
 					return fmt.Errorf("Could not list Projects: %w", err)
 				}
 
 				var data [][]string
+				projects := resp.Projects
 				if projectName == "" {
 					data = make([][]string, len(projects))
 					for i, p := range projects {

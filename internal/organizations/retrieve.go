@@ -24,7 +24,6 @@ import (
 	"context"
 	"fmt"
 
-	pager "github.com/equinix/metal-cli/internal/pagination"
 	"github.com/spf13/cobra"
 )
 
@@ -53,11 +52,12 @@ func (c *Client) Retrieve() *cobra.Command {
 			exclude := c.Servicer.Excludes(nil)
 
 			if organizationID == "" {
-				orgs, err := pager.GetAllOrganizations(c.Service, include, exclude)
+				resp, err := c.Service.FindOrganizations(context.Background()).Include(include).Exclude(exclude).ExecuteWithPagination()
 				if err != nil {
 					return fmt.Errorf("Could not list Organizations: %w", err)
 				}
 
+				orgs := resp.Organizations
 				data := make([][]string, len(orgs))
 
 				for i, p := range orgs {
