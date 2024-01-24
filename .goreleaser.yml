@@ -12,8 +12,8 @@ builds:
       - CGO_ENABLED=0
     binary: metal
     ldflags:
-      - -X github.com/equinix/metal-cli/cmd.Version={{.Version}}
-      - -X github.com/equinix/metal-cli/cmd.Build=${.Commit}"
+      - -X github.com/equinix/{{ .ProjectName }}/cmd.Version={{.Version}}
+      - -X github.com/equinix/{{ .ProjectName }}/cmd.Build=${.Commit}"
 
     goos:
       - freebsd
@@ -34,7 +34,7 @@ archives:
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
 release:
-  name_template: "{{.ProjectName}}-v{{.Version}}"
+  name_template: "{{ .ProjectName }}-v{{ .Version }}"
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
@@ -58,16 +58,32 @@ brews:
       owner: equinix
       name: homebrew-tap
 
-dockers:
-  - image_templates:
-      - "ghcr.io/{{ .Env.GITHUB_REPOSITORY }}:{{ .Tag }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
-    dockerfile: Dockerfile
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+kos:
+  - repository: ghcr.io/equinix/{{ .ProjectName }}
+    tags:
+      - "{{ .Tag }}"
+      - "{{ .Major }}.{{ .Minor }}"
+      - "{{ .Minor}}"
+      - latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm/v7
+      - linux/arm/v6
+      - freebsd/amd64
+      - freebsd/arm64
+      - freebsd/arm/v7
+      - freebsd/arm/v6
+      - windows/amd64
+      - windows/arm64
+      - windows/arm/v7
+      - windows/arm/v6
+      - darwin/amd64
+      - darwin/arm64
+    sbom: spdx
+
+sboms:
+  - artifacts: archive
+
+docker_signs:
+  - artifacts: manifests
