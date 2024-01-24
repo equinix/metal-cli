@@ -124,7 +124,7 @@ func (c *Client) NewCommand() *cobra.Command {
 			}
 
 			// Choose the first project in the preferred org
-			// Donot try to get projects again when
+			// Do not try to get projects again when
 			if defaultProjectId == "" && !isProjectToken {
 				defaultProjectId, err = getFirstProjectID(c.ProjectService, userOrg)
 				if err != nil {
@@ -158,6 +158,7 @@ func getDefaultProjectOK(service metal.ProjectsApiService) (*metal.Project, bool
 		return nil, isProjectToken, err
 	}
 
+	// Found more than one project, so must be a user token
 	if len(projects) > 1 {
 		return nil, isProjectToken, nil
 	}
