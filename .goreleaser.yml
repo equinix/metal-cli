@@ -7,30 +7,30 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
 builds:
-- main: ./cmd/metal
-  env:
-  - CGO_ENABLED=0
-  binary: metal
-  ldflags:
-   - -X github.com/equinix/metal-cli/cmd.Version={{.Version}}
-   - -X github.com/equinix/metal-cli/cmd.Build=${.Commit}"
+  - main: ./cmd/metal
+    env:
+      - CGO_ENABLED=0
+    binary: metal
+    ldflags:
+      - -X github.com/equinix/metal-cli/cmd.Version={{.Version}}
+      - -X github.com/equinix/metal-cli/cmd.Build=${.Commit}"
 
-  goos:
-    - freebsd
-    - linux
-    - windows
-    - darwin
-  goarch:
-    - amd64
-    - arm
-    - arm64
-  goarm:
-    - "6"
-    - "7"
+    goos:
+      - freebsd
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - "6"
+      - "7"
 
 archives:
-- format: binary
-  name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+  - format: binary
+    name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
 release:
@@ -41,10 +41,10 @@ changelog:
   sort: asc
   filters:
     exclude:
-    - '^docs:'
-    - '^test:'
+      - "^docs:"
+      - "^test:"
 
-brews: 
+brews:
   - homepage: "https://metal.equinix.com/developers/docs/libraries/cli/"
     description: "Official Equinix Metal CLI"
     license: "MIT"
@@ -60,7 +60,7 @@ brews:
 
 dockers:
   - image_templates:
-      - 'ghcr.io/{{ .Env.GITHUB_REPOSITORY }}:{{ .Tag }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+      - "ghcr.io/{{ .Env.GITHUB_REPOSITORY }}:{{ .Tag }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     dockerfile: Dockerfile
     use: buildx
     build_flag_templates:
