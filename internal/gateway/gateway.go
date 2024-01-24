@@ -21,7 +21,6 @@
 package gateway
 
 import (
-	neighbours "github.com/equinix/metal-cli/internal/gateway/bgp-dynamic-neighbours"
 	"github.com/equinix/metal-cli/internal/outputs"
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
@@ -29,9 +28,10 @@ import (
 )
 
 type Client struct {
-	Servicer Servicer
-	Service  *metal.MetalGatewaysApiService
-	Out      outputs.Outputer
+	Servicer   Servicer
+	Service    *metal.MetalGatewaysApiService
+	VrfService *metal.VRFsApiService
+	Out        outputs.Outputer
 }
 
 func (c *Client) NewCommand() *cobra.Command {
@@ -48,6 +48,7 @@ func (c *Client) NewCommand() *cobra.Command {
 				}
 			}
 			c.Service = c.Servicer.MetalAPI(cmd).MetalGatewaysApi
+			c.VrfService = c.Servicer.MetalAPI(cmd).VRFsApi
 		},
 	}
 
@@ -55,7 +56,10 @@ func (c *Client) NewCommand() *cobra.Command {
 		c.Retrieve(),
 		c.Create(),
 		c.Delete(),
-		neighbours.NewClient(c.Servicer, c.Out).NewCommand(),
+		c.CreateBgpNeighbours(),
+		c.DeleteBgpNeighbours(),
+		c.GetBgpNeighbours(),
+		c.ListBgpNeighbours(),
 	)
 	return cmd
 }

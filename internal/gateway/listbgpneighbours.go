@@ -1,4 +1,4 @@
-package bgp_dynamic_neighbours
+package gateway
 
 import (
 	"context"
@@ -8,20 +8,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func (c *Client) List() *cobra.Command {
+func (c *Client) ListBgpNeighbours() *cobra.Command {
 	var gatewayId string
 
 	// createMetalGatewayCmd represents the createMetalGateway command
 	createMetalGatewayCmd := &cobra.Command{
-		Use:     `list`,
-		Short:   "",
-		Long:    "",
-		Example: ``,
+		Use:   `list-bgp-dynamic-neighbours`,
+		Short: "Lists BGP Dynamic Neighbours for Metal Gateway",
+		Long:  "Lists the BGP Dynamic Neighbour for the metal gateway with the specified gateway ID",
+		Example: `# Lists BGP Dynamic Neighbour for the specified metal gateway ID
+
+	$ metal gateways list-bgp-dynamic-neighbour --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
+`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-			n, _, err := c.Service.
+			n, _, err := c.VrfService.
 				GetBgpDynamicNeighbors(context.Background(), gatewayId).
 				Include(c.Servicer.Includes([]string{"created_by"})).
 				Exclude(c.Servicer.Excludes([]string{})).
