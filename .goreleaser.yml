@@ -54,7 +54,7 @@ brews:
     test: |
       system "#{bin}/metal -v"
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-    tap:
+    repository:
       owner: equinix
       name: homebrew-tap
 
