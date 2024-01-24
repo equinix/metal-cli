@@ -38,7 +38,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 	// ipCmd represents the ip command
 	retrieveIPCmd := &cobra.Command{
-		Use:     `get -p <project_UUID> | -a <assignment_UUID> | -r <reservation_UUID>`,
+		Use:     `get -p <project-id> | -a <assignment-id> | -r <reservation-id>`,
 		Aliases: []string{"list"},
 		Short:   "Retrieves information about IP addresses, IP address reservations, and IP address assignments.",
 		Long:    "Retrieves information about the IP addresses in a project, the IP addresses that are in a specified assignment, or the IP addresses that are in a specified reservation.",
@@ -68,57 +68,69 @@ func (c *Client) Retrieve() *cobra.Command {
 			if assignmentID != "" {
 				ip, _, err := c.IPService.FindIPAddressById(context.Background(), assignmentID).Include(inc).Exclude(exc).Execute()
 				if err != nil {
-					return fmt.Errorf("Could not get Device IP address: %w", err)
+					return fmt.Errorf("could not get Device IP address: %w", err)
 				}
 
 				data := make([][]string, 1)
 
-				data[0] = []string{ip.IPAssignment.GetId(), ip.IPAssignment.GetAddress(), strconv.FormatBool(ip.IPAssignment.GetPublic()), ip.IPAssignment.CreatedAt.String()}
-				header := []string{"ID", "Address", "Public", "Created"}
+				data[0] = []string{ip.IPAssignment.GetId(), string(ip.IPAssignment.GetType()), ip.IPAssignment.GetAddress(), strconv.FormatBool(ip.IPAssignment.GetPublic()), ip.IPAssignment.CreatedAt.String()}
+				header := []string{"ID", "Type", "Address", "Public", "Created"}
 
 				return c.Out.Output(ip, header, &data)
 			} else if reservationID != "" {
 				ip, _, err := c.IPService.FindIPAddressById(context.Background(), reservationID).Include(inc).Exclude(exc).Execute()
 				if err != nil {
-					return fmt.Errorf("Could not get Reservation IP address: %w", err)
+					return fmt.Errorf("could not get Reservation IP address: %w", err)
 				}
 
 				data := make([][]string, 1)
-				code := ""
 				metro := ""
-				if ip.IPReservation.Facility != nil {
-					code = ip.IPReservation.Facility.GetCode()
+
+				if ip.IPReservation != nil {
+
+					if ip.IPReservation.Metro != nil {
+						metro = ip.IPReservation.Metro.GetCode()
+					}
+					data[0] = []string{ip.IPReservation.GetId(), string(ip.IPReservation.GetType()), ip.IPReservation.GetAddress(), metro, strconv.FormatBool(ip.IPReservation.GetPublic()), ip.IPReservation.CreatedAt.String()}
 				}
 
-				if ip.IPReservation.Metro != nil {
-					metro = ip.IPReservation.Metro.GetCode()
+				if ip.VrfIpReservation != nil {
+
+					if ip.VrfIpReservation.Metro != nil {
+						metro = ip.VrfIpReservation.Metro.GetCode()
+					}
+					data[0] = []string{ip.VrfIpReservation.GetId(), string(ip.VrfIpReservation.GetType()), ip.VrfIpReservation.GetAddress(), metro, strconv.FormatBool(ip.VrfIpReservation.GetPublic()), ip.VrfIpReservation.CreatedAt.String()}
 				}
 
-				data[0] = []string{ip.IPReservation.GetId(), ip.IPReservation.GetAddress(), metro, code, strconv.FormatBool(ip.IPReservation.GetPublic()), ip.IPReservation.CreatedAt.String()}
-				header := []string{"ID", "Address", "Metro", "Facility", "Public", "Created"}
+				header := []string{"ID", "Type", "Address", "Metro", "Public", "Created"}
 
 				return c.Out.Output(ip, header, &data)
 			}
 
 			resp, err := c.IPService.FindIPReservations(context.Background(), projectID).Include(inc).Exclude(exc).Types(types).ExecuteWithPagination()
 			if err != nil {
-				return fmt.Errorf("Could not list Project IP addresses: %w", err)
+				return fmt.Errorf("could not list Project IP addresses: %w", err)
 			}
 			ips := resp.IpAddresses
 			data := make([][]string, len(ips))
 
 			for i, ip := range ips {
-				code := ""
 				metro := ""
-				if ip.IPReservation.Facility != nil {
-					code = ip.IPReservation.Facility.GetCode()
+				if ip.IPReservation != nil {
+
+					if ip.IPReservation.Metro != nil {
+						metro = ip.IPReservation.Metro.GetCode()
+					}
+					data[i] = []string{ip.IPReservation.GetId(), string(ip.IPReservation.GetType()), ip.IPReservation.GetAddress(), metro, strconv.FormatBool(ip.IPReservation.GetPublic()), ip.IPReservation.CreatedAt.String()}
 				}
-				if ip.IPReservation.Metro != nil {
-					metro = ip.IPReservation.Metro.GetCode()
+				if ip.VrfIpReservation != nil {
+					if ip.VrfIpReservation.Metro != nil {
+						metro = ip.IPReservation.Metro.GetCode()
+					}
+					data[i] = []string{ip.VrfIpReservation.GetId(), string(ip.VrfIpReservation.GetType()), ip.VrfIpReservation.GetAddress(), metro, strconv.FormatBool(ip.VrfIpReservation.GetPublic()), ip.VrfIpReservation.CreatedAt.String()}
 				}
-				data[i] = []string{ip.IPReservation.GetId(), ip.IPReservation.GetAddress(), metro, code, strconv.FormatBool(ip.IPReservation.GetPublic()), ip.IPReservation.CreatedAt.String()}
 			}
-			header := []string{"ID", "Address", "Metro", "Facility", "Public", "Created"}
+			header := []string{"ID", "Type", "Address", "Metro", "Public", "Created"}
 
 			return c.Out.Output(ips, header, &data)
 		},

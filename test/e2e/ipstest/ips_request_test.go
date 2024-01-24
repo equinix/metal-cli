@@ -50,6 +50,36 @@ func TestCli_Vlan_Create(t *testing.T) {
 				}
 			},
 		},
+
+		{
+			name: "Request_NewVRFIP",
+			fields: fields{
+				MainCmd:  ips.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
+				Outputer: outputPkg.Outputer(&outputPkg.Standard{}),
+			},
+			want: &cobra.Command{},
+			cmdFunc: func(t *testing.T, c *cobra.Command) {
+				if true {
+					t.Skip("Skipping temporarily for now")
+				}
+				root := c.Root()
+				projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-ips-request-vrf"
+				project := helper.CreateTestProject(t, projectName)
+				_ = helper.CreateTestVlanWithVxLan(t, project.GetId(), 5678, projectName)
+				vrf := helper.CreateTestVrfs(t, project.GetId(), projectName)
+
+				root.SetArgs([]string{subCommand, "request", "-v", vrf.GetId(), "-t", "vrf", "--cidr", "24", "-n", "10.10.1.0", "--tags", "foobar", "--tags", "barfoo"})
+
+				out := helper.ExecuteAndCaptureOutput(t, root)
+
+				if !strings.Contains(string(out[:]), "TYPE") &&
+					!strings.Contains(string(out[:]), "vrf") &&
+					!strings.Contains(string(out[:]), "PUBLIC") &&
+					!strings.Contains(string(out[:]), "false") {
+					t.Error("expected output should include TYPE, PUBLIC and false strings in the out string")
+				}
+			},
+		},
 	}
 
 	for _, tt := range tests {

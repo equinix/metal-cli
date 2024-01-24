@@ -33,6 +33,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		c.Create(),
 		c.Retrieve(),
 		c.Delete(),
+		c.Ips(),
 	)
 	return cmd
 }

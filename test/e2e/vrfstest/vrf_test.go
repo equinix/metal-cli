@@ -156,6 +156,36 @@ func TestCli_Vrf_Create(t *testing.T) {
 				}
 			},
 		},
+		{
+			name: "vrf-ips-getById-test",
+			fields: fields{
+				MainCmd:  vrf.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
+				Outputer: outputPkg.Outputer(&outputPkg.Standard{}),
+			},
+			want: &cobra.Command{},
+			cmdFunc: func(t *testing.T, c *cobra.Command) {
+				root := c.Root()
+
+				projName := "metal-cli-" + randName + "-vrf-ips-get-test"
+				project := helper.CreateTestProject(t, projName)
+
+				if project.GetId() != "" {
+
+					vrf := helper.CreateTestVrfs(t, project.GetId(), projName)
+					if vrf.GetId() != "" {
+
+						ipRequest := helper.CreateTestVrfIpRequest(t, project.GetId(), vrf.GetId())
+						root.SetArgs([]string{subCommand, "ips", "-v", vrf.GetId(), "-i", ipRequest.IPReservation.GetId()})
+						out := helper.ExecuteAndCaptureOutput(t, root)
+
+						if !strings.Contains(string(out[:]), ipRequest.IPReservation.GetId()) &&
+							!strings.Contains(string(out[:]), projName) {
+							t.Error("expected output should include " + ipRequest.IPReservation.GetId() + ", in the out string ")
+						}
+					}
+				}
+			},
+		},
 	}
 
 	for _, tt := range tests {
