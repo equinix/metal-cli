@@ -64,8 +64,9 @@ func TestCli_Vrf_Create(t *testing.T) {
 				projectId := helper.CreateTestProject(t, projName)
 
 				if projectId.GetId() != "" {
-					vrf := helper.CreateTestVrfs(t, projectId.GetId(), projName)
-					if vrf.GetId() != "" {
+					vlan := helper.CreateTestVlanWithVxLan(t, projectId.GetId(), 3983, projName)
+					vrf := helper.CreateTestVrfs(t, projectId.GetId(), projName, 3983)
+					if vrf.GetId() != "" && vlan.GetId() != "" {
 						root.SetArgs([]string{subCommand, "delete", "-i", vrf.GetId(), "-f"})
 						out := helper.ExecuteAndCaptureOutput(t, root)
 
@@ -90,7 +91,8 @@ func TestCli_Vrf_Create(t *testing.T) {
 				projectId := helper.CreateTestProject(t, projName)
 
 				if projectId.GetId() != "" {
-					vrf := helper.CreateTestVrfs(t, projectId.GetId(), projName)
+					_ = helper.CreateTestVlanWithVxLan(t, projectId.GetId(), 3982, projName)
+					vrf := helper.CreateTestVrfs(t, projectId.GetId(), projName, 3982)
 
 					root.SetArgs([]string{subCommand, "get", "-p", projectId.GetId()})
 					out := helper.ExecuteAndCaptureOutput(t, root)
@@ -116,7 +118,8 @@ func TestCli_Vrf_Create(t *testing.T) {
 				projectId := helper.CreateTestProject(t, projName)
 
 				if projectId.GetId() != "" {
-					vrf := helper.CreateTestVrfs(t, projectId.GetId(), projName)
+					_ = helper.CreateTestVlanWithVxLan(t, projectId.GetId(), 3981, projName)
+					vrf := helper.CreateTestVrfs(t, projectId.GetId(), projName, 3981)
 
 					root.SetArgs([]string{subCommand, "get", "-p", projectId.GetId()})
 					out := helper.ExecuteAndCaptureOutput(t, root)
@@ -143,7 +146,8 @@ func TestCli_Vrf_Create(t *testing.T) {
 				projectId := helper.CreateTestProject(t, projName)
 
 				if projectId.GetId() != "" {
-					vrf := helper.CreateTestVrfs(t, projectId.GetId(), projName)
+					_ = helper.CreateTestVlanWithVxLan(t, projectId.GetId(), 3979, projName)
+					vrf := helper.CreateTestVrfs(t, projectId.GetId(), projName, 3979)
 					if vrf.GetId() != "" {
 						root.SetArgs([]string{subCommand, "get", "-v", vrf.GetId()})
 						out := helper.ExecuteAndCaptureOutput(t, root)
@@ -170,8 +174,8 @@ func TestCli_Vrf_Create(t *testing.T) {
 				project := helper.CreateTestProject(t, projName)
 
 				if project.GetId() != "" {
-
-					vrf := helper.CreateTestVrfs(t, project.GetId(), projName)
+					_ = helper.CreateTestVlanWithVxLan(t, project.GetId(), 3978, projName)
+					vrf := helper.CreateTestVrfs(t, project.GetId(), projName, 3978)
 					if vrf.GetId() != "" {
 
 						ipRequest := helper.CreateTestVrfIpRequest(t, project.GetId(), vrf.GetId())

@@ -1,15 +1,28 @@
-## metal vrf
+## metal vrf get-route
 
-VRF operations : create, get, delete
+Retrieve all routes in the VRF
 
 ### Synopsis
 
-VRF operations : It defines a collection of customer-managed IP blocks that can be used in BGP peering on one or more virtual networks and basic operations
+Retrieve all routes in the VRF
+
+```
+metal vrf get-route [-i <VrfRoute-Id>] [flags]
+```
+
+### Examples
+
+```
+ #Retrieve all routes in the VRF
+	# Retrieve all routes in the VRF
+	metal vrf get-route -i bb526d47-8536-483c-b436-116a5fb72235
+```
 
 ### Options
 
 ```
-  -h, --help   help for vrf
+  -h, --help        help for get-route
+  -i, --id string   Specify the VRF UUID to list its associated routes configurations
 ```
 
 ### Options inherited from parent commands
@@ -29,13 +42,5 @@ VRF operations : It defines a collection of customer-managed IP blocks that can 
 
 ### SEE ALSO
 
-* [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal vrf create](metal_vrf_create.md)	 - Creates a Virtual Routing and Forwarding(VRF) for a specified project.
-* [metal vrf create-route](metal_vrf_create-route.md)	 - Create a route in a VRF. Currently only static default routes are supported.
-* [metal vrf delete](metal_vrf_delete.md)	 - Deletes a VRF.
-* [metal vrf delete-route](metal_vrf_delete-route.md)	 - Delete a VRF Route
-* [metal vrf get](metal_vrf_get.md)	 - Lists VRFs.
-* [metal vrf get-route](metal_vrf_get-route.md)	 - Retrieve all routes in the VRF
-* [metal vrf ips](metal_vrf_ips.md)	 - Retrieves the list of VRF IP Reservations for the VRF.
-* [metal vrf update-route](metal_vrf_update-route.md)	 - Requests a VRF Route be redeployed/update across the network.
+* [metal vrf](metal_vrf.md)	 - VRF operations : create, get, delete
 

@@ -28,7 +28,7 @@ metal vrf create [-p <project_id] [-d <description>] [-m <metro>] [-n <name>] [-
   -m, --metro string         The UUID (or metro code) for the Metro in which to create this Virtual Routing and Forwarding
   -n, --name string          Name of the Virtual Routing and Forwarding
   -p, --project-id string    The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
-  -t, --tags strings         Adds or updates the tags for the connection --tags="tag1,tag2".
+  -t, --tags strings         Adds the tags for the virtual-circuit --tags "tag1,tag2" OR --tags "tag1" --tags "tag2"
 ```
 
 ### Options inherited from parent commands
