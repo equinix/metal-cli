@@ -1,15 +1,31 @@
-## metal gateway
+## metal gateway create-bgp-dynamic-neighbours
 
-Metal Gateway operations: create, delete, and retrieve.
+Creates a BGP Dynamic Neighbour
 
 ### Synopsis
 
-A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For more information, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.
+Creates the BGP Dynamic Neighbour for the metal gateway with the specified IP Range and ASN
+
+```
+metal gateway create-bgp-dynamic-neighbours [flags]
+```
+
+### Examples
+
+```
+# Create a BGP Dynamic Neighbour using ip range and asn for the gateway-id
+
+	metal gateways create-bgp-dynamic-neighbour --gateway-id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c" --bgp-neighbour-range "10.70.43.226/29" --asn 65000
+
+```
 
 ### Options
 
 ```
-  -h, --help   help for gateway
+      --asn int32                    
+      --bgp-neighbour-range string   
+      --gateway-id string            
+  -h, --help                         help for create-bgp-dynamic-neighbours
 ```
 
 ### Options inherited from parent commands
@@ -29,12 +45,5 @@ A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For mo
 
 ### SEE ALSO
 
-* [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal gateway create](metal_gateway_create.md)	 - Creates a Metal Gateway.
-* [metal gateway create-bgp-dynamic-neighbours](metal_gateway_create-bgp-dynamic-neighbours.md)	 - Creates a BGP Dynamic Neighbour
-* [metal gateway delete](metal_gateway_delete.md)	 - Deletes a Metal Gateway.
-* [metal gateway delete-bgp-dynamic-neighbours](metal_gateway_delete-bgp-dynamic-neighbours.md)	 - Deletes a BGP Dynamic Neighbour
-* [metal gateway get](metal_gateway_get.md)	 - Lists Metal Gateways.
-* [metal gateway get-bgp-dynamic-neighbours](metal_gateway_get-bgp-dynamic-neighbours.md)	 - Gets a BGP Dynamic Neighbour
-* [metal gateway list-bgp-dynamic-neighbours](metal_gateway_list-bgp-dynamic-neighbours.md)	 - Lists BGP Dynamic Neighbours for Metal Gateway
+* [metal gateway](metal_gateway.md)	 - Metal Gateway operations: create, delete, and retrieve.
 

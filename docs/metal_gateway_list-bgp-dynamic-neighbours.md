@@ -1,11 +1,29 @@
-## metal gateway bgp-dynamic-neighbour
+## metal gateway list-bgp-dynamic-neighbours
 
-Metal Gateway BGP Dynamic Neighbour operations: create, delete, and get, list
+Lists BGP Dynamic Neighbours for Metal Gateway
+
+### Synopsis
+
+Lists the BGP Dynamic Neighbour for the metal gateway with the specified gateway ID
+
+```
+metal gateway list-bgp-dynamic-neighbours [flags]
+```
+
+### Examples
+
+```
+# Lists BGP Dynamic Neighbour for the specified metal gateway ID
+
+	$ metal gateways list-bgp-dynamic-neighbour --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
+
+```
 
 ### Options
 
 ```
-  -h, --help   help for bgp-dynamic-neighbour
+      --gateway-id string   
+  -h, --help                help for list-bgp-dynamic-neighbours
 ```
 
 ### Options inherited from parent commands
@@ -26,8 +44,4 @@ Metal Gateway BGP Dynamic Neighbour operations: create, delete, and get, list
 ### SEE ALSO
 
 * [metal gateway](metal_gateway.md)	 - Metal Gateway operations: create, delete, and retrieve.
-* [metal gateway bgp-dynamic-neighbour ](metal_gateway_bgp-dynamic-neighbour_.md)	 - 
-* [metal gateway bgp-dynamic-neighbour ](metal_gateway_bgp-dynamic-neighbour_.md)	 - 
-* [metal gateway bgp-dynamic-neighbour ](metal_gateway_bgp-dynamic-neighbour_.md)	 - 
-* [metal gateway bgp-dynamic-neighbour ](metal_gateway_bgp-dynamic-neighbour_.md)	 - 
 

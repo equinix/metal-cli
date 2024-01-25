@@ -1,15 +1,31 @@
-## metal gateway
+## metal gateway delete-bgp-dynamic-neighbours
 
-Metal Gateway operations: create, delete, and retrieve.
+Deletes a BGP Dynamic Neighbour
 
 ### Synopsis
 
-A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For more information, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.
+Deletes the BGP Dynamic Neighbour for the metal gateway with the specified ID
+
+```
+metal gateway delete-bgp-dynamic-neighbours [flags]
+```
+
+### Examples
+
+```
+# Deletes a BGP Dynamic Neighbour using the bgp dynamic neighbour ID
+
+	$ metal gateways delete-bgp-dynamic-neighbour --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
+
+	BGP Dynamic Neighbour deletion initiated. Please check 'metal gateway get-bgp-dynamic-neighbour -i 9c56fa1d-ec05-470b-a938-0e5dd6a1540c for status
+
+```
 
 ### Options
 
 ```
-  -h, --help   help for gateway
+  -h, --help        help for delete-bgp-dynamic-neighbours
+  -i, --id string   
 ```
 
 ### Options inherited from parent commands
@@ -29,12 +45,5 @@ A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For mo
 
 ### SEE ALSO
 
-* [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal gateway create](metal_gateway_create.md)	 - Creates a Metal Gateway.
-* [metal gateway create-bgp-dynamic-neighbours](metal_gateway_create-bgp-dynamic-neighbours.md)	 - Creates a BGP Dynamic Neighbour
-* [metal gateway delete](metal_gateway_delete.md)	 - Deletes a Metal Gateway.
-* [metal gateway delete-bgp-dynamic-neighbours](metal_gateway_delete-bgp-dynamic-neighbours.md)	 - Deletes a BGP Dynamic Neighbour
-* [metal gateway get](metal_gateway_get.md)	 - Lists Metal Gateways.
-* [metal gateway get-bgp-dynamic-neighbours](metal_gateway_get-bgp-dynamic-neighbours.md)	 - Gets a BGP Dynamic Neighbour
-* [metal gateway list-bgp-dynamic-neighbours](metal_gateway_list-bgp-dynamic-neighbours.md)	 - Lists BGP Dynamic Neighbours for Metal Gateway
+* [metal gateway](metal_gateway.md)	 - Metal Gateway operations: create, delete, and retrieve.
 
