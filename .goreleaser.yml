@@ -58,32 +58,83 @@ brews:
       owner: equinix
       name: homebrew-tap
 
+# ko is a docker image builder that simplifies making multiplatform images.
+# This is much simpler than configuring all the docker ptions in goreleaser.
+# Unfortunately, it doesn't support the scratch image, so we use chainguard's
+# static image as a base.
 kos:
-  - repository: ghcr.io/equinix/{{ .ProjectName }}
-    tags:
-      - "{{ .Tag }}"
-      - "{{ .Major }}.{{ .Minor }}"
-      - "{{ .Minor}}"
-      - latest
+  - id: dockerhub
+    repository: equinix/{{ .ProjectName }}
+    build: metal-cli
+    base_image: cgr.dev/chainguard/static
+    labels:
+      org.opencontainers.image.base.name: "cgr.dev/chainguard/static"
+      org.opencontainers.image.created: "{{.Date}}"
+      org.opencontainers.image.name: "{{.ProjectName}}"
+      org.opencontainers.image.revision: "{{.FullCommit}}"
+      org.opencontainers.image.source: "{{.GitURL}}"
+      org.opencontainers.image.title: "{{.ProjectName}}"
+      org.opencontainers.image.url: "https://deploy.equinix.com/labs/metal-cli/"
+      org.opencontainers.image.vendor: "Equinix"
+      org.opencontainers.image.version: "{{.Version}}"
     platforms:
       - linux/amd64
       - linux/arm64
       - linux/arm/v7
-      - linux/arm/v6
-      - freebsd/amd64
-      - freebsd/arm64
-      - freebsd/arm/v7
-      - freebsd/arm/v6
-      - windows/amd64
-      - windows/arm64
-      - windows/arm/v7
-      - windows/arm/v6
-      - darwin/amd64
-      - darwin/arm64
-    sbom: spdx
-
-sboms:
-  - artifacts: archive
-
-docker_signs:
-  - artifacts: manifests
+    tags:
+      - latest
+      - "{{ .Tag }}"
+      - "{{ .Major }}"
+      - "{{ .Major }}.{{ .Minor }}"
+    sbom: none
+    bare: true
+  - id: github
+    repository: ghcr.io/equinix/{{ .ProjectName }}
+    build: metal-cli
+    base_image: cgr.dev/chainguard/static
+    labels:
+      org.opencontainers.image.base.name: "cgr.dev/chainguard/static"
+      org.opencontainers.image.created: "{{.Date}}"
+      org.opencontainers.image.name: "{{.ProjectName}}"
+      org.opencontainers.image.revision: "{{.FullCommit}}"
+      org.opencontainers.image.source: "{{.GitURL}}"
+      org.opencontainers.image.title: "{{.ProjectName}}"
+      org.opencontainers.image.url: "https://deploy.equinix.com/labs/metal-cli/"
+      org.opencontainers.image.vendor: "Equinix"
+      org.opencontainers.image.version: "{{.Version}}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm/v7
+    tags:
+      - latest
+      - "{{ .Tag }}"
+      - "{{ .Major }}"
+      - "{{ .Major }}.{{ .Minor }}"
+    sbom: none
+    bare: true
+  - id: quay
+    build: metal-cli
+    repository: quay.io/equinix-oss/metal-cli
+    base_image: cgr.dev/chainguard/static
+    labels:
+      org.opencontainers.image.base.name: "cgr.dev/chainguard/static"
+      org.opencontainers.image.created: "{{.Date}}"
+      org.opencontainers.image.name: "{{.ProjectName}}"
+      org.opencontainers.image.revision: "{{.FullCommit}}"
+      org.opencontainers.image.source: "{{.GitURL}}"
+      org.opencontainers.image.title: "{{.ProjectName}}"
+      org.opencontainers.image.url: "https://deploy.equinix.com/labs/metal-cli/"
+      org.opencontainers.image.vendor: "Equinix"
+      org.opencontainers.image.version: "{{.Version}}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm/v7
+    tags:
+      - latest
+      - "{{ .Tag }}"
+      - "{{ .Major }}"
+      - "{{ .Major }}.{{ .Minor }}"
+    sbom: none
+    bare: true
