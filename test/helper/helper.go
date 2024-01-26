@@ -86,7 +86,7 @@ func CreateTestVLAN(t *testing.T, projectId string) *metalv1.VirtualNetwork {
 	TestApiClient := TestClient()
 	t.Helper()
 
-	metro := "sv"
+	metro := "da"
 	vlanCreateInput := metalv1.VirtualNetworkCreateInput{
 		Metro: &metro,
 	}
@@ -122,6 +122,9 @@ func CreateTestGateway(t *testing.T, projectId, vlanId string, privateIPv4Subnet
 		Execute()
 	if err != nil {
 		t.Fatalf("Error when calling `MetalGatewaysApi.CreateMetalGateway`: %v\n", err)
+	}
+	if gateway == nil {
+		t.Fatal("Nil gateway returned. Error when calling `MetalGatewaysApi.CreateMetalGateway`")
 	}
 
 	return gateway.MetalGateway
@@ -642,14 +645,14 @@ func waitForInterconnectionDeleted(apiClient *metalv1.APIClient, connId string, 
 }
 
 //nolint:staticcheck
-func CreateTestVrfs(t *testing.T, projectId, name string, vlan int) *metalv1.Vrf {
+func CreateTestVrfs(t *testing.T, projectId, name string, vlan int32) *metalv1.Vrf {
 	t.Helper()
 	TestApiClient := TestClient()
 
 	var IpRanges []string
 
 	vrfCreateInput := *metalv1.NewVrfCreateInput("da", name)
-	vrfCreateInput.SetLocalAsn(int32(vlan))
+	vrfCreateInput.SetLocalAsn(vlan)
 	IpRanges = append(IpRanges, "10.10.1.0/24")
 	vrfCreateInput.SetIpRanges(IpRanges)
 
@@ -670,8 +673,8 @@ func CleanTestVrfs(t *testing.T, vrfId string) {
 	t.Helper()
 	TestApiClient := TestClient()
 
-	resp, err := TestApiClient.VRFsApi.DeleteVrf(context.Background(), vrfId).Execute()
-	if err != nil && resp.StatusCode != http.StatusNotFound {
+	_, err := TestApiClient.VRFsApi.DeleteVrf(context.Background(), vrfId).Execute()
+	if err != nil && strings.Contains(err.Error(), "Not Found") {
 		t.Fatalf("Error when calling `VRFsApi.DeleteVrf`` for %v: %v\n", vrfId, err)
 	}
 }
@@ -776,5 +779,34 @@ func CleanTestVrfGateway(t *testing.T, gatewayId string) {
 	_, resp, err := TestApiClient.MetalGatewaysApi.DeleteMetalGateway(context.Background(), gatewayId).Include(includes).Execute()
 	if err != nil && resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("Error when calling `MetalGatewaysApi.DeleteMetalGateway`` for %v: %v\n", gatewayId, err)
+	}
+}
+func CreateTestBgpDynamicNeighbour(t *testing.T, gatewayId, iprange string, asn int32) *metalv1.BgpDynamicNeighbor {
+	TestApiClient := TestClient()
+	t.Helper()
+
+	bgpNeighbourCreateInput := metalv1.NewBgpDynamicNeighborCreateInput(iprange, asn)
+	neighbour, _, err := TestApiClient.VRFsApi.
+		CreateBgpDynamicNeighbor(context.Background(), gatewayId).
+		BgpDynamicNeighborCreateInput(*bgpNeighbourCreateInput).
+		Include([]string{"created_by"}).
+		Execute()
+	if err != nil {
+		t.Fatalf("Error when calling `VRFsApi.CreateBgpDynamicNeighbor`: %v\n", err)
+	}
+
+	t.Cleanup(func() {
+		CleanTestBgpDynamicNeighbour(t, neighbour.GetId())
+	})
+
+	return neighbour
+}
+
+func CleanTestBgpDynamicNeighbour(t *testing.T, id string) {
+	t.Helper()
+	TestApiClient := TestClient()
+	_, resp, err := TestApiClient.VRFsApi.DeleteBgpDynamicNeighborById(context.Background(), id).Include([]string{"created_by"}).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `VRFsApi.DeleteBgpDynamicNeighborById``for %v: %v\n", id, err)
 	}
 }
