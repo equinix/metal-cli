@@ -1,4 +1,4 @@
-package bgp_dynamic_neighbour
+package bgp_dynamic_neighbor
 
 import (
 	"context"
@@ -15,7 +15,7 @@ import (
 	"github.com/equinix/metal-cli/test/helper"
 )
 
-func TestBgpDynamicNeighbours_Create(t *testing.T) {
+func TestBgpDynamicNeighbors_Create(t *testing.T) {
 	subCommand := "gateways"
 	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	randomStr := helper.GenerateRandomString(5)
@@ -34,29 +34,29 @@ func TestBgpDynamicNeighbours_Create(t *testing.T) {
 		cmdFunc func(*testing.T, *cobra.Command)
 	}{
 		{
-			name: "create bgp dynamic neighbour",
+			name: "create bgp dynamic neighbor",
 			cmd:  gateway.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 
-				root.SetArgs([]string{subCommand, "create-bgp-dynamic-neighbours", "--gateway-id", gway.GetId(), "--bgp-neighbour-range", gway.IpReservation.GetAddress(), "--asn", "65000"})
+				root.SetArgs([]string{subCommand, "create-bgp-dynamic-neighbors", "--id", gway.GetId(), "--bgp-neighbor-range", gway.IpReservation.GetAddress(), "--asn", "65000"})
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
 				apiClient := helper.TestClient()
-				neighbours, _, err := apiClient.VRFsApi.
+				neighbors, _, err := apiClient.VRFsApi.
 					GetBgpDynamicNeighbors(context.Background(), gway.GetId()).
 					Include([]string{"created_by"}).
 					Execute()
 				if err != nil {
 					t.Fatal(err)
 				}
-				if len(neighbours.GetBgpDynamicNeighbors()) != 1 {
+				if len(neighbors.GetBgpDynamicNeighbors()) != 1 {
 					t.Errorf("Bgp Dynamic Beigbours Not Found for gateway [%s]. Failed to create Bgp Dynamic Beigbour", gway.GetId())
 					return
 				}
 
-				assertBgpDynamicNeighbourCmdOutput(t, string(out[:]), &neighbours.GetBgpDynamicNeighbors()[0])
+				assertBgpDynamicNeighborCmdOutput(t, string(out[:]), &neighbors.GetBgpDynamicNeighbors()[0])
 			},
 		},
 	}
@@ -70,20 +70,20 @@ func TestBgpDynamicNeighbours_Create(t *testing.T) {
 	}
 }
 
-func assertBgpDynamicNeighbourCmdOutput(t *testing.T, out string, neighbour *metal.BgpDynamicNeighbor) {
-	if !strings.Contains(out, neighbour.GetId()) {
-		t.Errorf("cmd output should contain ID of the BGP Dynamic Neighbour: [%s] \n output:\n%s", neighbour.GetId(), out)
+func assertBgpDynamicNeighborCmdOutput(t *testing.T, out string, neighbor *metal.BgpDynamicNeighbor) {
+	if !strings.Contains(out, neighbor.GetId()) {
+		t.Errorf("cmd output should contain ID of the BGP Dynamic Neighbor: [%s] \n output:\n%s", neighbor.GetId(), out)
 	}
 
-	if !strings.Contains(out, neighbour.GetBgpNeighborRange()) {
-		t.Errorf("cmd output should contain IP Range: [%s] \n output:\n%s", neighbour.GetBgpNeighborRange(), out)
+	if !strings.Contains(out, neighbor.GetBgpNeighborRange()) {
+		t.Errorf("cmd output should contain IP Range: [%s] \n output:\n%s", neighbor.GetBgpNeighborRange(), out)
 	}
 
-	if !strings.Contains(out, strconv.Itoa(int(neighbour.GetBgpNeighborAsn()))) {
-		t.Errorf("cmd output should contain asn: [%d] \n output:\n%s", neighbour.GetBgpNeighborAsn(), out)
+	if !strings.Contains(out, strconv.Itoa(int(neighbor.GetBgpNeighborAsn()))) {
+		t.Errorf("cmd output should contain asn: [%d] \n output:\n%s", neighbor.GetBgpNeighborAsn(), out)
 	}
 
 	if !(strings.Contains(out, "pending") || strings.Contains(out, "ready")) {
-		t.Errorf("cmd output should contain [%s] state of the gateway, output:\n%s", string(neighbour.GetState()), out)
+		t.Errorf("cmd output should contain [%s] state of the gateway, output:\n%s", string(neighbor.GetState()), out)
 	}
 }

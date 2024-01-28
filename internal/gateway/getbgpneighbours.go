@@ -8,24 +8,24 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func (c *Client) GetBgpNeighbours() *cobra.Command {
-	var bgpNeighbourID string
+func (c *Client) GetBgpNeighbors() *cobra.Command {
+	var bgpNeighborID string
 
-	// getGwayBgpDynamicNeighbourCmd represents command to get Metal Gateway Dynamic Neighbour by ID.
-	getGwayBgpDynamicNeighbourCmd := &cobra.Command{
-		Use:   `get-bgp-dynamic-neighbours`,
-		Short: "Gets a BGP Dynamic Neighbour",
-		Long:  "Gets the BGP Dynamic Neighbour for the metal gateway with the specified ID",
-		Example: `# Gets a BGP Dynamic Neighbour using the bgp dynamic neighbour ID
+	// getGwayBgpDynamicNeighborCmd represents command to get Metal Gateway Dynamic Neighbor by ID.
+	getGwayBgpDynamicNeighborCmd := &cobra.Command{
+		Use:   `get-bgp-dynamic-neighbors`,
+		Short: "Gets a BGP Dynamic Neighbor",
+		Long:  "Gets the BGP Dynamic Neighbor with the specified ID",
+		Example: `# Gets a BGP Dynamic Neighbor using the bgp dynamic neighbor ID
 
-	$ metal gateways get-bgp-dynamic-neighbour --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
+	$ metal gateways get-bgp-dynamic-neighbor --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
 `,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
 			n, _, err := c.VrfService.
-				BgpDynamicNeighborsIdGet(context.Background(), bgpNeighbourID).
+				BgpDynamicNeighborsIdGet(context.Background(), bgpNeighborID).
 				Include(c.Servicer.Includes([]string{"created_by"})).
 				Exclude(c.Servicer.Excludes([]string{})).
 				Execute()
@@ -43,7 +43,7 @@ func (c *Client) GetBgpNeighbours() *cobra.Command {
 		},
 	}
 
-	getGwayBgpDynamicNeighbourCmd.Flags().StringVarP(&bgpNeighbourID, "id", "i", "", "BGP Dynamic Neighbour ID. Ex: []")
-	_ = getGwayBgpDynamicNeighbourCmd.MarkFlagRequired("id")
-	return getGwayBgpDynamicNeighbourCmd
+	getGwayBgpDynamicNeighborCmd.Flags().StringVar(&bgpNeighborID, "bgp-neighbor-id", "", "UUID of BGP Dynamic Neighbor ID.")
+	_ = getGwayBgpDynamicNeighborCmd.MarkFlagRequired("id")
+	return getGwayBgpDynamicNeighborCmd
 }

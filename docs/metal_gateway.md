@@ -31,10 +31,10 @@ A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For mo
 
 * [metal](metal.md)	 - Command line interface for Equinix Metal
 * [metal gateway create](metal_gateway_create.md)	 - Creates a Metal Gateway.
-* [metal gateway create-bgp-dynamic-neighbours](metal_gateway_create-bgp-dynamic-neighbours.md)	 - Creates a BGP Dynamic Neighbour
+* [metal gateway create-bgp-dynamic-neighbors](metal_gateway_create-bgp-dynamic-neighbors.md)	 - Creates a BGP Dynamic Neighbor
 * [metal gateway delete](metal_gateway_delete.md)	 - Deletes a Metal Gateway.
-* [metal gateway delete-bgp-dynamic-neighbours](metal_gateway_delete-bgp-dynamic-neighbours.md)	 - Deletes a BGP Dynamic Neighbour
+* [metal gateway delete-bgp-dynamic-neighbors](metal_gateway_delete-bgp-dynamic-neighbors.md)	 - Deletes a BGP Dynamic Neighbor
 * [metal gateway get](metal_gateway_get.md)	 - Lists Metal Gateways.
-* [metal gateway get-bgp-dynamic-neighbours](metal_gateway_get-bgp-dynamic-neighbours.md)	 - Gets a BGP Dynamic Neighbour
-* [metal gateway list-bgp-dynamic-neighbours](metal_gateway_list-bgp-dynamic-neighbours.md)	 - Lists BGP Dynamic Neighbours for Metal Gateway
+* [metal gateway get-bgp-dynamic-neighbors](metal_gateway_get-bgp-dynamic-neighbors.md)	 - Gets a BGP Dynamic Neighbor
+* [metal gateway list-bgp-dynamic-neighbors](metal_gateway_list-bgp-dynamic-neighbors.md)	 - Lists BGP Dynamic Neighbors for Metal Gateway
 

@@ -713,6 +713,7 @@ func CleanTestVrfIpRequest(t *testing.T, IPReservationId string) {
 	}
 }
 
+<<<<<<< HEAD
 func CreateTestVrfRoute(t *testing.T, vrfId string) *metalv1.VrfRoute {
 	t.Helper()
 	TestApiClient := TestClient()
@@ -782,13 +783,16 @@ func CleanTestVrfGateway(t *testing.T, gatewayId string) {
 	}
 }
 func CreateTestBgpDynamicNeighbour(t *testing.T, gatewayId, iprange string, asn int32) *metalv1.BgpDynamicNeighbor {
+=======
+func CreateTestBgpDynamicNeighbor(t *testing.T, gatewayId, iprange string, asn int32) *metalv1.BgpDynamicNeighbor {
+>>>>>>> e44373e (Fix review comments)
 	TestApiClient := TestClient()
 	t.Helper()
 
-	bgpNeighbourCreateInput := metalv1.NewBgpDynamicNeighborCreateInput(iprange, asn)
-	neighbour, _, err := TestApiClient.VRFsApi.
+	bgpNeighborCreateInput := metalv1.NewBgpDynamicNeighborCreateInput(iprange, asn)
+	neighbor, _, err := TestApiClient.VRFsApi.
 		CreateBgpDynamicNeighbor(context.Background(), gatewayId).
-		BgpDynamicNeighborCreateInput(*bgpNeighbourCreateInput).
+		BgpDynamicNeighborCreateInput(*bgpNeighborCreateInput).
 		Include([]string{"created_by"}).
 		Execute()
 	if err != nil {
@@ -796,13 +800,13 @@ func CreateTestBgpDynamicNeighbour(t *testing.T, gatewayId, iprange string, asn 
 	}
 
 	t.Cleanup(func() {
-		CleanTestBgpDynamicNeighbour(t, neighbour.GetId())
+		CleanTestBgpDynamicNeighbor(t, neighbor.GetId())
 	})
 
-	return neighbour
+	return neighbor
 }
 
-func CleanTestBgpDynamicNeighbour(t *testing.T, id string) {
+func CleanTestBgpDynamicNeighbor(t *testing.T, id string) {
 	t.Helper()
 	TestApiClient := TestClient()
 	_, resp, err := TestApiClient.VRFsApi.DeleteBgpDynamicNeighborById(context.Background(), id).Include([]string{"created_by"}).Execute()

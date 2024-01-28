@@ -1,4 +1,4 @@
-package bgp_dynamic_neighbour
+package bgp_dynamic_neighbor
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ import (
 	"github.com/equinix/metal-cli/test/helper"
 )
 
-func TestBgpDynamicNeighbours_Get(t *testing.T) {
+func TestBgpDynamicNeighbors_Get(t *testing.T) {
 	subCommand := "gateways"
 	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	randomStr := helper.GenerateRandomString(5)
@@ -22,7 +22,7 @@ func TestBgpDynamicNeighbours_Get(t *testing.T) {
 	vrf := helper.CreateTestVrfs(t, project.GetId(), "test-vrf-"+randomStr, vlan.GetVxlan())
 	vrfIpRes := helper.CreateTestVrfIpRequest(t, project.GetId(), vrf.GetId())
 	gway := helper.CreateTestVrfGateway(t, project.GetId(), vrfIpRes.VrfIpReservation.GetId(), vlan.GetId())
-	bgpDynamicNeighbour := helper.CreateTestBgpDynamicNeighbour(t, gway.GetId(), gway.IpReservation.GetAddress(), 65000)
+	bgpDynamicNeighbor := helper.CreateTestBgpDynamicNeighbour(t, gway.GetId(), gway.IpReservation.GetAddress(), 65000)
 
 	tests := []struct {
 		name    string
@@ -31,18 +31,18 @@ func TestBgpDynamicNeighbours_Get(t *testing.T) {
 		cmdFunc func(*testing.T, *cobra.Command)
 	}{
 		{
-			name: "get bgpDynamicNeighbour by ID",
+			name: "get bgpDynamicNeighbor by ID",
 			cmd:  gateway.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 
 				// get using projectId
-				root.SetArgs([]string{subCommand, "get-bgp-dynamic-neighbours", "-i", bgpDynamicNeighbour.GetId()})
+				root.SetArgs([]string{subCommand, "get-bgp-dynamic-neighbors", "--bgp-neighbor-id", bgpDynamicNeighbor.GetId()})
 
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				assertBgpDynamicNeighbourCmdOutput(t, string(out[:]), bgpDynamicNeighbour)
+				assertBgpDynamicNeighborCmdOutput(t, string(out[:]), bgpDynamicNeighbor)
 			},
 		},
 	}

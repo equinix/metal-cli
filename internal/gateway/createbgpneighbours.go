@@ -31,56 +31,56 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func (c *Client) CreateBgpNeighbours() *cobra.Command {
-	var gatewayId, bgpNeighbourRange string
+func (c *Client) CreateBgpNeighbors() *cobra.Command {
+	var gatewayId, bgpNeighborRange string
 	var asn int32
 
-	// createGwBgpCmd represents the creation of gateway bgp dynamic neighbour command
+	// createGwBgpCmd represents the creation of gateway bgp dynamic neighbor command
 	createGwBgpCmd := &cobra.Command{
-		Use:   `create-bgp-dynamic-neighbours`,
-		Short: "Creates a BGP Dynamic Neighbour",
-		Long:  "Creates the BGP Dynamic Neighbour for the metal gateway with the specified IP Range and ASN",
-		Example: `# Create a BGP Dynamic Neighbour using ip range and asn for the gateway-id
+		Use:   `create-bgp-dynamic-neighbors`,
+		Short: "Creates a BGP Dynamic Neighbor",
+		Long:  "Creates the BGP Dynamic Neighbor for the metal gateway with the specified IP Range and ASN",
+		Example: `# Create a BGP Dynamic Neighbor using ip range and asn for the metal gateway id
 
-	metal gateways create-bgp-dynamic-neighbour --gateway-id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c" --bgp-neighbour-range "10.70.43.226/29" --asn 65000
+	metal gateways create-bgp-dynamic-neighbor --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c" --bgp-neighbor-range "10.70.43.226/29" --asn 65000
 `,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
 			// "192.168.1.0/25", int32(12345)
-			if bgpNeighbourRange == "" {
-				fmt.Println("Please provide BGP neighbour IP range")
+			if bgpNeighborRange == "" {
+				fmt.Println("Please provide BGP neighbor IP range")
 				return nil
 			}
 			if asn == 0 {
-				fmt.Println("Please provide BGP neighbour ASN")
+				fmt.Println("Please provide BGP neighbor ASN")
 				return nil
 			}
 
-			bgpNeighbour, _, err := c.VrfService.
+			bgpNeighbor, _, err := c.VrfService.
 				CreateBgpDynamicNeighbor(context.Background(), gatewayId).
-				BgpDynamicNeighborCreateInput(*metal.NewBgpDynamicNeighborCreateInput(bgpNeighbourRange, asn)).
+				BgpDynamicNeighborCreateInput(*metal.NewBgpDynamicNeighborCreateInput(bgpNeighborRange, asn)).
 				Include(c.Servicer.Includes([]string{"created_by"})).
 				Exclude(c.Servicer.Excludes([]string{})).
 				Execute()
 			if err != nil {
-				return errors.WithMessage(err, "Could not create BGP Dynamic Neighbour")
+				return errors.WithMessage(err, "Could not create BGP Dynamic Neighbor")
 			}
 
 			data := make([][]string, 1)
-			data[0] = []string{bgpNeighbour.GetId(), bgpNeighbour.GetBgpNeighborRange(),
-				strconv.Itoa(int(bgpNeighbour.GetBgpNeighborAsn())), string(bgpNeighbour.GetState()), bgpNeighbour.GetCreatedAt().String()}
+			data[0] = []string{bgpNeighbor.GetId(), bgpNeighbor.GetBgpNeighborRange(),
+				strconv.Itoa(int(bgpNeighbor.GetBgpNeighborAsn())), string(bgpNeighbor.GetState()), bgpNeighbor.GetCreatedAt().String()}
 			header := []string{"ID", "Range", "ASN", "State", "Created"}
 
-			return c.Out.Output(bgpNeighbour, header, &data)
+			return c.Out.Output(bgpNeighbor, header, &data)
 		},
 	}
 
-	createGwBgpCmd.Flags().StringVar(&gatewayId, "gateway-id", "", "")
-	createGwBgpCmd.Flags().StringVar(&bgpNeighbourRange, "bgp-neighbour-range", "", "")
-	createGwBgpCmd.Flags().Int32Var(&asn, "asn", 0, "")
+	createGwBgpCmd.Flags().StringVarP(&gatewayId, "id", "i", "", "Metal Gateway ID for which the BGP Dynamic Neighbor to be created.")
+	createGwBgpCmd.Flags().StringVar(&bgpNeighborRange, "bgp-neighbor-range", "", "BGP Dynamic Neighbor IP Range from gateway.")
+	createGwBgpCmd.Flags().Int32Var(&asn, "asn", 0, "ASN for the BGP Dynamic Neighbor IP range.")
 
-	_ = createGwBgpCmd.MarkFlagRequired("gateway-id")
+	_ = createGwBgpCmd.MarkFlagRequired("id")
 	return createGwBgpCmd
 }

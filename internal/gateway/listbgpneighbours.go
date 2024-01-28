@@ -8,17 +8,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func (c *Client) ListBgpNeighbours() *cobra.Command {
+func (c *Client) ListBgpNeighbors() *cobra.Command {
 	var gatewayId string
 
 	// createMetalGatewayCmd represents the createMetalGateway command
 	createMetalGatewayCmd := &cobra.Command{
-		Use:   `list-bgp-dynamic-neighbours`,
-		Short: "Lists BGP Dynamic Neighbours for Metal Gateway",
-		Long:  "Lists the BGP Dynamic Neighbour for the metal gateway with the specified gateway ID",
-		Example: `# Lists BGP Dynamic Neighbour for the specified metal gateway ID
+		Use:   `list-bgp-dynamic-neighbors`,
+		Short: "Lists BGP Dynamic Neighbors for Metal Gateway",
+		Long:  "Lists the BGP Dynamic Neighbor for the metal gateway with the specified gateway ID",
+		Example: `# Lists BGP Dynamic Neighbor for the specified metal gateway ID
 
-	$ metal gateways list-bgp-dynamic-neighbour --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
+	$ metal gateways list-bgp-dynamic-neighbor --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
 `,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -30,13 +30,13 @@ func (c *Client) ListBgpNeighbours() *cobra.Command {
 				Exclude(c.Servicer.Excludes([]string{})).
 				Execute()
 			if err != nil {
-				return fmt.Errorf("Could not list BGP Dynamic Neighbours for Metal Gateway [%s]: %w", gatewayId, err)
+				return fmt.Errorf("Could not list BGP Dynamic Neighbors for Metal Gateway [%s]: %w", gatewayId, err)
 			}
 
 			data := make([][]string, len(n.GetBgpDynamicNeighbors()))
-			for _, neighbour := range n.GetBgpDynamicNeighbors() {
-				data[0] = []string{neighbour.GetId(), neighbour.GetBgpNeighborRange(),
-					strconv.Itoa(int(neighbour.GetBgpNeighborAsn())), string(neighbour.GetState()), neighbour.GetCreatedAt().String()}
+			for _, neighbor := range n.GetBgpDynamicNeighbors() {
+				data[0] = []string{neighbor.GetId(), neighbor.GetBgpNeighborRange(),
+					strconv.Itoa(int(neighbor.GetBgpNeighborAsn())), string(neighbor.GetState()), neighbor.GetCreatedAt().String()}
 			}
 
 			header := []string{"ID", "Range", "ASN", "State", "Created"}
@@ -44,8 +44,8 @@ func (c *Client) ListBgpNeighbours() *cobra.Command {
 		},
 	}
 
-	createMetalGatewayCmd.Flags().StringVar(&gatewayId, "gateway-id", "", "")
+	createMetalGatewayCmd.Flags().StringVarP(&gatewayId, "id", "i", "", "UUID of Metal Gateway.")
 
-	_ = createMetalGatewayCmd.MarkFlagRequired("gateway-id")
+	_ = createMetalGatewayCmd.MarkFlagRequired("id")
 	return createMetalGatewayCmd
 }

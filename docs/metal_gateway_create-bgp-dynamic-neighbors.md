@@ -1,29 +1,31 @@
-## metal gateway list-bgp-dynamic-neighbours
+## metal gateway create-bgp-dynamic-neighbors
 
-Lists BGP Dynamic Neighbours for Metal Gateway
+Creates a BGP Dynamic Neighbor
 
 ### Synopsis
 
-Lists the BGP Dynamic Neighbour for the metal gateway with the specified gateway ID
+Creates the BGP Dynamic Neighbor for the metal gateway with the specified IP Range and ASN
 
 ```
-metal gateway list-bgp-dynamic-neighbours [flags]
+metal gateway create-bgp-dynamic-neighbors [flags]
 ```
 
 ### Examples
 
 ```
-# Lists BGP Dynamic Neighbour for the specified metal gateway ID
+# Create a BGP Dynamic Neighbor using ip range and asn for the metal gateway id
 
-	$ metal gateways list-bgp-dynamic-neighbour --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
+	metal gateways create-bgp-dynamic-neighbor --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c" --bgp-neighbor-range "10.70.43.226/29" --asn 65000
 
 ```
 
 ### Options
 
 ```
-      --gateway-id string   
-  -h, --help                help for list-bgp-dynamic-neighbours
+      --asn int32                   ASN for the BGP Dynamic Neighbor IP range.
+      --bgp-neighbor-range string   BGP Dynamic Neighbor IP Range from gateway.
+  -h, --help                        help for create-bgp-dynamic-neighbors
+  -i, --id string                   Metal Gateway ID for which the BGP Dynamic Neighbor to be created.
 ```
 
 ### Options inherited from parent commands

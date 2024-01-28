@@ -1,4 +1,4 @@
-package bgp_dynamic_neighbour
+package bgp_dynamic_neighbor
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	"github.com/equinix/metal-cli/test/helper"
 )
 
-func TestBgpDynamicNeighbours_Delete(t *testing.T) {
+func TestBgpDynamicNeighbors_Delete(t *testing.T) {
 	subCommand := "gateways"
 	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	randomStr := helper.GenerateRandomString(5)
@@ -24,7 +24,7 @@ func TestBgpDynamicNeighbours_Delete(t *testing.T) {
 	vrf := helper.CreateTestVrfs(t, project.GetId(), "test-vrf-"+randomStr, vlan.GetVxlan())
 	vrfIpRes := helper.CreateTestVrfIpRequest(t, project.GetId(), vrf.GetId())
 	gway := helper.CreateTestVrfGateway(t, project.GetId(), vrfIpRes.VrfIpReservation.GetId(), vlan.GetId())
-	bgpDynamicNeighbour := helper.CreateTestBgpDynamicNeighbour(t, gway.GetId(), gway.IpReservation.GetAddress(), 65000)
+	bgpDynamicNeighbor := helper.CreateTestBgpDynamicNeighbour(t, gway.GetId(), gway.IpReservation.GetAddress(), 65000)
 
 	tests := []struct {
 		name    string
@@ -33,26 +33,26 @@ func TestBgpDynamicNeighbours_Delete(t *testing.T) {
 		cmdFunc func(*testing.T, *cobra.Command)
 	}{
 		{
-			name: "delete gateways",
+			name: "delete bgpDynamicNeighbor by ID",
 			cmd:  gateway.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 
-				root.SetArgs([]string{subCommand, "delete-bgp-dynamic-neighbours", "-i", bgpDynamicNeighbour.GetId()})
+				root.SetArgs([]string{subCommand, "delete-bgp-dynamic-neighbors", "--bgp-neighbor-id", bgpDynamicNeighbor.GetId()})
 
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
 				apiClient := helper.TestClient()
 				_, _, err := apiClient.VRFsApi.
-					BgpDynamicNeighborsIdGet(context.Background(), bgpDynamicNeighbour.GetId()).
+					BgpDynamicNeighborsIdGet(context.Background(), bgpDynamicNeighbor.GetId()).
 					Include([]string{"created_by"}).
 					Execute()
 				if err != nil && !strings.Contains(err.Error(), "Not Found") {
 					t.Fatal(err)
 				}
 
-				strings.Contains(string(out), "BGP Dynamic Neighbour deletion initiated. Please check 'metal gateway get-bgp-dynamic-neighbour -i "+bgpDynamicNeighbour.GetId()+"' for status")
+				strings.Contains(string(out), "BGP Dynamic Neighbor deletion initiated. Please check 'metal gateway get-bgp-dynamic-neighbor -i "+bgpDynamicNeighbor.GetId()+"' for status")
 			},
 		},
 	}

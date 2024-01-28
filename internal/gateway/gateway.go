@@ -56,10 +56,10 @@ func (c *Client) NewCommand() *cobra.Command {
 		c.Retrieve(),
 		c.Create(),
 		c.Delete(),
-		c.CreateBgpNeighbours(),
-		c.DeleteBgpNeighbours(),
-		c.GetBgpNeighbours(),
-		c.ListBgpNeighbours(),
+		c.CreateBgpNeighbors(),
+		c.DeleteBgpNeighbors(),
+		c.GetBgpNeighbors(),
+		c.ListBgpNeighbors(),
 	)
 	return cmd
 }

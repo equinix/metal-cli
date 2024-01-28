@@ -29,39 +29,39 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func (c *Client) DeleteBgpNeighbours() *cobra.Command {
-	var bgpNeighbourId string
+func (c *Client) DeleteBgpNeighbors() *cobra.Command {
+	var bgpNeighborId string
 
-	// deleteGwBgpCmd represents the delete gateway bgp dynamic neighbour command
+	// deleteGwBgpCmd represents the delete gateway bgp dynamic neighbor command
 	deleteGwBgpCmd := &cobra.Command{
-		Use:   `delete-bgp-dynamic-neighbours`,
-		Short: "Deletes a BGP Dynamic Neighbour",
-		Long:  "Deletes the BGP Dynamic Neighbour for the metal gateway with the specified ID",
-		Example: `# Deletes a BGP Dynamic Neighbour using the bgp dynamic neighbour ID
+		Use:   `delete-bgp-dynamic-neighbors`,
+		Short: "Deletes a BGP Dynamic Neighbor",
+		Long:  "Deletes the BGP Dynamic Neighbor for the metal gateway with the specified ID",
+		Example: `# Deletes a BGP Dynamic Neighbor using the bgp dynamic neighbor ID
 
-	$ metal gateways delete-bgp-dynamic-neighbour --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
+	$ metal gateways delete-bgp-dynamic-neighbor --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
 
-	BGP Dynamic Neighbour deletion initiated. Please check 'metal gateway get-bgp-dynamic-neighbour -i 9c56fa1d-ec05-470b-a938-0e5dd6a1540c for status
+	BGP Dynamic Neighbor deletion initiated. Please check 'metal gateway get-bgp-dynamic-neighbor -i 9c56fa1d-ec05-470b-a938-0e5dd6a1540c for status
 `,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
 			_, _, err := c.VrfService.
-				DeleteBgpDynamicNeighborById(context.Background(), bgpNeighbourId).
+				DeleteBgpDynamicNeighborById(context.Background(), bgpNeighborId).
 				Include(c.Servicer.Includes([]string{"created_by"})).
 				Exclude(c.Servicer.Excludes([]string{})).
 				Execute()
 			if err != nil {
-				return errors.WithMessage(err, "Could not create BGP Dynamic Neighbour")
+				return errors.WithMessage(err, "Could not create BGP Dynamic Neighbor")
 			}
 
-			fmt.Println("BGP Dynamic Neighbour deletion initiated. Please check 'metal gateway get-bgp-dynamic-neighbour -i", bgpNeighbourId, "' for status")
+			fmt.Println("BGP Dynamic Neighbor deletion initiated. Please check 'metal gateway get-bgp-dynamic-neighbor -i", bgpNeighborId, "' for status")
 			return nil
 		},
 	}
 
-	deleteGwBgpCmd.Flags().StringVarP(&bgpNeighbourId, "id", "i", "", "")
+	deleteGwBgpCmd.Flags().StringVar(&bgpNeighborId, "bgp-neighbor-id", "", "UUID of BGP Dynamic Neighbor.")
 
 	_ = deleteGwBgpCmd.MarkFlagRequired("id")
 	return deleteGwBgpCmd

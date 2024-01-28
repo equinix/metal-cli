@@ -1,29 +1,29 @@
-## metal gateway get-bgp-dynamic-neighbours
+## metal gateway list-bgp-dynamic-neighbors
 
-Gets a BGP Dynamic Neighbour
+Lists BGP Dynamic Neighbors for Metal Gateway
 
 ### Synopsis
 
-Gets the BGP Dynamic Neighbour for the metal gateway with the specified ID
+Lists the BGP Dynamic Neighbor for the metal gateway with the specified gateway ID
 
 ```
-metal gateway get-bgp-dynamic-neighbours [flags]
+metal gateway list-bgp-dynamic-neighbors [flags]
 ```
 
 ### Examples
 
 ```
-# Gets a BGP Dynamic Neighbour using the bgp dynamic neighbour ID
+# Lists BGP Dynamic Neighbor for the specified metal gateway ID
 
-	$ metal gateways get-bgp-dynamic-neighbour --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
+	$ metal gateways list-bgp-dynamic-neighbor --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c"
 
 ```
 
 ### Options
 
 ```
-  -h, --help        help for get-bgp-dynamic-neighbours
-  -i, --id string   BGP Dynamic Neighbour ID. Ex: []
+  -h, --help        help for list-bgp-dynamic-neighbors
+  -i, --id string   UUID of Metal Gateway.
 ```
 
 ### Options inherited from parent commands
