@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"html/template"
 
-	"github.com/packethost/packngo"
+	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
 )
 
 const (
@@ -51,10 +51,11 @@ func many(s string) string {
 func Marshal(i interface{}) ([]byte, error) {
 	f := ""
 	switch i.(type) {
-	case *packngo.Device:
+	case metal.Device:
 		f = deviceFormat
-	case []packngo.Device:
+	case []metal.Device:
 		f = many(deviceFormat)
+
 	}
 	tmpl, err := template.New("crossplane").Parse(f)
 	if err != nil {
