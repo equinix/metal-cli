@@ -103,11 +103,10 @@ func (c *Client) NewCommand() *cobra.Command {
 
 			if !isProjectToken {
 				// API token provided is user token
-				include := []string{} // []string | Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects. (optional)
 				exclude := []string{"devices", "members", "memberships", "invitations", "ssh_keys", "volumes", "backend_transfer_enabled", "updated_at", "customdata", "event_alert_configuration",
 					"timezone", "features", "avatar_url", "avatar_thumb_url", "two_factor_auth", "mailing_address", "max_projects", "verification_stage", "emails", "phone_number", "restricted",
 					"full_name", "email", "social_accounts", "opt_in_updated_at", "opt_in", "first_name", "last_name", "last_login_at"}
-				user, _, err := c.UserService.FindCurrentUser(context.Background()).Include(include).Exclude(exclude).Execute()
+				user, _, err := c.UserService.FindCurrentUser(context.Background()).Exclude(exclude).Execute()
 				if err != nil {
 					return err
 				}
