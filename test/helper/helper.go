@@ -562,13 +562,13 @@ func ExecuteAndCaptureOutput(t *testing.T, root *cobra.Command) []byte {
 
 	os.Stdout = rescueStdout
 
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	out, ioErr := io.ReadAll(r)
 	if ioErr != nil {
 		t.Logf("error while reading command output: %v", ioErr)
+	}
+
+	if err != nil {
+		t.Fatalf("Failed to execute command with err: [%s]\n with output:\n%s", err.Error(), string(out))
 	}
 
 	return out
