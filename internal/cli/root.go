@@ -21,6 +21,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -34,7 +35,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"golang.org/x/oauth2"
 
+	v1 "github.com/equinix/metal-cli/internal/loadbalancers/api/v1"
+	"github.com/equinix/metal-cli/internal/loadbalancers/infrastructure"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
 )
 
@@ -48,6 +52,7 @@ type Client struct {
 	// apiClient client
 	apiClient      *packngo.Client
 	metalApiClient *metal.APIClient
+	lbaasApiClient *v1.APIClient
 
 	includes      *[]string // nolint:unused
 	excludes      *[]string // nolint:unused
@@ -93,12 +98,14 @@ func checkEnvForDebug() bool {
 	return os.Getenv(debugVar) != ""
 }
 
+var uaFormat = "metal-cli/%s %s"
+
 func (c *Client) apiConnect(httpClient *http.Client) error {
 	client, err := packngo.NewClientWithBaseURL(c.consumerToken, c.metalToken, httpClient, c.apiURL)
 	if err != nil {
 		return fmt.Errorf("could not create client: %w", err)
 	}
-	client.UserAgent = fmt.Sprintf("metal-cli/%s %s", c.Version, client.UserAgent)
+	client.UserAgent = fmt.Sprintf(uaFormat, c.Version, client.UserAgent)
 	c.apiClient = client
 	return nil
 }
@@ -115,6 +122,35 @@ func (c *Client) metalApiConnect(httpClient *http.Client) error {
 	}
 	metalgoClient := metal.NewAPIClient(configuration)
 	c.metalApiClient = metalgoClient
+	return nil
+}
+
+func (c *Client) lbaasApiConnect(header http.Header) error {
+	ctx := context.Background()
+	config := oauth2.Config{
+		Endpoint: oauth2.Endpoint{
+			TokenURL: "https://iam.metalctrl.io/token",
+		},
+	}
+	ts := infrastructure.NewTokenExchanger(c.Token(), nil)
+	token, err := ts.Token()
+	if err != nil {
+		return err
+	}
+	client := &http.Client{
+		Transport: &headerTransport{
+			header: header,
+		},
+	}
+	ctx = context.WithValue(ctx, oauth2.HTTPClient, client)
+	client = config.Client(ctx, token)
+
+	configuration := v1.NewConfiguration()
+	configuration.Debug = checkEnvForDebug()
+	configuration.HTTPClient = client
+	configuration.UserAgent = fmt.Sprintf(uaFormat, c.Version, configuration.UserAgent)
+
+	c.lbaasApiClient = v1.NewAPIClient(configuration)
 	return nil
 }
 
@@ -217,6 +253,20 @@ func (c *Client) MetalAPI(cmd *cobra.Command) *metal.APIClient {
 		}
 	}
 	return c.metalApiClient
+}
+
+func (c *Client) LoadbalancerAPI(cmd *cobra.Command) *v1.APIClient {
+	if c.metalToken == "" {
+		log.Fatal("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a configuration file using 'metal init'.")
+	}
+
+	if c.lbaasApiClient == nil {
+		err := c.lbaasApiConnect(getAdditionalHeaders(cmd))
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return c.lbaasApiClient
 }
 
 func (c *Client) Token() string {

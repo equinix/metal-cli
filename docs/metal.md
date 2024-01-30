@@ -38,6 +38,7 @@ Command line interface for Equinix Metal
 * [metal init](metal_init.md)	 - Create a configuration file.
 * [metal interconnections](metal_interconnections.md)	 - interconnections operations: create, get, update, delete
 * [metal ip](metal_ip.md)	 - IP address, reservations, and assignment operations: assign, unassign, remove, available, request and get.
+* [metal loadbalancer-beta](metal_loadbalancer-beta.md)	 - LoadBalancer BETA operations: create, get, update, and delete.
 * [metal metros](metal_metros.md)	 - Metro operations: get.
 * [metal operating-systems](metal_operating-systems.md)	 - Operating system operations: get.
 * [metal organization](metal_organization.md)	 - Organization operations: create, get, update, payment-methods, and delete.
