@@ -197,6 +197,33 @@ func WaitForDeviceState(t *testing.T, deviceId string, states ...metalv1.DeviceS
 	return false, fmt.Errorf("timed out waiting for device %v state %v to become one of %v", deviceId, device.GetState(), states)
 }
 
+func WaitForVrfRouteState(t *testing.T, routeId string, statuses ...metalv1.VrfRouteStatus) bool {
+	var route *metalv1.VrfRoute
+	var err error
+	t.Helper()
+	predefinedTime := 900 * time.Second // Adjust this as needed
+	retryInterval := 10 * time.Second   // Adjust this as needed
+	startTime := time.Now()
+	client := TestClient()
+	for time.Since(startTime) < predefinedTime {
+		route, _, err = client.VRFsApi.FindVrfRouteById(context.Background(), routeId).Execute()
+		if err != nil {
+			t.Fatal(err)
+			return false
+		}
+		for _, status := range statuses {
+			if route.GetStatus() == status {
+				return true
+			}
+		}
+
+		// Sleep for the specified interval
+		time.Sleep(retryInterval)
+	}
+	t.Fatalf("timed out waiting for VRF route %v status %v to become one of %v", routeId, route.GetStatus(), statuses)
+	return false
+}
+
 func WaitForAttachVlanToPort(t *testing.T, portId string, attach bool) error {
 	t.Helper()
 	ticker := time.NewTicker(5 * time.Second)
