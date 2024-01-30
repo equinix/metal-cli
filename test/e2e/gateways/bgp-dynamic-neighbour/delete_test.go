@@ -24,7 +24,7 @@ func TestBgpDynamicNeighbors_Delete(t *testing.T) {
 	vrf := helper.CreateTestVrfs(t, project.GetId(), "test-vrf-"+randomStr, vlan.GetVxlan())
 	vrfIpRes := helper.CreateTestVrfIpRequest(t, project.GetId(), vrf.GetId())
 	gway := helper.CreateTestVrfGateway(t, project.GetId(), vrfIpRes.VrfIpReservation.GetId(), vlan.GetId())
-	bgpDynamicNeighbor := helper.CreateTestBgpDynamicNeighbour(t, gway.GetId(), gway.IpReservation.GetAddress(), 65000)
+	bgpDynamicNeighbor := helper.CreateTestBgpDynamicNeighbor(t, gway.GetId(), gway.IpReservation.GetAddress(), 65000)
 
 	tests := []struct {
 		name    string

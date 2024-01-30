@@ -127,6 +127,10 @@ func CreateTestGateway(t *testing.T, projectId, vlanId string, privateIPv4Subnet
 		t.Fatal("Nil gateway returned. Error when calling `MetalGatewaysApi.CreateMetalGateway`")
 	}
 
+	t.Cleanup(func() {
+		CleanTestGateway(t, gateway.MetalGateway.GetId())
+	})
+
 	return gateway.MetalGateway
 }
 
@@ -401,18 +405,17 @@ func AssertPortCmdOutput(t *testing.T, port *metalv1.Port, out, networkType stri
 	}
 }
 
-func CleanTestGateway(t *testing.T, gatewayId string) error {
+func CleanTestGateway(t *testing.T, gatewayId string) {
 	t.Helper()
 
 	TestApiClient := TestClient()
-	_, _, err := TestApiClient.MetalGatewaysApi.
+	_, resp, err := TestApiClient.MetalGatewaysApi.
 		DeleteMetalGateway(context.Background(), gatewayId).
 		Include([]string{"ip_reservation"}).
 		Execute()
-	if err != nil {
-		return fmt.Errorf("Error when calling `MetalGatewaysApi.DeleteMetalGateway`` for %v: %v\n", gatewayId, err)
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `MetalGatewaysApi.DeleteMetalGateway`` for %v: %v\n", gatewayId, err)
 	}
-	return nil
 }
 
 func CreateTestInterConnection(t *testing.T, projectId, name string) *metalv1.Interconnection {
@@ -675,7 +678,7 @@ func CleanTestVrfs(t *testing.T, vrfId string) {
 
 	resp, err := TestApiClient.VRFsApi.DeleteVrf(context.Background(), vrfId).Execute()
 	if err != nil && resp.StatusCode != http.StatusNotFound {
-		t.Fatalf("Error when calling `VRFsApi.DeleteVrf`` for %v: %v\n", vrfId, err)
+		t.Fatalf("Error when calling `VRFsApi.DeleteVrf`` for ID: %v: with error: %v\n", vrfId, err)
 	}
 }
 
@@ -713,7 +716,6 @@ func CleanTestVrfIpRequest(t *testing.T, IPReservationId string) {
 	}
 }
 
-<<<<<<< HEAD
 func CreateTestVrfRoute(t *testing.T, vrfId string) *metalv1.VrfRoute {
 	t.Helper()
 	TestApiClient := TestClient()
@@ -782,10 +784,8 @@ func CleanTestVrfGateway(t *testing.T, gatewayId string) {
 		t.Fatalf("Error when calling `MetalGatewaysApi.DeleteMetalGateway`` for %v: %v\n", gatewayId, err)
 	}
 }
-func CreateTestBgpDynamicNeighbour(t *testing.T, gatewayId, iprange string, asn int32) *metalv1.BgpDynamicNeighbor {
-=======
+
 func CreateTestBgpDynamicNeighbor(t *testing.T, gatewayId, iprange string, asn int32) *metalv1.BgpDynamicNeighbor {
->>>>>>> e44373e (Fix review comments)
 	TestApiClient := TestClient()
 	t.Helper()
 
