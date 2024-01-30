@@ -673,8 +673,8 @@ func CleanTestVrfs(t *testing.T, vrfId string) {
 	t.Helper()
 	TestApiClient := TestClient()
 
-	_, err := TestApiClient.VRFsApi.DeleteVrf(context.Background(), vrfId).Execute()
-	if err != nil && strings.Contains(err.Error(), "Not Found") {
+	resp, err := TestApiClient.VRFsApi.DeleteVrf(context.Background(), vrfId).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("Error when calling `VRFsApi.DeleteVrf`` for %v: %v\n", vrfId, err)
 	}
 }
