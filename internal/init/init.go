@@ -145,9 +145,7 @@ func parseServiceToken(p metal.ProjectsApiService, u metal.UsersApiService) (str
 		// If only one project comes back, assume it's a project token
 		// and grab the ProjectID and Org Id from that single project
 		defaultProjectId = projects[0].GetId()
-		fmt.Println("Default Project ID: ", defaultProjectId)
 		defaultOrgId = path.Base(projects[0].Organization.AdditionalProperties["href"].(string))
-		fmt.Println("Default Org ID: ", defaultOrgId)
 	case numProj > 1:
 		// If more than one project comes back it must be a user token.
 		defaultOrgId, defaultProjectId, err = getDefaultIds(u)
