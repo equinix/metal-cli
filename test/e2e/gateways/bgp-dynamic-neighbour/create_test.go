@@ -52,7 +52,7 @@ func TestBgpDynamicNeighbors_Create(t *testing.T) {
 					t.Fatal(err)
 				}
 				if len(neighbors.GetBgpDynamicNeighbors()) != 1 {
-					t.Errorf("BGP Dynamic Neigbors Not Found for gateway [%s]. Failed to create BGP Dynamic Neigbor", gway.GetId())
+					t.Errorf("BGP Dynamic Neighbors Not Found for gateway [%s]. Failed to create BGP Dynamic Neigbor", gway.GetId())
 					return
 				}
 
