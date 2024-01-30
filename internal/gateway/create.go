@@ -31,8 +31,12 @@ import (
 )
 
 func (c *Client) Create() *cobra.Command {
-	var projectID, vnID, reservationID string
-	var netSize int32
+	var (
+		projectID     string
+		vnID          string
+		reservationID string
+		netSize       int32
+	)
 
 	// createMetalGatewayCmd represents the createMetalGateway command
 	createMetalGatewayCmd := &cobra.Command{
@@ -48,35 +52,49 @@ func (c *Client) Create() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			includes := []string{"virtual_network", "ip_reservation"}
-
+			var req metal.CreateMetalGatewayRequest
 			if reservationID == "" && netSize == 0 {
 				return errors.New("Invalid input. Provide either 'private-subnet-size' or 'ip-reservation-id'")
 			}
-
-			req := metal.CreateMetalGatewayRequest{
-				MetalGatewayCreateInput: &metal.MetalGatewayCreateInput{
-					VirtualNetworkId: vnID,
-				},
-			}
-			if reservationID != "" {
-				req.MetalGatewayCreateInput.SetIpReservationId(reservationID)
+			if reservationID != "" && vnID != "" || netSize == 0 {
+				req = metal.CreateMetalGatewayRequest{
+					VrfMetalGatewayCreateInput: &metal.VrfMetalGatewayCreateInput{
+						VirtualNetworkId: vnID,
+						IpReservationId:  reservationID,
+					},
+				}
 			} else {
-				req.MetalGatewayCreateInput.SetPrivateIpv4SubnetSize(netSize)
+				req = metal.CreateMetalGatewayRequest{
+					MetalGatewayCreateInput: &metal.MetalGatewayCreateInput{
+						VirtualNetworkId: vnID,
+					},
+				}
+				if reservationID != "" {
+					req.MetalGatewayCreateInput.SetIpReservationId(reservationID)
+				} else {
+					req.MetalGatewayCreateInput.SetPrivateIpv4SubnetSize(netSize)
+				}
 			}
 
-			n, _, err := c.Service.
-				CreateMetalGateway(context.Background(), projectID).
-				Include(c.Servicer.Includes(includes)).
-				Exclude(c.Servicer.Excludes(nil)).
-				CreateMetalGatewayRequest(req).
-				Execute()
+			n, _, err := c.Service.CreateMetalGateway(context.Background(), projectID).CreateMetalGatewayRequest(req).Include(c.Servicer.Includes(includes)).Exclude(c.Servicer.Excludes(nil)).Execute()
 			if err != nil {
-				return fmt.Errorf("Could not create Metal Gateway: %w", err)
+				return fmt.Errorf("could not create Metal Gateway: %w", err)
 			}
 
 			data := make([][]string, 1)
 			address := ""
+			header := []string{"ID", "Metro", "VXLAN", "Addresses", "State", "Created"}
 
+			if reservationID != "" && vnID != "" || netSize == 0 {
+				vrfGway := n.VrfMetalGateway
+				ipReservation := vrfGway.IpReservation
+				if ipReservation != nil {
+					address = ipReservation.GetAddress() + "/" + strconv.Itoa(int(ipReservation.GetCidr()))
+				}
+				data[0] = []string{vrfGway.GetId(), vrfGway.VirtualNetwork.GetMetroCode(),
+					strconv.Itoa(int(vrfGway.VirtualNetwork.GetVxlan())), address, string(vrfGway.GetState()), vrfGway.GetCreatedAt().String()}
+				return c.Out.Output(vrfGway, header, &data)
+			}
 			gway := n.MetalGateway
 			ipReservation := gway.IpReservation
 			if ipReservation != nil {
@@ -85,8 +103,6 @@ func (c *Client) Create() *cobra.Command {
 
 			data[0] = []string{gway.GetId(), gway.VirtualNetwork.GetMetroCode(),
 				strconv.Itoa(int(gway.VirtualNetwork.GetVxlan())), address, string(gway.GetState()), gway.GetCreatedAt().String()}
-
-			header := []string{"ID", "Metro", "VXLAN", "Addresses", "State", "Created"}
 
 			return c.Out.Output(gway, header, &data)
 		},

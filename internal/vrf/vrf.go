@@ -34,6 +34,10 @@ func (c *Client) NewCommand() *cobra.Command {
 		c.Retrieve(),
 		c.Delete(),
 		c.Ips(),
+		c.CreateRoute(),
+		c.DeleteRoute(),
+		c.RetrieveRoute(),
+		c.UpdateRoute(),
 	)
 	return cmd
 }

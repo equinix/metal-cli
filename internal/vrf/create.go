@@ -59,7 +59,7 @@ func (c *Client) Create() *cobra.Command {
 	}
 
 	createVRFCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
-	createVRFCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Adds or updates the tags for the connection --tags="tag1,tag2".`)
+	createVRFCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Adds the tags for the virtual-circuit --tags "tag1,tag2" OR --tags "tag1" --tags "tag2"`)
 	createVRFCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the Virtual Routing and Forwarding")
 	createVRFCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the Virtual Routing and Forwarding.")
 

@@ -642,14 +642,14 @@ func waitForInterconnectionDeleted(apiClient *metalv1.APIClient, connId string, 
 }
 
 //nolint:staticcheck
-func CreateTestVrfs(t *testing.T, projectId, name string) *metalv1.Vrf {
+func CreateTestVrfs(t *testing.T, projectId, name string, vlan int) *metalv1.Vrf {
 	t.Helper()
 	TestApiClient := TestClient()
 
 	var IpRanges []string
 
 	vrfCreateInput := *metalv1.NewVrfCreateInput("da", name)
-	vrfCreateInput.SetLocalAsn(5678)
+	vrfCreateInput.SetLocalAsn(int32(vlan))
 	IpRanges = append(IpRanges, "10.10.1.0/24")
 	vrfCreateInput.SetIpRanges(IpRanges)
 
@@ -695,7 +695,7 @@ func CreateTestVrfIpRequest(t *testing.T, projectId, vrfId string) *metalv1.Requ
 	}
 
 	t.Cleanup(func() {
-		CleanTestVrfIpRequest(t, reservation.IPReservation.GetId())
+		CleanTestVrfIpRequest(t, reservation.VrfIpReservation.GetId())
 	})
 
 	return reservation
@@ -707,5 +707,74 @@ func CleanTestVrfIpRequest(t *testing.T, IPReservationId string) {
 	resp, err := TestApiClient.IPAddressesApi.DeleteIPAddress(context.Background(), IPReservationId).Execute()
 	if err != nil && resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("Error when calling `IPAddressesApi.DeleteIPAddress``for %v: %v\n", IPReservationId, err)
+	}
+}
+
+func CreateTestVrfRoute(t *testing.T, vrfId string) *metalv1.VrfRoute {
+	t.Helper()
+	TestApiClient := TestClient()
+	tags := []string{"foobar"}
+
+	vrfRouteCreateInput := metalv1.VrfRouteCreateInput{
+		Prefix:  "0.0.0.0/0",
+		NextHop: "10.10.1.2",
+		Tags:    tags,
+	}
+
+	vrfRoute, _, err := TestApiClient.VRFsApi.CreateVrfRoute(context.Background(), vrfId).VrfRouteCreateInput(vrfRouteCreateInput).Execute()
+	if err != nil {
+		t.Fatalf("Error when calling `VRFsApi.CreateVrfRoute`` for %v: %v\n", vrfId, err)
+	}
+
+	t.Cleanup(func() {
+		CleanTestVrfIpRequest(t, vrfRoute.GetId())
+	})
+
+	return vrfRoute
+
+}
+
+func CleanTestVrfRoute(t *testing.T, vrfRouteId string) {
+	t.Helper()
+
+	TestApiClient := TestClient()
+
+	_, resp, err := TestApiClient.VRFsApi.DeleteVrfRouteById(context.Background(), vrfRouteId).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `VRFsApi.DeleteVrfRouteById`` for %v: %v\n", vrfRouteId, err)
+	}
+}
+
+func CreateTestVrfGateway(t *testing.T, projectId, reservationId, vlanId string) *metalv1.VrfMetalGateway {
+	t.Helper()
+	TestApiClient := TestClient()
+	includes := []string{"virtual_network", "ip_reservation"}
+
+	gatewayCreateInput := metalv1.CreateMetalGatewayRequest{
+		VrfMetalGatewayCreateInput: &metalv1.VrfMetalGatewayCreateInput{
+			VirtualNetworkId: vlanId,
+			IpReservationId:  reservationId,
+		},
+	}
+	gateway, _, err := TestApiClient.MetalGatewaysApi.CreateMetalGateway(context.Background(), projectId).CreateMetalGatewayRequest(gatewayCreateInput).Include(includes).Execute()
+	if err != nil {
+		t.Fatalf("Error when calling `MetalGatewaysApi.CreateMetalGateway`: %v\n", err)
+	}
+
+	t.Cleanup(func() {
+		CleanTestVrfGateway(t, gateway.VrfMetalGateway.GetId())
+	})
+
+	return gateway.VrfMetalGateway
+}
+
+func CleanTestVrfGateway(t *testing.T, gatewayId string) {
+	t.Helper()
+
+	TestApiClient := TestClient()
+	includes := []string{"ip_reservation"}
+	_, resp, err := TestApiClient.MetalGatewaysApi.DeleteMetalGateway(context.Background(), gatewayId).Include(includes).Execute()
+	if err != nil && resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("Error when calling `MetalGatewaysApi.DeleteMetalGateway`` for %v: %v\n", gatewayId, err)
 	}
 }

@@ -65,8 +65,8 @@ func TestCli_Vlan_Create(t *testing.T) {
 				root := c.Root()
 				projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-ips-request-vrf"
 				project := helper.CreateTestProject(t, projectName)
-				_ = helper.CreateTestVlanWithVxLan(t, project.GetId(), 5678, projectName)
-				vrf := helper.CreateTestVrfs(t, project.GetId(), projectName)
+				_ = helper.CreateTestVlanWithVxLan(t, project.GetId(), 3988, projectName)
+				vrf := helper.CreateTestVrfs(t, project.GetId(), projectName, 3988)
 
 				root.SetArgs([]string{subCommand, "request", "-v", vrf.GetId(), "-t", "vrf", "--cidr", "24", "-n", "10.10.1.0", "--tags", "foobar", "--tags", "barfoo"})
 
