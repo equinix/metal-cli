@@ -29,10 +29,16 @@ func (c *Client) UpdateRoute() *cobra.Command {
 			inc := []string{}
 			exc := []string{}
 
-			vrfRouteUpdateInput := metalv1.VrfRouteUpdateInput{
-				Prefix:  &prefix,
-				NextHop: &nextHop,
-				Tags:    tags,
+			vrfRouteUpdateInput := metalv1.VrfRouteUpdateInput{}
+
+			if prefix != "" {
+				vrfRouteUpdateInput.Prefix = &prefix
+			}
+			if nextHop != "" {
+				vrfRouteUpdateInput.NextHop = &nextHop
+			}
+			if cmd.Flag("tags").Changed {
+				vrfRouteUpdateInput.Tags = tags
 			}
 
 			vrfRoute, _, err := c.Service.UpdateVrfRouteById(context.Background(), vrfID).VrfRouteUpdateInput(vrfRouteUpdateInput).Include(c.Servicer.Includes(inc)).Exclude(c.Servicer.Excludes(exc)).Execute()

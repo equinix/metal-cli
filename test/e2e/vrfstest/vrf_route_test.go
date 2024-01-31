@@ -4,6 +4,7 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	root "github.com/equinix/metal-cli/internal/cli"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
@@ -113,10 +114,6 @@ func TestCli_Vrf_Route(t *testing.T) {
 			},
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
-				// Actually user have to wait for 5 min to updae the VRF-routes. This test case is skipped intentionally
-				if true {
-					t.Skip("Skipping this test because someCondition is true")
-				}
 				root := c.Root()
 
 				projName := "metal-cli-" + randName + "-vrf-list-test"
@@ -128,19 +125,22 @@ func TestCli_Vrf_Route(t *testing.T) {
 
 					ipReservation := helper.CreateTestVrfIpRequest(t, projectId.GetId(), vrf.GetId())
 					_ = helper.CreateTestVrfGateway(t, projectId.GetId(), ipReservation.VrfIpReservation.GetId(), vlan.GetId())
-					_ = helper.CreateTestVrfRoute(t, vrf.GetId())
+					route := helper.CreateTestVrfRoute(t, vrf.GetId())
 
-					if vlan.GetId() != "" && vrf.GetId() != "" {
-						root.SetArgs([]string{subCommand, "update-route", "-i", vrf.GetId(), "-t", "foobar"})
+					// We literally need to sleep for 5 minutes; the API will reject any
+					// VRF route update request that comes in less than 5 minutes after
+					// the VRF route was last updated
+					time.Sleep(300 * time.Second)
 
-						out := helper.ExecuteAndCaptureOutput(t, root)
+					root.SetArgs([]string{subCommand, "update-route", "-i", route.GetId(), "-t", "foobar"})
 
-						if !strings.Contains(string(out[:]), "TYPE") &&
-							!strings.Contains(string(out[:]), "static") &&
-							!strings.Contains(string(out[:]), "PREFIX") &&
-							!strings.Contains(string(out[:]), "0.0.0.0/0") {
-							t.Error("expected output should include TYPE static PREFIX and 0.0.0.0/0, in the out string ")
-						}
+					out := helper.ExecuteAndCaptureOutput(t, root)
+
+					if !strings.Contains(string(out[:]), "TYPE") &&
+						!strings.Contains(string(out[:]), "static") &&
+						!strings.Contains(string(out[:]), "PREFIX") &&
+						!strings.Contains(string(out[:]), "0.0.0.0/0") {
+						t.Error("expected output should include TYPE static PREFIX and 0.0.0.0/0, in the out string ")
 					}
 				}
 			},
