@@ -20,7 +20,7 @@ func TestBgpDynamicNeighbors_Delete(t *testing.T) {
 	projectName := "metal-cli-" + randomStr + "-gateway-delete"
 
 	project := helper.CreateTestProject(t, projectName)
-	vlan := helper.CreateTestVLAN(t, project.GetId())
+	vlan := helper.CreateTestVLAN(t, project.GetId(), "da")
 	vrf := helper.CreateTestVrfs(t, project.GetId(), "test-vrf-"+randomStr, vlan.GetVxlan())
 	vrfIpRes := helper.CreateTestVrfIpRequest(t, project.GetId(), vrf.GetId())
 	gway := helper.CreateTestVrfGateway(t, project.GetId(), vrfIpRes.VrfIpReservation.GetId(), vlan.GetId())

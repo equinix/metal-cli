@@ -21,7 +21,7 @@ func TestInterconnections_Create(t *testing.T) {
 	randomString := helper.GenerateRandomString(5)
 
 	project := helper.CreateTestProject(t, "metal-cli-interconnections-create-"+randomString)
-	vlan := helper.CreateTestVLAN(t, project.GetId())
+	vlan := helper.CreateTestVLAN(t, project.GetId(), "sv")
 
 	apiClient := helper.TestClient()
 

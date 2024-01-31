@@ -82,11 +82,13 @@ func CreateTestDevice(t *testing.T, projectId, name string) *metalv1.Device {
 	return device
 }
 
-func CreateTestVLAN(t *testing.T, projectId string) *metalv1.VirtualNetwork {
+func CreateTestVLAN(t *testing.T, projectId, metro string) *metalv1.VirtualNetwork {
 	TestApiClient := TestClient()
 	t.Helper()
 
-	metro := "da"
+	if metro == "" {
+		metro = "sv"
+	}
 	vlanCreateInput := metalv1.VirtualNetworkCreateInput{
 		Metro: &metro,
 	}

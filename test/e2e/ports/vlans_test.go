@@ -31,7 +31,7 @@ func TestPorts_VLANs(t *testing.T) {
 		return
 	}
 
-	vlan := helper.CreateTestVLAN(t, project.GetId())
+	vlan := helper.CreateTestVLAN(t, project.GetId(), "sv")
 	t.Cleanup(func() {
 		if err := helper.UnAssignPortVlan(t, port.GetId(), vlan.GetId()); err != nil {
 			t.Error(err)

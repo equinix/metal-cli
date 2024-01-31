@@ -20,7 +20,7 @@ func TestGateways_Create(t *testing.T) {
 	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
 	projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-gateways-create"
 	project := helper.CreateTestProject(t, projectName)
-	vlan := helper.CreateTestVLAN(t, project.GetId())
+	vlan := helper.CreateTestVLAN(t, project.GetId(), "sv")
 
 	tests := []struct {
 		name    string
