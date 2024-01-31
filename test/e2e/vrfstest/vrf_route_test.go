@@ -4,8 +4,8 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
-	"github.com/equinix/equinix-sdk-go/services/metalv1"
 	root "github.com/equinix/metal-cli/internal/cli"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
 	"github.com/equinix/metal-cli/internal/vrf"
@@ -127,7 +127,10 @@ func TestCli_Vrf_Route(t *testing.T) {
 					_ = helper.CreateTestVrfGateway(t, projectId.GetId(), ipReservation.VrfIpReservation.GetId(), vlan.GetId())
 					route := helper.CreateTestVrfRoute(t, vrf.GetId())
 
-					_ = helper.WaitForVrfRouteState(t, route.GetId(), metalv1.VRFROUTESTATUS_ACTIVE)
+					// We literally need to sleep for 5 minutes; the API will reject any
+					// VRF route update request that comes in less than 5 minutes after
+					// the VRF route was last updated
+					time.Sleep(300 * time.Second)
 
 					root.SetArgs([]string{subCommand, "update-route", "-i", route.GetId(), "-t", "foobar"})
 
