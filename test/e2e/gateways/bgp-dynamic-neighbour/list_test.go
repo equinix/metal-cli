@@ -1,27 +1,28 @@
-package gateways
+package bgp_dynamic_neighbor
 
 import (
-	"strconv"
 	"testing"
+
+	"github.com/spf13/cobra"
 
 	root "github.com/equinix/metal-cli/internal/cli"
 	"github.com/equinix/metal-cli/internal/gateway"
 	outputPkg "github.com/equinix/metal-cli/internal/outputs"
-	"github.com/spf13/cobra"
-
 	"github.com/equinix/metal-cli/test/helper"
 )
 
-func TestGateways_Retrieve(t *testing.T) {
+func TestBgpDynamicNeighbors_List(t *testing.T) {
 	subCommand := "gateways"
 	rootClient := root.NewClient(helper.ConsumerToken, helper.URL, helper.Version)
-	projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-gateway-get"
+	randomStr := helper.GenerateRandomString(5)
+	projectName := "metal-cli-" + randomStr + "-gateway-get"
+
 	project := helper.CreateTestProject(t, projectName)
-
-	vlan := helper.CreateTestVLAN(t, project.GetId(), "sv")
-
-	subnetSize := int32(8)
-	metalGateway := helper.CreateTestGateway(t, project.GetId(), vlan.GetId(), &subnetSize)
+	vlan := helper.CreateTestVLAN(t, project.GetId(), "da")
+	vrf := helper.CreateTestVrfs(t, project.GetId(), "test-vrf-"+randomStr, vlan.GetVxlan())
+	vrfIpRes := helper.CreateTestVrfIpRequest(t, project.GetId(), vrf.GetId())
+	gway := helper.CreateTestVrfGateway(t, project.GetId(), vrfIpRes.VrfIpReservation.GetId(), vlan.GetId())
+	bgpDynamicNeighbor := helper.CreateTestBgpDynamicNeighbor(t, gway.GetId(), gway.IpReservation.GetAddress(), 65000)
 
 	tests := []struct {
 		name    string
@@ -30,18 +31,18 @@ func TestGateways_Retrieve(t *testing.T) {
 		cmdFunc func(*testing.T, *cobra.Command)
 	}{
 		{
-			name: "retrieve gateways by projectId",
+			name: "list bgpDynamicNeighbor by ID",
 			cmd:  gateway.NewClient(rootClient, outputPkg.Outputer(&outputPkg.Standard{})).NewCommand(),
 			want: &cobra.Command{},
 			cmdFunc: func(t *testing.T, c *cobra.Command) {
 				root := c.Root()
 
 				// get using projectId
-				root.SetArgs([]string{subCommand, "get", "-p", project.GetId()})
+				root.SetArgs([]string{subCommand, "list-bgp-dynamic-neighbors", "--id", gway.GetId()})
 
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
-				assertGatewaysCmdOutput(t, string(out[:]), metalGateway.GetId(), vlan.GetMetroCode(), strconv.Itoa(int(vlan.GetVxlan())))
+				assertBgpDynamicNeighborCmdOutput(t, string(out[:]), bgpDynamicNeighbor)
 			},
 		},
 	}

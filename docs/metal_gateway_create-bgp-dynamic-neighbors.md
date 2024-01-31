@@ -1,15 +1,31 @@
-## metal gateway
+## metal gateway create-bgp-dynamic-neighbors
 
-Metal Gateway operations: create, delete, and retrieve.
+Creates a BGP Dynamic Neighbor
 
 ### Synopsis
 
-A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For more information, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.
+Creates the BGP Dynamic Neighbor for the metal gateway with the specified IP Range and ASN
+
+```
+metal gateway create-bgp-dynamic-neighbors [flags]
+```
+
+### Examples
+
+```
+# Create a BGP Dynamic Neighbor using ip range and asn for the metal gateway id
+
+	metal gateways create-bgp-dynamic-neighbor --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c" --bgp-neighbor-range "10.70.43.226/29" --asn 65000
+
+```
 
 ### Options
 
 ```
-  -h, --help   help for gateway
+      --asn int32                   ASN for the BGP Dynamic Neighbor IP range.
+      --bgp-neighbor-range string   BGP Dynamic Neighbor IP Range from gateway.
+  -h, --help                        help for create-bgp-dynamic-neighbors
+  -i, --id string                   Metal Gateway ID for which the BGP Dynamic Neighbor to be created.
 ```
 
 ### Options inherited from parent commands
@@ -29,12 +45,5 @@ A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For mo
 
 ### SEE ALSO
 
-* [metal](metal.md)	 - Command line interface for Equinix Metal
-* [metal gateway create](metal_gateway_create.md)	 - Creates a Metal Gateway.
-* [metal gateway create-bgp-dynamic-neighbors](metal_gateway_create-bgp-dynamic-neighbors.md)	 - Creates a BGP Dynamic Neighbor
-* [metal gateway delete](metal_gateway_delete.md)	 - Deletes a Metal Gateway.
-* [metal gateway delete-bgp-dynamic-neighbors](metal_gateway_delete-bgp-dynamic-neighbors.md)	 - Deletes a BGP Dynamic Neighbor
-* [metal gateway get](metal_gateway_get.md)	 - Lists Metal Gateways.
-* [metal gateway get-bgp-dynamic-neighbors](metal_gateway_get-bgp-dynamic-neighbors.md)	 - Gets a BGP Dynamic Neighbor
-* [metal gateway list-bgp-dynamic-neighbors](metal_gateway_list-bgp-dynamic-neighbors.md)	 - Lists BGP Dynamic Neighbors for Metal Gateway
+* [metal gateway](metal_gateway.md)	 - Metal Gateway operations: create, delete, and retrieve.
 

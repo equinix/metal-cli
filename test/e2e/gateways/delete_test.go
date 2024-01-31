@@ -20,7 +20,7 @@ func TestGateways_Delete(t *testing.T) {
 	projectName := "metal-cli-" + helper.GenerateRandomString(5) + "-gateway-delete"
 	project := helper.CreateTestProject(t, projectName)
 
-	vlan := helper.CreateTestVLAN(t, project.GetId())
+	vlan := helper.CreateTestVLAN(t, project.GetId(), "sv")
 
 	subnetSize := int32(8)
 	metalGateway := helper.CreateTestGateway(t, project.GetId(), vlan.GetId(), &subnetSize)

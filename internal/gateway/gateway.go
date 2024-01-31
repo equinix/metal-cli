@@ -28,9 +28,10 @@ import (
 )
 
 type Client struct {
-	Servicer Servicer
-	Service  *metal.MetalGatewaysApiService
-	Out      outputs.Outputer
+	Servicer   Servicer
+	Service    *metal.MetalGatewaysApiService
+	VrfService *metal.VRFsApiService
+	Out        outputs.Outputer
 }
 
 func (c *Client) NewCommand() *cobra.Command {
@@ -47,6 +48,7 @@ func (c *Client) NewCommand() *cobra.Command {
 				}
 			}
 			c.Service = c.Servicer.MetalAPI(cmd).MetalGatewaysApi
+			c.VrfService = c.Servicer.MetalAPI(cmd).VRFsApi
 		},
 	}
 
@@ -54,6 +56,10 @@ func (c *Client) NewCommand() *cobra.Command {
 		c.Retrieve(),
 		c.Create(),
 		c.Delete(),
+		c.CreateBgpNeighbors(),
+		c.DeleteBgpNeighbors(),
+		c.GetBgpNeighbors(),
+		c.ListBgpNeighbors(),
 	)
 	return cmd
 }
