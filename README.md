@@ -38,7 +38,7 @@ This repository is [Maintained](https://github.com/packethost/standards/blob/mas
 
 [Equinix Metal](https://metal.equinix.com/) provides an API-driven bare metal platform that combines the automation experience of the cloud with the benefits of physical, bare metal servers.
 
-The Equinix Metal CLI wraps the [Equinix Metal Go SDK](https://github.com/packethost/packngo) allowing interaction with Equinix Metal platform from a command-line interface.
+The Equinix Metal CLI wraps the [Equinix Go SDK](https://github.com/equinix/equinix-sdk-go) allowing interaction with Equinix Metal platform from a command-line interface.
 
 ## Requirements
 

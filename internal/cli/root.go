@@ -1,23 +1,3 @@
-// Copyright © 2018 Jasmin Gacic <jasmin@stackpointcloud.com>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 package cli
 
 import (
@@ -30,7 +10,6 @@ import (
 	"strings"
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
-	"github.com/packethost/packngo"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -45,8 +24,7 @@ const (
 )
 
 type Client struct {
-	// apiClient client
-	apiClient      *packngo.Client
+	// metalApiClient client
 	metalApiClient *metal.APIClient
 
 	includes      *[]string // nolint:unused
@@ -91,16 +69,6 @@ func NewClient(consumerToken, apiURL, Version string) *Client {
 // debug variable in the future that is not tied to packngo
 func checkEnvForDebug() bool {
 	return os.Getenv(debugVar) != ""
-}
-
-func (c *Client) apiConnect(httpClient *http.Client) error {
-	client, err := packngo.NewClientWithBaseURL(c.consumerToken, c.metalToken, httpClient, c.apiURL)
-	if err != nil {
-		return fmt.Errorf("could not create client: %w", err)
-	}
-	client.UserAgent = fmt.Sprintf("metal-cli/%s %s", c.Version, client.UserAgent)
-	c.apiClient = client
-	return nil
 }
 
 func (c *Client) metalApiConnect(httpClient *http.Client) error {
@@ -177,26 +145,6 @@ func bindFlags(cmd *cobra.Command, v *viper.Viper) {
 			_ = cmd.Flags().Set(f.Name, fmt.Sprintf("%v", val))
 		}
 	})
-}
-
-func (c *Client) API(cmd *cobra.Command) *packngo.Client {
-	if c.metalToken == "" {
-		log.Fatal("Equinix Metal authentication token not provided. Please set the 'METAL_AUTH_TOKEN' environment variable or create a configuration file using 'metal init'.")
-	}
-
-	if c.apiClient == nil {
-		httpClient := &http.Client{
-			Transport: &headerTransport{
-				header: getAdditionalHeaders(cmd),
-			},
-		}
-
-		err := c.apiConnect(httpClient)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-	return c.apiClient
 }
 
 func (c *Client) MetalAPI(cmd *cobra.Command) *metal.APIClient {
@@ -342,43 +290,6 @@ func (c *Client) Filters() map[string]string {
 		}
 	}
 	return mapFilt
-}
-
-// ListOptions creates a packngo.ListOptions using the includes and excludes persistent
-// flags. When not defined, the defaults given will be supplied.
-func (c *Client) ListOptions(defaultIncludes, defaultExcludes []string) *packngo.ListOptions {
-	listOptions := &packngo.ListOptions{
-		Includes: defaultIncludes,
-		Excludes: defaultExcludes,
-	}
-	if c.rootCmd.Flags().Changed("include") {
-		listOptions.Includes = *c.includes
-	}
-	if c.rootCmd.Flags().Changed("exclude") {
-		listOptions.Excludes = *c.excludes
-	}
-	if c.rootCmd.Flags().Changed("filter") {
-		for _, kv := range *c.filters {
-			var k, v string
-			tokens := strings.SplitN(kv, "=", 2)
-			k = strings.TrimSpace(tokens[0])
-			if len(tokens) != 1 {
-				v = strings.TrimSpace(tokens[1])
-			}
-			listOptions = listOptions.Filter(k, v)
-		}
-	}
-	if c.rootCmd.Flags().Changed("search") {
-		listOptions.Search = c.search
-	}
-	if c.rootCmd.Flags().Changed("sort-by") {
-		listOptions.SortBy = c.sortBy
-	}
-	if c.rootCmd.Flags().Changed("sort-dir") {
-		listOptions.SortDirection = packngo.ListSortDirection(c.sortDir)
-	}
-
-	return listOptions
 }
 
 // initConfig reads in config file and ENV variables if set.
