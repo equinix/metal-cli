@@ -7,44 +7,44 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
 builds:
-- main: ./cmd/metal
-  env:
-  - CGO_ENABLED=0
-  binary: metal
-  ldflags:
-   - -X github.com/equinix/metal-cli/cmd.Version={{.Version}}
-   - -X github.com/equinix/metal-cli/cmd.Build=${.Commit}"
+  - main: ./cmd/metal
+    env:
+      - CGO_ENABLED=0
+    binary: metal
+    ldflags:
+      - -X github.com/equinix/{{ .ProjectName }}/cmd.Version={{.Version}}
+      - -X github.com/equinix/{{ .ProjectName }}/cmd.Build=${.Commit}"
 
-  goos:
-    - freebsd
-    - linux
-    - windows
-    - darwin
-  goarch:
-    - amd64
-    - arm
-    - arm64
-  goarm:
-    - "6"
-    - "7"
+    goos:
+      - freebsd
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - "6"
+      - "7"
 
 archives:
-- format: binary
-  name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+  - format: binary
+    name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
 release:
-  name_template: "{{.ProjectName}}-v{{.Version}}"
+  name_template: "{{ .ProjectName }}-v{{ .Version }}"
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
   sort: asc
   filters:
     exclude:
-    - '^docs:'
-    - '^test:'
+      - "^docs:"
+      - "^test:"
 
-brews: 
+brews:
   - homepage: "https://metal.equinix.com/developers/docs/libraries/cli/"
     description: "Official Equinix Metal CLI"
     license: "MIT"
@@ -54,6 +54,87 @@ brews:
     test: |
       system "#{bin}/metal -v"
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-    tap:
+    repository:
       owner: equinix
       name: homebrew-tap
+
+# ko is a docker image builder that simplifies making multiplatform images.
+# This is much simpler than configuring all the docker ptions in goreleaser.
+# Unfortunately, it doesn't support the scratch image, so we use chainguard's
+# static image as a base.
+kos:
+  - id: dockerhub
+    repository: equinix/{{ .ProjectName }}
+    build: metal-cli
+    base_image: cgr.dev/chainguard/static
+    labels:
+      org.opencontainers.image.base.name: "cgr.dev/chainguard/static"
+      org.opencontainers.image.created: "{{.Date}}"
+      org.opencontainers.image.name: "{{.ProjectName}}"
+      org.opencontainers.image.revision: "{{.FullCommit}}"
+      org.opencontainers.image.source: "{{.GitURL}}"
+      org.opencontainers.image.title: "{{.ProjectName}}"
+      org.opencontainers.image.url: "https://deploy.equinix.com/labs/metal-cli/"
+      org.opencontainers.image.vendor: "Equinix"
+      org.opencontainers.image.version: "{{.Version}}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm/v7
+    tags:
+      - latest
+      - "{{ .Tag }}"
+      - "{{ .Major }}"
+      - "{{ .Major }}.{{ .Minor }}"
+    sbom: none
+    bare: true
+  - id: github
+    repository: ghcr.io/equinix/{{ .ProjectName }}
+    build: metal-cli
+    base_image: cgr.dev/chainguard/static
+    labels:
+      org.opencontainers.image.base.name: "cgr.dev/chainguard/static"
+      org.opencontainers.image.created: "{{.Date}}"
+      org.opencontainers.image.name: "{{.ProjectName}}"
+      org.opencontainers.image.revision: "{{.FullCommit}}"
+      org.opencontainers.image.source: "{{.GitURL}}"
+      org.opencontainers.image.title: "{{.ProjectName}}"
+      org.opencontainers.image.url: "https://deploy.equinix.com/labs/metal-cli/"
+      org.opencontainers.image.vendor: "Equinix"
+      org.opencontainers.image.version: "{{.Version}}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm/v7
+    tags:
+      - latest
+      - "{{ .Tag }}"
+      - "{{ .Major }}"
+      - "{{ .Major }}.{{ .Minor }}"
+    sbom: none
+    bare: true
+  - id: quay
+    build: metal-cli
+    repository: quay.io/equinix-oss/metal-cli
+    base_image: cgr.dev/chainguard/static
+    labels:
+      org.opencontainers.image.base.name: "cgr.dev/chainguard/static"
+      org.opencontainers.image.created: "{{.Date}}"
+      org.opencontainers.image.name: "{{.ProjectName}}"
+      org.opencontainers.image.revision: "{{.FullCommit}}"
+      org.opencontainers.image.source: "{{.GitURL}}"
+      org.opencontainers.image.title: "{{.ProjectName}}"
+      org.opencontainers.image.url: "https://deploy.equinix.com/labs/metal-cli/"
+      org.opencontainers.image.vendor: "Equinix"
+      org.opencontainers.image.version: "{{.Version}}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm/v7
+    tags:
+      - latest
+      - "{{ .Tag }}"
+      - "{{ .Major }}"
+      - "{{ .Major }}.{{ .Minor }}"
+    sbom: none
+    bare: true
