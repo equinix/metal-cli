@@ -47,7 +47,7 @@ func createVrfVirtualCircuit(vrfInput *metal.VrfVirtualCircuitCreateInput, proje
 	vrfInput.SetMetalIp(metalIP)
 	vrfInput.SetMd5(md5)
 	if speed > 0 {
-		vrfInput.SetSpeed(int32(speed))
+		vrfInput.SetSpeed(strconv.Itoa(speed))
 	}
 
 	return metal.VirtualCircuitCreateInput{VrfVirtualCircuitCreateInput: vrfInput}
@@ -60,7 +60,7 @@ func createVlanVirtualCircuit(vlanInput *metal.VlanVirtualCircuitCreateInput, vn
 		vlanInput.SetNniVlan(int32(nnVlan))
 	}
 	if speed > 0 {
-		vlanInput.SetSpeed(int64(speed))
+		vlanInput.SetSpeed(strconv.Itoa(speed))
 	}
 	vlanInput.SetVnid(vnid)
 
