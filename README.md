@@ -247,7 +247,7 @@ The full CLI documentation can be found [here](docs/metal.md) or by clicking the
 ### Create a device
 
 ```sh
-metal device create --hostname [hostname] --plan [plan] --facility [facility_code] --operating-system [operating_system] --project-id [project_UUID]
+metal device create --hostname [hostname] --plan [plan] --metro [metro_code] --operating-system [operating_system] --project-id [project_UUID]
 ```
 
 ### Get a device
