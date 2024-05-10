@@ -8,6 +8,8 @@ github.com/equinix/equinix-sdk-go v0.32.0 h1:zUn0Em5FJe6f6bntftrDBpO9L+XhbpFMPuQ
 github.com/equinix/equinix-sdk-go v0.32.0/go.mod h1:qnpdRzVftHFNaJFk1VSIrAOTLrIoeDrxzUr3l8ARyvQ=
 github.com/equinix/equinix-sdk-go v0.35.0 h1:p/uwA8QPBAuNnKGc3mQkwjw+6++qUadLNnKFQ8jw+wg=
 github.com/equinix/equinix-sdk-go v0.35.0/go.mod h1:hEb3XLaedz7xhl/dpPIS6eOIiXNPeqNiVoyDrT6paIg=
+github.com/equinix/equinix-sdk-go v0.39.1 h1:UyiNYqlK+Hn1W8DTjM3bp25Zzq8ITQHodhLhU6MZHqQ=
+github.com/equinix/equinix-sdk-go v0.39.1/go.mod h1:hEb3XLaedz7xhl/dpPIS6eOIiXNPeqNiVoyDrT6paIg=
 github.com/frankban/quicktest v1.14.6 h1:7Xjx+VpznH+oBnejlPUj8oUpdxnVs4f8XU8WnHkI4W8=
 github.com/fsnotify/fsnotify v1.7.0 h1:8JEhPFa5W2WU7YfeZzPNqzMP6Lwt7L2715Ggo0nosvA=
 github.com/fsnotify/fsnotify v1.7.0/go.mod h1:40Bi/Hjc2AVfZrqy+aj+yEI+/bRxZnMJyTJwOpGvigM=
