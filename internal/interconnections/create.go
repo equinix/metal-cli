@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/spf13/cobra"
@@ -46,7 +47,7 @@ func (c *Client) Create() *cobra.Command {
 				)
 				in.Vlans = vlans
 				// default speed
-				in.SetSpeed(speed)
+				in.SetSpeed(strconv.Itoa(int(speed)))
 
 				createOrganizationInterconnectionRequest.
 					VlanFabricVcCreateInput = in

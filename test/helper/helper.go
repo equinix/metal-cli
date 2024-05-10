@@ -467,7 +467,7 @@ func CreateTestVirtualCircuit(t *testing.T, projectId, connId, portId, vlanId, n
 
 	vlanVCCreateInput := metalv1.NewVlanVirtualCircuitCreateInput(projectId)
 	vlanVCCreateInput.SetVnid(vlanId)
-	vlanVCCreateInput.SetSpeed(100)
+	vlanVCCreateInput.SetSpeed("100")
 	vlanVCCreateInput.SetNniVlan(1110)
 	vlanVCCreateInput.SetName(name)
 
