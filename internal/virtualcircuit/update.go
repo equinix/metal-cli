@@ -54,7 +54,7 @@ func updateVrfVirtualCircuit(vrfUpdateInput *metal.VrfVirtualCircuitUpdateInput,
 	vrfUpdateInput.SetCustomerIp(customerIP)
 
 	if peerAsn > 0 {
-		vrfUpdateInput.SetPeerAsn(int32(peerAsn))
+		vrfUpdateInput.SetPeerAsn(int64(peerAsn))
 	}
 
 	return metal.VirtualCircuitUpdateInput{VrfVirtualCircuitUpdateInput: vrfUpdateInput}

@@ -22,7 +22,7 @@ metal gateway create-bgp-dynamic-neighbors [flags]
 ### Options
 
 ```
-      --asn int32                   ASN for the BGP Dynamic Neighbor IP range.
+      --asn int                     ASN for the BGP Dynamic Neighbor IP range.
       --bgp-neighbor-range string   BGP Dynamic Neighbor IP Range from gateway.
   -h, --help                        help for create-bgp-dynamic-neighbors
   -i, --id string                   Metal Gateway ID for which the BGP Dynamic Neighbor to be created.

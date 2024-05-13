@@ -47,7 +47,7 @@ func (c *Client) BGPEnable() *cobra.Command {
 func enableBGP(c *Client, config *BgpConfig) error {
 	req := metal.BgpConfigRequestInput{
 		UseCase:        &config.UseCase,
-		Asn:            int32(config.ASN),
+		Asn:            int64(config.ASN),
 		DeploymentType: metal.BgpConfigRequestInputDeploymentType(config.DeploymentType),
 		Md5:            &config.MD5,
 	}

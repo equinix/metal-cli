@@ -44,8 +44,8 @@ func (c *Client) Create() *cobra.Command {
 				in := metal.NewVlanFabricVcCreateInput(
 					metro, name, redundancy, metal.VlanFabricVcCreateInputServiceTokenType(svcTokenType),
 					metal.VlanFabricVcCreateInputType(connType),
+					vlans,
 				)
-				in.Vlans = vlans
 				// default speed
 				in.SetSpeed(strconv.Itoa(int(speed)))
 
