@@ -37,14 +37,14 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: 'e2e-test'
     steps:
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.19'
     - name: Check out code into the Go module directory
       uses: actions/checkout@v4
       with:
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: go.mod
     - name: Get dependencies
       run: go mod download
     - name: Run end-to-end tests
