@@ -113,7 +113,7 @@ func (c *Client) Create() *cobra.Command {
 				if err != nil {
 					return fmt.Errorf("%w", err)
 				}
-				vrfInput := metal.NewVrfVirtualCircuitCreateInput(int32(nnVlan), int32(peerAsn), projectID, subnet, vrf)
+				vrfInput := metal.NewVrfVirtualCircuitCreateInput(int32(nnVlan), int64(peerAsn), projectID, subnet, vrf)
 				setParams(vrfInput, name, description, tags)
 				createInput = createVrfVirtualCircuit(vrfInput, projectID, customerIP, metalIP, md5, speed)
 			} else {

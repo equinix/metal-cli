@@ -33,7 +33,7 @@ import (
 
 func (c *Client) CreateBgpNeighbors() *cobra.Command {
 	var gatewayId, bgpNeighborRange string
-	var asn int32
+	var asn int64
 
 	// createGwBgpCmd represents the creation of gateway bgp dynamic neighbor command
 	createGwBgpCmd := &cobra.Command{
@@ -79,7 +79,7 @@ func (c *Client) CreateBgpNeighbors() *cobra.Command {
 
 	createGwBgpCmd.Flags().StringVarP(&gatewayId, "id", "i", "", "Metal Gateway ID for which the BGP Dynamic Neighbor to be created.")
 	createGwBgpCmd.Flags().StringVar(&bgpNeighborRange, "bgp-neighbor-range", "", "BGP Dynamic Neighbor IP Range from gateway.")
-	createGwBgpCmd.Flags().Int32Var(&asn, "asn", 0, "ASN for the BGP Dynamic Neighbor IP range.")
+	createGwBgpCmd.Flags().Int64Var(&asn, "asn", 0, "ASN for the BGP Dynamic Neighbor IP range.")
 
 	_ = createGwBgpCmd.MarkFlagRequired("id")
 	return createGwBgpCmd

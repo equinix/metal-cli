@@ -24,7 +24,7 @@ metal vrf create [-p <project_id] [-d <description>] [-m <metro>] [-n <name>] [-
   -d, --description string   Description of the Virtual Routing and Forwarding.
   -h, --help                 help for create
   -r, --ipranges strings     A list of CIDR network addresses. Like [10.0.0.0/16, 2001:d78::/56]. IPv4 blocks must be between /8 and /29 in size. IPv6 blocks must be between /56 and /64.
-  -a, --local-asn int32      Local ASN for the VRF
+  -a, --local-asn int        Local ASN for the VRF
   -m, --metro string         The UUID (or metro code) for the Metro in which to create this Virtual Routing and Forwarding
   -n, --name string          Name of the Virtual Routing and Forwarding
   -p, --project-id string    The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.

@@ -536,7 +536,7 @@ func CleanTestOrganization(t *testing.T, orgId string) {
 func CreateTestBgpEnableTest(projId string) error {
 	TestApiClient := TestClient()
 
-	bgpConfigRequestInput := *metalv1.NewBgpConfigRequestInput(int32(65000), metalv1.BgpConfigRequestInputDeploymentType("local"))
+	bgpConfigRequestInput := *metalv1.NewBgpConfigRequestInput(65000, metalv1.BgpConfigRequestInputDeploymentType("local"))
 
 	_, err := TestApiClient.BGPApi.RequestBgpConfig(context.Background(), projId).BgpConfigRequestInput(bgpConfigRequestInput).Execute()
 	if err != nil {
@@ -654,14 +654,14 @@ func waitForInterconnectionDeleted(apiClient *metalv1.APIClient, connId string, 
 }
 
 //nolint:staticcheck
-func CreateTestVrfs(t *testing.T, projectId, name string, vlan int32) *metalv1.Vrf {
+func CreateTestVrfs(t *testing.T, projectId, name string, asn int64) *metalv1.Vrf {
 	t.Helper()
 	TestApiClient := TestClient()
 
 	var IpRanges []string
 
 	vrfCreateInput := *metalv1.NewVrfCreateInput("da", name)
-	vrfCreateInput.SetLocalAsn(vlan)
+	vrfCreateInput.SetLocalAsn(asn)
 	IpRanges = append(IpRanges, "10.10.1.0/24")
 	vrfCreateInput.SetIpRanges(IpRanges)
 
@@ -791,7 +791,7 @@ func CleanTestVrfGateway(t *testing.T, gatewayId string) {
 	}
 }
 
-func CreateTestBgpDynamicNeighbor(t *testing.T, gatewayId, iprange string, asn int32) *metalv1.BgpDynamicNeighbor {
+func CreateTestBgpDynamicNeighbor(t *testing.T, gatewayId, iprange string, asn int64) *metalv1.BgpDynamicNeighbor {
 	TestApiClient := TestClient()
 	t.Helper()
 

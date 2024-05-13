@@ -17,7 +17,7 @@ func (c *Client) Create() *cobra.Command {
 		name        string
 		description string
 		ipRanges    []string
-		localASN    int32
+		localASN    int64
 		tags        []string
 	)
 
@@ -63,7 +63,7 @@ func (c *Client) Create() *cobra.Command {
 	createVRFCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the Virtual Routing and Forwarding.")
 
 	createVRFCmd.Flags().StringVarP(&metro, "metro", "m", "", "The UUID (or metro code) for the Metro in which to create this Virtual Routing and Forwarding")
-	createVRFCmd.Flags().Int32VarP(&localASN, "local-asn", "a", 0, "Local ASN for the VRF")
+	createVRFCmd.Flags().Int64VarP(&localASN, "local-asn", "a", 0, "Local ASN for the VRF")
 	createVRFCmd.Flags().StringSliceVarP(&ipRanges, "ipranges", "r", []string{}, "A list of CIDR network addresses. Like [10.0.0.0/16, 2001:d78::/56]. IPv4 blocks must be between /8 and /29 in size. IPv6 blocks must be between /56 and /64.")
 
 	// making them all required here
