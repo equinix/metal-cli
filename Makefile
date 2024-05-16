@@ -20,15 +20,12 @@ PLATFORMS?=darwin linux windows freebsd
 ARCHITECTURES?=amd64 arm64
 GOBIN?=$(shell go env GOPATH)/bin
 FORMATTER?=$(GOBIN)/goimports
-GO_INSTALL = ./hack/go_install.sh
-TOOLS_DIR := hack/tools
-TOOLS_BIN_DIR := $(abspath $(TOOLS_DIR)/bin)
 
-
-# Binaries.
-GOLANGCI_LINT_VER := v1.49
-GOLANGCI_LINT_BIN := golangci-lint
-GOLANGCI_LINT := $(TOOLS_BIN_DIR)/$(GOLANGCI_LINT_BIN)-$(GOLANGCI_LINT_VER)
+CRI=docker
+CRI_COMMAND_BASE=${CRI} run --rm -u ${CURRENT_UID}:${CURRENT_GID} $(DOCKER_EXTRA_ARGS)
+GOLANGCI_LINT_VERSION=v1.58.1
+GOLANGCI_LINT_IMAGE=golangci/golangci-lint:${GOLANGCI_LINT_VERSION}
+GOLANGCI_LINT=${CRI_COMMAND_BASE} -v $(CURDIR):/app -w /app -e GOLANGCI_LINT_CACHE=/tmp/.cache -e GOCACHE=/tmp/.cache ${GOLANGCI_LINT_IMAGE} golangci-lint
 
 # Setup linker flags option for build that interoperate with variable names in src code
 LDFLAGS?=-ldflags "-X $(PACKAGE_NAME)/cmd.Version=$(VERSION) -X $(PACKAGE_NAME)/cmd.Build=$(BUILD)"
@@ -42,7 +39,7 @@ fmt: $(FORMATTER)
 $(FORMATTER):
 	go get golang.org/x/tools/cmd/goimports
 
-lint: $(GOLANGCI_LINT) ## Lint codebase
+lint: ## Lint codebase
 	$(GOLANGCI_LINT) run -v --fast=false
 
 build:
@@ -69,12 +66,3 @@ generate-docs: clean-docs
 
 test:
 	go test -v ./... -timeout 1000s
-
-
-## --------------------------------------
-## Tooling Binaries
-## --------------------------------------
-
-$(GOLANGCI_LINT): ## Build golangci-lint from tools folder.
-	GOBIN=$(TOOLS_BIN_DIR) $(GO_INSTALL) github.com/golangci/golangci-lint/cmd/golangci-lint $(GOLANGCI_LINT_BIN) $(GOLANGCI_LINT_VER)
-golangci-lint: $(LINTER)

@@ -1,6 +1,6 @@
 module github.com/equinix/metal-cli
 
-go 1.19
+go 1.22
 
 require (
 	github.com/equinix/equinix-sdk-go v0.39.1
