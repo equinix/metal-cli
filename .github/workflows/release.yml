@@ -1,26 +1,30 @@
-name: release
+name: Generate Next Release
 
 on:
-  push:
-    tags:
-    - '*'
+  workflow_dispatch:
 
 jobs:
-  goreleaser:
+  release:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      -
-        name: Set up Go
+      - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-      -
-        name: Run GoReleaser
+      - name: Release
+        id: semantic-release
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          semantic_version: 19.0.5
+          extra_plugins: |
+            conventional-changelog-conventionalcommits@4.6.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
           version: latest
