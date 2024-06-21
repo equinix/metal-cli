@@ -24,6 +24,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -99,9 +100,15 @@ func (c *Client) Retrieve() *cobra.Command {
 			data := make([][]string, len(devices))
 
 			for i, dc := range devices {
-				data[i] = []string{dc.GetId(), dc.GetHostname(), dc.OperatingSystem.GetName(), fmt.Sprintf("%v", dc.GetState()), dc.GetCreatedAt().String()}
+				ips := make([]string, 0)
+				for _, ip := range dc.GetIpAddresses() {
+					if ip.Address != nil {
+						ips = append(ips, *ip.Address)
+					}
+				}
+				data[i] = []string{dc.GetId(), dc.GetHostname(), strings.Join(ips, ","), dc.OperatingSystem.GetName(), fmt.Sprintf("%v", dc.GetState()), dc.GetCreatedAt().String()}
 			}
-			header := []string{"ID", "Hostname", "OS", "State", "Created"}
+			header := []string{"ID", "Hostname", "IPs", "OS", "State", "Created"}
 
 			return c.Out.Output(devices, header, &data)
 		},
