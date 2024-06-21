@@ -59,7 +59,7 @@ func (c *Client) Retrieve() *cobra.Command {
 			if deviceID != "" {
 				device, _, err := c.Service.FindDeviceById(context.Background(), deviceID).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil)).Execute()
 				if err != nil {
-					return fmt.Errorf("Could not get Devices: %w", err)
+					return fmt.Errorf("could not get Devices: %w", err)
 				}
 				devices = append(devices, *device)
 			} else {
@@ -91,7 +91,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 				resp, err := request.ExecuteWithPagination()
 				if err != nil {
-					return fmt.Errorf("Could not list Devices: %w", err)
+					return fmt.Errorf("could not list Devices: %w", err)
 				}
 				devices = append(devices, resp.Devices...)
 			}
