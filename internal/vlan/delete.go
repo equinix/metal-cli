@@ -36,7 +36,7 @@ func (c *Client) Delete() *cobra.Command {
 	)
 
 	deleteVnet := func(id string) error {
-		_, _, err := c.Service.DeleteVirtualNetwork(context.Background(), vnetID).Execute()
+		_, err := c.Service.DeleteVirtualNetwork(context.Background(), vnetID).Execute()
 		if err != nil {
 			return err
 		}

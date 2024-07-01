@@ -342,7 +342,7 @@ func CreateTestVlanWithVxLan(t *testing.T, projectId string, Id int, desc string
 func CleanTestVlan(t *testing.T, vlanId string) {
 	t.Helper()
 	TestApiClient := TestClient()
-	_, resp, err := TestApiClient.VLANsApi.DeleteVirtualNetwork(context.Background(), vlanId).Execute()
+	resp, err := TestApiClient.VLANsApi.DeleteVirtualNetwork(context.Background(), vlanId).Execute()
 	if err != nil && resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("Error when calling `VLANsApi.DeleteVirtualNetwork`` for %v: %v\n", vlanId, err)
 	}
