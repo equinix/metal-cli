@@ -24,7 +24,6 @@ import (
 	"context"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/spf13/cobra"
@@ -98,15 +97,17 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			data := make([][]string, len(devices))
 			for i, dc := range devices {
-				ips := make([]string, 0)
+				ipAddresses := make(map[string]string)
 				for _, ip := range dc.GetIpAddresses() {
 					if ip.Address != nil {
-						ips = append(ips, *ip.Address)
+						key := fmt.Sprintf("ipv%d_%s", ip.GetAddressFamily(),
+							map[bool]string{true: "public", false: "private"}[ip.GetPublic()])
+						ipAddresses[key] = ip.GetAddress()
 					}
 				}
-				data[i] = []string{dc.GetId(), dc.GetHostname(), strings.Join(ips, ","), dc.OperatingSystem.GetName(), fmt.Sprintf("%v", dc.GetState()), dc.GetCreatedAt().String()}
+				data[i] = []string{dc.GetId(), dc.GetHostname(), ipAddresses["ipv4_public"], ipAddresses["ipv6_public"], ipAddresses["ipv4_private"], dc.OperatingSystem.GetName(), fmt.Sprintf("%v", dc.GetState()), dc.GetCreatedAt().String()}
 			}
-			header := []string{"ID", "Hostname", "IPs", "OS", "State", "Created"}
+			header := []string{"ID", "Hostname", "IPv4 Public", "IPv6 Public", "IPv4 Private", "OS", "State", "Created"}
 
 			return c.Out.Output(devices, header, &data)
 		},
