@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/equinix/equinix-sdk-go/services/metalv1"
 	"github.com/spf13/cobra"
 )
 
@@ -52,56 +53,61 @@ func (c *Client) Retrieve() *cobra.Command {
 			}
 			cmd.SilenceUsage = true
 
+			devices := make([]metalv1.Device, 0)
+
 			if deviceID != "" {
 				device, _, err := c.Service.FindDeviceById(context.Background(), deviceID).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil)).Execute()
 				if err != nil {
-					return fmt.Errorf("Could not get Devices: %w", err)
+					return fmt.Errorf("could not get Devices: %w", err)
 				}
-				header := []string{"ID", "Hostname", "OS", "State", "Created"}
-
-				data := make([][]string, 1)
-				data[0] = []string{device.GetId(), device.GetHostname(), device.OperatingSystem.GetName(), fmt.Sprintf("%v", device.GetState()), device.GetCreatedAt().String()}
-
-				return c.Out.Output(device, header, &data)
-			}
-
-			request := c.Service.FindProjectDevices(context.Background(), projectID).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil))
-			filters := c.Servicer.Filters()
-			if filters["type"] != "" {
-				request = request.Type_(filters["type"])
-			}
-
-			if filters["facility"] != "" {
-				request = request.Facility(filters["facility"])
-			}
-
-			if filters["hostname"] != "" {
-				request = request.Hostname(filters["hostname"])
-			}
-
-			if filters["reserved"] != "" {
-				value := filters["reserved"]
-				reserve, rerr := strconv.ParseBool(value)
-				if rerr != nil {
-					request = request.Reserved(reserve)
+				devices = append(devices, *device)
+			} else {
+				request := c.Service.FindProjectDevices(context.Background(), projectID).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil))
+				filters := c.Servicer.Filters()
+				if filters["type"] != "" {
+					request = request.Type_(filters["type"])
 				}
+
+				if filters["facility"] != "" {
+					request = request.Facility(filters["facility"])
+				}
+
+				if filters["hostname"] != "" {
+					request = request.Hostname(filters["hostname"])
+				}
+
+				if filters["reserved"] != "" {
+					value := filters["reserved"]
+					reserve, rerr := strconv.ParseBool(value)
+					if rerr != nil {
+						request = request.Reserved(reserve)
+					}
+				}
+
+				if filters["tag"] != "" {
+					request = request.Tag(filters["tag"])
+				}
+
+				resp, err := request.ExecuteWithPagination()
+				if err != nil {
+					return fmt.Errorf("could not list Devices: %w", err)
+				}
+				devices = append(devices, resp.Devices...)
 			}
 
-			if filters["tag"] != "" {
-				request = request.Tag(filters["tag"])
-			}
-
-			resp, err := request.ExecuteWithPagination()
-			if err != nil {
-				return fmt.Errorf("Could not list Devices: %w", err)
-			}
-			devices := resp.Devices
 			data := make([][]string, len(devices))
-
 			for i, dc := range devices {
-				data[i] = []string{dc.GetId(), dc.GetHostname(), dc.OperatingSystem.GetName(), fmt.Sprintf("%v", dc.GetState()), dc.GetCreatedAt().String()}
+				ipAddresses := make(map[string]string)
+				for _, ip := range dc.GetIpAddresses() {
+					if ip.Address != nil {
+						key := fmt.Sprintf("ipv%d_%s", ip.GetAddressFamily(),
+							map[bool]string{true: "public", false: "private"}[ip.GetPublic()])
+						ipAddresses[key] = ip.GetAddress()
+					}
+				}
+				data[i] = []string{dc.GetId(), dc.GetHostname(), ipAddresses["ipv4_public"], ipAddresses["ipv6_public"], ipAddresses["ipv4_private"], dc.OperatingSystem.GetName(), fmt.Sprintf("%v", dc.GetState()), dc.GetCreatedAt().String()}
 			}
-			header := []string{"ID", "Hostname", "OS", "State", "Created"}
+			header := []string{"ID", "Hostname", "IPv4 Public", "IPv6 Public", "IPv4 Private", "OS", "State", "Created"}
 
 			return c.Out.Output(devices, header, &data)
 		},
