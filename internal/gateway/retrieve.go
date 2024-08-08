@@ -24,11 +24,77 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	metal "github.com/equinix/equinix-sdk-go/services/metalv1"
 
 	"github.com/spf13/cobra"
 )
+
+type ipreservationIsh interface {
+	GetAddress() string
+	GetCidr() int32
+}
+
+var (
+	_ ipreservationIsh = (*metal.VrfIpReservation)(nil)
+	_ ipreservationIsh = (*metal.IPReservation)(nil)
+)
+
+type gatewayIsh interface {
+	GetId() string
+	GetCreatedAt() time.Time
+	GetState() metal.MetalGatewayState
+	GetVirtualNetwork() metal.VirtualNetwork
+	GetIpReservation() ipreservationIsh
+	GetVrfName() string
+}
+
+var (
+	_ gatewayIsh = (*metalGatewayWrapper)(nil)
+	_ gatewayIsh = (*vrfMetalGatewayWrapper)(nil)
+)
+
+type metalGatewayWrapper struct {
+	*metal.MetalGateway
+}
+
+func (m metalGatewayWrapper) GetIpReservation() ipreservationIsh {
+	if m.MetalGateway.IpReservation == nil {
+		return nil
+	}
+	return m.MetalGateway.IpReservation
+}
+
+func (m metalGatewayWrapper) GetVrfName() string {
+	return ""
+}
+
+type vrfMetalGatewayWrapper struct {
+	*metal.VrfMetalGateway
+}
+
+func newGatewayish(gwaysInner metal.MetalGatewayListMetalGatewaysInner) gatewayIsh {
+	if gwaysInner.MetalGateway != nil {
+		return metalGatewayWrapper{gwaysInner.MetalGateway}
+	}
+	if gwaysInner.VrfMetalGateway != nil {
+		return vrfMetalGatewayWrapper{gwaysInner.VrfMetalGateway}
+	}
+	return nil // Return nil if neither type is present
+}
+
+func (v vrfMetalGatewayWrapper) GetIpReservation() ipreservationIsh {
+	if v.VrfMetalGateway.IpReservation == nil {
+		return nil
+	}
+	return v.VrfMetalGateway.IpReservation
+}
+
+func (v vrfMetalGatewayWrapper) GetVrfName() string {
+	vrf := v.GetVrf()
+	return vrf.GetName()
+}
 
 func (c *Client) Retrieve() *cobra.Command {
 	var projectID string
@@ -45,7 +111,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			includes := []string{"virtual_network", "ip_reservation"}
+			includes := []string{"virtual_network", "ip_reservation", "vrf"}
 
 			gwayList, _, err := c.Service.
 				FindMetalGatewaysByProject(context.Background(), projectID).
@@ -58,26 +124,41 @@ func (c *Client) Retrieve() *cobra.Command {
 
 			gways := gwayList.GetMetalGateways()
 
-			data := make([][]string, len(gways))
-			metalGways := make([]*metal.MetalGateway, len(gways))
+			data := make([][]string, 0, len(gways))
+			var gateways []gatewayIsh
 
-			for i, n := range gways {
-				gway := n.MetalGateway
-				metalGways = append(metalGways, gway)
+			for _, gwaysInner := range gways {
+				gway := newGatewayish(gwaysInner)
+				if gway == nil {
+					continue
+				}
+
+				gateways = append(gateways, gway)
 
 				address := ""
-
-				ipReservation := gway.IpReservation
+				ipReservation := gway.GetIpReservation()
 				if ipReservation != nil {
 					address = ipReservation.GetAddress() + "/" + strconv.Itoa(int(ipReservation.GetCidr()))
 				}
 
-				data[i] = []string{gway.GetId(), gway.VirtualNetwork.GetMetroCode(), strconv.Itoa(int(gway.VirtualNetwork.GetVxlan())),
-					address, string(gway.GetState()), gway.GetCreatedAt().String()}
-			}
-			header := []string{"ID", "Metro", "VXLAN", "Addresses", "State", "Created"}
+				vnet := gway.GetVirtualNetwork()
+				metroCode := vnet.GetMetroCode()
+				vxlan := strconv.Itoa(int(vnet.GetVxlan()))
 
-			return c.Out.Output(metalGways, header, &data)
+				data = append(data, []string{
+					gway.GetId(),
+					metroCode,
+					vxlan,
+					address,
+					string(gway.GetState()),
+					gway.GetCreatedAt().String(),
+					gway.GetVrfName(),
+				})
+			}
+
+			header := []string{"ID", "Metro", "VXLAN", "Addresses", "State", "Created", "VRF"}
+
+			return c.Out.Output(gateways, header, &data)
 		},
 	}
 
