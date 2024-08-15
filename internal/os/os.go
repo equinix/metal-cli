@@ -37,7 +37,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Use:     `operating-systems`,
 		Aliases: []string{"os"},
 		Short:   "Operating system operations: get.",
-		Long:    "Information on available operating systems. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.",
+		Long:    "Information on available operating systems. For more information on which operating systems Equinix Metal offers, visit https://deploy.equinix.com/developers/docs/metal/operating-systems/supported/.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

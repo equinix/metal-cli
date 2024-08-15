@@ -37,7 +37,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Use:     `plan`,
 		Aliases: []string{"plans"},
 		Short:   "Plan operations: get.",
-		Long:    "Information on server plans. For more information on the different Equinix Metal severs, visit https://metal.equinix.com/developers/docs/hardware/standard-servers/.",
+		Long:    "Information on server plans. For more information on the different Equinix Metal severs, visit https://deploy.equinix.com/developers/docs/metal/hardware/standard-servers/.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

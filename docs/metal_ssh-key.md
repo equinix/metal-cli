@@ -4,7 +4,7 @@ SSH key operations: create, get, update, and delete.
 
 ### Synopsis
 
-SSH key operations for managing SSH keys on user accounts and projects. Keys added to an account or project are added to servers at provision. Documentation is available on https://metal.equinix.com/developers/docs/accounts/ssh-keys/.
+SSH key operations for managing SSH keys on user accounts and projects. Keys added to an account or project are added to servers at provision. Documentation is available on https://deploy.equinix.com/developers/docs/metal/identity-access-management/ssh-keys/.
 
 ### Options
 

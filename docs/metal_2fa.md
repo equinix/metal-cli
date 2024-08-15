@@ -4,7 +4,7 @@ Two-factor Authentication operations: receive, enable, disable.
 
 ### Synopsis
 
-Enable or disable two-factor authentication on your user account or receive an OTP token. More information is available at https://metal.equinix.com/developers/docs/accounts/users/#multi-factor-authentication.
+Enable or disable two-factor authentication on your user account or receive an OTP token. More information is available at https://deploy.equinix.com/developers/docs/metal/identity-access-management/users/.
 
 ### Options
 

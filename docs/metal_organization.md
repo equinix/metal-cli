@@ -4,7 +4,7 @@ Organization operations: create, get, update, payment-methods, and delete.
 
 ### Synopsis
 
-Information and management of Organization-level settings. Documentation on organizations is in https://metal.equinix.com/developers/docs/accounts/organizations/.
+Information and management of Organization-level settings. Documentation on organizations is in https://deploy.equinix.com/developers/docs/metal/identity-access-management/organizations/.
 
 ### Options
 

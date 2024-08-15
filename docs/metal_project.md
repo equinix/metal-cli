@@ -4,7 +4,7 @@ Project operations: create, get, update, delete, and bgp-enable, bgp-config, bgp
 
 ### Synopsis
 
-Information and management for Projects and Project-level BGP. Documentation on Projects is on https://metal.equinix.com/developers/docs/accounts/projects/, and documentation on BGP is on https://metal.equinix.com/developers/docs/bgp/bgp-on-equinix-metal/.
+Information and management for Projects and Project-level BGP. Documentation on Projects is on https://deploy.equinix.com/developers/docs/metal/projects/creating-a-project/, and documentation on BGP is on https://deploy.equinix.com/developers/docs/metal/bgp/bgp-on-equinix-metal/.
 
 ### Options
 
