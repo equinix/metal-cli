@@ -4,7 +4,7 @@ Capacity operations: get, check
 
 ### Synopsis
 
-Capacity operations. For more information on capacity in metros, visit https://deploy.equinix.com/developers/docs/metal/locations/capacity/. For more information on capacity in facilities, visit https://deploy.equinix.com/developers/docs/metal/locations/facilities/.
+Capacity operations. For more information on capacity in metros, visit https://deploy.equinix.com/developers/docs/metal/locations/metros/ For more information on capacity in facilities, visit https://deploy.equinix.com/developers/docs/metal/locations/facilities/.
 
 ### Options
 
