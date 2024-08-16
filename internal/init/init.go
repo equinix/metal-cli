@@ -78,7 +78,7 @@ func (c *Client) NewCommand() *cobra.Command {
 				config = c.Servicer.DefaultConfig(true)
 			}
 
-			fmt.Print("Equinix Metal API Tokens can be obtained through the portal at https://console.equinix.com/profile/api-keys\nSee https://metal.equinix.com/developers/docs/accounts/users/ for more details.\n\n")
+			fmt.Print("Equinix Metal API Tokens can be obtained through the portal at https://console.equinix.com/profile/api-keys\nSee https://deploy.equinix.com/developers/docs/metal/identity-access-management/users/ for more details.\n\n")
 			fmt.Print("User Token (hidden): ")
 			b, err := term.ReadPassword(int(syscall.Stdin))
 			if err != nil {

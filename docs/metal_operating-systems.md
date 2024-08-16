@@ -4,7 +4,7 @@ Operating system operations: get.
 
 ### Synopsis
 
-Information on available operating systems. For more information on which operating systems Equinix Metal offers, visit https://metal.equinix.com/developers/docs/operating-systems/supported/.
+Information on available operating systems. For more information on which operating systems Equinix Metal offers, visit https://deploy.equinix.com/developers/docs/metal/operating-systems/supported/.
 
 ### Options
 

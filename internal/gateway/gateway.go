@@ -39,7 +39,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Use:     `gateway`,
 		Aliases: []string{"gateways", "metal-gateway", "metal-gateways"},
 		Short:   "Metal Gateway operations: create, delete, and retrieve.",
-		Long:    "A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For more information, visit https://metal.equinix.com/developers/docs/networking/metal-gateway/.",
+		Long:    "A Metal Gateway provides a single IPv4 address as a gateway for a subnet. For more information, visit https://deploy.equinix.com/developers/docs/metal/networking/metal-gateway/.",
 
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {

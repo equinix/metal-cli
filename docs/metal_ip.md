@@ -4,7 +4,7 @@ IP address, reservations, and assignment operations: assign, unassign, remove, a
 
 ### Synopsis
 
-IP address and subnet operations, including requesting IPv4 and IPv6 addresses, assigning and removing IPs to servers, and getting information about subnets and their usage. For more information is available on https://metal.equinix.com/developers/docs/networking/ip-addresses/.
+IP address and subnet operations, including requesting IPv4 and IPv6 addresses, assigning and removing IPs to servers, and getting information about subnets and their usage. For more information is available on https://deploy.equinix.com/developers/docs/metal/networking/ip-addresses/.
 
 ### Options
 

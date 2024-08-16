@@ -4,7 +4,7 @@ Plan operations: get.
 
 ### Synopsis
 
-Information on server plans. For more information on the different Equinix Metal severs, visit https://metal.equinix.com/developers/docs/hardware/standard-servers/.
+Information on server plans. For more information on the different Equinix Metal severs, visit https://deploy.equinix.com/developers/docs/metal/hardware/standard-servers/.
 
 ### Options
 

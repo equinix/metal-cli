@@ -4,7 +4,7 @@ Virtual network (VLAN) operations : create, get, delete.
 
 ### Synopsis
 
-Managing Virtual Networks on a Project. VLAN assignments to a server's ports is available through the `ports` command. For more information on how VLANs work in Equinix Metal, visit https://metal.equinix.com/developers/docs/layer2-networking/vlans/.
+Managing Virtual Networks on a Project. VLAN assignments to a server's ports is available through the `ports` command. For more information on how VLANs work in Equinix Metal, visit https://deploy.equinix.com/developers/docs/metal/layer2-networking/vlans/.
 
 ### Options
 

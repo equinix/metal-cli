@@ -4,7 +4,7 @@ Hardware reservation operations: get, move.
 
 ### Synopsis
 
-Information and operations on Hardware Reservations. Provisioning specific devices from a reservation can be performed with the `metal device` command. Documentation is available on https://metal.equinix.com/developers/docs/deploy/reserved/.
+Information and operations on Hardware Reservations. Provisioning specific devices from a reservation can be performed with the `metal device` command. Documentation is available on https://deploy.equinix.com/developers/docs/metal/deploy/reserved/.
 
 ### Options
 

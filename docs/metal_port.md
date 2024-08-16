@@ -4,7 +4,7 @@ Port operations: get, convert, vlans.
 
 ### Synopsis
 
-Information and operations for converting ports between networking modes and managing VLAN assignments to ports. For more information on the different modes, ports, and VLANs, visit https://metal.equinix.com/developers/docs/layer2-networking/overview/.
+Information and operations for converting ports between networking modes and managing VLAN assignments to ports. For more information on the different modes, ports, and VLANs, visit https://deploy.equinix.com/developers/docs/metal/layer2-networking/overview/.
 
 ### Options
 
