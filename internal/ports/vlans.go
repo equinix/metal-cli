@@ -48,7 +48,7 @@ func (c *Client) Vlans() *cobra.Command {
 
   # Assigns VXLAN 1234 to the port and makes it the Native VLAN:
   metal port vlans -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 --native=1234`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := metal.NewPortVlanAssignmentBatchCreateInput()

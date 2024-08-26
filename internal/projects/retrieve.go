@@ -47,9 +47,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			if projectID != "" && projectName != "" {
-				return fmt.Errorf("Must specify only one of project-id and project name")
-			}
+
 			inc := c.Servicer.Includes(nil)
 			exc := c.Servicer.Excludes(nil)
 
@@ -104,5 +102,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
 	retrieveProjectCmd.Flags().StringVarP(&projectName, "project", "n", "", "The name of the project.")
 	retrieveProjectCmd.Flags().StringVarP(&projectID, "id", "i", "", "The project's UUID, which can be specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
+	retrieveProjectCmd.MarkFlagsMutuallyExclusive("id", "project")
+	retrieveProjectCmd.Args = cobra.NoArgs
 	return retrieveProjectCmd
 }

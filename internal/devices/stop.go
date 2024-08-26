@@ -36,7 +36,7 @@ func (c *Client) Stop() *cobra.Command {
 		Long:  "Stops or powers off a device that is currently started or powered on.",
 		Example: `  # Stops the specified device:
   metal device stop --id [device_UUID]`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			DeviceAction := metal.NewDeviceActionInput("power_off")

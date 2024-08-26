@@ -70,6 +70,7 @@ func (c *Client) NewCommand() *cobra.Command {
   organization-id: 253e9cf1-5b3d-41f5-a4fa-839c130c8c1d`,
 
 		DisableFlagsInUseLine: true,
+		Args:                  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceUsage = true

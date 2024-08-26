@@ -43,7 +43,7 @@ func (c *Client) DeleteBgpNeighbors() *cobra.Command {
 
 	BGP Dynamic Neighbor deletion initiated. Please check 'metal gateway get-bgp-dynamic-neighbor -i 9c56fa1d-ec05-470b-a938-0e5dd6a1540c for status
 `,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

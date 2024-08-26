@@ -24,6 +24,7 @@ func (c *Client) UpdateRoute() *cobra.Command {
 		Example: ` #Requests a VRF Route be redeployed/update across the network.
 	
 	metal vrf update-route [-i <VrfID>] [-p <prefix>] [-n nextHop] [-t <tags> ]`,
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			inc := []string{}

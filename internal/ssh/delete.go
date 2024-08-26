@@ -54,7 +54,7 @@ func (c *Client) Delete() *cobra.Command {
   
   # Deletes an SSH key, skipping confirmation:
   metal ssh-key delete -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -f`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

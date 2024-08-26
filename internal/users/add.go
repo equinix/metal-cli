@@ -44,7 +44,7 @@ func (c *Client) Add() *cobra.Command {
 		Example: `  # Adds a user to a project with admin role:
   metal user add --email user@example.org --roles admin --project-id 3b0795ba-fd0b-4a9e-83a7-063e5e12409d
 `,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			invitationInput := metal.NewInvitationInput(email)

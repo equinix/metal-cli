@@ -18,6 +18,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"vc"},
 		Short:   "virtual-circuit operations: create, get, update, delete",
 		Long:    "For more information on https://deploy.equinix.com/developers/docs/metal/interconnections.",
+		Args:    cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

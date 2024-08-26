@@ -51,7 +51,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
   # Retrieve all events of a device:
   metal event get -d ca614540-fbd4-4dbb-9689-457c6ccc8353`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			var events []metal.Event

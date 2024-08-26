@@ -18,6 +18,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"hardware-reservations", "hardware"},
 		Short:   "Hardware reservation operations: get, move.",
 		Long:    "Information and operations on Hardware Reservations. Provisioning specific devices from a reservation can be performed with the `metal device` command. Documentation is available on https://deploy.equinix.com/developers/docs/metal/deploy/reserved/.",
+		Args:    cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

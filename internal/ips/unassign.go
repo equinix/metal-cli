@@ -36,7 +36,7 @@ func (c *Client) Unassign() *cobra.Command {
 		Long:  "Unassigns an subnet and IP address assignment from a device by its assignment ID. ",
 		Example: `  # Unassigns an IP address assignment:
   metal ip unassign --id abd8674b-96c4-4271-92f5-2eaf5944c86f`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			_, err := c.IPService.DeleteIPAddress(context.Background(), assignmentID).Execute()

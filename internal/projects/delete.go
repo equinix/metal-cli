@@ -54,7 +54,7 @@ func (c *Client) Delete() *cobra.Command {
   
   # Deletes project 50693ba9-e4e4-4d8a-9eb2-4840b11e9375, skipping confirmation:
   metal project delete -i 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 -f`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
