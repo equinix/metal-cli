@@ -63,10 +63,6 @@ func (c *Client) Update() *cobra.Command {
 				deviceUpdate.Description = &description
 			}
 
-			if userdata != "" && userdataFile != "" {
-				return fmt.Errorf("either userdata or userdata-file should be set")
-			}
-
 			if userdataFile != "" {
 				userdataRaw, readErr := os.ReadFile(userdataFile)
 				if readErr != nil {
@@ -135,5 +131,7 @@ func (c *Client) Update() *cobra.Command {
 	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "Add or update the URL of the iPXE script.")
 	updateDeviceCmd.Flags().StringVarP(&customdata, "customdata", "c", "", "Adds or updates custom data to be included with your device's metadata.")
 	_ = updateDeviceCmd.MarkFlagRequired("id")
+	updateDeviceCmd.MarkFlagsMutuallyExclusive("userdata", "userdata-file")
+	updateDeviceCmd.Args = cobra.NoArgs
 	return updateDeviceCmd
 }
