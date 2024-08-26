@@ -45,7 +45,7 @@ func (c *Client) Update() *cobra.Command {
 	)
 	// updateDeviceCmd represents the updateDevice command
 	updateDeviceCmd := &cobra.Command{
-		Use:   `update -i <device_id> [-H <hostname>] [-d <description>] [--locked <boolean>] [-t <tags>] [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-s <ipxe_script_url>] [--always-pxe=<true|false>]`,
+		Use:   `update -i <device_id> [-H <hostname>] [-d <description>] [--locked=<true|false>] [-t <tags>] [-u <userdata> | --userdata-file <filepath>] [-c <customdata>] [-s <ipxe_script_url>] [--always-pxe=<true|false>]`,
 		Short: "Updates a device.",
 		Long:  "Updates the hostname of a device. Updates or adds a description, tags, userdata, custom data, and iPXE settings for an already provisioned device. Can also lock or unlock future changes to the device.",
 		Example: `  # Updates the hostname of a device:
