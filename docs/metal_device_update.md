@@ -27,7 +27,7 @@ metal device update -i <device_id> [-H <hostname>] [-d <description>] [--locked=
   -H, --hostname string          The new hostname of the device.
   -i, --id string                The UUID of the device.
   -s, --ipxe-script-url string   Add or update the URL of the iPXE script.
-  -l, --locked bools             Locks or unlocks the device for future changes (<true|false>). (default [])
+  -l, --locked                   Locks or unlocks the device for future changes (<true|false>).
   -t, --tags strings             Adds or updates the tags for the device --tags="tag1,tag2".
   -u, --userdata string          Adds or updates the userdata for the device.
       --userdata-file string     Path to a userdata file for device initialization. Can not be used with --userdata.

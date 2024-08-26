@@ -76,14 +76,11 @@ func (c *Client) Update() *cobra.Command {
 			}
 
 			if cmd.Flag("locked").Changed {
-				locked, err := cmd.Flags().GetBoolSlice("locked")
+				locked, err := cmd.Flags().GetBool("locked")
 				if err != nil {
 					return fmt.Errorf("could not parse locked value: %w", err)
 				}
-				if len(locked) > 1 {
-					return fmt.Errorf("parameter locked may only be set once")
-				}
-				deviceUpdate.Locked = &locked[0]
+				deviceUpdate.Locked = &locked
 			}
 
 			if len(tags) > 0 {
@@ -125,7 +122,7 @@ func (c *Client) Update() *cobra.Command {
 	updateDeviceCmd.Flags().StringVarP(&description, "description", "d", "", "Adds or updates the description for the device.")
 	updateDeviceCmd.Flags().StringVarP(&userdata, "userdata", "u", "", "Adds or updates the userdata for the device.")
 	updateDeviceCmd.Flags().StringVarP(&userdataFile, "userdata-file", "", "", "Path to a userdata file for device initialization. Can not be used with --userdata.")
-	updateDeviceCmd.Flags().BoolSliceP("locked", "l", []bool{}, "Locks or unlocks the device for future changes (<true|false>).")
+	updateDeviceCmd.Flags().BoolP("locked", "l", false, "Locks or unlocks the device for future changes (<true|false>).")
 	updateDeviceCmd.Flags().StringSliceVarP(&tags, "tags", "t", []string{}, `Adds or updates the tags for the device --tags="tag1,tag2".`)
 	updateDeviceCmd.Flags().BoolVarP(&alwaysPXE, "always-pxe", "a", false, "Updates the always_pxe toggle for the device (<true|false>).")
 	updateDeviceCmd.Flags().StringVarP(&ipxescripturl, "ipxe-script-url", "s", "", "Add or update the URL of the iPXE script.")
