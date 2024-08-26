@@ -19,7 +19,7 @@ import (
 
 const (
 	ConsumerToken = ""
-	URL           = "https://api.equinix.com/metal/v1/"
+	URL           = "https://api.equinix.com/metal/v1"
 	Version       = "metal"
 )
 
