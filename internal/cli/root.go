@@ -25,7 +25,8 @@ const (
 
 type Client struct {
 	// metalApiClient client
-	metalApiClient *metal.APIClient
+	metalApiClient  *metal.APIClient
+	metalApiConnect func(c *Client, httpClient *http.Client) *metal.APIClient
 
 	includes      *[]string // nolint:unused
 	excludes      *[]string // nolint:unused
@@ -56,11 +57,30 @@ func (t *headerTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	return http.DefaultTransport.RoundTrip(r)
 }
 
-func NewClient(consumerToken, apiURL, Version string) *Client {
-	return &Client{
-		consumerToken: consumerToken,
-		apiURL:        apiURL,
-		Version:       Version,
+type ClientOpt func(*Client)
+
+func NewClient(consumerToken, apiURL, Version string, opts ...ClientOpt) *Client {
+	client := &Client{
+		consumerToken:   consumerToken,
+		apiURL:          apiURL,
+		Version:         Version,
+		metalApiConnect: DefaultMetalApiConnect,
+	}
+	for _, opt := range opts {
+		opt(client)
+	}
+
+	return client
+}
+
+func (c *Client) SetMetalAPIConnect(f func(c *Client, httpClient *http.Client) *metal.APIClient) {
+	c.metalApiConnect = f
+}
+
+// WithMetalApiConnect sets the function to connect to the Equinix Metal API
+func WithMetalApiConnect(metalApiConnect func(c *Client, httpClient *http.Client) *metal.APIClient) ClientOpt {
+	return func(c *Client) {
+		c.metalApiConnect = metalApiConnect
 	}
 }
 
@@ -71,7 +91,7 @@ func checkEnvForDebug() bool {
 	return os.Getenv(debugVar) != ""
 }
 
-func (c *Client) metalApiConnect(httpClient *http.Client) error {
+func DefaultMetalApiConnect(c *Client, httpClient *http.Client) *metal.APIClient {
 	configuration := metal.NewConfiguration()
 	configuration.Debug = checkEnvForDebug()
 	configuration.AddDefaultHeader("X-Auth-Token", c.Token())
@@ -81,9 +101,7 @@ func (c *Client) metalApiConnect(httpClient *http.Client) error {
 			URL: c.apiURL,
 		},
 	}
-	metalgoClient := metal.NewAPIClient(configuration)
-	c.metalApiClient = metalgoClient
-	return nil
+	return metal.NewAPIClient(configuration)
 }
 
 func (c *Client) Config(cmd *cobra.Command) *viper.Viper {
@@ -159,10 +177,7 @@ func (c *Client) MetalAPI(cmd *cobra.Command) *metal.APIClient {
 			},
 		}
 
-		err := c.metalApiConnect(httpClient)
-		if err != nil {
-			log.Fatal(err)
-		}
+		c.metalApiClient = c.metalApiConnect(c, httpClient)
 	}
 	return c.metalApiClient
 }
