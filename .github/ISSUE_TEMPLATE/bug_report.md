@@ -7,7 +7,6 @@ labels: bug
 Thank you for helping to improve the CLI!
 Please be sure to search for open issues before raising a new one.
 We use issues for bug reports and feature requests.
-Please find us at https://slack.equinixmetal.com for questions and discussion.
 -->
 
 ### What happened?
