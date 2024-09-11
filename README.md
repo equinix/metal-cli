@@ -2,8 +2,7 @@
 
 [![GitHub release](https://img.shields.io/github/release/equinix/metal-cli/all.svg?style=flat-square)](https://github.com/equinix/metal-cli/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/equinix/metal-cli)](https://goreportcard.com/report/github.com/equinix/metal-cli)
-[![Slack](https://slack.equinixmetal.com/badge.svg)](https://slack.equinixmetal.com)
-[![Twitter Follow](https://img.shields.io/twitter/follow/equinixmetal.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=equinixmetal)
+[![Equinix Community](https://img.shields.io/badge/Equinix%20Community%20-%20%23E91C24?logo=equinixmetal)](https://community.equinix.com)
 
 ## Table of Contents
 
@@ -272,4 +271,3 @@ Details on all available commands can be found by visiting the reference [pages]
 For help with this package:
 
 - Open up a GitHub issue [here](https://github.com/equinix/metal-cli/issues).
-- Contact the [Equinix Metal Community Slack](http://slack.equinixmetal.com).
