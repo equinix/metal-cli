@@ -42,7 +42,7 @@ func (c *Client) Assign() *cobra.Command {
 		Long:  "Assigns an IP address and subnet to a specified device. Returns an assignment ID.",
 		Example: `  # Assigns an IP address to a server:
   metal ip assign -d 060d1626-2481-475a-9789-c6f4bb927303  -a 198.51.100.3/31`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			IPAssignmentInput := metal.NewIPAssignmentInput(address)

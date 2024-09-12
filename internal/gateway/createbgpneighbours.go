@@ -44,7 +44,7 @@ func (c *Client) CreateBgpNeighbors() *cobra.Command {
 
 	metal gateways create-bgp-dynamic-neighbor --id "9c56fa1d-ec05-470b-a938-0e5dd6a1540c" --bgp-neighbor-range "10.70.43.226/29" --asn 65000
 `,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

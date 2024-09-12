@@ -46,6 +46,7 @@ func (c *Client) Reinstall() *cobra.Command {
   
   # Reinstalls a device with Ubuntu 22.04 while preserving the data on non-OS disks:
   metal device reinstall -d 50382f72-02b7-4b40-ac8d-253713e1e174 -O ubuntu_22_04 --preserve-data`,
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			DeviceAction := metal.NewDeviceActionInput("reinstall")

@@ -39,7 +39,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"users"},
 		Short:   "User operations: get and add.",
 		Long:    "Adding users or getting their details. For more information on user and account management, visit https://deploy.equinix.com/developers/docs/metal/identity-access-management/users/ in the Equinix Metal documentation.",
-
+		Args:    cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

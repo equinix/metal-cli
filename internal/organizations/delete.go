@@ -56,7 +56,7 @@ func (c *Client) Delete() *cobra.Command {
   
   # Deletes an organization, skipping confirmation:
   metal organization delete -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 -f`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

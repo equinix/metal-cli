@@ -38,7 +38,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		Long:    "Retrieves a list of all VLANs for the specified project.",
 		Example: `  # Lists virtual networks for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
   metal virtual-network get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			request := c.Service.FindVirtualNetworks(cmd.Context(), projectID).Include(c.Servicer.Includes(nil)).Exclude(c.Servicer.Excludes(nil))

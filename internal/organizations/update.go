@@ -37,7 +37,7 @@ func (c *Client) Update() *cobra.Command {
 		Long:  "Updates the specified organization. You can update the name, website, Twitter, or logo.",
 		Example: `  # Updates the name of an organization:
   metal organization update -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 --name test-cluster02`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := metal.NewOrganizationInput()

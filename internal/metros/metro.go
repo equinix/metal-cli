@@ -38,6 +38,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"metro"},
 		Short:   "Metro operations: get.",
 		Long:    "Get information on Metro locations. For more information on https://deploy.equinix.com/developers/docs/metal/locations/metros/.",
+		Args:    cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

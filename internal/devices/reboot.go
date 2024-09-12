@@ -37,7 +37,7 @@ func (c *Client) Reboot() *cobra.Command {
 		Long:  "Reboots the specified device.",
 		Example: `  # Reboots the specified device:
   metal device reboot --id 26a9da5f-a0db-41f6-8467-827e144e59a7`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			DeviceAction := metal.NewDeviceActionInput("reboot")

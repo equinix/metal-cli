@@ -40,6 +40,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"ports"},
 		Short:   "Port operations: get, convert, vlans.",
 		Long:    "Information and operations for converting ports between networking modes and managing VLAN assignments to ports. For more information on the different modes, ports, and VLANs, visit https://deploy.equinix.com/developers/docs/metal/layer2-networking/overview/.",
+		Args:    cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

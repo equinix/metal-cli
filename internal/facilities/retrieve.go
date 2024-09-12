@@ -18,7 +18,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		Long:    "Retrieves a list of facilities available to the current user.",
 		Example: `  # Lists facilities for current user:
   metal facilities get`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var (
 				facilityList *metalv1.FacilityList

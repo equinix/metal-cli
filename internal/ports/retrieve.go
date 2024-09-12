@@ -38,7 +38,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		Long:    "Retrieves the details of the specified port. Details of an port are only available to its members.",
 		Example: `  # Retrieves details of a port:
   metal port get -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			port, _, err := c.PortService.FindPortById(context.Background(), portID).

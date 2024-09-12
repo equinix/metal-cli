@@ -42,7 +42,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
   # Retrieve the details of a specific virtual-circuit:
   metal vc get -i e9a969b3-8911-4667-9d99-57cd3dd4ef6f`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

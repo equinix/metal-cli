@@ -41,7 +41,7 @@ func (c *Client) Retrieve() *cobra.Command {
   
   # Returns information on user 3b0795ba-fd0b-4a9e-83a7-063e5e12409d:
   metal user get --i 3b0795ba-fd0b-4a9e-83a7-063e5e12409d`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			var err error
