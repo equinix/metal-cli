@@ -796,13 +796,13 @@ func CreateTestBgpDynamicNeighbor(t *testing.T, gatewayId, iprange string, asn i
 	t.Helper()
 
 	bgpNeighborCreateInput := metalv1.NewBgpDynamicNeighborCreateInput(iprange, asn)
-	neighbor, _, err := TestApiClient.VRFsApi.
+	neighbor, _, err := TestApiClient.MetalGatewaysApi.
 		CreateBgpDynamicNeighbor(context.Background(), gatewayId).
 		BgpDynamicNeighborCreateInput(*bgpNeighborCreateInput).
 		Include([]string{"created_by"}).
 		Execute()
 	if err != nil {
-		t.Fatalf("Error when calling `VRFsApi.CreateBgpDynamicNeighbor`: %v\n", err)
+		t.Fatalf("Error when calling `MetalGatewaysApi.CreateBgpDynamicNeighbor`: %v\n", err)
 	}
 
 	t.Cleanup(func() {

@@ -4,10 +4,10 @@ Updates the specified organization.
 
 ### Synopsis
 
-Updates the specified organization. You can update the name, website, Twitter, or logo.
+Updates the specified organization. You can update the name, website, or Twitter.
 
 ```
-metal organization update -i <organization_UUID> [-n <name>] [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>] [flags]
+metal organization update -i <organization_UUID> [-n <name>] [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [flags]
 ```
 
 ### Examples
@@ -23,7 +23,6 @@ metal organization update -i <organization_UUID> [-n <name>] [-d <description>] 
   -d, --description string   User-friendly description of the organization.
   -h, --help                 help for update
   -i, --id string            An organization UUID.
-  -l, --logo string          A logo image URL for the organization.
   -n, --name string          New name for the organization.
   -t, --twitter string       A Twitter URL of the organization.
   -w, --website string       A website URL for the organization.

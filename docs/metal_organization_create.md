@@ -7,7 +7,7 @@ Creates an organization.
 Creates a new organization with the current user as the organization's owner. 
 
 ```
-metal organization create -n <name> [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>] [flags]
+metal organization create -n <name> [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [flags]
 ```
 
 ### Examples
@@ -25,7 +25,6 @@ metal organization create -n <name> [-d <description>] [-w <website_URL>] [-t <t
 ```
   -d, --description string   Description of the organization.
   -h, --help                 help for create
-  -l, --logo string          A Logo image URL.]
   -n, --name string          Name of the organization.
   -t, --twitter string       Twitter URL of the organization.
   -w, --website string       Website URL of the organization.
