@@ -44,7 +44,7 @@ func TestBgpDynamicNeighbors_Create(t *testing.T) {
 				out := helper.ExecuteAndCaptureOutput(t, root)
 
 				apiClient := helper.TestClient()
-				neighbors, _, err := apiClient.VRFsApi.
+				neighbors, _, err := apiClient.MetalGatewaysApi.
 					GetBgpDynamicNeighbors(context.Background(), gway.GetId()).
 					Include([]string{"created_by"}).
 					Execute()

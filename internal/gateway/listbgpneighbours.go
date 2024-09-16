@@ -24,7 +24,7 @@ func (c *Client) ListBgpNeighbors() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-			n, _, err := c.VrfService.
+			n, _, err := c.Service.
 				GetBgpDynamicNeighbors(context.Background(), gatewayId).
 				Include(c.Servicer.Includes([]string{"created_by"})).
 				Exclude(c.Servicer.Excludes([]string{})).
