@@ -64,7 +64,7 @@ func (c *Client) Create() *cobra.Command {
 
   # Provisions a c3.medium.x86 in Silicon Valley, running Rocky Linux, from a hardware reservation:
   metal device create -p $METAL_PROJECT_ID -P c3.medium.x86 -m sv -H test-rocky -O rocky_8 -r 47161704-1715-4b45-8549-fb3f4b2c32c7`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if userdata != "" && userdataFile != "" {
 				return fmt.Errorf("either userdata or userdata-file should be set")

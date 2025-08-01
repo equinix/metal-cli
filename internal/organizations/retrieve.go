@@ -40,7 +40,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
   # Retrieves details of an organization:
   metal organization get -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

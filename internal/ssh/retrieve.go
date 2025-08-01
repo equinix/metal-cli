@@ -49,6 +49,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
   # Retrieve all project SSH keys
   metal ssh-key get --project-ssh-keys --project-id [project_UUID]`,
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			if sshKeyID == "" {

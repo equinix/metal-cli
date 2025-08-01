@@ -18,7 +18,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"vrf"},
 		Short:   "VRF operations : create, get, delete",
 		Long:    "VRF operations : It defines a collection of customer-managed IP blocks that can be used in BGP peering on one or more virtual networks and basic operations",
-
+		Args:    cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

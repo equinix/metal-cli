@@ -39,7 +39,7 @@ func (c *Client) Update() *cobra.Command {
   
   # Updates the specified project with a new payment method:
   metal project update -i $METAL_PROJECT_ID -m e2fcdf91-b6dc-4d6a-97ad-b26a14b66839`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := metal.NewProjectUpdateInput()

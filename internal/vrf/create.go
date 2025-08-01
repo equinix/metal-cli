@@ -29,6 +29,7 @@ func (c *Client) Create() *cobra.Command {
 		Example: ` # Creates an Creates a Virtual Routing and Forwarding(VRF) for a specified project.
 	
 	metal vrf create [-p <project_id] [-d <description>] [-m <metro>] [-n <name>] [-a <localASN>] [-r <ipranges>] [-t <tags> ]`,
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

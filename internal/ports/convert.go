@@ -60,6 +60,7 @@ func (c *Client) Convert() *cobra.Command {
   # Converts port to layer-3 bonded with public IPv4 and public IPv6:
   metal port convert -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 -2=false -b -4 -6`,
 		// TODO: can we add ip-reservation-id?
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

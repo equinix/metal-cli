@@ -47,7 +47,7 @@ func (c *Client) Create() *cobra.Command {
   
   # Creates a new organization with name, website, and twitter:
   metal organization create -n test-org -w www.metal.equinix.com -t https://twitter.com/equinixmetal `,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

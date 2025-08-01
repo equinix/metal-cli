@@ -39,7 +39,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"server", "servers", "devices"},
 		Short:   "Device operations: create, get, update, delete, reinstall, start, stop, and reboot.",
 		Long:    "Device operations that control server provisioning, metadata, and basic operations.",
-
+		Args:    cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

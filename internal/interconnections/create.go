@@ -33,7 +33,7 @@ func (c *Client) Create() *cobra.Command {
 			var interconn *metal.Interconnection
 			var err error
 
-			if err := validInputArgs(projectID, organizationID, connType, vlans, vrfs, svcTokenType); err != nil {
+			if err := validInputArgs(connType, vlans, vrfs, svcTokenType); err != nil {
 				return err
 			}
 
@@ -96,6 +96,10 @@ func (c *Client) Create() *cobra.Command {
 	_ = createInterconnectionsCmd.MarkFlagRequired("metro")
 	_ = createInterconnectionsCmd.MarkFlagRequired("redundancy")
 	_ = createInterconnectionsCmd.MarkFlagRequired("type")
+
+	createInterconnectionsCmd.MarkFlagsOneRequired("organization-id", "project-id")
+	createInterconnectionsCmd.Args = cobra.NoArgs
+
 	return createInterconnectionsCmd
 }
 
@@ -125,11 +129,7 @@ func (c *Client) handleCreate(projectID, organizationID string,
 	return interconn, err
 }
 
-func validInputArgs(projectID, organizationID, connType string, vlans []int32, vrfs []string, svcTokenType string) error {
-	if projectID == "" && organizationID == "" {
-		return errors.New("could you provide at least either of projectID OR organizationID")
-	}
-
+func validInputArgs(connType string, vlans []int32, vrfs []string, svcTokenType string) error {
 	if (vlanFabricVcCreate(connType, vlans) || vrfsFabricVcCreate(connType, vrfs)) && svcTokenType == "" {
 		return errors.New("flag 'service-token-type' is required for vlan or vrfs fabric VC create")
 	}

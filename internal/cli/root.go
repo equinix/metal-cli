@@ -198,7 +198,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Short:             "Command line interface for Equinix Metal",
 		Long:              `Command line interface for Equinix Metal`,
 		DisableAutoGenTag: true,
-
+		Args:              cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			c.Config(cmd)
 		},

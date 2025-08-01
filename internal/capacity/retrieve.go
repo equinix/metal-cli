@@ -49,7 +49,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
   # Returns c3.large.arm and c3.medium.x86 capacity in the Silicon Valley, New York, and Dallas metros:
   metal capacity get --metros sv,ny,da -P c3.large.arm,c3.medium.x86`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var err error
 			var locationField string

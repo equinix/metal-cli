@@ -37,7 +37,7 @@ func (c *Client) Start() *cobra.Command {
 		Long:  "Starts or powers on a device that is currently stopped or powered off.",
 		Example: `  # Starts the specified device:
   metal device start --id 26a9da5f-a0db-41f6-8467-827e144e59a7`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			DeviceAction := metal.NewDeviceActionInput("power_on")

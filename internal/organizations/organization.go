@@ -38,7 +38,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"organizations", "org", "orgs"},
 		Short:   "Organization operations: create, get, update, payment-methods, and delete.",
 		Long:    "Information and management of Organization-level settings. Documentation on organizations is in https://deploy.equinix.com/developers/docs/metal/identity-access-management/organizations/.",
-
+		Args:    cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

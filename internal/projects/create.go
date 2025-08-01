@@ -45,7 +45,7 @@ func (c *Client) Create() *cobra.Command {
   
   # Creates a new project named dev-cluster03 in the specified organization with a payment method:
   metal project create -n dev-cluster03 -O 814b09ca-0d0c-4656-9de0-4ce65c6faf70 -m ab1fbdaa-8b25-4c3e-8360-e283852e3747`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := metal.NewProjectCreateFromRootInput(name)

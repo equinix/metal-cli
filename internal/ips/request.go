@@ -37,7 +37,7 @@ func (c *Client) Request() *cobra.Command {
   metal ip request -p $METAL_PROJECT_ID -t public_ipv4 -q 4 -m da
 
   metal ip request -v df18fbd8-2919-4104-a042-5d42a05b8eed -t vrf --cidr 24 -n 172.89.1.0 --tags foo --tags bar --customdata '{"my":"goodness"}' --details "i don't think VRF users need this or will see it after submitting the request"`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var (
 				req                         *metal.IPReservationRequestInput
