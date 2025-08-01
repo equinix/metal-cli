@@ -58,7 +58,7 @@ func (c *Client) CreateBgpNeighbors() *cobra.Command {
 				return nil
 			}
 
-			bgpNeighbor, _, err := c.VrfService.
+			bgpNeighbor, _, err := c.Service.
 				CreateBgpDynamicNeighbor(context.Background(), gatewayId).
 				BgpDynamicNeighborCreateInput(*metal.NewBgpDynamicNeighborCreateInput(bgpNeighborRange, asn)).
 				Include(c.Servicer.Includes([]string{"created_by"})).
