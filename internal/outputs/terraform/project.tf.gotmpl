@@ -1,0 +1,7 @@
+# terraform import equinix_metal_project.{{.Name}} {{.ID}}
+resource "equinix_metal_project" "{{.Name}}" {
+    name = "{{.Name}}"
+    organization_id = "{{.Organization.URL | hrefToID}}"
+    # TODO: bgp_config
+}
+

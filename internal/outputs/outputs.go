@@ -7,14 +7,19 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 	"sigs.k8s.io/yaml"
+
+	"github.com/equinix/metal-cli/internal/outputs/crossplane"
+	"github.com/equinix/metal-cli/internal/outputs/terraform"
 )
 
 type Format string
 
 const (
-	FormatTable Format = "table"
-	FormatJSON  Format = "json"
-	FormatYAML  Format = "yaml"
+	FormatTable      Format = "table"
+	FormatJSON       Format = "json"
+	FormatYAML       Format = "yaml"
+	FormatTerraform  Format = "tf"
+	FormatCrossplane Format = "crossplane"
 )
 
 type Outputer interface {
@@ -24,6 +29,24 @@ type Outputer interface {
 
 type Standard struct {
 	Format Format
+}
+
+func outputCrossplane(in interface{}) error {
+	output, err := crossplane.Marshal(in)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(output))
+	return nil
+}
+
+func outputTerraform(in interface{}) error {
+	output, err := terraform.Marshal(in)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(output))
+	return nil
 }
 
 func outputJSON(in interface{}) error {
@@ -49,6 +72,10 @@ func (o *Standard) Output(in interface{}, header []string, data *[][]string) err
 		return outputJSON(in)
 	} else if o.Format == FormatYAML {
 		return outputYAML(in)
+	} else if o.Format == FormatTerraform {
+		return outputTerraform(in)
+	} else if o.Format == FormatCrossplane {
+		return outputCrossplane(in)
 	} else {
 		table := tablewriter.NewWriter(os.Stdout)
 		table.SetAutoWrapText(false)
