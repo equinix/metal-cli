@@ -74,14 +74,25 @@ type vrfMetalGatewayWrapper struct {
 	*metal.VrfMetalGateway
 }
 
-func newGatewayish(gwaysInner metal.MetalGatewayListMetalGatewaysInner) gatewayIsh {
-	if gwaysInner.MetalGateway != nil {
-		return metalGatewayWrapper{gwaysInner.MetalGateway}
+func newGatewayishFromAny(gateways ...any) gatewayIsh {
+	for _, gateway := range gateways {
+		switch g := gateway.(type) {
+		case *metal.MetalGateway:
+			if g == nil {
+				continue
+			}
+			return metalGatewayWrapper{g}
+		case *metal.VrfMetalGateway:
+			if g == nil {
+				continue
+			}
+			return vrfMetalGatewayWrapper{g}
+		default:
+			panic(fmt.Sprintf("unexpected gateway type: %T", gateway))
+		}
 	}
-	if gwaysInner.VrfMetalGateway != nil {
-		return vrfMetalGatewayWrapper{gwaysInner.VrfMetalGateway}
-	}
-	return nil // Return nil if neither type is present
+
+	return nil
 }
 
 func (v vrfMetalGatewayWrapper) GetIpReservation() ipreservationIsh {
@@ -97,44 +108,64 @@ func (v vrfMetalGatewayWrapper) GetVrfName() string {
 }
 
 func (c *Client) Retrieve() *cobra.Command {
-	var projectID string
-
 	// retrieveMetalGatewaysCmd represents the retrieveMetalGateways command
 	retrieveMetalGatewaysCmd := &cobra.Command{
-		Use:     `get -p <project_UUID>`,
+		Use:     `get [-p <project_UUID>] [-i <gateway_UUID>]`,
 		Aliases: []string{"list"},
 		Short:   "Lists Metal Gateways.",
 		Long:    "Retrieves a list of all VLANs for the specified project.",
 		Example: `
   # Lists Metal Gateways for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
-  metal gateways get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c`,
+  metal gateways get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
+  
+  # Gets a Metal Gateway with ID 8404b73c-d18f-4190-8c49-20bb17501f88:
+  metal gateways get -i 8404b73c-d18f-4190-8c49-20bb17501f88`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd.SilenceUsage = true
-			includes := []string{"virtual_network", "ip_reservation", "vrf"}
+			gatewayID, _ := cmd.Flags().GetString("id")
+			projectID, _ := cmd.Flags().GetString("project-id")
 
-			gwayList, _, err := c.Service.
-				FindMetalGatewaysByProject(context.Background(), projectID).
-				Include(c.Servicer.Includes(includes)).
-				Exclude(c.Servicer.Excludes(nil)).
-				Execute()
-			if err != nil {
-				return fmt.Errorf("Could not list Project Metal Gateways: %w", err)
+			if gatewayID == "" && projectID == "" {
+				return fmt.Errorf("either id or project-id should be set")
 			}
 
-			gways := gwayList.GetMetalGateways()
+			cmd.SilenceUsage = true
+			includes := []string{"virtual_network", "ip_reservation", "vrf"}
+			gateways := make([]gatewayIsh, 0)
 
-			data := make([][]string, 0, len(gways))
-			var gateways []gatewayIsh
-
-			for _, gwaysInner := range gways {
-				gway := newGatewayish(gwaysInner)
-				if gway == nil {
-					continue
+			if gatewayID != "" {
+				gateway, _, err := c.Service.FindMetalGatewayById(context.Background(), gatewayID).
+					Include(c.Servicer.Includes(includes)).
+					Exclude(c.Servicer.Excludes(nil)).
+					Execute()
+				if err != nil {
+					return fmt.Errorf("could not get Metal Gateway: %w", err)
+				}
+				gateways = append(gateways, newGatewayishFromAny(gateway.GetActualInstance()))
+			} else {
+				gwayList, _, err := c.Service.
+					FindMetalGatewaysByProject(context.Background(), projectID).
+					Include(c.Servicer.Includes(includes)).
+					Exclude(c.Servicer.Excludes(nil)).
+					Execute()
+				if err != nil {
+					return fmt.Errorf("could not list Project Metal Gateways: %w", err)
 				}
 
-				gateways = append(gateways, gway)
+				gways := gwayList.GetMetalGateways()
 
+				for _, gwaysInner := range gways {
+					gway := newGatewayishFromAny(gwaysInner.MetalGateway, gwaysInner.VrfMetalGateway)
+					if gway == nil {
+						continue
+					}
+					gateways = append(gateways, gway)
+				}
+			}
+
+			data := make([][]string, 0, len(gateways))
+
+			for _, gway := range gateways {
 				address := ""
 				ipReservation := gway.GetIpReservation()
 				if ipReservation != nil {
@@ -162,8 +193,8 @@ func (c *Client) Retrieve() *cobra.Command {
 		},
 	}
 
-	retrieveMetalGatewaysCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
-	_ = retrieveMetalGatewaysCmd.MarkFlagRequired("project-id")
+	retrieveMetalGatewaysCmd.Flags().StringP("project-id", "p", "", "The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.")
+	retrieveMetalGatewaysCmd.Flags().StringP("id", "i", "", "The UUID of a gateway.")
 
 	return retrieveMetalGatewaysCmd
 }

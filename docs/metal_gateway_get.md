@@ -7,7 +7,7 @@ Lists Metal Gateways.
 Retrieves a list of all VLANs for the specified project.
 
 ```
-metal gateway get -p <project_UUID> [flags]
+metal gateway get [-p <project_UUID>] [-i <gateway_UUID>] [flags]
 ```
 
 ### Examples
@@ -16,12 +16,16 @@ metal gateway get -p <project_UUID> [flags]
 
   # Lists Metal Gateways for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
   metal gateways get -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c
+  
+  # Gets a Metal Gateway with ID 8404b73c-d18f-4190-8c49-20bb17501f88:
+  metal gateways get -i 8404b73c-d18f-4190-8c49-20bb17501f88
 ```
 
 ### Options
 
 ```
   -h, --help                help for get
+  -i, --id string           The UUID of a gateway.
   -p, --project-id string   The project's UUID. This flag is required, unless specified in the config created by metal init or set as METAL_PROJECT_ID environment variable.
 ```
 
