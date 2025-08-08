@@ -41,7 +41,7 @@ func (c *Client) Enable() *cobra.Command {
 
   # Enable two factor authentication via an application.
   metal 2fa enable -a -c <OTP_code>`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if sms == app {
 				return fmt.Errorf("either sms or app should be set")

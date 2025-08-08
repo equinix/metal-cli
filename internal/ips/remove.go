@@ -36,7 +36,7 @@ func (c *Client) Remove() *cobra.Command {
 		Long:  "Removes an IP address reservation from a project. Any subnets and IP addresses in the reservation will no longer be able to be used by your devices.",
 		Example: `  # Removes an IP address reservation:
   metal ip remove --id a9dfc9d5-ba1a-4d11-8cfc-6e30b9630876`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			_, err := c.IPService.DeleteIPAddress(context.Background(), reservationID).Execute()

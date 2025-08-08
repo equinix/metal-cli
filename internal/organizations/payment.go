@@ -37,7 +37,7 @@ func (c *Client) PaymentMethods() *cobra.Command {
 		Long:    "Retrieves a list of payment methods for the specified organization if the current user is a member with the proper role.",
 		Example: `  # Lists the payment methods for an organization:
   metal organization payment-methods --id 3bd5bf07-6094-48ad-bd03-d94e8712fdc8`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

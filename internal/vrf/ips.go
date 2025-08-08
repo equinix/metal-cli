@@ -25,6 +25,7 @@ func (c *Client) Ips() *cobra.Command {
 
 	# Retrieve a specific IP Reservation for a VRF
 	metal vrf ips [-v <vrf-id] [-i <ip-id>]`,
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

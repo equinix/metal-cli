@@ -48,7 +48,7 @@ func (c *Client) Create() *cobra.Command {
 
   # Creates a Metal Gateway on the VLAN with a Private 10.x.x.x/28 subnet:
   metal gateway create -p $METAL_PROJECT_ID --virtual-network 77e6d57a-d7a4-4816-b451-cf9b043444e2 --private-subnet-size 16`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			includes := []string{"virtual_network", "ip_reservation"}

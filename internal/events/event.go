@@ -42,6 +42,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"events"},
 		Short:   "Events operations: get.",
 		Long:    "Events information for organizations, projects, devices, and the current user.",
+		Args:    cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

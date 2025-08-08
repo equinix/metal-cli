@@ -96,7 +96,7 @@ func (c *Client) Create() *cobra.Command {
   metal vc create -c 81c9cb9e-b02f-4c73-9e04-06702f1380a0 -p 9c8f0c71-591d-42fe-9519-2f632761e2da -P b4673e33-0f48-4948-961a-c31d6edf64f8 -n test-inter  -d test-interconnection -v 15315810-2fda-48b8-b8cd-441ebab684b5 -V 1010 -s 100
   
   metal vc create [-c connection_id] [-p port_id] [-P <project_id> ] [-n <name>] [-d <description>] [-v <vrf-id>] [-M <md5sum>] [-a <peer-asn>] [-S <subnet>] [-c <customer_ip>] [-m <metal_ip>]`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			var (

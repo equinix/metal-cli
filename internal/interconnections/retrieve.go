@@ -26,7 +26,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
   # Retrieve all interconnection of a project:
   metal interconnections get -p 1867ee8f-6a11-470a-9505-952d6a324040 `,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			var interConns []metal.Interconnection

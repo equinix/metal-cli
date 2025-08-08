@@ -68,6 +68,7 @@ func (c *Client) NewCommand() *cobra.Command {
   metal env | source`,
 
 		DisableFlagsInUseLine: true,
+		Args:                  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var formatter func(token, orgID, projID, conPath string) map[string]string
 

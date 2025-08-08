@@ -40,7 +40,7 @@ func (c *Client) Create() *cobra.Command {
 		Long:  "Adds an SSH key for the current user's account. The key will then be added to the user's servers at provision time.",
 		Example: ` # Adds a key labled "example-key" to the current user account.
   metal ssh-key create --key ssh-rsa AAAAB3N...user@domain.com --label example-key`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			sSHKeyCreateInput := &metal.SSHKeyCreateInput{

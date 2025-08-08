@@ -38,7 +38,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Aliases: []string{"vlan", "vlans"},
 		Short:   "Virtual network (VLAN) operations : create, get, delete.",
 		Long:    "Managing Virtual Networks on a Project. VLAN assignments to a server's ports is available through the `ports` command. For more information on how VLANs work in Equinix Metal, visit https://deploy.equinix.com/developers/docs/metal/layer2-networking/vlans/.",
-
+		Args:    cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

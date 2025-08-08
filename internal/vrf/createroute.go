@@ -25,6 +25,7 @@ func (c *Client) CreateRoute() *cobra.Command {
 		Example: ` # Create a route in a VRF. Currently only static default routes are supported..
 	
 	metal vrf create-route [-i <VrfID>] [-p <prefix>] [-n nextHop] [-t <tags> ]`,
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			inc := []string{}

@@ -42,7 +42,7 @@ func (c *Client) Disable() *cobra.Command {
 
   # Disable two-factor authentication via APP
   metal 2fa disable -a -c <OTP_code>`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if sms == app {
 				return fmt.Errorf("either sms or app should be set")

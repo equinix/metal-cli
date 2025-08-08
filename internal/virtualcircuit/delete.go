@@ -16,7 +16,7 @@ func (c *Client) Delete() *cobra.Command {
 		Long:  "Deletes the specified virtual-circuit.",
 		Example: `  # Deletes the specified virtual-circuit:
   metal vc delete -i 7ec86e23-8dcf-48ed-bd9b-c25c20958277`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			inc := []string{}
