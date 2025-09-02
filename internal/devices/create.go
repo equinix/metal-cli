@@ -224,5 +224,8 @@ func (c *Client) Create() *cobra.Command {
 	createDeviceCmd.Flags().Float64VarP(&spotPriceMax, "spot-price-max", "", 0, `Sets the maximum spot market price for the device: --spot-price-max=1.2`)
 	createDeviceCmd.Flags().StringVarP(&terminationTime, "termination-time", "T", "", `Device termination time: --termination-time="2023-08-24T15:04:05Z"`)
 
+	_ = createDeviceCmd.Flags().MarkDeprecated("spot-instance", "spot market is no longer available")
+	_ = createDeviceCmd.Flags().MarkDeprecated("spot-price-max", "spot market is no longer available")
+
 	return createDeviceCmd
 }
