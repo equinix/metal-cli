@@ -20,6 +20,7 @@ func (c *Client) RetrieveRoute() *cobra.Command {
 		Example: ` #Retrieve all routes in the VRF
 	# Retrieve all routes in the VRF
 	metal vrf get-route -i bb526d47-8536-483c-b436-116a5fb72235`,
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			inc := []string{}

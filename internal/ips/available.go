@@ -40,7 +40,7 @@ func (c *Client) Available() *cobra.Command {
 		Long:  "Lists available IP addresses in a specified reservation for the desired subnet size.",
 		Example: `  # Lists available IP addresses in a reservation for a /31 subnet:
   metal ip available --reservation-id da1bb048-ea6e-4911-8ab9-b95635ca127a --cidr 31`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			Cidr := metal.FindIPAvailabilitiesCidrParameter(strconv.Itoa(cidr))

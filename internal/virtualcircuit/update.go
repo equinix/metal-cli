@@ -86,7 +86,7 @@ func (c *Client) Update() *cobra.Command {
 	metal vc update -i e2edb90b-a8ef-47cb-a577-63b0ba129c29 -d "test-inter-fri-dedicated"
 
 	metal vc update [-i <id>] [-n <name>] [-d <description>] [-M <md5sum>] [-a <peer-asn>] [-S <subnet>] [-c <customer-ip>] [-m <metal-ip>] [-t <tags> ]`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			inc := []string{}

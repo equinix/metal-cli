@@ -36,7 +36,7 @@ func (c *Client) Retrieve() *cobra.Command {
 		Long:    "Retrieves a list of metros available to the current user.",
 		Example: `  # Lists metros available to the current user:	
   metal metros get`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			metrosList, _, err := c.Service.FindMetros(context.Background()).Execute()

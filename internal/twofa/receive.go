@@ -40,7 +40,7 @@ func (c *Client) Receive() *cobra.Command {
 
   # Issue the token via app:
   metal 2fa receive -a`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if sms == app {
 				return fmt.Errorf("either sms or app should be set")

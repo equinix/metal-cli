@@ -43,7 +43,7 @@ func (c *Client) Create() *cobra.Command {
 
   # Creates a VLAN in the sjc1 facility
   metal virtual-network create -p $METAL_PROJECT_ID -f sjc1`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			virtualNetworkCreateInput := metal.NewVirtualNetworkCreateInput()

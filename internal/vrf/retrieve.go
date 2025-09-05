@@ -27,7 +27,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
   # Lists VRFs for project 3b0795ba-ec9a-4a9e-83a7-043e7e11407c:
   metal vrf list -p 3b0795ba-ec9a-4a9e-83a7-043e7e11407c`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			inc := []string{}

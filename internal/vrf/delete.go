@@ -36,6 +36,7 @@ func (c *Client) Delete() *cobra.Command {
 
   # Deletes a VRF, skipping confirmation.
   metal delete vrf -f -i 77e6d57a-d7a4-4816-b451-cf9b043444e2`,
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

@@ -46,7 +46,7 @@ func (c *Client) Check() *cobra.Command {
   
   # Checks if Silicon Valley or Dallas has either 4 c3.medium.x86 or m3.large.x86
   metal capacity check -m sv,da -P c3.medium.x86,m3.large.x86 -q 4`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var locationField string
 			var returnOut error

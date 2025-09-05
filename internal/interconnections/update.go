@@ -26,7 +26,7 @@ func (c *Client) Update() *cobra.Command {
 		Long:  "Updates a specified connection.",
 		Example: `  # Updates a specified connection.:
   metal interconnections update --id 30c15082-a06e-4c43-bfc3-252616b46eba -n [<name>] -d [<description>] -r [<'redundant'|'primary'>]-m [<standard|tunnel>] -e [<E-mail>] --tags="tag1,tag2"`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			intInput := metal.NewInterconnectionUpdateInput()

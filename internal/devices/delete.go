@@ -33,7 +33,7 @@ func (c *Client) Delete() *cobra.Command {
 		
   # Deletes a VLAN, skipping confirmation:
   metal device delete -f -i 7ec86e23-8dcf-48ed-bd9b-c25c20958277`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 

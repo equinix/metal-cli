@@ -50,7 +50,7 @@ func (c *Client) Retrieve() *cobra.Command {
 
   # Gets the IP addresses from a reservation ID:
   metal ip get -r da1bb048-ea6e-4911-8ab9-b95635ca127a`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if assignmentID != "" && reservationID != "" {
 				return fmt.Errorf("either assignment-id or reservation-id can be set")

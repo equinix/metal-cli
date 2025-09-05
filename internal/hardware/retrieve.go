@@ -20,7 +20,7 @@ func (c *Client) Retrieve() *cobra.Command {
   
   # Retrieve the details of a specific hardware reservation:
   metal hardware-reservations get -i 8404b73c-d18f-4190-8c49-20bb17501f88`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			projectID, _ := cmd.Flags().GetString("project-id")
 			hardwareReservationID, _ := cmd.Flags().GetString("id")

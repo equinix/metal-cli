@@ -21,6 +21,7 @@ func (c *Client) BGPConfig() *cobra.Command {
 		Short:   "Gets BGP Config for a project.",
 		Long:    `Gets BGP Config for a project.`,
 		Example: `  metal project bgp-config --project-id 50693ba9-e4e4-4d8a-9eb2-4840b11e9375 -d `,
+		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return getBGPConfig(c, &flags)
 		},

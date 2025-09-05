@@ -38,6 +38,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Use:   "capacity",
 		Short: `Capacity operations: get, check`,
 		Long:  "Capacity operations. For more information on capacity in metros, visit https://deploy.equinix.com/developers/docs/metal/locations/metros/ For more information on capacity in facilities, visit https://deploy.equinix.com/developers/docs/metal/locations/facilities/.",
+		Args:  cobra.NoArgs,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

@@ -40,7 +40,7 @@ func (c *Client) Update() *cobra.Command {
   
   # Updates SSH key 5cb96463-88fd-4d68-94ba-2c9505ff265e with a new label:
   metal ssh-key update -i 5cb96463-88fd-4d68-94ba-2c9505ff265e -l test-machine-2`,
-
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			req := metal.NewSSHKeyInput()
