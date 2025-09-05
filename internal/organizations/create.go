@@ -32,14 +32,13 @@ func (c *Client) Create() *cobra.Command {
 	var (
 		website     string
 		twitter     string
-		logo        string
 		name        string
 		description string
 	)
 
 	// createOrganizationCmd represents the createOrganization command
 	createOrganizationCmd := &cobra.Command{
-		Use:   `create -n <name> [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>]`,
+		Use:   `create -n <name> [-d <description>] [-w <website_URL>] [-t <twitter_URL>]`,
 		Short: "Creates an organization.",
 		Long:  "Creates a new organization with the current user as the organization's owner. ",
 		Example: `  # Creates a new organization named "it-backend-infra": 
@@ -73,10 +72,6 @@ func (c *Client) Create() *cobra.Command {
 				req.Website = &website
 			}
 
-			if logo != "" {
-				req.Logo = &logo
-			}
-
 			org, _, err := c.Service.CreateOrganization(context.Background()).OrganizationInput(*req).Include(include).Exclude(exclude).Execute()
 			if err != nil {
 				return fmt.Errorf("Could not create Organization: %w", err)
@@ -95,7 +90,6 @@ func (c *Client) Create() *cobra.Command {
 	createOrganizationCmd.Flags().StringVarP(&description, "description", "d", "", "Description of the organization.")
 	createOrganizationCmd.Flags().StringVarP(&website, "website", "w", "", "Website URL of the organization.")
 	createOrganizationCmd.Flags().StringVarP(&twitter, "twitter", "t", "", "Twitter URL of the organization.")
-	createOrganizationCmd.Flags().StringVarP(&logo, "logo", "l", "", "A Logo image URL.]")
 
 	_ = createOrganizationCmd.MarkFlagRequired("name")
 	return createOrganizationCmd

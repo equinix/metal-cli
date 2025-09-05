@@ -29,12 +29,12 @@ import (
 )
 
 func (c *Client) Update() *cobra.Command {
-	var organizationID, name, description, twitter, logo, website string
+	var organizationID, name, description, twitter, website string
 	// createOrganizationCmd represents the createOrganization command
 	updateOrganizationCmd := &cobra.Command{
-		Use:   `update -i <organization_UUID> [-n <name>] [-d <description>] [-w <website_URL>] [-t <twitter_URL>] [-l <logo_URL>]`,
+		Use:   `update -i <organization_UUID> [-n <name>] [-d <description>] [-w <website_URL>] [-t <twitter_URL>]`,
 		Short: "Updates the specified organization.",
-		Long:  "Updates the specified organization. You can update the name, website, Twitter, or logo.",
+		Long:  "Updates the specified organization. You can update the name, website, or Twitter.",
 		Example: `  # Updates the name of an organization:
   metal organization update -i 3bd5bf07-6094-48ad-bd03-d94e8712fdc8 --name test-cluster02`,
 
@@ -61,10 +61,6 @@ func (c *Client) Update() *cobra.Command {
 				req.Twitter = &twitter
 			}
 
-			if logo != "" {
-				req.Logo = &logo
-			}
-
 			if website != "" {
 				req.Website = &website
 			}
@@ -88,7 +84,6 @@ func (c *Client) Update() *cobra.Command {
 	updateOrganizationCmd.Flags().StringVarP(&description, "description", "d", "", "User-friendly description of the organization.")
 	updateOrganizationCmd.Flags().StringVarP(&website, "website", "w", "", "A website URL for the organization.")
 	updateOrganizationCmd.Flags().StringVarP(&twitter, "twitter", "t", "", "A Twitter URL of the organization.")
-	updateOrganizationCmd.Flags().StringVarP(&logo, "logo", "l", "", "A logo image URL for the organization.")
 
 	_ = updateOrganizationCmd.MarkFlagRequired("id")
 	return updateOrganizationCmd
