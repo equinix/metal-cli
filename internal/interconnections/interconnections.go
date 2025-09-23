@@ -17,7 +17,7 @@ func (c *Client) NewCommand() *cobra.Command {
 		Use:     `interconnections`,
 		Aliases: []string{"conn"},
 		Short:   "interconnections operations: create, get, update, delete",
-		Long:    "Get information on Metro locations. For more information on https://deploy.equinix.com/developers/docs/metal/interconnections.",
+		Long:    "Get information on Metro locations. For more information on https://docs.equinix.com/metal/interconnections/introduction/.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if root := cmd.Root(); root != nil {
 				if root.PersistentPreRun != nil {

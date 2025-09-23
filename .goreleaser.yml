@@ -41,7 +41,7 @@ snapshot:
   name_template: "{{ .Tag }}-next"
 
 brews:
-  - homepage: "https://deploy.equinix.com/developers/docs/metal/libraries/cli/"
+  - homepage: "https://docs.equinix.com/metal/libraries/cli/"
     description: "Official Equinix Metal CLI"
     license: "MIT"
     dependencies:

@@ -4,7 +4,7 @@ interconnections operations: create, get, update, delete
 
 ### Synopsis
 
-Get information on Metro locations. For more information on https://deploy.equinix.com/developers/docs/metal/interconnections.
+Get information on Metro locations. For more information on https://docs.equinix.com/metal/interconnections/introduction/.
 
 ### Options
 
