@@ -4,7 +4,7 @@ Metro operations: get.
 
 ### Synopsis
 
-Get information on Metro locations. For more information on https://deploy.equinix.com/developers/docs/metal/locations/metros/.
+Get information on Metro locations. For more information on https://docs.equinix.com/metal/locations/metros/.
 
 ### Options
 

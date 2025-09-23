@@ -4,7 +4,7 @@ Facility operations: get.
 
 ### Synopsis
 
-Information about specific facilities. Facility-level operations have mostly been replaced by Metros, but remains for backwards-compatibility. Documentation about facilities is available at https://deploy.equinix.com/developers/docs/metal/locations/facilities/.
+Information about specific facilities. Facility-level operations have mostly been replaced by Metros, but remains for backwards-compatibility. Documentation about facilities is available at https://docs.equinix.com/metal/locations/facilities/.
 
 ### Options
 

@@ -195,7 +195,7 @@ After installing Equinix Metal CLI, configure your account using `metal init`:
 ```bash
 $ metal init
 Equinix Metal API Tokens can be obtained through the portal at https://console.equinix.com/.
-See https://deploy.equinix.com/developers/docs/metal/identity-access-management/users/ for more details.
+See https://docs.equinix.com/metal/identity-access-management/users/ for more details.
 
 Token (hidden): 
 Organization ID []: 87e62b5c-7e4e-4a29-ac40-d5df9535868f

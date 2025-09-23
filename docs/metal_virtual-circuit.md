@@ -4,7 +4,7 @@ virtual-circuit operations: create, get, update, delete
 
 ### Synopsis
 
-For more information on https://deploy.equinix.com/developers/docs/metal/interconnections.
+For more information on https://docs.equinix.com/metal/interconnections.
 
 ### Options
 
