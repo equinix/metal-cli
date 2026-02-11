@@ -1,3 +1,6 @@
+# Note
+With the upcoming EoL of Equinix Metal on June 30, 2026, this repo is being archived on February 28, 2026.
+
 # metal-cli
 
 [![GitHub release](https://img.shields.io/github/release/equinix/metal-cli/all.svg?style=flat-square)](https://github.com/equinix/metal-cli/releases)
