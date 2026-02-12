@@ -1,5 +1,5 @@
 # Note
-With the upcoming EoL of Equinix Metal on June 30, 2026, this repo is being archived on February 28, 2026.
+With the upcoming EoL of Equinix Metal on June 30, 2026, this repo is being archived on July 1, 2026.
 
 # metal-cli
 
