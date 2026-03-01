@@ -42,7 +42,7 @@ func TestCli_Devices_Update(t *testing.T) {
 					t.Fatal(err)
 				}
 				if status == true {
-					root.SetArgs([]string{subCommand, "update", "-i", device.GetId(), "-H", "metal-cli-update-dev-test", "-d", "This device used for testing"})
+					root.SetArgs([]string{subCommand, "update", "-i", device.GetId(), "-H", "metal-cli-update-dev-test", "-d", "This device used for testing", "--locked=true"})
 
 					out := helper.ExecuteAndCaptureOutput(t, root)
 
@@ -50,6 +50,23 @@ func TestCli_Devices_Update(t *testing.T) {
 						t.Error("expected output should include metal-cli-update-dev-test in the out string ")
 					}
 				}
+
+				root.SetArgs([]string{subCommand, "delete", "-i", device.GetId()})
+
+				out := helper.ExecuteAndCaptureOutput(t, root)
+
+				if !strings.Contains(string(out[:]), "not delete") {
+					t.Error("expected output should include 'not delete' in the out string due to device locking")
+				}
+
+				root.SetArgs([]string{subCommand, "update", "-i", device.GetId(), "--locked=false"})
+
+				out = helper.ExecuteAndCaptureOutput(t, root)
+
+				if !strings.Contains(string(out[:]), "metal-cli-update-dev-test") {
+					t.Error("expected output should include metal-cli-update-dev-test in the out string ")
+				}
+
 			},
 		},
 	}
