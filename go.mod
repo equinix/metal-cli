@@ -1,6 +1,6 @@
 module github.com/equinix/metal-cli
 
-go 1.22
+go 1.26.0
 
 require (
 	github.com/equinix/equinix-sdk-go v0.42.0
@@ -10,7 +10,7 @@ require (
 	github.com/spf13/pflag v1.0.10
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/exp v0.0.0-20240529005216-23cca8864a10
+	golang.org/x/exp v0.0.0-20260824195058-e88cd73687aa
 	golang.org/x/term v0.21.0
 	sigs.k8s.io/yaml v1.3.0
 )
